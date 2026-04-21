@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Light (default) */
+html {
+  --body-bg: #faf7f2;
+  background: var(--body-bg);
+  color: #292524; /* stone-800 */
+}
+
+/* Dark override */
+html.dark {
+  --body-bg: #0b1020;
+  background: var(--body-bg);
+  color: #e7ecff;
+}
