@@ -194,15 +194,11 @@ export const multiGateLesson: Lesson = {
           "Returnera true om personen är 18 eller äldre OCH har en biljett.\nAnnars false.",
       },
       functionName: "letEnter",
+      bodyOnly: true,
+      paramName: "person",
       starterCode: {
-        en:
-          "function letEnter(person) {\n" +
-          "  return /* your condition with && */;\n" +
-          "}\n",
-        sv:
-          "function letEnter(person) {\n" +
-          "  return /* ditt villkor med && */;\n" +
-          "}\n",
+        en: "return /* your condition with && */;\n",
+        sv: "return /* ditt villkor med && */;\n",
       },
       tests: [
         { label: { en: "16, ticket", sv: "16, biljett" }, input: { age: 16, hasTicket: true }, expected: false },
@@ -241,15 +237,11 @@ export const multiGateLesson: Lesson = {
         sv: "Returnera true om personen ÄR VIP ELLER har biljett. Annars false.",
       },
       functionName: "letEnter",
+      bodyOnly: true,
+      paramName: "person",
       starterCode: {
-        en:
-          "function letEnter(person) {\n" +
-          "  return /* your condition with || */;\n" +
-          "}\n",
-        sv:
-          "function letEnter(person) {\n" +
-          "  return /* ditt villkor med || */;\n" +
-          "}\n",
+        en: "return /* your condition with || */;\n",
+        sv: "return /* ditt villkor med || */;\n",
       },
       tests: [
         { label: { en: "VIP, no ticket", sv: "VIP, ingen biljett" }, input: { vip: true, hasTicket: false }, expected: true },
@@ -290,17 +282,15 @@ export const multiGateLesson: Lesson = {
           "Personen släpps in om:\n• åldern är minst 18\n• OCH de har biljett ELLER är VIP\n• OCH de är INTE bannade.",
       },
       functionName: "letEnter",
+      bodyOnly: true,
+      paramName: "person",
       starterCode: {
         en:
-          "function letEnter(person) {\n" +
-          "  // Combine &&, || and !:\n" +
-          "  return false;\n" +
-          "}\n",
+          "// Combine &&, || and !:\n" +
+          "return false;\n",
         sv:
-          "function letEnter(person) {\n" +
-          "  // Kombinera &&, || och !:\n" +
-          "  return false;\n" +
-          "}\n",
+          "// Kombinera &&, || och !:\n" +
+          "return false;\n",
       },
       tests: [
         { label: { en: "20 + ticket", sv: "20 + biljett" }, input: { age: 20, hasTicket: true, vip: false, banned: false }, expected: true },
