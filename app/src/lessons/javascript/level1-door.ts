@@ -267,11 +267,12 @@ export const doorLesson: Lesson = {
         { label: { en: "blue (other)", sv: "blått (annat)" }, input: "blue", expected: false },
       ],
       allegory: {
-        kind: "door",
+        kind: "crosswalk",
         config: {
           conditionLabel: "canCross(light)",
-          acceptLabel: { en: "Walk", sv: "Gå" },
-          rejectLabel: { en: "Wait", sv: "Vänta" },
+          walkWhen: true,
+          walkLabel: { en: "Walks", sv: "Går" },
+          waitLabel: { en: "Waits", sv: "Väntar" },
         },
       },
       legend: [
@@ -386,11 +387,12 @@ export const doorLesson: Lesson = {
         { label: { en: "yellow", sv: "gult" }, input: "yellow", expected: false },
       ],
       allegory: {
-        kind: "door",
+        kind: "crosswalk",
         config: {
           conditionLabel: "canCross(light)",
-          acceptLabel: { en: "Walk", sv: "Gå" },
-          rejectLabel: { en: "Wait", sv: "Vänta" },
+          walkWhen: true,
+          walkLabel: { en: "Walks", sv: "Går" },
+          waitLabel: { en: "Waits", sv: "Väntar" },
         },
       },
       legend: [
@@ -503,12 +505,13 @@ export const doorLesson: Lesson = {
         { label: { en: "empty", sv: "tom" }, input: { signal: "" }, expected: false },
       ],
       allegory: {
-        kind: "door",
+        kind: "crosswalk",
         config: {
           conditionLabel: "canCross(light)",
           inputKey: "signal",
-          acceptLabel: { en: "Walk", sv: "Gå" },
-          rejectLabel: { en: "Wait", sv: "Vänta" },
+          walkWhen: true,
+          walkLabel: { en: "Walks", sv: "Går" },
+          waitLabel: { en: "Waits", sv: "Väntar" },
         },
       },
       legend: [
@@ -563,12 +566,13 @@ export const doorLesson: Lesson = {
         { label: { en: "Walk (mixed case)", sv: "Walk (blandat)" }, input: { signal: "Walk" }, expected: "wait" },
       ],
       allegory: {
-        kind: "door",
+        kind: "crosswalk",
         config: {
           conditionLabel: "canCross(state)",
           inputKey: "signal",
-          acceptLabel: { en: "walk", sv: "gå" },
-          rejectLabel: { en: "wait", sv: "vänta" },
+          walkWhen: "walk",
+          walkLabel: { en: "Walks", sv: "Går" },
+          waitLabel: { en: "Waits", sv: "Väntar" },
         },
       },
     },
