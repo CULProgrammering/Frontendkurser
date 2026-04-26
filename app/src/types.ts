@@ -47,7 +47,59 @@ export type AssignmentSlide = {
   targetCss?: string;
 };
 
-export type Slide = ExplanationSlide | AssignmentSlide;
+export type JsTest = {
+  label: string;
+  input: unknown;
+  expected: unknown;
+};
+
+export type DoorConfig = {
+  conditionLabel: string;
+  inputKey?: string; // which property of input to display (when input is an object)
+  acceptLabel?: string;
+  rejectLabel?: string;
+};
+
+export type ForkBranch = { key: string; label: string };
+export type ForkConfig = {
+  conditionLabel: string;
+  branches: ForkBranch[];
+  // For each test, the key of the branch that is correct (derived from expected by default).
+  // The scene maps test.expected → branch.key by string match.
+};
+
+export type ConveyorBin = { key: string; label: string };
+export type ConveyorConfig = {
+  inputLabel: string;
+  bins: ConveyorBin[];
+  defaultBinKey?: string;
+};
+
+export type MultiGateConfig = {
+  mode: "and" | "or" | "not";
+  operandLabels: [string, string?]; // second optional for "not"
+  passLabel?: string;
+  failLabel?: string;
+};
+
+export type Allegory =
+  | { kind: "door"; config: DoorConfig }
+  | { kind: "fork"; config: ForkConfig }
+  | { kind: "conveyor"; config: ConveyorConfig }
+  | { kind: "multi-gate"; config: MultiGateConfig };
+
+export type JsAssignmentSlide = {
+  kind: "js-assignment";
+  title: string;
+  prompt: string;
+  starterCode: string;
+  functionName: string;
+  tests: JsTest[];
+  allegory: Allegory;
+  legend?: LegendEntry[];
+};
+
+export type Slide = ExplanationSlide | AssignmentSlide | JsAssignmentSlide;
 
 export type Lesson = {
   id: string;
