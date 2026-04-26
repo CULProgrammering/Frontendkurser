@@ -103,6 +103,14 @@ export type JsAssignmentSlide = {
   prompt: Loc;
   starterCode: Loc;
   functionName: string;
+  /**
+   * When true, `starterCode` is the function BODY only. The view renders a
+   * read-only `function name(param) {` above the editor and `}` below it,
+   * and the runner wraps the body as a function before invoking it.
+   */
+  bodyOnly?: boolean;
+  /** Required when bodyOnly is true. The parameter name shown in the wrapper. */
+  paramName?: string;
   tests: JsTest[];
   allegory: Allegory;
   legend?: LegendEntry[];

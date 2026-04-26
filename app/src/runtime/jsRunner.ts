@@ -15,17 +15,31 @@ export type RunResult =
   | { ok: true; value: unknown }
   | { ok: false; error: string };
 
+export type RunOptions = {
+  /** When true, `source` is the function body. Wrapped automatically. */
+  bodyOnly?: boolean;
+  /** When `bodyOnly` is true, the name to expose for the input parameter. */
+  paramName?: string;
+};
+
 export function runUserCode(
   source: string,
   fnName: string,
-  input: unknown
+  input: unknown,
+  options: RunOptions = {}
 ): RunResult {
   try {
+    if (options.bodyOnly) {
+      const param = options.paramName ?? "input";
+      const fn = new Function(param, source);
+      const value = fn(input);
+      return { ok: true, value };
+    }
     const body =
       `${source}\n;` +
       `if (typeof ${fnName} !== "function") {\n` +
-      `  throw new Error("Funktionen \\"${fnName}\\" hittades inte. ` +
-      `Använd 'function ${fnName}(...) { ... }'.");\n` +
+      `  throw new Error("Function \\"${fnName}\\" was not found. ` +
+      `Use 'function ${fnName}(...) { ... }'.");\n` +
       `}\n` +
       `return ${fnName}(__input);`;
     const fn = new Function("__input", body);

@@ -140,26 +140,24 @@ export const forkLesson: Lesson = {
           "Returnera en av strängarna baserat på temperaturen:\n• 'coat' när <= 0\n• 'jacket' när <= 15\n• 'shirt' annars.",
       },
       functionName: "pickOutfit",
+      bodyOnly: true,
+      paramName: "temp",
       starterCode: {
         en:
-          "function pickOutfit(temp) {\n" +
-          "  if (/* condition */) {\n" +
-          "    return 'coat';\n" +
-          "  } else if (/* condition */) {\n" +
-          "    return 'jacket';\n" +
-          "  } else {\n" +
-          "    return 'shirt';\n" +
-          "  }\n" +
+          "if (/* condition */) {\n" +
+          "  return 'coat';\n" +
+          "} else if (/* condition */) {\n" +
+          "  return 'jacket';\n" +
+          "} else {\n" +
+          "  return 'shirt';\n" +
           "}\n",
         sv:
-          "function pickOutfit(temp) {\n" +
-          "  if (/* villkor */) {\n" +
-          "    return 'coat';\n" +
-          "  } else if (/* villkor */) {\n" +
-          "    return 'jacket';\n" +
-          "  } else {\n" +
-          "    return 'shirt';\n" +
-          "  }\n" +
+          "if (/* villkor */) {\n" +
+          "  return 'coat';\n" +
+          "} else if (/* villkor */) {\n" +
+          "  return 'jacket';\n" +
+          "} else {\n" +
+          "  return 'shirt';\n" +
           "}\n",
       },
       tests: [
@@ -213,19 +211,17 @@ export const forkLesson: Lesson = {
           "Returnera betyg baserat på poäng (0–100):\n• 'A' om >= 90\n• 'B' om >= 75\n• 'C' om >= 50\n• 'F' annars.",
       },
       functionName: "grade",
+      bodyOnly: true,
+      paramName: "score",
       starterCode: {
         en:
-          "function grade(score) {\n" +
-          "  // Write your chain of conditions here:\n" +
-          "  \n" +
-          "  return 'F';\n" +
-          "}\n",
+          "// Write your chain of conditions here:\n" +
+          "\n" +
+          "return 'F';\n",
         sv:
-          "function grade(score) {\n" +
-          "  // Skriv din kedja av villkor här:\n" +
-          "  \n" +
-          "  return 'F';\n" +
-          "}\n",
+          "// Skriv din kedja av villkor här:\n" +
+          "\n" +
+          "return 'F';\n",
       },
       tests: [
         { label: { en: "95", sv: "95" }, input: 95, expected: "A" },

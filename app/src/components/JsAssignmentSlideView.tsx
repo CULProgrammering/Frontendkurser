@@ -38,7 +38,10 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
 
   const runChecks = () => {
     const out: TestRun[] = slide.tests.map((tst) => {
-      const r = runUserCode(code, slide.functionName, tst.input);
+      const r = runUserCode(code, slide.functionName, tst.input, {
+        bodyOnly: slide.bodyOnly,
+        paramName: slide.paramName,
+      });
       const pass = r.ok && deepEqual(r.value, tst.expected);
       return { test: tst, result: r, pass };
     });
@@ -86,14 +89,36 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
                           dark:text-indigo-300/70 dark:border-white/10">
             {t(ui.jsLabel, lang)}
           </div>
+          {slide.bodyOnly && (
+            <div
+              className="font-mono text-sm px-4 pt-3 pb-1 select-none
+                         text-stone-400 bg-stone-50
+                         dark:text-indigo-200/40 dark:bg-transparent"
+              aria-hidden
+            >
+              {`function ${slide.functionName}(${slide.paramName ?? "input"}) {`}
+            </div>
+          )}
           <textarea
             value={code}
             onChange={(e) => setCode(e.target.value)}
             spellCheck={false}
-            className="flex-1 font-mono text-sm p-4 outline-none resize-none
-                       bg-stone-50 text-stone-900
-                       dark:bg-transparent dark:text-indigo-50"
+            className={
+              "flex-1 font-mono text-sm outline-none resize-none " +
+              "bg-stone-50 text-stone-900 dark:bg-transparent dark:text-indigo-50 " +
+              (slide.bodyOnly ? "px-8 py-2" : "p-4")
+            }
           />
+          {slide.bodyOnly && (
+            <div
+              className="font-mono text-sm px-4 pt-1 pb-3 select-none
+                         text-stone-400 bg-stone-50
+                         dark:text-indigo-200/40 dark:bg-transparent"
+              aria-hidden
+            >
+              {"}"}
+            </div>
+          )}
           <div className="flex gap-2 p-3 border-t border-stone-200 dark:border-white/10">
             <button
               onClick={runChecks}

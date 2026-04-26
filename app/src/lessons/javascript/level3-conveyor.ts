@@ -200,24 +200,22 @@ export const conveyorLesson: Lesson = {
           "Returnera facket baserat på saken:\n• 'paper' → 'paper-bin'\n• 'glass' → 'glass-bin'\n• 'plastic' → 'plastic-bin'\n• allt annat → 'rest-bin'",
       },
       functionName: "pickBin",
+      bodyOnly: true,
+      paramName: "item",
       starterCode: {
         en:
-          "function pickBin(item) {\n" +
-          "  switch (item) {\n" +
-          "    case '...':\n" +
-          "      return '...';\n" +
-          "    default:\n" +
-          "      return 'rest-bin';\n" +
-          "  }\n" +
+          "switch (item) {\n" +
+          "  case '...':\n" +
+          "    return '...';\n" +
+          "  default:\n" +
+          "    return 'rest-bin';\n" +
           "}\n",
         sv:
-          "function pickBin(item) {\n" +
-          "  switch (item) {\n" +
-          "    case '...':\n" +
-          "      return '...';\n" +
-          "    default:\n" +
-          "      return 'rest-bin';\n" +
-          "  }\n" +
+          "switch (item) {\n" +
+          "  case '...':\n" +
+          "    return '...';\n" +
+          "  default:\n" +
+          "    return 'rest-bin';\n" +
           "}\n",
       },
       tests: [
@@ -282,17 +280,15 @@ export const conveyorLesson: Lesson = {
           "Returnera ljudet djuret gör:\n• 'dog' → 'woof'\n• 'cat' → 'meow'\n• 'cow' → 'moo'\n• allt annat → 'silence'",
       },
       functionName: "soundOf",
+      bodyOnly: true,
+      paramName: "animal",
       starterCode: {
         en:
-          "function soundOf(animal) {\n" +
-          "  // Write your switch here:\n" +
-          "  \n" +
-          "}\n",
+          "// Write your switch here:\n" +
+          "\n",
         sv:
-          "function soundOf(animal) {\n" +
-          "  // Skriv din switch här:\n" +
-          "  \n" +
-          "}\n",
+          "// Skriv din switch här:\n" +
+          "\n",
       },
       tests: [
         { label: { en: "dog", sv: "hund" }, input: "dog", expected: "woof" },
