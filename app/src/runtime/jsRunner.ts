@@ -4,46 +4,33 @@
 // not isolating against malicious input — we are catching syntax/runtime
 // errors and returning them as data so the UI can show neutral feedback.
 //
-// Limitations:
-// - Synchronous only. Any `await` in user code surfaces as an error.
-// - Infinite loops freeze the tab. We don't try to interrupt; loop-free
-//   conditionals lessons don't need it.
-// - Equality is JSON-deep for objects, strict for primitives. Sufficient
-//   for inputs/outputs in conditionals lessons.
+// Variable-based exercise model:
+// The student writes code that uses pre-declared variables (e.g. `light`,
+// `age`). For each test, we build a function whose body starts with
+// `let varName = <test value>;` declarations followed by the student's code.
+// Students can use `return` at "top level" (it returns from the wrapper).
+
+import type { JsPrimitive } from "../types";
 
 export type RunResult =
   | { ok: true; value: unknown }
   | { ok: false; error: string };
 
-export type RunOptions = {
-  /** When true, `source` is the function body. Wrapped automatically. */
-  bodyOnly?: boolean;
-  /** When `bodyOnly` is true, the name to expose for the input parameter. */
-  paramName?: string;
-};
-
+/**
+ * Run the student's code with the given variables in scope. Returns whatever
+ * `return`s from the body (or `undefined` if no return is reached).
+ */
 export function runUserCode(
   source: string,
-  fnName: string,
-  input: unknown,
-  options: RunOptions = {}
+  vars: Record<string, JsPrimitive>
 ): RunResult {
   try {
-    if (options.bodyOnly) {
-      const param = options.paramName ?? "input";
-      const fn = new Function(param, source);
-      const value = fn(input);
-      return { ok: true, value };
-    }
-    const body =
-      `${source}\n;` +
-      `if (typeof ${fnName} !== "function") {\n` +
-      `  throw new Error("Function \\"${fnName}\\" was not found. ` +
-      `Use 'function ${fnName}(...) { ... }'.");\n` +
-      `}\n` +
-      `return ${fnName}(__input);`;
-    const fn = new Function("__input", body);
-    const value = fn(input);
+    const decls = Object.entries(vars)
+      .map(([k, v]) => `let ${k} = ${JSON.stringify(v)};`)
+      .join("\n");
+    const body = decls + "\n" + source;
+    const fn = new Function(body);
+    const value = fn();
     return { ok: true, value };
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);

@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import type { Lang } from ".";
+import { sessionGet, sessionSet } from "../storage";
 
 type Ctx = { lang: Lang; setLang: (l: Lang) => void };
 
@@ -13,21 +14,13 @@ const STORAGE_KEY = "cul:lang";
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(() => {
-    try {
-      const v = sessionStorage.getItem(STORAGE_KEY);
-      return v === "sv" ? "sv" : "en";
-    } catch {
-      return "en";
-    }
+    const v = sessionGet(STORAGE_KEY);
+    return v === "sv" ? "sv" : "en";
   });
 
   const setLang = (l: Lang) => {
     setLangState(l);
-    try {
-      sessionStorage.setItem(STORAGE_KEY, l);
-    } catch {
-      // ignore
-    }
+    sessionSet(STORAGE_KEY, l);
   };
 
   useEffect(() => {

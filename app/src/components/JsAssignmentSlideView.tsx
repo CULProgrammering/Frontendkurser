@@ -1,16 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
-import type { Allegory, JsAssignmentSlide, JsTest } from "../types";
-import { runUserCode, deepEqual, describeValue, type RunResult } from "../runtime/jsRunner";
+import type { Allegory, JsAssignmentSlide, JsPrimitive, JsTest } from "../types";
+import { runUserCode, deepEqual, type RunResult } from "../runtime/jsRunner";
 import { DoorScene } from "./allegories/DoorScene";
 import { ForkScene } from "./allegories/ForkScene";
 import { ConveyorScene } from "./allegories/ConveyorScene";
 import { MultiGateScene } from "./allegories/MultiGateScene";
 import { CrosswalkAllegory } from "./allegories/CrosswalkAllegory";
+import { LoopResultScene } from "./allegories/LoopResultScene";
 import type { SceneRun } from "./allegories/types";
 import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import type { Lang } from "../i18n";
 import { ui } from "../i18n/strings";
+import { sessionGet, sessionSet } from "../storage";
 
 type Props = {
   slide: JsAssignmentSlide;
@@ -25,7 +27,7 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
   const starter = t(slide.starterCode, lang);
 
   const [code, setCode] = useState<string>(
-    () => sessionStorage.getItem(storageKey) ?? starter
+    () => sessionGet(storageKey) ?? starter
   );
   const [runs, setRuns] = useState<TestRun[] | null>(null);
   const [focusedIdx, setFocusedIdx] = useState(0);
@@ -34,21 +36,31 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
   const hasLegend = !!slide.legend && slide.legend.length > 0;
 
   useEffect(() => {
-    sessionStorage.setItem(storageKey, code);
+    sessionSet(storageKey, code);
   }, [storageKey, code]);
 
   const runChecks = () => {
     const out: TestRun[] = slide.tests.map((tst) => {
-      const r = runUserCode(code, slide.functionName, tst.input, {
-        bodyOnly: slide.bodyOnly,
-        paramName: slide.paramName,
-      });
+      const r = runUserCode(code, tst.vars);
       const pass = r.ok && deepEqual(r.value, tst.expected);
       return { test: tst, result: r, pass };
     });
     setRuns(out);
+
     const firstFail = out.findIndex((r) => !r.pass);
-    setFocusedIdx(firstFail === -1 ? 0 : firstFail);
+    let focused = 0;
+    if (firstFail !== -1) {
+      focused = firstFail;
+    } else if (slide.allegory.kind === "crosswalk") {
+      // All pass — focus a test where the figure visibly walks, so the student
+      // gets a clear "you did it" signal instead of a passive "nothing happens".
+      const walkWhen = slide.allegory.config.walkWhen ?? true;
+      const walkIdx = out.findIndex(
+        (r) => r.result.ok && deepEqual(r.result.value, walkWhen)
+      );
+      if (walkIdx !== -1) focused = walkIdx;
+    }
+    setFocusedIdx(focused);
     setReplayKey((k) => k + 1);
   };
 
@@ -58,16 +70,53 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
   };
 
   const allPass = runs !== null && runs.every((r) => r.pass);
+  const patternMet = !slide.requirePattern || slide.requirePattern.test(code);
+  const showSuccess = allPass && patternMet;
 
   useEffect(() => {
-    if (allPass) onPass?.();
+    if (showSuccess) onPass?.();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allPass]);
+  }, [showSuccess]);
 
   const focusedRun: SceneRun | null = useMemo(() => {
     if (!runs || !runs[focusedIdx]) return null;
     return runs[focusedIdx];
   }, [runs, focusedIdx]);
+
+  // Variables shown in the read-only `let ...` panel above the editor.
+  // Default: the first test's values. After Check: the focused test's values
+  // (so a failing test shows the inputs that produced the failure).
+  const displayedVars: Record<string, JsPrimitive | undefined> = useMemo(() => {
+    const source = focusedRun?.test ?? slide.tests[0];
+    return source ? source.vars : {};
+  }, [focusedRun, slide.tests]);
+
+  // When `requirePattern` blocks success, suppress the animation entirely so
+  // the student doesn't see a misleading "looks like it worked" replay.
+  const animationRun: SceneRun | null =
+    runs !== null && slide.requirePattern && !showSuccess ? null : focusedRun;
+
+  // Specific-placeholder hints — override the slide's general goalHint when
+  // a known unfilled placeholder is detected in the source.
+  const placeholderHint = detectPlaceholderHint(code, lang);
+
+  // If every run failed with the SAME error (or the focused run errored),
+  // surface that error so the student isn't stuck guessing why nothing happens.
+  // Typo-level mistakes (missing quote, missing brace) hide silently otherwise.
+  const runtimeError: string | null = (() => {
+    if (!runs || runs.length === 0 || showSuccess) return null;
+    // Prefer the focused run's error if it has one.
+    const focused = runs[focusedIdx];
+    if (focused && !focused.result.ok) return focused.result.error;
+    // Otherwise, if all runs share the same error, show that.
+    const errs = runs
+      .map((r) => (r.result.ok ? null : r.result.error))
+      .filter((e): e is string => e !== null);
+    if (errs.length === runs.length && errs.every((e) => e === errs[0])) {
+      return errs[0];
+    }
+    return null;
+  })();
 
   return (
     <div className="h-full w-full flex flex-col">
@@ -90,14 +139,21 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
                           dark:text-indigo-300/70 dark:border-white/10">
             {t(ui.jsLabel, lang)}
           </div>
-          {slide.bodyOnly && (
+          {slide.varNames.length > 0 && (
             <div
-              className="font-mono text-sm px-4 pt-3 pb-1 select-none
-                         text-stone-400 bg-stone-50
-                         dark:text-indigo-200/40 dark:bg-transparent"
-              aria-hidden
+              className="font-mono text-sm px-4 pt-3 pb-1 select-none border-b
+                         text-stone-500 bg-stone-100 border-stone-200
+                         dark:text-indigo-200/60 dark:bg-slate-900/40 dark:border-white/10"
+              aria-label="declared variables"
             >
-              {`function ${slide.functionName}(${slide.paramName ?? "input"}) {`}
+              {slide.varNames.map((name) => {
+                const value = displayedVars[name];
+                return (
+                  <div key={name}>
+                    {`let ${name} = ${formatPrimitive(value)};`}
+                  </div>
+                );
+              })}
             </div>
           )}
           <textarea
@@ -105,21 +161,10 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
             onChange={(e) => setCode(e.target.value)}
             spellCheck={false}
             className={
-              "flex-1 font-mono text-sm outline-none resize-none " +
-              "bg-stone-50 text-stone-900 dark:bg-transparent dark:text-indigo-50 " +
-              (slide.bodyOnly ? "px-8 py-2" : "p-4")
+              "flex-1 font-mono text-sm outline-none resize-none p-4 " +
+              "bg-stone-50 text-stone-900 dark:bg-transparent dark:text-indigo-50"
             }
           />
-          {slide.bodyOnly && (
-            <div
-              className="font-mono text-sm px-4 pt-1 pb-3 select-none
-                         text-stone-400 bg-stone-50
-                         dark:text-indigo-200/40 dark:bg-transparent"
-              aria-hidden
-            >
-              {"}"}
-            </div>
-          )}
           <div className="flex gap-2 p-3 border-t border-stone-200 dark:border-white/10">
             <button
               onClick={runChecks}
@@ -165,36 +210,43 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
           <div className="flex-1 min-h-0">
             <SceneMount
               allegory={slide.allegory}
-              run={focusedRun}
+              run={animationRun}
               replayKey={replayKey}
               lang={lang}
             />
           </div>
 
-          {runs && (
-            <div className="border-t border-stone-200 dark:border-white/10 p-3">
-              <div className="flex flex-wrap gap-2 mb-2">
-                {runs.map((r, i) => (
-                  <button
-                    key={i}
-                    onClick={() => {
-                      setFocusedIdx(i);
-                      setReplayKey((k) => k + 1);
-                    }}
-                    className={
-                      "px-2.5 py-1 rounded-full text-xs ring-1 transition " +
-                      (i === focusedIdx ? "ring-2 " : "") +
-                      (r.pass
-                        ? "bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-500/30"
-                        : "bg-stone-100 text-stone-700 ring-stone-200 dark:bg-slate-800 dark:text-indigo-100 dark:ring-white/10")
-                    }
-                  >
-                    {r.pass ? "✓" : "·"} {t(r.test.label, lang)}
-                  </button>
-                ))}
+          {/* Status footer: appears after Check.
+              showSuccess → "✓ Done"; otherwise → placeholder hint or goalHint. */}
+          {runs && showSuccess && (
+            <div className="border-t border-stone-200 dark:border-white/10 px-4 py-3
+                            text-sm font-medium text-emerald-700 dark:text-emerald-300">
+              {t({ en: "✓ Done", sv: "✓ Klart" }, lang)}
+            </div>
+          )}
+          {runs && !showSuccess && runtimeError && (
+            <div className="border-t border-stone-200 dark:border-white/10 px-4 py-3
+                            text-sm
+                            bg-rose-50 text-rose-800
+                            dark:bg-rose-500/10 dark:text-rose-200">
+              <div className="font-medium mb-1">
+                {t(
+                  {
+                    en: "The code couldn't run — check for typos:",
+                    sv: "Koden kunde inte köras — kolla efter typo:",
+                  },
+                  lang
+                )}
               </div>
-
-              <Summary runs={runs} allPass={allPass} focused={focusedRun} lang={lang} />
+              <div className="font-mono text-xs">{runtimeError}</div>
+            </div>
+          )}
+          {runs && !showSuccess && !runtimeError && (placeholderHint || slide.goalHint) && (
+            <div className="border-t border-stone-200 dark:border-white/10 px-4 py-3
+                            text-sm text-stone-600 dark:text-indigo-200/80">
+              {placeholderHint
+                ? t(placeholderHint, lang)
+                : t(slide.goalHint!, lang)}
             </div>
           )}
         </div>
@@ -239,58 +291,38 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
   );
 }
 
-function Summary({
-  runs,
-  allPass,
-  focused,
-  lang,
-}: {
-  runs: TestRun[];
-  allPass: boolean;
-  focused: SceneRun | null;
-  lang: Lang;
-}) {
-  const passCount = runs.filter((r) => r.pass).length;
-
-  if (allPass) {
-    return (
-      <div className="text-emerald-700 dark:text-emerald-300 font-medium text-sm">
-        {t(ui.allTestsPass, lang)}
-      </div>
-    );
+/**
+ * Look at the user's code for known unfilled placeholders. Returns a friendly
+ * Localized string when one is detected, otherwise null (caller falls back to
+ * the slide's general goalHint).
+ *
+ * Patterns:
+ *  - `if (___)`               → condition placeholder
+ *  - `} ___ {`                → else-keyword placeholder (between the if's
+ *                                closing } and the else's opening {)
+ */
+function detectPlaceholderHint(code: string, _lang: import("../i18n").Lang) {
+  // Check condition placeholder first — students should fix the if(...) before else.
+  if (/if\s*\(\s*___\s*\)/.test(code)) {
+    return {
+      en: "Fill in the condition inside the if's parentheses.",
+      sv: "Fyll i villkoret inuti if-parenteserna.",
+    };
   }
-
-  return (
-    <div className="text-sm space-y-1">
-      <div className="text-stone-600 dark:text-indigo-200/70">
-        {passCount} {t(ui.outOfRight, lang)} {runs.length} {t(ui.testsClear, lang)}
-      </div>
-      {focused && !focused.pass && <FailureDetail run={focused} lang={lang} />}
-    </div>
-  );
+  if (/}\s*___\s*\{/.test(code)) {
+    return {
+      en: "The ___ between the } and the { needs to be the keyword: else",
+      sv: "___ mellan } och { ska vara nyckelordet: else",
+    };
+  }
+  return null;
 }
 
-function FailureDetail({ run, lang }: { run: TestRun; lang: Lang }) {
-  if (!run.result.ok) {
-    return (
-      <div className="text-amber-700 dark:text-amber-300 text-xs whitespace-pre-line">
-        {t(ui.errorPrefix, lang)} {run.result.error}
-      </div>
-    );
-  }
-  return (
-    <div className="text-xs text-stone-600 dark:text-indigo-200/70">
-      {t(ui.expected, lang)}{" "}
-      <span className="font-mono text-emerald-700 dark:text-emerald-300">
-        {describeValue(run.test.expected)}
-      </span>
-      {" · "}
-      {t(ui.yourCodeGave, lang)}{" "}
-      <span className="font-mono text-amber-700 dark:text-amber-300">
-        {describeValue(run.result.value)}
-      </span>
-    </div>
-  );
+/** Render a primitive the way it would appear in JS source. */
+function formatPrimitive(v: JsPrimitive | undefined): string {
+  if (v === undefined) return "undefined";
+  if (typeof v === "string") return JSON.stringify(v);
+  return String(v);
 }
 
 function SceneMount({
@@ -315,5 +347,7 @@ function SceneMount({
       return <MultiGateScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
     case "crosswalk":
       return <CrosswalkAllegory config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
+    case "loop-result":
+      return <LoopResultScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
   }
 }

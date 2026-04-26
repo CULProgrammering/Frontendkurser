@@ -6,9 +6,21 @@ import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
 import { CrosswalkScene } from "./scenes/CrosswalkScene";
+import { CrosswalkTraceScene } from "./scenes/CrosswalkTraceScene";
+import { ComparisonsTableScene } from "./scenes/ComparisonsTableScene";
 import { WardrobeScene } from "./scenes/WardrobeScene";
+import { WardrobeTraceScene } from "./scenes/WardrobeTraceScene";
 import { RecyclingScene } from "./scenes/RecyclingScene";
+import { RecyclingTraceScene } from "./scenes/RecyclingTraceScene";
 import { BouncerScene } from "./scenes/BouncerScene";
+import { StairsScene } from "./scenes/StairsScene";
+import { StairsTraceScene } from "./scenes/StairsTraceScene";
+import { LettersScene } from "./scenes/LettersScene";
+import { LettersTraceScene } from "./scenes/LettersTraceScene";
+import { CountdownScene } from "./scenes/CountdownScene";
+import { CountdownTraceScene } from "./scenes/CountdownTraceScene";
+import { TastingScene } from "./scenes/TastingScene";
+import { TastingTraceScene } from "./scenes/TastingTraceScene";
 
 type Props = { slide: ExplanationSlide };
 
@@ -175,12 +187,40 @@ function CustomScene({ id, step }: { id: string; step: number }) {
   switch (id) {
     case "crosswalk":
       return <CrosswalkScene step={step} />;
+    case "crosswalk-if-trace":
+      return <CrosswalkTraceScene step={step} mode="if-only" />;
+    case "crosswalk-if-else-trace":
+      return <CrosswalkTraceScene step={step} mode="if-else" />;
+    case "crosswalk-strict-trace":
+      return <CrosswalkTraceScene step={step} mode="strict-equality" />;
+    case "comparisons-table":
+      return <ComparisonsTableScene step={step} />;
     case "wardrobe":
       return <WardrobeScene step={step} />;
+    case "wardrobe-trace":
+      return <WardrobeTraceScene step={step} />;
     case "recycling":
       return <RecyclingScene step={step} />;
+    case "recycling-trace":
+      return <RecyclingTraceScene step={step} />;
     case "bouncer":
       return <BouncerScene step={step} />;
+    case "stairs":
+      return <StairsScene step={step} />;
+    case "stairs-trace":
+      return <StairsTraceScene step={step} />;
+    case "letters":
+      return <LettersScene step={step} />;
+    case "letters-trace":
+      return <LettersTraceScene step={step} />;
+    case "countdown":
+      return <CountdownScene step={step} />;
+    case "countdown-trace":
+      return <CountdownTraceScene step={step} />;
+    case "tasting":
+      return <TastingScene step={step} />;
+    case "tasting-trace":
+      return <TastingTraceScene step={step} />;
     default:
       return null;
   }

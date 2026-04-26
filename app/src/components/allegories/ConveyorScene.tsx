@@ -60,7 +60,7 @@ export function ConveyorScene({ config, run, replayKey, lang }: Props) {
           <div className="px-3 py-1.5 rounded-lg shadow font-mono text-sm
                           bg-amber-400 text-white
                           dark:bg-indigo-400 dark:text-slate-900">
-            {run ? formatInput(run.test.input) : "?"}
+            {run ? readVar(run.test.vars, config.inputKey) : "?"}
           </div>
         </div>
 
@@ -88,11 +88,14 @@ export function ConveyorScene({ config, run, replayKey, lang }: Props) {
   );
 }
 
-function formatInput(v: unknown): string {
-  if (typeof v === "string") return v;
-  if (v === null || v === undefined) return "—";
-  if (typeof v === "object") {
-    try { return JSON.stringify(v); } catch { return "?"; }
+function readVar(vars: Record<string, unknown>, key?: string): string {
+  let v: unknown;
+  if (key) {
+    v = vars[key];
+  } else {
+    const keys = Object.keys(vars);
+    v = keys.length === 1 ? vars[keys[0]] : undefined;
   }
+  if (v === null || v === undefined) return "—";
   return String(v);
 }
