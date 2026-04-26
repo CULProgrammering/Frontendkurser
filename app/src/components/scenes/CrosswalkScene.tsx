@@ -5,20 +5,18 @@ type Props = { step: number };
 /**
  * L1 intro: pedestrian at a crosswalk.
  *
- * Steps (kept loose — works whether the lesson has 3 or 5 narration steps):
+ * Steps:
  *   0: stand at curb, light unset
  *   1: light is RED, figure waits
- *   2: light turns GREEN, figure walks
- *   3+: figure has crossed
+ *   2: light turns GREEN, figure walks all the way across
+ *   3+: figure is on the other side
  */
 export function CrosswalkScene({ step }: Props) {
-  // Light state per step
   const lightState =
     step <= 0 ? "off" : step === 1 ? "red" : "green";
 
-  // Figure horizontal position (% of viewBox width)
-  const figureX =
-    step <= 1 ? 60 : step === 2 ? 200 : 320;
+  // Single sweep on green: 60 → 320. Step 3+ stays at 320 (already across).
+  const figureX = step <= 1 ? 60 : 320;
 
   return (
     <div className="w-full h-full flex items-center justify-center">
@@ -33,10 +31,10 @@ export function CrosswalkScene({ step }: Props) {
         {/* Road */}
         <rect x={0} y={170} width={400} height={70} className="fill-stone-300 dark:fill-slate-800" />
         {/* Crosswalk stripes */}
-        {[100, 140, 180, 220, 260].map((x) => (
+        {[100, 140, 180, 220, 260].map((sx) => (
           <rect
-            key={x}
-            x={x}
+            key={sx}
+            x={sx}
             y={175}
             width={28}
             height={60}
@@ -54,7 +52,6 @@ export function CrosswalkScene({ step }: Props) {
           rx={4}
           className="fill-stone-700 dark:fill-slate-700"
         />
-        {/* Red lamp */}
         <circle
           cx={350}
           cy={62}
@@ -65,7 +62,6 @@ export function CrosswalkScene({ step }: Props) {
               : "fill-stone-900/30 dark:fill-slate-900"
           }
         />
-        {/* Green lamp */}
         <circle
           cx={350}
           cy={86}
@@ -77,10 +73,10 @@ export function CrosswalkScene({ step }: Props) {
           }
         />
 
-        {/* Stick figure */}
+        {/* Stick figure — slow walk across the entire crosswalk */}
         <g
           style={{
-            transition: "transform 700ms ease-out",
+            transition: "transform 2200ms ease-in-out",
             transform: `translateX(${figureX - 60}px)`,
           }}
           className="text-stone-700 dark:text-indigo-100"
@@ -99,14 +95,6 @@ export function CrosswalkScene({ step }: Props) {
             }
           />
         </g>
-
-        {/* Curb labels */}
-        <text x={40} y={165} fontSize={10} className="fill-stone-500 dark:fill-indigo-200/60">
-          here
-        </text>
-        <text x={300} y={165} fontSize={10} className="fill-stone-500 dark:fill-indigo-200/60">
-          there
-        </text>
       </svg>
     </div>
   );

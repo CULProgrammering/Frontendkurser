@@ -52,22 +52,27 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
         <div className="text-sm text-stone-500 dark:text-indigo-200/60">
           {t(lesson.title, lang)}
         </div>
-        <div className="ml-auto flex items-center gap-1">
-          {lesson.slides.map((_, i) => (
-            <div
-              key={i}
-              className={
-                "h-2 w-2 rounded-full transition-colors " +
-                (i === idx
-                  ? "bg-amber-500 dark:bg-indigo-300"
-                  : i < idx
-                  ? "bg-amber-300 dark:bg-indigo-500/60"
-                  : "bg-stone-200 dark:bg-white/15")
-              }
-            />
-          ))}
-        </div>
       </header>
+
+      {/* Progress dots — fixed at top-right, under the theme + language toggles. */}
+      <div
+        className="fixed top-16 right-4 z-40 flex flex-wrap items-center gap-1 max-w-[12rem] justify-end"
+        aria-label="Slide progress"
+      >
+        {lesson.slides.map((_, i) => (
+          <div
+            key={i}
+            className={
+              "h-2 w-2 rounded-full transition-colors " +
+              (i === idx
+                ? "bg-amber-500 dark:bg-indigo-300"
+                : i < idx
+                ? "bg-amber-300 dark:bg-indigo-500/60"
+                : "bg-stone-300 dark:bg-white/20")
+            }
+          />
+        ))}
+      </div>
 
       <div className="flex-1 min-h-0">
         {slide.kind === "explanation" && (
