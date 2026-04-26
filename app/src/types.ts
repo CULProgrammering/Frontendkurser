@@ -91,11 +91,25 @@ export type MultiGateConfig = {
   failLabel?: Loc;
 };
 
+export type CrosswalkConfig = {
+  conditionLabel: Loc;
+  /** When input is an object, which property holds the light state. */
+  inputKey?: string;
+  /**
+   * The value the user's function must return for the figure to walk.
+   * Default: true. For string-returning exercises, set this to e.g. "walk".
+   */
+  walkWhen?: unknown;
+  walkLabel?: Loc;
+  waitLabel?: Loc;
+};
+
 export type Allegory =
   | { kind: "door"; config: DoorConfig }
   | { kind: "fork"; config: ForkConfig }
   | { kind: "conveyor"; config: ConveyorConfig }
-  | { kind: "multi-gate"; config: MultiGateConfig };
+  | { kind: "multi-gate"; config: MultiGateConfig }
+  | { kind: "crosswalk"; config: CrosswalkConfig };
 
 export type JsAssignmentSlide = {
   kind: "js-assignment";

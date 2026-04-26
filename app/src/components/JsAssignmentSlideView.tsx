@@ -5,6 +5,7 @@ import { DoorScene } from "./allegories/DoorScene";
 import { ForkScene } from "./allegories/ForkScene";
 import { ConveyorScene } from "./allegories/ConveyorScene";
 import { MultiGateScene } from "./allegories/MultiGateScene";
+import { CrosswalkAllegory } from "./allegories/CrosswalkAllegory";
 import type { SceneRun } from "./allegories/types";
 import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
@@ -312,5 +313,7 @@ function SceneMount({
       return <ConveyorScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
     case "multi-gate":
       return <MultiGateScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
+    case "crosswalk":
+      return <CrosswalkAllegory config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
   }
 }
