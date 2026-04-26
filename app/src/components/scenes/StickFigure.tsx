@@ -1,5 +1,8 @@
 // Minimal stick-figure SVG primitive used by intro scenes.
-// Pose is a discriminator that the caller picks per step.
+//
+// Coordinate convention: SVG y increases DOWNWARD. All angles are
+// expressed in standard math degrees where 0° = right, 90° = down,
+// 180° = left, 270° (or -90°) = up.
 
 type Pose =
   | "stand"
@@ -14,9 +17,9 @@ type Props = {
   x: number;
   y: number;
   pose?: Pose;
-  /** Stroke color. Defaults to currentColor so it inherits the parent text color. */
+  /** Stroke color. Defaults to currentColor so it inherits parent text color. */
   color?: string;
-  /** Holds an item — renders a small box near the hand. */
+  /** Holds an item — renders a small box near the right hand. */
   holding?: { label?: string; fill?: string };
   /** Body scale, default 1. */
   scale?: number;
@@ -30,36 +33,46 @@ export function StickFigure({
   holding,
   scale = 1,
 }: Props) {
-  // Body geometry. Origin (0,0) is the figure's feet position.
   const stroke = 2.5;
-  // Arm angles per pose
+
+  // Angles in SVG-degrees (0 = right, 90 = down, 180 = left, -90/270 = up).
+  // Left arm:
   const armL =
-    pose === "wave" ? -120 :
-    pose === "look-up" ? -45 :
-    pose === "carry" ? -60 :
-    pose === "walk-left" ? -25 :
-    pose === "walk-right" ? -155 :
-    -30;
+    pose === "wave"      ? -110 :  // raised up-left
+    pose === "look-up"   ? 100 :   // down-left
+    pose === "carry"     ? 60 :    // forward-right (meets right arm)
+    pose === "walk-right"? 60 :    // forward
+    pose === "walk-left" ? 120 :   // back
+    100;                            // stand: down-left
+
+  // Right arm:
   const armR =
-    pose === "carry" ? -120 :
-    pose === "walk-left" ? -155 :
-    pose === "walk-right" ? -25 :
-    -150;
-  // Leg angles
+    pose === "wave"      ? 80 :    // down-right
+    pose === "look-up"   ? 80 :    // down-right
+    pose === "carry"     ? 120 :   // forward-left (meets left arm)
+    pose === "walk-right"? 120 :   // back
+    pose === "walk-left" ? 60 :    // forward
+    80;                             // stand: down-right
+
+  // Legs: walking poses get an obvious stride, stand is a slight V.
   const legL =
-    pose === "walk-left" ? -110 :
-    pose === "walk-right" ? -70 :
-    -80;
+    pose === "walk-right" ? 70 :   // forward
+    pose === "walk-left"  ? 110 :  // back
+    100;                            // stand: slight left-down
+
   const legR =
-    pose === "walk-left" ? -70 :
-    pose === "walk-right" ? -110 :
-    -100;
-  // Head tilt for look-up
+    pose === "walk-right" ? 110 :  // back
+    pose === "walk-left"  ? 70 :   // forward
+    80;                             // stand: slight right-down
+
   const headDy = pose === "look-up" ? -2 : 0;
 
+  // Body geometry. Origin (0,0) is at the figure's feet.
+  const headCy = -50 + headDy;
   const torsoTop = -42;
   const torsoBottom = -14;
-  const headCy = -50 + headDy;
+  const armOriginY = -36;
+  const hipY = -14;
 
   const armLen = 14;
   const legLen = 16;
@@ -74,8 +87,9 @@ export function StickFigure({
   const [lLx, lLy] = polar(legL, legLen);
   const [lRx, lRy] = polar(legR, legLen);
 
-  const armOriginY = -36;
-  const hipY = -14;
+  // Right hand position — for held item.
+  const rightHandX = aRx;
+  const rightHandY = armOriginY + aRy;
 
   return (
     <g
@@ -98,10 +112,10 @@ export function StickFigure({
       <line x1={0} y1={hipY} x2={lLx} y2={hipY + lLy} />
       {/* Right leg */}
       <line x1={0} y1={hipY} x2={lRx} y2={hipY + lRy} />
-      {/* Held item */}
+      {/* Held item near the right hand */}
       {holding && (
         <g
-          transform={`translate(${aRx}, ${armOriginY + aRy})`}
+          transform={`translate(${rightHandX}, ${rightHandY})`}
           fill={holding.fill ?? "#fcd34d"}
           stroke={color}
           strokeWidth={1.5}
