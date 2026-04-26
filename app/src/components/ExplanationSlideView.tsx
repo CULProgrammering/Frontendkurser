@@ -1,6 +1,14 @@
 import { useMemo, useState } from "react";
+import type { CSSProperties } from "react";
 import type { DemoBox, ExplanationSlide } from "../types";
 import { Typewriter } from "./Typewriter";
+import { useLang } from "../i18n/LanguageContext";
+import { t } from "../i18n";
+import { ui } from "../i18n/strings";
+import { CrosswalkScene } from "./scenes/CrosswalkScene";
+import { WardrobeScene } from "./scenes/WardrobeScene";
+import { RecyclingScene } from "./scenes/RecyclingScene";
+import { BouncerScene } from "./scenes/BouncerScene";
 
 type Props = { slide: ExplanationSlide };
 
@@ -16,12 +24,14 @@ function RenderBox({
   box,
   styles,
   highlights,
+  resolveLabel,
 }: {
   box: DemoBox;
-  styles: Record<string, React.CSSProperties>;
+  styles: Record<string, CSSProperties>;
   highlights: Set<string>;
+  resolveLabel: (b: DemoBox) => string;
 }) {
-  const style: React.CSSProperties = {
+  const style: CSSProperties = {
     transition: "all 500ms cubic-bezier(.2,.8,.2,1)",
     ...styles[box.id],
     outline: highlights.has(box.id) ? "2px solid #fcd34d" : undefined,
@@ -36,9 +46,10 @@ function RenderBox({
               box={c}
               styles={styles}
               highlights={highlights}
+              resolveLabel={resolveLabel}
             />
           ))
-        : box.label ?? box.id}
+        : resolveLabel(box)}
     </div>
   );
 }
@@ -47,10 +58,11 @@ export function ExplanationSlideView({ slide }: Props) {
   const [step, setStep] = useState(0);
   const atEnd = step >= slide.steps.length - 1;
   const atStart = step === 0;
+  const { lang } = useLang();
 
   const mergedStyles = useMemo(() => {
     const ids = collectIds(slide.demo);
-    const out: Record<string, React.CSSProperties> = {};
+    const out: Record<string, CSSProperties> = {};
     const find = (list: DemoBox[], id: string): DemoBox | null => {
       for (const b of list) {
         if (b.id === id) return b;
@@ -83,6 +95,9 @@ export function ExplanationSlideView({ slide }: Props) {
     if (!atStart) setStep((s) => s - 1);
   };
 
+  const resolveLabel = (b: DemoBox) =>
+    b.label ? t(b.label, lang) : b.id;
+
   return (
     <div
       className="h-full w-full flex flex-col cursor-pointer select-none"
@@ -90,27 +105,32 @@ export function ExplanationSlideView({ slide }: Props) {
     >
       <div className="px-10 pt-8">
         <h2 className="text-3xl font-semibold text-stone-900 dark:text-indigo-50">
-          {slide.title}
+          {t(slide.title, lang)}
         </h2>
         {slide.intro && (
           <p className="text-stone-500 dark:text-indigo-200/70 mt-1">
-            {slide.intro}
+            {t(slide.intro, lang)}
           </p>
         )}
       </div>
 
       <div className="flex-1 grid grid-cols-2 gap-8 px-10 py-8 min-h-0">
-        <div className="flex items-center justify-center overflow-auto p-6">
-          <div className="flex flex-wrap gap-4 items-center justify-center">
-            {slide.demo.map((b) => (
-              <RenderBox
-                key={b.id}
-                box={b}
-                styles={mergedStyles}
-                highlights={highlights}
-              />
-            ))}
-          </div>
+        <div className="flex items-center justify-center overflow-auto p-2">
+          {slide.customScene ? (
+            <CustomScene id={slide.customScene} step={step} />
+          ) : (
+            <div className="flex flex-wrap gap-4 items-center justify-center">
+              {slide.demo.map((b) => (
+                <RenderBox
+                  key={b.id}
+                  box={b}
+                  styles={mergedStyles}
+                  highlights={highlights}
+                  resolveLabel={resolveLabel}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="rounded-2xl p-6 flex flex-col
@@ -118,7 +138,7 @@ export function ExplanationSlideView({ slide }: Props) {
                         dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
           <div className="flex items-center justify-between mb-2">
             <div className="text-xs uppercase tracking-wider text-amber-600 dark:text-indigo-300/70">
-              Steg {step + 1} / {slide.steps.length}
+              {t(ui.stepLabel, lang)} {step + 1} / {slide.steps.length}
             </div>
             {!atStart && (
               <button
@@ -127,13 +147,13 @@ export function ExplanationSlideView({ slide }: Props) {
                            bg-stone-100 hover:bg-stone-200 text-stone-700 ring-1 ring-stone-200
                            dark:bg-slate-700/70 dark:hover:bg-slate-600 dark:text-indigo-100 dark:ring-white/10"
               >
-                ← Bakåt
+                {t(ui.stepBack, lang)}
               </button>
             )}
           </div>
           <div className="text-lg leading-relaxed min-h-[6rem] whitespace-pre-line text-stone-800 dark:text-indigo-50">
             {current?.narration ? (
-              <Typewriter text={current.narration} />
+              <Typewriter text={t(current.narration, lang)} />
             ) : (
               <span className="text-stone-400 dark:text-indigo-200/50 italic">…</span>
             )}
@@ -142,11 +162,26 @@ export function ExplanationSlideView({ slide }: Props) {
           <div className="flex-1" />
           <div className="text-sm text-stone-500 dark:text-indigo-200/60">
             {atEnd
-              ? "Slut på förklaringen."
-              : "Klicka var som helst för att fortsätta →"}
+              ? t(ui.endOfExplanation, lang)
+              : t(ui.clickToContinue, lang)}
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+function CustomScene({ id, step }: { id: string; step: number }) {
+  switch (id) {
+    case "crosswalk":
+      return <CrosswalkScene step={step} />;
+    case "wardrobe":
+      return <WardrobeScene step={step} />;
+    case "recycling":
+      return <RecyclingScene step={step} />;
+    case "bouncer":
+      return <BouncerScene step={step} />;
+    default:
+      return null;
+  }
 }

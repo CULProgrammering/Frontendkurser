@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import type { ConveyorConfig } from "../../types";
 import type { SceneRun } from "./types";
+import { t, type Lang } from "../../i18n";
 
-type Props = { config: ConveyorConfig; run: SceneRun | null; replayKey: number };
+type Props = {
+  config: ConveyorConfig;
+  run: SceneRun | null;
+  replayKey: number;
+  lang: Lang;
+};
 
 type Phase = "idle" | "rolling" | "settled";
 
-export function ConveyorScene({ config, run, replayKey }: Props) {
+export function ConveyorScene({ config, run, replayKey, lang }: Props) {
   const [phase, setPhase] = useState<Phase>("idle");
 
   useEffect(() => {
@@ -15,15 +21,14 @@ export function ConveyorScene({ config, run, replayKey }: Props) {
       return;
     }
     setPhase("rolling");
-    const t = setTimeout(() => setPhase("settled"), 900);
-    return () => clearTimeout(t);
+    const tm = setTimeout(() => setPhase("settled"), 900);
+    return () => clearTimeout(tm);
   }, [replayKey, run]);
 
   const matchKey = run?.result.ok ? String(run.result.value) : "";
   const targetIdx = config.bins.findIndex((b) => b.key === matchKey);
   const binCount = config.bins.length;
 
-  // Item position: starts above-left, slides to its target bin position.
   const itemLeft =
     phase === "idle"
       ? 4
@@ -38,13 +43,12 @@ export function ConveyorScene({ config, run, replayKey }: Props) {
       <div className="rounded-lg px-3 py-2 mb-4 font-mono text-sm
                       bg-stone-100 text-stone-700
                       dark:bg-slate-800/60 dark:text-indigo-100">
-        {config.inputLabel}
+        {t(config.inputLabel, lang)}
       </div>
 
       <div className="relative flex-1 rounded-2xl overflow-hidden
                       bg-stone-50 ring-1 ring-stone-200
                       dark:bg-slate-900/40 dark:ring-white/10">
-        {/* Item */}
         <div
           className="absolute top-6 transition-all duration-700 ease-out"
           style={{
@@ -60,7 +64,6 @@ export function ConveyorScene({ config, run, replayKey }: Props) {
           </div>
         </div>
 
-        {/* Bins */}
         <div className="absolute inset-x-0 bottom-0 h-2/5 grid"
              style={{ gridTemplateColumns: `repeat(${binCount}, minmax(0,1fr))` }}>
           {config.bins.map((b, i) => {
@@ -75,7 +78,7 @@ export function ConveyorScene({ config, run, replayKey }: Props) {
                     : "border-stone-300 dark:border-white/10 text-stone-500 dark:text-indigo-200/60")
                 }
               >
-                {b.label}
+                {t(b.label, lang)}
               </div>
             );
           })}

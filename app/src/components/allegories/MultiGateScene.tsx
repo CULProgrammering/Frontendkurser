@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import type { MultiGateConfig } from "../../types";
 import type { SceneRun } from "./types";
+import { t, type Lang } from "../../i18n";
 
-type Props = { config: MultiGateConfig; run: SceneRun | null; replayKey: number };
+type Props = {
+  config: MultiGateConfig;
+  run: SceneRun | null;
+  replayKey: number;
+  lang: Lang;
+};
 
 type Phase = "idle" | "checking" | "settled";
 
-export function MultiGateScene({ config, run, replayKey }: Props) {
+export function MultiGateScene({ config, run, replayKey, lang }: Props) {
   const [phase, setPhase] = useState<Phase>("idle");
 
   useEffect(() => {
@@ -15,12 +21,10 @@ export function MultiGateScene({ config, run, replayKey }: Props) {
       return;
     }
     setPhase("checking");
-    const t = setTimeout(() => setPhase("settled"), 700);
-    return () => clearTimeout(t);
+    const tm = setTimeout(() => setPhase("settled"), 700);
+    return () => clearTimeout(tm);
   }, [replayKey, run]);
 
-  // Read the two operand values from the input (assume input is an object with named keys
-  // matching operandLabels[0] and operandLabels[1]).
   const input = run?.test.input;
   const v1 = readOperand(input, config.operandLabels[0]);
   const v2 = readOperand(input, config.operandLabels[1]);
@@ -34,7 +38,7 @@ export function MultiGateScene({ config, run, replayKey }: Props) {
       <div className="rounded-lg px-3 py-2 mb-4 font-mono text-sm
                       bg-stone-100 text-stone-700
                       dark:bg-slate-800/60 dark:text-indigo-100">
-        {operatorDescription(config.mode)}
+        {operatorDescription(config.mode, lang)}
       </div>
 
       <div className="relative flex-1 rounded-2xl overflow-hidden p-6
@@ -64,8 +68,8 @@ export function MultiGateScene({ config, run, replayKey }: Props) {
             {phase !== "settled"
               ? "?"
               : accepted
-              ? config.passLabel ?? "true"
-              : config.failLabel ?? "false"}
+              ? t(config.passLabel ?? { en: "true", sv: "true" }, lang)
+              : t(config.failLabel ?? { en: "false", sv: "false" }, lang)}
           </div>
         </div>
       </div>
@@ -103,13 +107,13 @@ function formatVal(v: unknown): string {
   return String(v);
 }
 
-function operatorDescription(mode: MultiGateConfig["mode"]): string {
+function operatorDescription(mode: MultiGateConfig["mode"], lang: Lang): string {
   switch (mode) {
     case "and":
-      return "&& — båda måste vara sanna";
+      return t({ en: "&& — both must be true", sv: "&& — båda måste vara sanna" }, lang);
     case "or":
-      return "|| — minst en måste vara sann";
+      return t({ en: "|| — at least one must be true", sv: "|| — minst en måste vara sann" }, lang);
     case "not":
-      return "! — vänder sant till falskt";
+      return t({ en: "! — flips true to false", sv: "! — vänder sant till falskt" }, lang);
   }
 }

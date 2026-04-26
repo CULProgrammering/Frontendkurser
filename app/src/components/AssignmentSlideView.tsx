@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { AssignmentSlide, StyleCheck } from "../types";
+import { useLang } from "../i18n/LanguageContext";
+import { t } from "../i18n";
+import { ui } from "../i18n/strings";
 
 type Props = {
   slide: AssignmentSlide;
@@ -10,8 +13,11 @@ type Props = {
 type CheckResult = { check: StyleCheck; actual: string; pass: boolean };
 
 export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
+  const { lang } = useLang();
+  const startingCss = t(slide.startingCss, lang);
+
   const [css, setCss] = useState<string>(() => {
-    return sessionStorage.getItem(storageKey) ?? slide.startingCss;
+    return sessionStorage.getItem(storageKey) ?? startingCss;
   });
   const [results, setResults] = useState<CheckResult[] | null>(null);
   const [showLegend, setShowLegend] = useState(false);
@@ -22,27 +28,30 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
     sessionStorage.setItem(storageKey, css);
   }, [storageKey, css]);
 
+  const html = t(slide.html, lang);
+  const targetCss = slide.targetCss ? t(slide.targetCss, lang) : "";
+
   const buildDoc = (styleCss: string) =>
     `<!doctype html><html><head><meta charset="utf-8"><style>
     html,body{margin:0;padding:16px;font-family:system-ui;background:#fff;color:#111}
-    ${styleCss}</style></head><body>${slide.html}</body></html>`;
+    ${styleCss}</style></head><body>${html}</body></html>`;
 
-  const srcDoc = useMemo(() => buildDoc(css), [css, slide.html]);
+  const srcDoc = useMemo(() => buildDoc(css), [css, html]);
   const targetDoc = useMemo(
-    () => (slide.targetCss ? buildDoc(slide.targetCss) : ""),
-    [slide.targetCss, slide.html]
+    () => (targetCss ? buildDoc(targetCss) : ""),
+    [targetCss, html]
   );
-  const hasTarget = !!slide.targetCss;
+  const hasTarget = !!targetCss;
 
   const runChecks = () => {
     const doc = iframeRef.current?.contentDocument;
     if (!doc) return;
     const out: CheckResult[] = slide.checks.map((c) => {
       const el = doc.querySelector(c.selector) as HTMLElement | null;
-      if (!el) return { check: c, actual: "(ej hittad)", pass: false };
+      if (!el) return { check: c, actual: "(not found)", pass: false };
       if (normalize(c.expected) === "auto") {
         const pass = sourceHasAuto(css, c.selector, c.property);
-        return { check: c, actual: pass ? "auto" : "(saknar auto)", pass };
+        return { check: c, actual: pass ? "auto" : "(missing auto)", pass };
       }
       const actual = getComputedStyle(el).getPropertyValue(c.property).trim();
       return { check: c, actual, pass: matches(c, actual) };
@@ -51,7 +60,7 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
   };
 
   const reset = () => {
-    setCss(slide.startingCss);
+    setCss(startingCss);
     setResults(null);
   };
 
@@ -59,7 +68,6 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
 
   useEffect(() => {
     if (allPass) onPass?.();
-    // Only fires when allPass flips true; intentionally not depending on onPass.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allPass]);
 
@@ -67,10 +75,10 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
     <div className="h-full w-full flex flex-col">
       <div className="px-10 pt-8">
         <h2 className="text-3xl font-semibold text-stone-900 dark:text-indigo-50">
-          {slide.title}
+          {t(slide.title, lang)}
         </h2>
-        <p className="text-stone-600 dark:text-indigo-200/80 mt-1">
-          {slide.prompt}
+        <p className="text-stone-600 dark:text-indigo-200/80 mt-1 whitespace-pre-line">
+          {t(slide.prompt, lang)}
         </p>
       </div>
 
@@ -81,7 +89,7 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
           <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
                           text-amber-600 border-stone-200
                           dark:text-indigo-300/70 dark:border-white/10">
-            CSS
+            {t(ui.cssLabel, lang)}
           </div>
           <textarea
             value={css}
@@ -98,7 +106,7 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
                          bg-amber-500 hover:bg-amber-600
                          dark:bg-indigo-500 dark:hover:bg-indigo-400"
             >
-              Kontrollera
+              {t(ui.check, lang)}
             </button>
             <button
               onClick={reset}
@@ -106,7 +114,7 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
                          bg-stone-100 hover:bg-stone-200 text-stone-700
                          dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white"
             >
-              Återställ
+              {t(ui.reset, lang)}
             </button>
             {hasLegend && (
               <button
@@ -115,7 +123,7 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
                            bg-amber-100 hover:bg-amber-200 text-amber-800 ring-amber-300
                            dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:text-amber-200 dark:ring-amber-400/30"
               >
-                {showLegend ? "Dölj hjälp" : "Visa hjälp"}
+                {t(showLegend ? ui.hideHelp : ui.showHelp, lang)}
               </button>
             )}
           </div>
@@ -127,7 +135,7 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
           <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
                           text-amber-600 border-stone-200
                           dark:text-indigo-300/70 dark:border-white/10">
-            {hasTarget ? "Din version" : "Förhandsvisning"}
+            {t(hasTarget ? ui.yourVersion : ui.preview, lang)}
           </div>
           <iframe
             ref={iframeRef}
@@ -141,7 +149,7 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
               <div className="px-4 py-2 text-xs uppercase tracking-wider border-y
                               text-emerald-700 border-stone-200
                               dark:text-emerald-300/80 dark:border-white/10">
-                Mål — försök att matcha
+                {t(ui.goal, lang)}
               </div>
               <iframe
                 srcDoc={targetDoc}
@@ -156,13 +164,13 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
                             border-stone-200 dark:border-white/10">
               {allPass ? (
                 <div className="text-emerald-700 dark:text-emerald-300 font-medium">
-                  ✓ Klart! Bra jobbat.
+                  {t(ui.doneCheers, lang)}
                 </div>
               ) : (
                 <>
                   {results.filter((r) => !r.pass).length === 0 ? null : (
                     <div className="text-stone-600 dark:text-indigo-200/70 mb-1">
-                      Följande behöver justeras:
+                      {t(ui.needsAdjusting, lang)}
                     </div>
                   )}
                   {results
@@ -176,15 +184,15 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
                         {r.check.hint && (
                           <span className="text-stone-500 dark:text-indigo-200/60">
                             {" "}
-                            — {r.check.hint}
+                            — {t(r.check.hint, lang)}
                           </span>
                         )}
                       </div>
                     ))}
                   {results.some((r) => r.pass) && (
                     <div className="text-emerald-700/80 dark:text-emerald-300/80 pt-1 text-xs">
-                      {results.filter((r) => r.pass).length} av{" "}
-                      {results.length} rätt
+                      {results.filter((r) => r.pass).length} {t(ui.outOfRight, lang)}{" "}
+                      {results.length}
                     </div>
                   )}
                 </>
@@ -200,18 +208,18 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
                         dark:bg-amber-500/10 dark:ring-amber-400/30">
           <div className="text-xs uppercase tracking-wider mb-2
                           text-amber-700 dark:text-amber-200">
-            Legend
+            {t(ui.legendLabel, lang)}
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {slide.legend!.map((e) => (
+            {slide.legend!.map((e, i) => (
               <div
-                key={e.name}
+                key={i}
                 className="rounded-lg p-3 ring-1
                            bg-white ring-stone-200
                            dark:bg-slate-900/60 dark:ring-white/10"
               >
                 <div className="font-semibold text-amber-800 dark:text-amber-100">
-                  {e.name}
+                  {t(e.name, lang)}
                 </div>
                 <div className="font-mono text-xs text-stone-600 dark:text-indigo-200/80">
                   {e.syntax}
@@ -221,7 +229,7 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
                 </div>
                 {e.note && (
                   <div className="text-xs mt-1 text-stone-500 dark:text-indigo-200/60">
-                    {e.note}
+                    {t(e.note, lang)}
                   </div>
                 )}
               </div>

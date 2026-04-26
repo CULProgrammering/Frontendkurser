@@ -2,194 +2,316 @@ import type { Lesson } from "../../types";
 import { codePanelStyle, noteBoxStyle } from "./_shared";
 
 export const conveyorLesson: Lesson = {
-  id: "conditionals-conveyor",
-  title: "3. Sorteringsbandet — switch",
-  summary: "switch sorterar värden i fack.",
+  id: "conditionals-recycling",
+  title: { en: "3. Recycling — switch", sv: "3. Återvinningen — switch" },
+  summary: {
+    en: "Sort each item into the right bin.",
+    sv: "Sortera varje sak i rätt fack.",
+  },
   slides: [
-    // 1. Intro
+    // 1. Intro — recycling scene
     {
       kind: "explanation",
-      title: "switch — ett värde, många fack",
-      intro:
-        "När du jämför EN sak mot flera möjliga värden\nkan switch göra koden tydligare än en lång if-kedja.",
+      title: {
+        en: "One value, several bins",
+        sv: "Ett värde, flera fack",
+      },
+      intro: {
+        en:
+          "When you compare ONE thing against several possible values,\nswitch can make the code clearer than a long if-chain.",
+        sv:
+          "När du jämför EN sak mot flera möjliga värden\nkan switch göra koden tydligare än en lång if-kedja.",
+      },
+      customScene: "recycling",
+      demo: [],
+      steps: [
+        {
+          narration: {
+            en:
+              "You hold an item.\nIn front of you stand the recycling bins.",
+            sv:
+              "Du håller en sak.\nFramför dig står återvinningskärlen.",
+          },
+        },
+        {
+          narration: {
+            en: "Paper goes in the paper bin.",
+            sv: "Papper hamnar i pappersfacket.",
+          },
+        },
+        {
+          narration: {
+            en: "Glass goes in the glass bin.",
+            sv: "Glas hamnar i glasfacket.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "If you don't know what something is —\nit goes in the rest bin.\nThat's the default.",
+            sv:
+              "Om du inte vet vad något är —\nläggs det i restfacket.\nDet är default.",
+          },
+        },
+      ],
+    },
+
+    // 2. switch syntax
+    {
+      kind: "explanation",
+      title: { en: "switch — labelled bins", sv: "switch — märkta fack" },
       demo: [
         {
           id: "code",
           label:
-            "switch (dag) {\n  case 'mån':\n    return 'måndag';\n  case 'tis':\n    return 'tisdag';\n  default:\n    return 'okänd';\n}",
+            "switch (item) {\n  case 'paper':\n    return 'paper-bin';\n  case 'glass':\n    return 'glass-bin';\n  default:\n    return 'rest-bin';\n}",
           baseStyle: codePanelStyle,
         },
       ],
       steps: [
         {
-          narration:
-            "Tänk dig ett sorteringsband.\nEtt paket dimper ner och letar sitt fack.",
+          narration: {
+            en:
+              "switch (item) — what value are we sorting?\nEach case is a bin with a label.",
+            sv:
+              "switch (item) — vilket värde ska vi sortera?\nVarje case är ett fack med en etikett.",
+          },
         },
         {
-          narration:
-            "switch (dag) — vad ska vi titta på?\nVarje case är ett fack med en etikett.",
-        },
-        {
-          narration:
-            "default är resten-facket.\nDär hamnar paket som inte matchade någon case.",
+          narration: {
+            en:
+              "default is the 'rest' bin.\nIt catches anything that didn't match a case.",
+            sv:
+              "default är restfacket.\nDet tar emot allt som inte matchade en case.",
+          },
         },
       ],
     },
 
-    // 2. break and fall-through
+    // 3. break and fall-through
     {
       kind: "explanation",
-      title: "Glöm inte break",
+      title: { en: "Don't forget break", sv: "Glöm inte break" },
       demo: [
         {
           id: "code",
           label:
-            "switch (dag) {\n  case 'fre':\n    return 'fredag';\n  case 'lör':\n    return 'lördag';\n  case 'sön':\n    return 'söndag';\n}",
+            "switch (item) {\n  case 'paper':\n    return 'paper-bin';\n  case 'glass':\n    return 'glass-bin';\n  case 'plastic':\n    return 'plastic-bin';\n}",
           baseStyle: codePanelStyle,
         },
         {
           id: "note",
-          label:
-            "return stoppar funktionen och passar bra här.\nOm du inte returnerar — använd break;\nannars rinner koden vidare till nästa case.",
+          label: {
+            en:
+              "return stops the function — perfect here.\nIf you don't return, use break;\nor the code rolls into the next case.",
+            sv:
+              "return stoppar funktionen — perfekt här.\nOm du inte returnerar, använd break;\nannars rinner koden vidare till nästa case.",
+          },
           baseStyle: { ...noteBoxStyle, marginTop: 16 },
         },
       ],
       steps: [
         {
-          narration:
-            "När JavaScript hittar en case som matchar\nkör den koden där.",
+          narration: {
+            en:
+              "When JavaScript finds a matching case\nit runs the code there.",
+            sv:
+              "När JavaScript hittar en matchande case\nkör den koden där.",
+          },
         },
         {
-          narration:
-            "Sen fortsätter den NEDÅT in i nästa case —\nom du inte säger stopp.",
+          narration: {
+            en:
+              "Then it keeps going DOWN into the next case —\nunless you tell it to stop.",
+            sv:
+              "Sen fortsätter den NEDÅT in i nästa case —\nom du inte säger stopp.",
+          },
         },
         {
-          narration:
-            "return stoppar funktionen och avslutar switch.\nbreak; stoppar bara switch men låter funktionen fortsätta.",
+          narration: {
+            en:
+              "return stops the function and exits switch.\nbreak; just exits switch and lets the function continue.",
+            sv:
+              "return stoppar funktionen och avslutar switch.\nbreak; avslutar bara switch men låter funktionen fortsätta.",
+          },
         },
         {
-          narration:
-            "Glömmer du både return och break\nså rinner värdet vidare. Det kallas fall-through\noch är nästan alltid en bugg.",
+          narration: {
+            en:
+              "Forget both return and break\nand the value rolls onward.\nThat's called fall-through and is almost always a bug.",
+            sv:
+              "Glömmer du både return och break\nrinner värdet vidare.\nDet kallas fall-through och är nästan alltid en bugg.",
+          },
         },
       ],
     },
 
-    // 3. switch is strict
+    // 4. switch is strict
     {
       kind: "explanation",
-      title: "switch jämför strikt",
+      title: { en: "switch compares strictly", sv: "switch jämför strikt" },
       demo: [
         {
           id: "code",
           label:
-            "switch (1) {\n  case '1':\n    return 'sträng';\n  case 1:\n    return 'siffra';\n}\n// returnerar 'siffra'",
+            "switch (1) {\n  case '1':\n    return 'string';\n  case 1:\n    return 'number';\n}\n// returns 'number'",
           baseStyle: codePanelStyle,
         },
       ],
       steps: [
         {
-          narration:
-            "switch fungerar som === bakom kulisserna.\nTalet 1 är inte samma som strängen '1'.",
+          narration: {
+            en:
+              "switch behaves like === under the hood.\nThe number 1 is not the same as the string '1'.",
+            sv:
+              "switch fungerar som === bakom kulisserna.\nTalet 1 är inte samma som strängen '1'.",
+          },
         },
         {
-          narration:
-            "Det betyder också att switch bara duger\ntill jämförelser med konkreta värden.",
+          narration: {
+            en:
+              "It also means switch only fits comparisons\nagainst concrete values.",
+            sv:
+              "Det betyder också att switch bara duger\nför jämförelser mot konkreta värden.",
+          },
         },
         {
-          narration:
-            "Vill du jämföra med ett intervall —\ntemp <= 15, exempelvis — välj if/else if istället.",
+          narration: {
+            en:
+              "Want to compare against a range —\ntemp <= 15, for example — pick if/else if instead.",
+            sv:
+              "Vill du jämföra mot ett intervall —\ntemp <= 15, exempelvis — välj if/else if istället.",
+          },
         },
       ],
     },
 
-    // 4. Practice
+    // 5. Practice — sort recycling
     {
       kind: "js-assignment",
-      title: "Övning: dagens humör",
-      prompt:
-        "Returnera ett ord baserat på vilken dag det är (kort form):\n• 'mån' → 'tungt'\n• 'fre' → 'helg-känsla'\n• 'lör' → 'helg'\n• 'sön' → 'helg'\n• allt annat → 'vardag'",
-      functionName: "humor",
-      starterCode:
-        "function humor(dag) {\n" +
-        "  switch (dag) {\n" +
-        "    case '...':\n" +
-        "      return '...';\n" +
-        "    default:\n" +
-        "      return 'vardag';\n" +
-        "  }\n" +
-        "}\n",
+      title: {
+        en: "Practice: sort the items",
+        sv: "Övning: sortera sakerna",
+      },
+      prompt: {
+        en:
+          "Return the bin name based on the item:\n• 'paper' → 'paper-bin'\n• 'glass' → 'glass-bin'\n• 'plastic' → 'plastic-bin'\n• anything else → 'rest-bin'",
+        sv:
+          "Returnera facket baserat på saken:\n• 'paper' → 'paper-bin'\n• 'glass' → 'glass-bin'\n• 'plastic' → 'plastic-bin'\n• allt annat → 'rest-bin'",
+      },
+      functionName: "pickBin",
+      starterCode: {
+        en:
+          "function pickBin(item) {\n" +
+          "  switch (item) {\n" +
+          "    case '...':\n" +
+          "      return '...';\n" +
+          "    default:\n" +
+          "      return 'rest-bin';\n" +
+          "  }\n" +
+          "}\n",
+        sv:
+          "function pickBin(item) {\n" +
+          "  switch (item) {\n" +
+          "    case '...':\n" +
+          "      return '...';\n" +
+          "    default:\n" +
+          "      return 'rest-bin';\n" +
+          "  }\n" +
+          "}\n",
+      },
       tests: [
-        { label: "mån", input: "mån", expected: "tungt" },
-        { label: "tis", input: "tis", expected: "vardag" },
-        { label: "fre", input: "fre", expected: "helg-känsla" },
-        { label: "lör", input: "lör", expected: "helg" },
-        { label: "sön", input: "sön", expected: "helg" },
+        { label: { en: "paper", sv: "papper" }, input: "paper", expected: "paper-bin" },
+        { label: { en: "glass", sv: "glas" }, input: "glass", expected: "glass-bin" },
+        { label: { en: "plastic", sv: "plast" }, input: "plastic", expected: "plastic-bin" },
+        { label: { en: "banana peel", sv: "bananskal" }, input: "banana peel", expected: "rest-bin" },
+        { label: { en: "Paper (case)", sv: "Paper (skiftläge)" }, input: "Paper", expected: "rest-bin" },
       ],
       allegory: {
         kind: "conveyor",
         config: {
-          inputLabel: "function humor(dag) { ... }",
+          inputLabel: "function pickBin(item) { ... }",
           bins: [
-            { key: "tungt", label: "tungt" },
-            { key: "helg-känsla", label: "helg-känsla" },
-            { key: "helg", label: "helg" },
-            { key: "vardag", label: "vardag (default)" },
+            { key: "paper-bin", label: { en: "paper", sv: "papper" } },
+            { key: "glass-bin", label: { en: "glass", sv: "glas" } },
+            { key: "plastic-bin", label: { en: "plastic", sv: "plast" } },
+            { key: "rest-bin", label: { en: "rest (default)", sv: "rest (default)" } },
           ],
-          defaultBinKey: "vardag",
+          defaultBinKey: "rest-bin",
         },
       },
       legend: [
         {
-          name: "switch",
-          syntax: "switch (uttryck) { case ... }",
-          example: "switch (dag) { case 'mån': ... }",
-          note: "Värdet jämförs strikt mot varje case.",
+          name: { en: "switch", sv: "switch" },
+          syntax: "switch (expr) { case ... }",
+          example: "switch (item) { case 'paper': ... }",
+          note: {
+            en: "The value is compared strictly against each case.",
+            sv: "Värdet jämförs strikt mot varje case.",
+          },
         },
         {
-          name: "case ... return",
-          syntax: "case 'värde':\n  return ...;",
-          example: "case 'mån': return 'tungt';",
-          note: "return avslutar både switch och funktionen.",
+          name: { en: "case ... return", sv: "case ... return" },
+          syntax: "case 'value':\n  return ...;",
+          example: "case 'paper': return 'paper-bin';",
+          note: {
+            en: "return ends both switch and the function.",
+            sv: "return avslutar både switch och funktionen.",
+          },
         },
         {
-          name: "default",
+          name: { en: "default", sv: "default" },
           syntax: "default:\n  return ...;",
-          example: "default: return 'vardag';",
-          note: "Körs om ingen case matchade.",
+          example: "default: return 'rest-bin';",
+          note: {
+            en: "Runs when no case matched.",
+            sv: "Körs om ingen case matchade.",
+          },
         },
       ],
     },
 
-    // 5. Final
+    // 6. Final — animal sound
     {
       kind: "js-assignment",
-      title: "Slutövning: trafikljus",
-      prompt:
-        "Returnera vad föraren ska göra:\n• 'röd' → 'stanna'\n• 'gul' → 'sakta in'\n• 'grön' → 'kör'\n• allt annat → 'okänd'",
-      functionName: "trafikljus",
-      starterCode:
-        "function trafikljus(farg) {\n" +
-        "  // Skriv din switch här:\n" +
-        "  \n" +
-        "}\n",
+      title: { en: "Final: animal sound", sv: "Slutövning: djurens läten" },
+      prompt: {
+        en:
+          "Return the sound the animal makes:\n• 'dog' → 'woof'\n• 'cat' → 'meow'\n• 'cow' → 'moo'\n• anything else → 'silence'",
+        sv:
+          "Returnera ljudet djuret gör:\n• 'dog' → 'woof'\n• 'cat' → 'meow'\n• 'cow' → 'moo'\n• allt annat → 'silence'",
+      },
+      functionName: "soundOf",
+      starterCode: {
+        en:
+          "function soundOf(animal) {\n" +
+          "  // Write your switch here:\n" +
+          "  \n" +
+          "}\n",
+        sv:
+          "function soundOf(animal) {\n" +
+          "  // Skriv din switch här:\n" +
+          "  \n" +
+          "}\n",
+      },
       tests: [
-        { label: "röd", input: "röd", expected: "stanna" },
-        { label: "gul", input: "gul", expected: "sakta in" },
-        { label: "grön", input: "grön", expected: "kör" },
-        { label: "blå", input: "blå", expected: "okänd" },
-        { label: "RÖD", input: "RÖD", expected: "okänd" },
+        { label: { en: "dog", sv: "hund" }, input: "dog", expected: "woof" },
+        { label: { en: "cat", sv: "katt" }, input: "cat", expected: "meow" },
+        { label: { en: "cow", sv: "ko" }, input: "cow", expected: "moo" },
+        { label: { en: "fish", sv: "fisk" }, input: "fish", expected: "silence" },
+        { label: { en: "DOG (caps)", sv: "DOG (versaler)" }, input: "DOG", expected: "silence" },
       ],
       allegory: {
         kind: "conveyor",
         config: {
-          inputLabel: "function trafikljus(farg) { ... }",
+          inputLabel: "function soundOf(animal) { ... }",
           bins: [
-            { key: "stanna", label: "stanna" },
-            { key: "sakta in", label: "sakta in" },
-            { key: "kör", label: "kör" },
-            { key: "okänd", label: "okänd" },
+            { key: "woof", label: "woof" },
+            { key: "meow", label: "meow" },
+            { key: "moo", label: "moo" },
+            { key: "silence", label: { en: "silence", sv: "tystnad" } },
           ],
-          defaultBinKey: "okänd",
+          defaultBinKey: "silence",
         },
       },
     },

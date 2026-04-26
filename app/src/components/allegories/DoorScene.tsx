@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import type { DoorConfig } from "../../types";
 import type { SceneRun } from "./types";
+import { t, type Lang } from "../../i18n";
 
 type Props = {
   config: DoorConfig;
   run: SceneRun | null;
-  /** Bumping this restarts the animation. */
   replayKey: number;
+  lang: Lang;
 };
 
 type Phase = "idle" | "approach" | "evaluate" | "settle";
@@ -28,7 +29,7 @@ function inputDisplay(config: DoorConfig, input: unknown): string {
   return String(input);
 }
 
-export function DoorScene({ config, run, replayKey }: Props) {
+export function DoorScene({ config, run, replayKey, lang }: Props) {
   const [phase, setPhase] = useState<Phase>("idle");
 
   useEffect(() => {
@@ -48,7 +49,6 @@ export function DoorScene({ config, run, replayKey }: Props) {
   const accepted = run?.pass === true;
   const showResult = phase === "settle";
 
-  // Person horizontal position (% of stage width)
   const personLeft =
     phase === "idle"
       ? 8
@@ -64,21 +64,17 @@ export function DoorScene({ config, run, replayKey }: Props) {
 
   return (
     <div className="h-full w-full flex flex-col p-6">
-      {/* Code/condition readout */}
       <div className="rounded-lg px-3 py-2 mb-4 font-mono text-sm
                       bg-stone-100 text-stone-700
                       dark:bg-slate-800/60 dark:text-indigo-100">
-        {config.conditionLabel}
+        {t(config.conditionLabel, lang)}
       </div>
 
-      {/* Stage */}
       <div className="relative flex-1 rounded-2xl overflow-hidden
                       bg-stone-50 ring-1 ring-stone-200
                       dark:bg-slate-900/40 dark:ring-white/10">
-        {/* Floor line */}
         <div className="absolute left-0 right-0 bottom-12 border-t border-dashed border-stone-300 dark:border-white/10" />
 
-        {/* Person */}
         <div
           className="absolute bottom-12 transition-all duration-500 ease-out"
           style={{ left: `${personLeft}%`, transform: "translate(-50%, 50%)" }}
@@ -90,8 +86,7 @@ export function DoorScene({ config, run, replayKey }: Props) {
           </div>
         </div>
 
-        {/* Door (two halves) */}
-        <div className="absolute bottom-12 right-[6%] h-32 w-20 -translate-y-0">
+        <div className="absolute bottom-12 right-[6%] h-32 w-20">
           <div className="relative h-full w-full">
             <div
               className="absolute top-0 bottom-0 w-1/2 left-0 transition-transform duration-500
@@ -103,12 +98,10 @@ export function DoorScene({ config, run, replayKey }: Props) {
                          bg-stone-300 dark:bg-slate-700"
               style={{ transform: doorOpen ? "translateX(110%)" : "translateX(0)" }}
             />
-            {/* Door frame */}
             <div className="absolute inset-0 ring-2 ring-stone-400 dark:ring-slate-500 rounded-t-lg pointer-events-none" />
           </div>
         </div>
 
-        {/* Outcome label */}
         {showResult && run && (
           <div
             className={
@@ -119,8 +112,8 @@ export function DoorScene({ config, run, replayKey }: Props) {
             }
           >
             {accepted
-              ? config.acceptLabel ?? "Släpps in"
-              : config.rejectLabel ?? "Stoppas"}
+              ? t(config.acceptLabel ?? { en: "Accepted", sv: "Släpps in" }, lang)
+              : t(config.rejectLabel ?? { en: "Stopped", sv: "Stoppas" }, lang)}
           </div>
         )}
       </div>

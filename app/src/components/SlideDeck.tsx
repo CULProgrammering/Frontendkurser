@@ -4,12 +4,16 @@ import { ExplanationSlideView } from "./ExplanationSlideView";
 import { AssignmentSlideView } from "./AssignmentSlideView";
 import { JsAssignmentSlideView } from "./JsAssignmentSlideView";
 import { markComplete } from "../progress";
+import { useLang } from "../i18n/LanguageContext";
+import { t } from "../i18n";
+import { ui } from "../i18n/strings";
 
 type Props = { courseId: string; lesson: Lesson; onExit: () => void };
 
 export function SlideDeck({ courseId, lesson, onExit }: Props) {
   const [idx, setIdx] = useState(0);
   const total = lesson.slides.length;
+  const { lang } = useLang();
 
   const next = useCallback(
     () => setIdx((i) => Math.min(i + 1, total - 1)),
@@ -19,12 +23,12 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const t = e.target as HTMLElement | null;
+      const target = e.target as HTMLElement | null;
       const typing =
-        !!t &&
-        (t.tagName === "INPUT" ||
-          t.tagName === "TEXTAREA" ||
-          t.isContentEditable);
+        !!target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.isContentEditable);
       if (typing) return;
       if (e.key === "ArrowRight") next();
       else if (e.key === "ArrowLeft") prev();
@@ -43,10 +47,10 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
           onClick={onExit}
           className="text-sm text-stone-500 hover:text-stone-800 dark:text-indigo-200/70 dark:hover:text-indigo-100"
         >
-          ← Lektioner
+          {t(ui.backToLessons, lang)}
         </button>
         <div className="text-sm text-stone-500 dark:text-indigo-200/60">
-          {lesson.title}
+          {t(lesson.title, lang)}
         </div>
         <div className="ml-auto flex items-center gap-1">
           {lesson.slides.map((_, i) => (
@@ -103,10 +107,10 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
                      bg-stone-100 hover:bg-stone-200 text-stone-700
                      dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-indigo-100"
         >
-          ◀ Förra
+          {t(ui.prev, lang)}
         </button>
         <div className="text-xs text-stone-500 dark:text-indigo-200/50">
-          {idx + 1} / {total} · Esc för att gå tillbaka
+          {idx + 1} / {total} · {t(ui.escapeHint, lang)}
         </div>
         <button
           onClick={next}
@@ -115,7 +119,7 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
                      bg-amber-500 hover:bg-amber-600
                      dark:bg-indigo-500 dark:hover:bg-indigo-400"
         >
-          Nästa ▶
+          {t(ui.next, lang)}
         </button>
       </footer>
     </div>
