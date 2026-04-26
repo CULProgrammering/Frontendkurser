@@ -3,6 +3,7 @@ import type { AssignmentSlide, StyleCheck } from "../types";
 import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
+import { sessionGet, sessionSet } from "../storage";
 
 type Props = {
   slide: AssignmentSlide;
@@ -17,7 +18,7 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
   const startingCss = t(slide.startingCss, lang);
 
   const [css, setCss] = useState<string>(() => {
-    return sessionStorage.getItem(storageKey) ?? startingCss;
+    return sessionGet(storageKey) ?? startingCss;
   });
   const [results, setResults] = useState<CheckResult[] | null>(null);
   const [showLegend, setShowLegend] = useState(false);
@@ -25,7 +26,7 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
-    sessionStorage.setItem(storageKey, css);
+    sessionSet(storageKey, css);
   }, [storageKey, css]);
 
   const html = t(slide.html, lang);

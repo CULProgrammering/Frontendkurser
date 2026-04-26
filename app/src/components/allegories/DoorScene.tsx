@@ -12,21 +12,16 @@ type Props = {
 
 type Phase = "idle" | "approach" | "evaluate" | "settle";
 
-function inputDisplay(config: DoorConfig, input: unknown): string {
-  if (config.inputKey && typeof input === "object" && input !== null) {
-    const v = (input as Record<string, unknown>)[config.inputKey];
-    return String(v);
+function inputDisplay(config: DoorConfig, vars: Record<string, unknown>): string {
+  let v: unknown;
+  if (config.inputKey) {
+    v = vars[config.inputKey];
+  } else {
+    const keys = Object.keys(vars);
+    v = keys.length === 1 ? vars[keys[0]] : undefined;
   }
-  if (typeof input === "string") return input;
-  if (input === null || input === undefined) return "—";
-  if (typeof input === "object") {
-    try {
-      return JSON.stringify(input);
-    } catch {
-      return "?";
-    }
-  }
-  return String(input);
+  if (v === null || v === undefined) return "—";
+  return String(v);
 }
 
 export function DoorScene({ config, run, replayKey, lang }: Props) {
@@ -82,7 +77,7 @@ export function DoorScene({ config, run, replayKey, lang }: Props) {
           <div className="w-12 h-12 rounded-full flex items-center justify-center font-semibold text-sm shadow
                           bg-amber-400 text-white
                           dark:bg-indigo-400 dark:text-slate-900">
-            {run ? inputDisplay(config, run.test.input) : "?"}
+            {run ? inputDisplay(config, run.test.vars) : "?"}
           </div>
         </div>
 

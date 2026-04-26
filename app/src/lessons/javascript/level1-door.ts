@@ -62,7 +62,7 @@ export const doorLesson: Lesson = {
       demo: [
         {
           id: "code",
-          label: 'if (light === "green") {\n  return true;\n}',
+          label: 'if (light === "green") {\n  return "walk";\n}',
           baseStyle: codePanelStyle,
         },
       ],
@@ -131,24 +131,8 @@ export const doorLesson: Lesson = {
         sv:
           "Det som står inuti parenteserna landar alltid i ETT av två värden:\ntrue eller false.",
       },
-      demo: [
-        {
-          id: "code",
-          label:
-            "5 > 3            // true\n5 < 3            // false\n\"cat\" === \"cat\" // true\n\"cat\" === \"dog\" // false",
-          baseStyle: codePanelStyle,
-        },
-        {
-          id: "note",
-          label: {
-            en:
-              "true  = yes\nfalse = no\nThat is what a 'boolean' is.",
-            sv:
-              "true  = ja\nfalse = nej\nDet är vad en 'boolean' är.",
-          },
-          baseStyle: { ...noteBoxStyle, marginTop: 16 },
-        },
-      ],
+      customScene: "comparisons-table",
+      demo: [],
       steps: [
         {
           narration: {
@@ -161,9 +145,9 @@ export const doorLesson: Lesson = {
         {
           narration: {
             en:
-              "Comparing two things gives a boolean:\n>   greater than\n<   less than\n>=  greater than or equal\n<=  less than or equal\n=== equal (we'll see why three signs later)",
+              "Compare two things and you get a boolean.\nThe table shows the six common operators —\nthe operator, how to read it, an example, the question it asks, and the answer.",
             sv:
-              "Att jämföra två saker ger en boolean:\n>   större än\n<   mindre än\n>=  större än eller lika med\n<=  mindre än eller lika med\n=== lika med (vi ser varför tre tecken snart)",
+              "Jämför två saker och du får en boolean.\nTabellen visar de sex vanliga operatorerna —\noperatorn, hur den läses, ett exempel, frågan den ställer, och svaret.",
           },
         },
         {
@@ -193,7 +177,7 @@ export const doorLesson: Lesson = {
         {
           id: "code",
           label:
-            "if (light === \"green\") {\n  return true;\n}\nreturn false;",
+            "if (light === \"green\") {\n  return \"walk\";\n}",
           baseStyle: codePanelStyle,
         },
       ],
@@ -209,9 +193,9 @@ export const doorLesson: Lesson = {
         {
           narration: {
             en:
-              "In our example:\n• if the light is green, we return true.\n• otherwise, the if is skipped, and we return false.",
+              "In our example:\n• if the light is green, we return \"walk\".\n• otherwise the if is skipped — and the function ends without returning.",
             sv:
-              "I exemplet:\n• om ljuset är grönt returnerar vi true.\n• annars hoppas if över och vi returnerar false.",
+              "I exemplet:\n• om ljuset är grönt returnerar vi \"walk\".\n• annars hoppas if över — och funktionen tar slut utan att returnera något.",
           },
         },
         {
@@ -225,64 +209,173 @@ export const doorLesson: Lesson = {
         {
           narration: {
             en:
-              "You can return any value:\n• true or false\n• a number, like 42\n• a string, like \"walk\"",
+              "You can return any value:\n• a string, like \"walk\"\n• a number, like 42\n• true or false",
             sv:
-              "Du kan returnera vilket värde som helst:\n• true eller false\n• ett tal, som 42\n• en sträng, som \"walk\"",
+              "Du kan returnera vilket värde som helst:\n• en sträng, som \"walk\"\n• ett tal, som 42\n• true eller false",
           },
         },
       ],
     },
 
-    // 5. Practice — write the condition (bodyOnly)
+    // 5. Trace walkthrough (if-only) — read the code line by line, twice
     {
-      kind: "js-assignment",
-      title: { en: "Practice: walk on green", sv: "Övning: gå på grönt" },
+      kind: "explanation",
+      title: {
+        en: "Watching the code run",
+        sv: "Vi ser koden köras",
+      },
+      intro: {
+        en:
+          "Now let's read the code line by line.\nFirst with light = 'red'. Then we change it to 'green' and read it again.",
+        sv:
+          "Nu läser vi koden rad för rad.\nFörst med light = 'red'. Sen ändrar vi den till 'green' och läser igen.",
+      },
+      customScene: "crosswalk-if-trace",
+      demo: [],
+      steps: [
+        {
+          narration: {
+            en:
+              "On the left is the code. We'll go through it together.\nClick to step forward.",
+            sv:
+              "Till vänster ser du koden. Vi går igenom den ihop.\nKlicka för att stega framåt.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "First we make a variable called light.\nIt holds the value \"red\".",
+            sv:
+              "Först skapar vi en variabel som heter light.\nDen har värdet \"red\".",
+          },
+        },
+        {
+          narration: {
+            en:
+              "Now we reach the if.\nIt asks: is light equal to \"green\"?",
+            sv:
+              "Nu kommer vi till if.\nDen frågar: är light lika med \"green\"?",
+          },
+        },
+        {
+          narration: {
+            en:
+              "Replace light with its value:\n\"red\" === \"green\".\n\"red\" is NOT \"green\". The condition is false.",
+            sv:
+              "Byt ut light mot dess värde:\n\"red\" === \"green\".\n\"red\" är INTE \"green\". Villkoret är false.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "Because the condition was false,\nwe skip everything inside { }.\nThere's nothing else — the function just ends.\n\nThe figure does nothing.",
+            sv:
+              "Eftersom villkoret var false\nhoppar vi över allt inuti { }.\nDet finns inget mer — funktionen tar bara slut.\n\nFiguren gör ingenting.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "Now we change light to \"green\"\nand run the same code again.",
+            sv:
+              "Nu ändrar vi light till \"green\"\noch kör samma kod igen.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "We reach the if again.\nSame question: is light equal to \"green\"?",
+            sv:
+              "Vi kommer till if igen.\nSamma fråga: är light lika med \"green\"?",
+          },
+        },
+        {
+          narration: {
+            en:
+              "Replace light with its value:\n\"green\" === \"green\".\nYes — they match. The condition is true.",
+            sv:
+              "Byt ut light mot dess värde:\n\"green\" === \"green\".\nJa — de matchar. Villkoret är true.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "Because the condition was true,\nwe run the code inside { }: return \"walk\".\n\nThe figure walks.",
+            sv:
+              "Eftersom villkoret var true\nkör vi koden inuti { }: return \"walk\".\n\nFiguren går.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "Notice: same code, but the if only runs sometimes.\nWhen it doesn't run, nothing happens at all.\nWhat if we want SOMETHING to happen on red too?",
+            sv:
+              "Lägg märke till: samma kod, men if körs bara ibland.\nNär den inte körs händer ingenting alls.\nTänk om vi vill att NÅGOT ska hända på rött också?",
+          },
+        },
+      ],
+    },
+
+    // 5b. Practice — if-only (no else) — chip-style, no distractors
+    {
+      kind: "js-chip-assignment",
+      title: { en: "Practice: walk if green", sv: "Övning: gå om grönt" },
       prompt: {
         en:
-          "The variable `light` is already there for you.\nReturn true when light is the string \"green\". Otherwise return false.",
+          "Build the if-statement piece by piece.\nWalk through the four sub-puzzles.",
         sv:
-          "Variabeln `light` finns redan för dig.\nReturnera true när light är strängen \"green\". Annars returnera false.",
+          "Bygg if-satsen bit för bit.\nGå igenom de fyra delpusslen.",
       },
-      functionName: "canCross",
-      bodyOnly: true,
-      paramName: "light",
-      starterCode: {
-        en:
-          "// Change the condition below:\n" +
-          "if (false) {\n" +
-          "  return true;\n" +
-          "}\n" +
-          "return false;\n",
-        sv:
-          "// Ändra villkoret nedan:\n" +
-          "if (false) {\n" +
-          "  return true;\n" +
-          "}\n" +
-          "return false;\n",
-      },
-      tests: [
-        { label: { en: "red", sv: "rött" }, input: "red", expected: false },
-        { label: { en: "yellow", sv: "gult" }, input: "yellow", expected: false },
-        { label: { en: "green", sv: "grönt" }, input: "green", expected: true },
-        { label: { en: "blue (other)", sv: "blått (annat)" }, input: "blue", expected: false },
-      ],
-      allegory: {
-        kind: "crosswalk",
-        config: {
-          conditionLabel: "canCross(light)",
-          walkWhen: true,
-          walkLabel: { en: "Walks", sv: "Går" },
-          waitLabel: { en: "Waits", sv: "Väntar" },
+      puzzles: [
+        // p1: code A — condition pieces
+        {
+          prompt: {
+            en: "Place the three pieces of the comparison.",
+            sv: "Placera de tre delarna av jämförelsen.",
+          },
+          template: 'if ([[]] [[]] [[]]) {\n  return "walk";\n}',
+          chips: ["light", "===", '"green"'],
+          solution: ["light", "===", '"green"'],
         },
-      },
+        // p2: code A — full assembly
+        {
+          prompt: {
+            en: "Put the whole thing together.",
+            sv: "Sätt ihop hela.",
+          },
+          template: "[[]] ([[]]) {\n  [[]] [[]];\n}",
+          chips: ["if", 'light === "green"', "return", '"walk"'],
+          solution: ["if", 'light === "green"', "return", '"walk"'],
+        },
+        // p3: code B (door) — condition pieces
+        {
+          prompt: {
+            en: "Place the three pieces of the comparison.",
+            sv: "Placera de tre delarna av jämförelsen.",
+          },
+          template: 'if ([[]] [[]] [[]]) {\n  return "enter";\n}',
+          chips: ["door", "===", '"open"'],
+          solution: ["door", "===", '"open"'],
+        },
+        // p4: code B — full assembly
+        {
+          prompt: {
+            en: "Put the whole thing together.",
+            sv: "Sätt ihop hela.",
+          },
+          template: "[[]] ([[]]) {\n  [[]] [[]];\n}",
+          chips: ["if", 'door === "open"', "return", '"enter"'],
+          solution: ["if", 'door === "open"', "return", '"enter"'],
+        },
+      ],
       legend: [
         {
-          name: { en: "if", sv: "if" },
+          name: { en: "if (no else)", sv: "if (utan else)" },
           syntax: "if (condition) { ... }",
-          example: 'if (light === "green") { ... }',
+          example: 'if (light === "green") { return "walk"; }',
           note: {
-            en: "Runs the code inside when the condition is true.",
-            sv: "Kör koden inuti när villkoret är sant.",
+            en: "When the condition is false, nothing else runs and the function ends.",
+            sv: "När villkoret är false körs inget annat, och funktionen tar slut.",
           },
         },
         {
@@ -290,17 +383,8 @@ export const doorLesson: Lesson = {
           syntax: "a === b",
           example: 'light === "green"',
           note: {
-            en: "True only when the values are exactly equal.",
-            sv: "Sant bara om värdena är exakt lika.",
-          },
-        },
-        {
-          name: { en: "return", sv: "return" },
-          syntax: "return value;",
-          example: "return true;",
-          note: {
-            en: "Sends a value back and stops the code.",
-            sv: "Skickar tillbaka ett värde och stoppar koden.",
+            en: "True only when both sides are exactly equal.",
+            sv: "Sant bara när båda sidor är exakt lika.",
           },
         },
       ],
@@ -314,7 +398,7 @@ export const doorLesson: Lesson = {
         {
           id: "code",
           label:
-            'if (light === "green") {\n  return true;\n} else {\n  return false;\n}',
+            'if (light === "green") {\n  return "walk";\n} else {\n  return "wait";\n}',
           baseStyle: codePanelStyle,
         },
       ],
@@ -346,60 +430,188 @@ export const doorLesson: Lesson = {
         {
           narration: {
             en:
-              "else is optional. Sometimes you don't need to do anything\nwhen the condition is false.",
+              "Now BOTH cases lead to a return.\nLet's read this version line by line too.",
             sv:
-              "else är frivilligt. Ibland behöver du inte göra något\nnär villkoret är falskt.",
+              "Nu leder BÅDA fallen till ett return.\nVi läser den här versionen rad för rad också.",
           },
         },
       ],
     },
 
-    // 7. Practice — if/else
+    // 6b. Trace walkthrough (if/else) — same shape as the if-only trace, with else added
     {
-      kind: "js-assignment",
+      kind: "explanation",
+      title: {
+        en: "Watching if / else run",
+        sv: "Vi ser if / else köras",
+      },
+      intro: {
+        en:
+          "Same idea as before — read line by line.\nThis time we have an else, so red has somewhere to go.",
+        sv:
+          "Samma tanke som förut — läs rad för rad.\nDen här gången finns ett else, så röd har någonstans att ta vägen.",
+      },
+      customScene: "crosswalk-if-else-trace",
+      demo: [],
+      steps: [
+        {
+          narration: {
+            en:
+              "Same start: light is \"red\".",
+            sv:
+              "Samma start: light är \"red\".",
+          },
+        },
+        {
+          narration: {
+            en:
+              "We make light and give it the value \"red\".",
+            sv:
+              "Vi skapar light och ger den värdet \"red\".",
+          },
+        },
+        {
+          narration: {
+            en:
+              "We reach the if.\nIs light equal to \"green\"?",
+            sv:
+              "Vi kommer till if.\nÄr light lika med \"green\"?",
+          },
+        },
+        {
+          narration: {
+            en:
+              "\"red\" === \"green\" is false.\nThe if's body is skipped.",
+            sv:
+              "\"red\" === \"green\" är false.\nIf-kroppen hoppas över.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "But this time there's an else.\nWe go INTO the else block.",
+            sv:
+              "Men nu finns ett else.\nVi går IN i else-blocket.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "We run the else's code: return \"wait\".\n\nThe figure waits.",
+            sv:
+              "Vi kör else-koden: return \"wait\".\n\nFiguren väntar.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "Now change light to \"green\" and run again.",
+            sv:
+              "Nu byter vi light till \"green\" och kör igen.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "We reach the if.\nIs light equal to \"green\"?",
+            sv:
+              "Vi kommer till if.\nÄr light lika med \"green\"?",
+          },
+        },
+        {
+          narration: {
+            en:
+              "\"green\" === \"green\" is true.\nThe else is skipped.",
+            sv:
+              "\"green\" === \"green\" är true.\nElse hoppas över.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "We run the if's code: return \"walk\".\n\nThe figure walks.",
+            sv:
+              "Vi kör if-koden: return \"walk\".\n\nFiguren går.",
+          },
+        },
+      ],
+    },
+
+    // 7. Practice — if/else — chip-style with light distractors
+    {
+      kind: "js-chip-assignment",
       title: { en: "Practice: walk or wait", sv: "Övning: gå eller vänta" },
       prompt: {
         en:
-          "Use both if and else this time.\nReturn true when light is \"green\", otherwise return false.",
+          "Now both branches matter — walk on green, wait on anything else.",
         sv:
-          "Använd både if och else den här gången.\nReturnera true när light är \"green\", annars false.",
+          "Nu spelar båda grenarna roll — gå på grönt, vänta på allt annat.",
       },
-      functionName: "canCross",
-      bodyOnly: true,
-      paramName: "light",
-      starterCode: {
-        en:
-          "if (/* condition */) {\n" +
-          "  return true;\n" +
-          "} else {\n" +
-          "  return false;\n" +
-          "}\n",
-        sv:
-          "if (/* villkor */) {\n" +
-          "  return true;\n" +
-          "} else {\n" +
-          "  return false;\n" +
-          "}\n",
-      },
-      tests: [
-        { label: { en: "green", sv: "grönt" }, input: "green", expected: true },
-        { label: { en: "red", sv: "rött" }, input: "red", expected: false },
-        { label: { en: "yellow", sv: "gult" }, input: "yellow", expected: false },
-      ],
-      allegory: {
-        kind: "crosswalk",
-        config: {
-          conditionLabel: "canCross(light)",
-          walkWhen: true,
-          walkLabel: { en: "Walks", sv: "Går" },
-          waitLabel: { en: "Waits", sv: "Väntar" },
+      puzzles: [
+        // p1: code A — just the else keyword
+        {
+          prompt: {
+            en: "Pick the keyword between the } and the {.",
+            sv: "Välj ordet mellan } och {.",
+          },
+          template:
+            'if (light === "green") {\n  return "walk";\n} [[]] {\n  return "wait";\n}',
+          chips: ["else", "elif", "otherwise", "or"],
+          solution: ["else"],
         },
-      },
+        // p2: code A — full assembly
+        {
+          prompt: {
+            en: "Put it all together.",
+            sv: "Sätt ihop hela.",
+          },
+          template:
+            "if ([[]]) {\n  return [[]];\n} [[]] {\n  return [[]];\n}",
+          chips: [
+            'light === "green"',
+            '"walk"',
+            "else",
+            '"wait"',
+            'light = "green"',
+            '"red"',
+          ],
+          solution: ['light === "green"', '"walk"', "else", '"wait"'],
+        },
+        // p3: code B (mood) — just the else keyword
+        {
+          prompt: {
+            en: "Pick the keyword between the } and the {.",
+            sv: "Välj ordet mellan } och {.",
+          },
+          template:
+            'if (mood === "happy") {\n  return "smile";\n} [[]] {\n  return "frown";\n}',
+          chips: ["else", "elif", "otherwise", "or"],
+          solution: ["else"],
+        },
+        // p4: code B — full assembly
+        {
+          prompt: {
+            en: "Put it all together.",
+            sv: "Sätt ihop hela.",
+          },
+          template:
+            "if ([[]]) {\n  return [[]];\n} [[]] {\n  return [[]];\n}",
+          chips: [
+            'mood === "happy"',
+            '"smile"',
+            "else",
+            '"frown"',
+            'mood = "happy"',
+            '"sad"',
+          ],
+          solution: ['mood === "happy"', '"smile"', "else", '"frown"'],
+        },
+      ],
       legend: [
         {
           name: { en: "if / else", sv: "if / else" },
           syntax: "if (...) { ... } else { ... }",
-          example: 'if (x === "y") return true; else return false;',
+          example: 'if (x === "y") return "yes"; else return "no";',
           note: {
             en: "One of the two branches always runs.",
             sv: "En av grenarna körs alltid.",
@@ -471,104 +683,223 @@ export const doorLesson: Lesson = {
       ],
     },
 
-    // 9. Practice — strict equality on object
+    // 8b. Strict-equality trace — first =, then ===
     {
-      kind: "js-assignment",
-      title: { en: "Practice: walk signal", sv: "Övning: gångsignal" },
-      prompt: {
+      kind: "explanation",
+      title: {
+        en: "= versus ===",
+        sv: "= mot ===",
+      },
+      intro: {
         en:
-          "This time `light` is an object: { signal: 'WALK' | 'STOP' }.\nReach into the object with light.signal.\nReturn true if it equals 'WALK', otherwise false.",
+          "Let's see what happens with a single = first.\nThen we'll switch to === and watch the difference.",
         sv:
-          "Den här gången är `light` ett objekt: { signal: 'WALK' | 'STOP' }.\nNå in i objektet med light.signal.\nReturnera true om det är 'WALK', annars false.",
+          "Vi ser först vad som händer med ett enda =.\nSen byter vi till === och tittar på skillnaden.",
       },
-      functionName: "canCross",
-      bodyOnly: true,
-      paramName: "light",
-      starterCode: {
-        en:
-          "if (/* light.signal === ??? */) {\n" +
-          "  return true;\n" +
-          "} else {\n" +
-          "  return false;\n" +
-          "}\n",
-        sv:
-          "if (/* light.signal === ??? */) {\n" +
-          "  return true;\n" +
-          "} else {\n" +
-          "  return false;\n" +
-          "}\n",
-      },
-      tests: [
-        { label: { en: "WALK", sv: "WALK" }, input: { signal: "WALK" }, expected: true },
-        { label: { en: "STOP", sv: "STOP" }, input: { signal: "STOP" }, expected: false },
-        { label: { en: "walk (lowercase)", sv: "walk (gemener)" }, input: { signal: "walk" }, expected: false },
-        { label: { en: "empty", sv: "tom" }, input: { signal: "" }, expected: false },
-      ],
-      allegory: {
-        kind: "crosswalk",
-        config: {
-          conditionLabel: "canCross(light)",
-          inputKey: "signal",
-          walkWhen: true,
-          walkLabel: { en: "Walks", sv: "Går" },
-          waitLabel: { en: "Waits", sv: "Väntar" },
-        },
-      },
-      legend: [
+      customScene: "crosswalk-strict-trace",
+      demo: [],
+      steps: [
+        // Phase A — `=` (assignment)
         {
-          name: { en: "===", sv: "===" },
-          syntax: "a === b",
-          example: 'light.signal === "WALK"',
-          note: {
-            en: "True only when both values are exactly equal.",
-            sv: "Sant bara om båda värdena är exakt lika.",
+          narration: {
+            en:
+              "First, the wrong version: a SINGLE = inside the if.\nlight starts as \"GREEN\".",
+            sv:
+              "Först den felaktiga versionen: ett ENDA = inuti if.\nlight börjar som \"GREEN\".",
           },
         },
         {
-          name: { en: "object access", sv: "läsa från objekt" },
-          syntax: "object.property",
-          example: "light.signal",
-          note: {
-            en: "Reads the named property out of an object.",
-            sv: "Läser den namngivna egenskapen ur ett objekt.",
+          narration: {
+            en:
+              "We reach the if.\nThe = is between two values — what does it do here?",
+            sv:
+              "Vi kommer till if.\n= står mellan två värden — vad gör det här?",
+          },
+        },
+        {
+          narration: {
+            en:
+              "= ASSIGNS. light is now \"green\" (the assignment changed it).\nThe expression itself evaluates to \"green\" — which is truthy.",
+            sv:
+              "= TILLDELAR. light är nu \"green\" (tilldelningen ändrade den).\nUttrycket självt blir \"green\" — vilket är truthy.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "Because the expression was truthy, the if's body runs.\nWe return \"walk\".\n\nBut this would have happened for ANY starting value of light.\nThat's the bug — we wanted to compare, not assign.",
+            sv:
+              "Eftersom uttrycket var truthy körs if-kroppen.\nVi returnerar \"walk\".\n\nMen detta hade hänt med VILKET värde light än hade.\nDet är buggen — vi ville jämföra, inte tilldela.",
+          },
+        },
+        // Phase B — `===` mismatch
+        {
+          narration: {
+            en:
+              "Switch to === — three equals signs.\nReset light to \"GREEN\".\nNow the if asks a question instead of assigning.",
+            sv:
+              "Byt till === — tre likhetstecken.\nÅterställ light till \"GREEN\".\nNu ställer if en fråga istället för att tilldela.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "\"GREEN\" === \"green\" → false.\n=== is strict — capital and lowercase letters are NOT the same.",
+            sv:
+              "\"GREEN\" === \"green\" → false.\n=== är strikt — versaler och gemener är INTE samma.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "Body skipped. Function ends. Nothing happens.\nMuch better than before — now the value matters.",
+            sv:
+              "Kroppen hoppas över. Funktionen tar slut. Inget händer.\nMycket bättre än förut — nu spelar värdet roll.",
+          },
+        },
+        // Phase C — `===` match
+        {
+          narration: {
+            en:
+              "Now change light to \"green\" — all lowercase.",
+            sv:
+              "Ändra light till \"green\" — bara gemener.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "\"green\" === \"green\" → true.\nNow they match exactly.",
+            sv:
+              "\"green\" === \"green\" → true.\nNu matchar de exakt.",
+          },
+        },
+        {
+          narration: {
+            en:
+              "The if's body runs: return \"walk\".\n\nLesson: use === to ASK, not = to ASSIGN.\nAnd === wants an EXACT match — even a single capital letter is enough to fail.",
+            sv:
+              "If-kroppen körs: return \"walk\".\n\nLärdom: använd === för att FRÅGA, inte = för att TILLDELA.\nOch === vill ha EXAKT matchning — en enda versal räcker för att det ska bli false.",
           },
         },
       ],
     },
 
-    // 10. Final
+    // 9. Practice — strict equality — chip-style focused on operator choice
     {
-      kind: "js-assignment",
+      kind: "js-chip-assignment",
+      title: { en: "Practice: pick the right operator", sv: "Övning: välj rätt operator" },
+      prompt: {
+        en:
+          "Pick the operator that compares STRICTLY — so \"GREEN\" doesn't sneak through.",
+        sv:
+          "Välj operatorn som jämför STRIKT — så att \"GREEN\" inte smiter förbi.",
+      },
+      puzzles: [
+        // p1: code A — just the operator
+        {
+          prompt: {
+            en: "Which operator asks 'are these exactly equal'?",
+            sv: "Vilken operator frågar 'är dessa exakt lika'?",
+          },
+          template:
+            'if (light [[]] "green") {\n  return "walk";\n} else {\n  return "wait";\n}',
+          chips: ["===", "==", "="],
+          solution: ["==="],
+        },
+        // p2: code A — full assembly
+        {
+          prompt: {
+            en: "Put it all together — strict comparison only.",
+            sv: "Sätt ihop hela — bara strikt jämförelse.",
+          },
+          template:
+            "if ([[]] [[]] [[]]) {\n  return [[]];\n} [[]] {\n  return [[]];\n}",
+          chips: [
+            "light",
+            "===",
+            '"green"',
+            '"walk"',
+            "else",
+            '"wait"',
+            "==",
+            "=",
+          ],
+          solution: ["light", "===", '"green"', '"walk"', "else", '"wait"'],
+        },
+        // p3: code B (door) — just the operator
+        {
+          prompt: {
+            en: "Which operator asks 'are these exactly equal'?",
+            sv: "Vilken operator frågar 'är dessa exakt lika'?",
+          },
+          template:
+            'if (door [[]] "open") {\n  return "enter";\n} else {\n  return "knock";\n}',
+          chips: ["===", "==", "="],
+          solution: ["==="],
+        },
+        // p4: code B — full assembly
+        {
+          prompt: {
+            en: "Put it all together — strict comparison only.",
+            sv: "Sätt ihop hela — bara strikt jämförelse.",
+          },
+          template:
+            "if ([[]] [[]] [[]]) {\n  return [[]];\n} [[]] {\n  return [[]];\n}",
+          chips: [
+            "door",
+            "===",
+            '"open"',
+            '"enter"',
+            "else",
+            '"knock"',
+            "==",
+            "=",
+            '"closed"',
+          ],
+          solution: ["door", "===", '"open"', '"enter"', "else", '"knock"'],
+        },
+      ],
+      legend: [
+        {
+          name: { en: "===", sv: "===" },
+          syntax: "a === b",
+          example: 'light === "green"',
+          note: {
+            en: "True only when both values are EXACTLY equal — case matters.",
+            sv: "Sant bara när båda värdena är EXAKT lika — versaler räknas.",
+          },
+        },
+      ],
+    },
+
+    // 10. Final — typed input
+    {
+      kind: "js-typed-assignment",
       title: { en: "Final: walk or wait", sv: "Slutövning: gå eller vänta" },
       prompt: {
         en:
-          "Write a function body that returns a STRING:\n• 'walk' when state.signal is 'WALK'\n• 'wait' otherwise.",
+          "The signal is now an UPPERCASE string.\nReturn 'walk' when signal is exactly 'WALK'.\nReturn 'wait' otherwise.\n\nFill in the boxes — type the missing pieces yourself.",
         sv:
-          "Skriv en funktionskropp som returnerar en STRÄNG:\n• 'walk' när state.signal är 'WALK'\n• 'wait' annars.",
+          "Signalen är nu en sträng med VERSALER.\nReturnera 'walk' när signal är exakt 'WALK'.\nReturnera 'wait' annars.\n\nFyll i rutorna — skriv de saknade bitarna själv.",
       },
-      functionName: "canCross",
-      bodyOnly: true,
-      paramName: "state",
-      starterCode: {
-        en:
-          "// Write your condition here:\n" +
-          "\n" +
-          "return 'wait';\n",
-        sv:
-          "// Skriv ditt villkor här:\n" +
-          "\n" +
-          "return 'wait';\n",
-      },
+      varNames: ["signal"],
+      template:
+        'if ([[input:cond]]) {\n  return [[input:then]];\n}\nreturn [[input:else]];\n',
       tests: [
-        { label: { en: "WALK", sv: "WALK" }, input: { signal: "WALK" }, expected: "walk" },
-        { label: { en: "STOP", sv: "STOP" }, input: { signal: "STOP" }, expected: "wait" },
-        { label: { en: "FLASHING", sv: "BLINKAR" }, input: { signal: "FLASHING" }, expected: "wait" },
-        { label: { en: "Walk (mixed case)", sv: "Walk (blandat)" }, input: { signal: "Walk" }, expected: "wait" },
+        { label: { en: "WALK", sv: "WALK" }, vars: { signal: "WALK" }, expected: "walk" },
+        { label: { en: "STOP", sv: "STOP" }, vars: { signal: "STOP" }, expected: "wait" },
+        { label: { en: "FLASHING", sv: "BLINKAR" }, vars: { signal: "FLASHING" }, expected: "wait" },
+        { label: { en: "Walk (mixed case)", sv: "Walk (blandat)" }, vars: { signal: "Walk" }, expected: "wait" },
       ],
+      goalHint: {
+        en: "Return walk only when signal is exactly the uppercase string \"WALK\".",
+        sv: "Returnera walk bara när signal är exakt strängen \"WALK\".",
+      },
       allegory: {
         kind: "crosswalk",
         config: {
-          conditionLabel: "canCross(state)",
+          conditionLabel: { en: "signal === \"WALK\"?", sv: "signal === \"WALK\"?" },
           inputKey: "signal",
           walkWhen: "walk",
           walkLabel: { en: "Walks", sv: "Går" },

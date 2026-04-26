@@ -14,16 +14,17 @@ type Props = {
 
 type Phase = "idle" | "decide" | "act";
 
-function readSignal(input: unknown, key?: string): string {
-  if (key && typeof input === "object" && input !== null) {
-    const v = (input as Record<string, unknown>)[key];
-    return v === undefined ? "—" : String(v);
+function readSignal(vars: Record<string, unknown>, key?: string): string {
+  // If a key is given, read it. Otherwise pick the only var (most lessons have one).
+  let v: unknown;
+  if (key) {
+    v = vars[key];
+  } else {
+    const keys = Object.keys(vars);
+    v = keys.length === 1 ? vars[keys[0]] : undefined;
   }
-  if (input === null || input === undefined) return "—";
-  if (typeof input === "object") {
-    try { return JSON.stringify(input); } catch { return "?"; }
-  }
-  return String(input);
+  if (v === undefined || v === null) return "—";
+  return String(v);
 }
 
 /** Pick a render mode for the signal: a coloured lamp if it's red/yellow/green, otherwise a text sign. */
@@ -48,7 +49,7 @@ export function CrosswalkAllegory({ config, run, replayKey, lang }: Props) {
     return () => clearTimeout(tm);
   }, [replayKey, run]);
 
-  const signal = run ? readSignal(run.test.input, config.inputKey) : "";
+  const signal = run ? readSignal(run.test.vars, config.inputKey) : "";
   const lamp = classifyLamp(signal);
 
   // Should the figure walk? Driven by user's RETURNED VALUE, not by test pass/fail.
@@ -56,6 +57,8 @@ export function CrosswalkAllegory({ config, run, replayKey, lang }: Props) {
   const userReturned = run?.result.ok ? run.result.value : undefined;
   const figureWalks =
     !!run && run.result.ok && deepEqual(userReturned, walkWhen);
+  const isNothing =
+    !!run && run.result.ok && userReturned === undefined && !!config.nothingLabel;
 
   // Position: 60 at curb, 320 across.
   const figureX = phase === "act" && figureWalks ? 320 : 60;
@@ -166,11 +169,15 @@ export function CrosswalkAllegory({ config, run, replayKey, lang }: Props) {
               "absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-medium " +
               (figureWalks
                 ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-200"
+                : isNothing
+                ? "bg-stone-100 text-stone-500 ring-1 ring-stone-200 dark:bg-slate-800 dark:text-indigo-200/60 dark:ring-white/10"
                 : "bg-stone-200 text-stone-700 dark:bg-slate-700 dark:text-indigo-100")
             }
           >
             {figureWalks
               ? t(config.walkLabel ?? { en: "Walks", sv: "Går" }, lang)
+              : isNothing
+              ? t(config.nothingLabel!, lang)
               : t(config.waitLabel ?? { en: "Waits", sv: "Väntar" }, lang)}
           </div>
         )}
