@@ -55,3 +55,10 @@ export type Lesson = {
   summary: string;
   slides: Slide[];
 };
+
+export type Course = {
+  id: string;
+  title: string;
+  summary?: string;
+  lessons: Lesson[];
+};

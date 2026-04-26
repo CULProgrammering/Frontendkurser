@@ -2,10 +2,11 @@ import { useCallback, useEffect, useState } from "react";
 import type { Lesson } from "../types";
 import { ExplanationSlideView } from "./ExplanationSlideView";
 import { AssignmentSlideView } from "./AssignmentSlideView";
+import { markComplete } from "../progress";
 
-type Props = { lesson: Lesson; onExit: () => void };
+type Props = { courseId: string; lesson: Lesson; onExit: () => void };
 
-export function SlideDeck({ lesson, onExit }: Props) {
+export function SlideDeck({ courseId, lesson, onExit }: Props) {
   const [idx, setIdx] = useState(0);
   const total = lesson.slides.length;
 
@@ -70,8 +71,13 @@ export function SlideDeck({ lesson, onExit }: Props) {
         {slide.kind === "assignment" && (
           <AssignmentSlideView
             slide={slide}
-            storageKey={`css:${lesson.id}:${idx}`}
+            storageKey={`${courseId}:${lesson.id}:${idx}`}
             key={`a-${idx}`}
+            onPass={
+              idx === total - 1
+                ? () => markComplete(courseId, lesson.id)
+                : undefined
+            }
           />
         )}
       </div>
