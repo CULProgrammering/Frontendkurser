@@ -1,24 +1,34 @@
 import type { CSSProperties } from "react";
+import type { Loc } from "./i18n";
 
 export type DemoBox = {
   id: string;
-  label?: string;
+  label?: Loc;
   baseStyle?: CSSProperties;
   children?: DemoBox[];
 };
 
 export type ExplanationStep = {
-  narration?: string;
+  narration?: Loc;
   styles?: Record<string, CSSProperties>;
   highlight?: string[];
 };
 
+/** Identifier of a custom intro scene component (e.g. stick-figure animation). */
+export type CustomSceneId =
+  | "crosswalk"
+  | "wardrobe"
+  | "recycling"
+  | "bouncer";
+
 export type ExplanationSlide = {
   kind: "explanation";
-  title: string;
-  intro?: string;
+  title: Loc;
+  intro?: Loc;
   demo: DemoBox[];
   steps: ExplanationStep[];
+  /** When set, replaces the demo column with a hand-drawn scene. */
+  customScene?: CustomSceneId;
 };
 
 export type StyleCheck = {
@@ -26,60 +36,59 @@ export type StyleCheck = {
   property: string;
   expected: string;
   tolerance?: number;
-  hint?: string;
+  hint?: Loc;
 };
 
 export type LegendEntry = {
-  name: string;
+  name: Loc;
   syntax: string;
   example: string;
-  note?: string;
+  note?: Loc;
 };
 
 export type AssignmentSlide = {
   kind: "assignment";
-  title: string;
-  prompt: string;
-  html: string;
-  startingCss: string;
+  title: Loc;
+  prompt: Loc;
+  /** HTML markup for the preview iframe. May contain visible Swedish/English text. */
+  html: Loc;
+  startingCss: Loc;
   checks: StyleCheck[];
   legend?: LegendEntry[];
-  targetCss?: string;
+  targetCss?: Loc;
 };
 
 export type JsTest = {
-  label: string;
+  label: Loc;
   input: unknown;
   expected: unknown;
 };
 
 export type DoorConfig = {
-  conditionLabel: string;
-  inputKey?: string; // which property of input to display (when input is an object)
-  acceptLabel?: string;
-  rejectLabel?: string;
+  conditionLabel: Loc;
+  inputKey?: string;
+  acceptLabel?: Loc;
+  rejectLabel?: Loc;
 };
 
-export type ForkBranch = { key: string; label: string };
+export type ForkBranch = { key: string; label: Loc };
 export type ForkConfig = {
-  conditionLabel: string;
+  conditionLabel: Loc;
   branches: ForkBranch[];
-  // For each test, the key of the branch that is correct (derived from expected by default).
-  // The scene maps test.expected → branch.key by string match.
 };
 
-export type ConveyorBin = { key: string; label: string };
+export type ConveyorBin = { key: string; label: Loc };
 export type ConveyorConfig = {
-  inputLabel: string;
+  inputLabel: Loc;
   bins: ConveyorBin[];
   defaultBinKey?: string;
 };
 
 export type MultiGateConfig = {
   mode: "and" | "or" | "not";
-  operandLabels: [string, string?]; // second optional for "not"
-  passLabel?: string;
-  failLabel?: string;
+  operandLabels: [string, string?];
+  passLabel?: Loc;
+  failLabel?: Loc;
 };
 
 export type Allegory =
@@ -90,9 +99,9 @@ export type Allegory =
 
 export type JsAssignmentSlide = {
   kind: "js-assignment";
-  title: string;
-  prompt: string;
-  starterCode: string;
+  title: Loc;
+  prompt: Loc;
+  starterCode: Loc;
   functionName: string;
   tests: JsTest[];
   allegory: Allegory;
@@ -103,14 +112,14 @@ export type Slide = ExplanationSlide | AssignmentSlide | JsAssignmentSlide;
 
 export type Lesson = {
   id: string;
-  title: string;
-  summary: string;
+  title: Loc;
+  summary: Loc;
   slides: Slide[];
 };
 
 export type Course = {
   id: string;
-  title: string;
-  summary?: string;
+  title: Loc;
+  summary?: Loc;
   lessons: Lesson[];
 };

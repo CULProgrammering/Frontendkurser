@@ -3,27 +3,31 @@ import "./App.css";
 import { COURSES } from "./lessons";
 import { SlideDeck } from "./components/SlideDeck";
 import { ThemeToggle } from "./components/ThemeToggle";
+import { LanguageToggle } from "./components/LanguageToggle";
 import type { Course, Lesson } from "./types";
 import { isComplete } from "./progress";
+import { useLang } from "./i18n/LanguageContext";
+import { t } from "./i18n";
+import { ui } from "./i18n/strings";
 
 type Active = { course: Course; lesson: Lesson };
 
 function App() {
   const [active, setActive] = useState<Active | null>(null);
-  // Bump to force a re-render of the picker (e.g. after returning from a lesson
-  // so completion badges refresh).
   const [, setTick] = useState(0);
+  const { lang } = useLang();
 
   if (active) {
     return (
       <>
         <ThemeToggle />
+        <LanguageToggle />
         <SlideDeck
           courseId={active.course.id}
           lesson={active.lesson}
           onExit={() => {
             setActive(null);
-            setTick((t) => t + 1);
+            setTick((tick) => tick + 1);
           }}
         />
       </>
@@ -33,13 +37,14 @@ function App() {
   return (
     <>
       <ThemeToggle />
+      <LanguageToggle />
       <div className="min-h-full p-10">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-semibold mb-1 text-stone-900 dark:text-indigo-50">
-            CUL Programmering
+            {t(ui.appTitle, lang)}
           </h1>
           <p className="text-stone-500 dark:text-indigo-200/70 mb-10">
-            Välj en lektion för att börja.
+            {t(ui.pickerSubtitle, lang)}
           </p>
 
           <div className="space-y-10">
@@ -47,11 +52,11 @@ function App() {
               <section key={course.id}>
                 <div className="flex items-baseline gap-3 mb-3">
                   <h2 className="text-2xl font-semibold text-stone-900 dark:text-indigo-50">
-                    {course.title}
+                    {t(course.title, lang)}
                   </h2>
                   {course.summary && (
                     <span className="text-sm text-stone-500 dark:text-indigo-200/60">
-                      {course.summary}
+                      {t(course.summary, lang)}
                     </span>
                   )}
                 </div>
@@ -62,7 +67,7 @@ function App() {
                                bg-stone-100 text-stone-500
                                dark:bg-slate-900/40 dark:text-indigo-200/50"
                   >
-                    Inga lektioner än.
+                    {t(ui.noLessons, lang)}
                   </div>
                 ) : (
                   <div className="grid sm:grid-cols-2 gap-4">
@@ -78,7 +83,7 @@ function App() {
                         >
                           <div className="flex items-start justify-between gap-3">
                             <div className="text-lg font-semibold text-stone-900 dark:text-indigo-50">
-                              {lesson.title}
+                              {t(lesson.title, lang)}
                             </div>
                             {done && (
                               <span
@@ -86,15 +91,15 @@ function App() {
                                            bg-emerald-100 text-emerald-700
                                            dark:bg-emerald-500/15 dark:text-emerald-300"
                               >
-                                klar
+                                {t(ui.doneBadge, lang)}
                               </span>
                             )}
                           </div>
                           <div className="text-sm text-stone-600 dark:text-indigo-200/70 mt-1">
-                            {lesson.summary}
+                            {t(lesson.summary, lang)}
                           </div>
                           <div className="text-xs text-amber-600 dark:text-indigo-300/60 mt-3">
-                            {lesson.slides.length} steg →
+                            {lesson.slides.length} {t(ui.stepsCount, lang)}
                           </div>
                         </button>
                       );

@@ -6,6 +6,10 @@ import { ForkScene } from "./allegories/ForkScene";
 import { ConveyorScene } from "./allegories/ConveyorScene";
 import { MultiGateScene } from "./allegories/MultiGateScene";
 import type { SceneRun } from "./allegories/types";
+import { useLang } from "../i18n/LanguageContext";
+import { t } from "../i18n";
+import type { Lang } from "../i18n";
+import { ui } from "../i18n/strings";
 
 type Props = {
   slide: JsAssignmentSlide;
@@ -16,8 +20,11 @@ type Props = {
 type TestRun = { test: JsTest; result: RunResult; pass: boolean };
 
 export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
+  const { lang } = useLang();
+  const starter = t(slide.starterCode, lang);
+
   const [code, setCode] = useState<string>(
-    () => sessionStorage.getItem(storageKey) ?? slide.starterCode
+    () => sessionStorage.getItem(storageKey) ?? starter
   );
   const [runs, setRuns] = useState<TestRun[] | null>(null);
   const [focusedIdx, setFocusedIdx] = useState(0);
@@ -30,10 +37,10 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
   }, [storageKey, code]);
 
   const runChecks = () => {
-    const out: TestRun[] = slide.tests.map((t) => {
-      const r = runUserCode(code, slide.functionName, t.input);
-      const pass = r.ok && deepEqual(r.value, t.expected);
-      return { test: t, result: r, pass };
+    const out: TestRun[] = slide.tests.map((tst) => {
+      const r = runUserCode(code, slide.functionName, tst.input);
+      const pass = r.ok && deepEqual(r.value, tst.expected);
+      return { test: tst, result: r, pass };
     });
     setRuns(out);
     const firstFail = out.findIndex((r) => !r.pass);
@@ -42,7 +49,7 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
   };
 
   const reset = () => {
-    setCode(slide.starterCode);
+    setCode(starter);
     setRuns(null);
   };
 
@@ -62,10 +69,10 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
     <div className="h-full w-full flex flex-col">
       <div className="px-10 pt-8">
         <h2 className="text-3xl font-semibold text-stone-900 dark:text-indigo-50">
-          {slide.title}
+          {t(slide.title, lang)}
         </h2>
         <p className="text-stone-600 dark:text-indigo-200/80 mt-1 whitespace-pre-line">
-          {slide.prompt}
+          {t(slide.prompt, lang)}
         </p>
       </div>
 
@@ -77,7 +84,7 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
           <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
                           text-amber-600 border-stone-200
                           dark:text-indigo-300/70 dark:border-white/10">
-            JavaScript
+            {t(ui.jsLabel, lang)}
           </div>
           <textarea
             value={code}
@@ -94,7 +101,7 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
                          bg-amber-500 hover:bg-amber-600
                          dark:bg-indigo-500 dark:hover:bg-indigo-400"
             >
-              Kontrollera
+              {t(ui.check, lang)}
             </button>
             <button
               onClick={reset}
@@ -102,7 +109,7 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
                          bg-stone-100 hover:bg-stone-200 text-stone-700
                          dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white"
             >
-              Återställ
+              {t(ui.reset, lang)}
             </button>
             {hasLegend && (
               <button
@@ -111,7 +118,7 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
                            bg-amber-100 hover:bg-amber-200 text-amber-800 ring-amber-300
                            dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:text-amber-200 dark:ring-amber-400/30"
               >
-                {showLegend ? "Dölj hjälp" : "Visa hjälp"}
+                {t(showLegend ? ui.hideHelp : ui.showHelp, lang)}
               </button>
             )}
           </div>
@@ -124,7 +131,9 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
           <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
                           text-amber-600 border-stone-200
                           dark:text-indigo-300/70 dark:border-white/10">
-            {focusedRun ? `Test ${focusedIdx + 1}: ${focusedRun.test.label}` : "Testfall"}
+            {focusedRun
+              ? `${t(ui.testLabel, lang)} ${focusedIdx + 1}: ${t(focusedRun.test.label, lang)}`
+              : t(ui.testCases, lang)}
           </div>
 
           <div className="flex-1 min-h-0">
@@ -132,12 +141,12 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
               allegory={slide.allegory}
               run={focusedRun}
               replayKey={replayKey}
+              lang={lang}
             />
           </div>
 
           {runs && (
             <div className="border-t border-stone-200 dark:border-white/10 p-3">
-              {/* Test chips */}
               <div className="flex flex-wrap gap-2 mb-2">
                 {runs.map((r, i) => (
                   <button
@@ -148,21 +157,18 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
                     }}
                     className={
                       "px-2.5 py-1 rounded-full text-xs ring-1 transition " +
-                      (i === focusedIdx
-                        ? "ring-2 "
-                        : "") +
+                      (i === focusedIdx ? "ring-2 " : "") +
                       (r.pass
                         ? "bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-500/30"
                         : "bg-stone-100 text-stone-700 ring-stone-200 dark:bg-slate-800 dark:text-indigo-100 dark:ring-white/10")
                     }
                   >
-                    {r.pass ? "✓" : "·"} {r.test.label}
+                    {r.pass ? "✓" : "·"} {t(r.test.label, lang)}
                   </button>
                 ))}
               </div>
 
-              {/* Summary */}
-              <Summary runs={runs} allPass={allPass} focused={focusedRun} />
+              <Summary runs={runs} allPass={allPass} focused={focusedRun} lang={lang} />
             </div>
           )}
         </div>
@@ -174,18 +180,18 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
                         dark:bg-amber-500/10 dark:ring-amber-400/30">
           <div className="text-xs uppercase tracking-wider mb-2
                           text-amber-700 dark:text-amber-200">
-            Legend
+            {t(ui.legendLabel, lang)}
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {slide.legend!.map((e) => (
+            {slide.legend!.map((e, i) => (
               <div
-                key={e.name}
+                key={i}
                 className="rounded-lg p-3 ring-1
                            bg-white ring-stone-200
                            dark:bg-slate-900/60 dark:ring-white/10"
               >
                 <div className="font-semibold text-amber-800 dark:text-amber-100">
-                  {e.name}
+                  {t(e.name, lang)}
                 </div>
                 <div className="font-mono text-xs text-stone-600 dark:text-indigo-200/80">
                   {e.syntax}
@@ -195,7 +201,7 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
                 </div>
                 {e.note && (
                   <div className="text-xs mt-1 text-stone-500 dark:text-indigo-200/60">
-                    {e.note}
+                    {t(e.note, lang)}
                   </div>
                 )}
               </div>
@@ -211,17 +217,19 @@ function Summary({
   runs,
   allPass,
   focused,
+  lang,
 }: {
   runs: TestRun[];
   allPass: boolean;
   focused: SceneRun | null;
+  lang: Lang;
 }) {
   const passCount = runs.filter((r) => r.pass).length;
 
   if (allPass) {
     return (
       <div className="text-emerald-700 dark:text-emerald-300 font-medium text-sm">
-        ✓ Klart — alla testfall stämmer.
+        {t(ui.allTestsPass, lang)}
       </div>
     );
   }
@@ -229,28 +237,32 @@ function Summary({
   return (
     <div className="text-sm space-y-1">
       <div className="text-stone-600 dark:text-indigo-200/70">
-        {passCount} av {runs.length} testfall klara.
+        {passCount} {t(ui.outOfRight, lang)} {runs.length} {t(ui.testsClear, lang)}
       </div>
-      {focused && !focused.pass && (
-        <FailureDetail run={focused} />
-      )}
+      {focused && !focused.pass && <FailureDetail run={focused} lang={lang} />}
     </div>
   );
 }
 
-function FailureDetail({ run }: { run: TestRun }) {
+function FailureDetail({ run, lang }: { run: TestRun; lang: Lang }) {
   if (!run.result.ok) {
     return (
       <div className="text-amber-700 dark:text-amber-300 text-xs whitespace-pre-line">
-        Fel: {run.result.error}
+        {t(ui.errorPrefix, lang)} {run.result.error}
       </div>
     );
   }
   return (
     <div className="text-xs text-stone-600 dark:text-indigo-200/70">
-      Förväntat: <span className="font-mono text-emerald-700 dark:text-emerald-300">{describeValue(run.test.expected)}</span>
+      {t(ui.expected, lang)}{" "}
+      <span className="font-mono text-emerald-700 dark:text-emerald-300">
+        {describeValue(run.test.expected)}
+      </span>
       {" · "}
-      Din kod gav: <span className="font-mono text-amber-700 dark:text-amber-300">{describeValue(run.result.value)}</span>
+      {t(ui.yourCodeGave, lang)}{" "}
+      <span className="font-mono text-amber-700 dark:text-amber-300">
+        {describeValue(run.result.value)}
+      </span>
     </div>
   );
 }
@@ -259,19 +271,21 @@ function SceneMount({
   allegory,
   run,
   replayKey,
+  lang,
 }: {
   allegory: Allegory;
   run: SceneRun | null;
   replayKey: number;
+  lang: Lang;
 }) {
   switch (allegory.kind) {
     case "door":
-      return <DoorScene config={allegory.config} run={run} replayKey={replayKey} />;
+      return <DoorScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
     case "fork":
-      return <ForkScene config={allegory.config} run={run} replayKey={replayKey} />;
+      return <ForkScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
     case "conveyor":
-      return <ConveyorScene config={allegory.config} run={run} replayKey={replayKey} />;
+      return <ConveyorScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
     case "multi-gate":
-      return <MultiGateScene config={allegory.config} run={run} replayKey={replayKey} />;
+      return <MultiGateScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
   }
 }

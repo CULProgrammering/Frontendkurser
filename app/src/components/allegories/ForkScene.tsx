@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import type { ForkConfig } from "../../types";
 import type { SceneRun } from "./types";
+import { t, type Lang } from "../../i18n";
 
-type Props = { config: ForkConfig; run: SceneRun | null; replayKey: number };
+type Props = {
+  config: ForkConfig;
+  run: SceneRun | null;
+  replayKey: number;
+  lang: Lang;
+};
 
 type Phase = "idle" | "approach" | "branched";
 
-export function ForkScene({ config, run, replayKey }: Props) {
+export function ForkScene({ config, run, replayKey, lang }: Props) {
   const [phase, setPhase] = useState<Phase>("idle");
 
   useEffect(() => {
@@ -15,11 +21,10 @@ export function ForkScene({ config, run, replayKey }: Props) {
       return;
     }
     setPhase("approach");
-    const t = setTimeout(() => setPhase("branched"), 700);
-    return () => clearTimeout(t);
+    const tm = setTimeout(() => setPhase("branched"), 700);
+    return () => clearTimeout(tm);
   }, [replayKey, run]);
 
-  // Pick the branch matching the result (or expected if no result yet).
   const matchKey = run?.result.ok ? String(run.result.value) : "";
   const matchedIdx = config.branches.findIndex((b) => b.key === matchKey);
   const branchCount = config.branches.length;
@@ -29,13 +34,12 @@ export function ForkScene({ config, run, replayKey }: Props) {
       <div className="rounded-lg px-3 py-2 mb-4 font-mono text-sm
                       bg-stone-100 text-stone-700
                       dark:bg-slate-800/60 dark:text-indigo-100">
-        {config.conditionLabel}
+        {t(config.conditionLabel, lang)}
       </div>
 
       <div className="relative flex-1 rounded-2xl overflow-hidden
                       bg-stone-50 ring-1 ring-stone-200
                       dark:bg-slate-900/40 dark:ring-white/10">
-        {/* Cart */}
         <div
           className="absolute top-4 transition-all duration-700 ease-out"
           style={{
@@ -54,7 +58,6 @@ export function ForkScene({ config, run, replayKey }: Props) {
           </div>
         </div>
 
-        {/* Branch tracks at bottom */}
         <div className="absolute inset-x-0 bottom-0 h-1/2 grid"
              style={{ gridTemplateColumns: `repeat(${branchCount}, minmax(0,1fr))` }}>
           {config.branches.map((b, i) => {
@@ -69,7 +72,7 @@ export function ForkScene({ config, run, replayKey }: Props) {
                     : "border-stone-300 dark:border-white/10 text-stone-500 dark:text-indigo-200/60")
                 }
               >
-                {b.label}
+                {t(b.label, lang)}
               </div>
             );
           })}
