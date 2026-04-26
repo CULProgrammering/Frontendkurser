@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { AssignmentSlide, StyleCheck } from "../types";
 
-type Props = { slide: AssignmentSlide; storageKey: string };
+type Props = {
+  slide: AssignmentSlide;
+  storageKey: string;
+  onPass?: () => void;
+};
 
 type CheckResult = { check: StyleCheck; actual: string; pass: boolean };
 
-export function AssignmentSlideView({ slide, storageKey }: Props) {
+export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
   const [css, setCss] = useState<string>(() => {
     return sessionStorage.getItem(storageKey) ?? slide.startingCss;
   });
@@ -52,6 +56,12 @@ export function AssignmentSlideView({ slide, storageKey }: Props) {
   };
 
   const allPass = results && results.every((r) => r.pass);
+
+  useEffect(() => {
+    if (allPass) onPass?.();
+    // Only fires when allPass flips true; intentionally not depending on onPass.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allPass]);
 
   return (
     <div className="h-full w-full flex flex-col">
