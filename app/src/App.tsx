@@ -4,6 +4,7 @@ import { COURSES } from "./lessons";
 import { SlideDeck } from "./components/SlideDeck";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { LanguageToggle } from "./components/LanguageToggle";
+import { RoomScene } from "./components/RoomScene";
 import type { Course, Lesson, Topic } from "./types";
 import { isComplete } from "./progress";
 import { useLang } from "./i18n/LanguageContext";
@@ -87,6 +88,9 @@ function App() {
       <LanguageToggle />
       <div className="min-h-full p-10">
         <div className="max-w-4xl mx-auto">
+          <div className="mb-8">
+            <RoomScene />
+          </div>
           <h1 className="text-4xl font-semibold mb-1 text-stone-900 dark:text-indigo-50">
             {t(ui.appTitle, lang)}
           </h1>
