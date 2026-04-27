@@ -576,6 +576,12 @@ export const doorLesson: Lesson = {
             '"red"',
           ],
           solution: ['light === "green"', '"walk"', "else", '"wait"'],
+          wrongHint: {
+            en:
+              "Watch out for the = trap: one equals sign assigns, three compare. With = the code would change light to green and walk every time.",
+            sv:
+              "Se upp för =-fällan: ett likhetstecken tilldelar, tre jämför. Med = ändrar koden light till green och går varje gång.",
+          },
         },
         // p3: code B (mood) — just the else keyword
         {

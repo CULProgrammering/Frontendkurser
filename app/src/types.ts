@@ -252,6 +252,13 @@ export type JsChipPuzzle = {
    * Each entry is a full alternative to `solution`, same length.
    */
   alternatives?: string[][];
+  /**
+   * Optional sense-making sentence shown when the student's assembly is
+   * wrong. Describes what the wrong code would actually do (e.g. "this
+   * would always return 'walk', even on red"). Authored per puzzle —
+   * leave undefined to fall back to the generic soft message.
+   */
+  wrongHint?: Loc;
 };
 
 /**

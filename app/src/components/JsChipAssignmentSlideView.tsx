@@ -1,8 +1,10 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { JsChipAssignmentSlide, JsChipPuzzle } from "../types";
 import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
+
+const SETTLE_MS = 400;
 
 type Props = {
   slide: JsChipAssignmentSlide;
@@ -167,11 +169,29 @@ function PuzzleView({
   // Logic still uses original chip indices; only the rendered order changes.
   const displayOrder = useMemo(() => shuffle(puzzle.chips.length), [puzzle]);
   const [check, setCheck] = useState<CheckState>("pending");
-  const [shake, setShake] = useState(false);
+  // Slot indices currently fading out after a wrong check. While a slot is
+  // settling, it renders at opacity 0; after SETTLE_MS we clear it back to
+  // null so the chip returns to the pool — softer than a shake.
+  const [settling, setSettling] = useState<Set<number>>(() => new Set());
+  const settleTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (settleTimer.current !== null) window.clearTimeout(settleTimer.current);
+    };
+  }, []);
 
   // chip-index is placed if it appears in any slot.
   const placedIds = new Set(slots.filter((s): s is number => s !== null));
   const allSlotsFilled = slots.every((s) => s !== null);
+
+  const isSlotCorrect = (slotIdx: number, slotsArr: (number | null)[]): boolean => {
+    const placed = slotsArr[slotIdx];
+    if (placed === null) return false;
+    const txt = puzzle.chips[placed];
+    if (puzzle.solution[slotIdx] === txt) return true;
+    return (puzzle.alternatives ?? []).some((alt) => alt[slotIdx] === txt);
+  };
 
   const handleChipClick = (chipIdx: number) => {
     if (check === "right") return; // locked after correct
@@ -213,11 +233,23 @@ function PuzzleView({
       (puzzle.alternatives ?? []).some(matches);
     if (ok) {
       setCheck("right");
-    } else {
-      setCheck("wrong");
-      setShake(true);
-      setTimeout(() => setShake(false), 350);
+      return;
     }
+    setCheck("wrong");
+    // Identify which slots hold a chip that doesn't match at this position
+    // (under the canonical solution OR any accepted alternative). Mark them
+    // as settling, then after the fade duration clear them back to the pool.
+    const wrong = new Set<number>();
+    for (let i = 0; i < slots.length; i++) {
+      if (slots[i] !== null && !isSlotCorrect(i, slots)) wrong.add(i);
+    }
+    setSettling(wrong);
+    if (settleTimer.current !== null) window.clearTimeout(settleTimer.current);
+    settleTimer.current = window.setTimeout(() => {
+      setSlots((prev) => prev.map((s, i) => (wrong.has(i) ? null : s)));
+      setSettling(new Set());
+      settleTimer.current = null;
+    }, SETTLE_MS);
   };
 
   // Split template into text parts on [[]] markers.
@@ -235,12 +267,8 @@ function PuzzleView({
       <div
         className={
           "rounded-xl p-5 font-mono text-sm whitespace-pre " +
-          "bg-slate-900 text-indigo-50 ring-1 ring-white/10 " +
-          (shake ? "animate-[wiggle_350ms_ease-in-out]" : "")
+          "bg-slate-900 text-indigo-50 ring-1 ring-white/10"
         }
-        style={{
-          animationName: shake ? "wiggle" : undefined,
-        }}
       >
         {parts.map((segment, i) => (
           <span key={i}>
@@ -255,8 +283,9 @@ function PuzzleView({
                 isCorrect={
                   check !== "pending" &&
                   slots[i] !== null &&
-                  puzzle.chips[slots[i] as number] === puzzle.solution[i]
+                  isSlotCorrect(i, slots)
                 }
+                settling={settling.has(i)}
                 onClick={() => handleSlotClick(i)}
               />
             )}
@@ -301,11 +330,14 @@ function PuzzleView({
           </button>
         )}
         {check === "wrong" && (
-          <span className="text-sm text-rose-700 dark:text-rose-300">
-            {lang === "sv"
-              ? "Inte riktigt — pröva en annan ordning."
-              : "Not quite — try a different order."}
-          </span>
+          <div className="text-sm text-stone-600 dark:text-indigo-200/70 space-y-0.5">
+            <div>{lang === "sv" ? "Inte den här." : "Not this one."}</div>
+            {puzzle.wrongHint && (
+              <div className="text-xs text-stone-500 dark:text-indigo-200/55 italic">
+                {t(puzzle.wrongHint, lang)}
+              </div>
+            )}
+          </div>
         )}
         {check === "right" && (
           <>
@@ -330,14 +362,6 @@ function PuzzleView({
         )}
       </div>
 
-      {/* Inline keyframe for the shake effect */}
-      <style>{`
-        @keyframes wiggle {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-4px); }
-          75% { transform: translateX(4px); }
-        }
-      `}</style>
     </div>
   );
 }
@@ -357,21 +381,30 @@ function Slot({
   chipText,
   state,
   isCorrect,
+  settling,
   onClick,
 }: {
   chipIdx: number | null;
   chipText: string | null;
   state: CheckState;
   isCorrect: boolean;
+  settling: boolean;
   onClick: () => void;
 }) {
   const empty = chipIdx === null;
+  // A slot reads as "wrong" only while a chip still occupies it. Once the
+  // settle timer clears the slot, the chip is gone and we show the empty
+  // placeholder again — no leftover red.
   const showWrong = !empty && state === "wrong" && !isCorrect;
   const showRight = !empty && state === "right";
 
   return (
     <button
       onClick={onClick}
+      style={{
+        opacity: settling ? 0 : 1,
+        transition: `opacity ${SETTLE_MS}ms ease-out`,
+      }}
       className={
         "inline-block align-baseline mx-0.5 px-2 py-0.5 rounded font-mono text-sm ring-1 transition-colors " +
         (empty
@@ -379,7 +412,8 @@ function Slot({
           : showRight
           ? "bg-emerald-500/20 ring-emerald-400/60 text-emerald-100"
           : showWrong
-          ? "bg-rose-500/20 ring-rose-400/60 text-rose-100"
+          ? // Muted amber/stone — visible as "this one isn't right" without alarm.
+            "bg-amber-500/10 ring-amber-300/40 text-amber-100/80"
           : "bg-amber-500/20 ring-amber-400/60 text-amber-100 hover:bg-amber-500/30")
       }
     >
