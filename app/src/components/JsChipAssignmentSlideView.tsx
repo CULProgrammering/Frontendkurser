@@ -37,7 +37,7 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, onPa
           {t(slide.title, lang)}
         </h2>
         <p className="text-stone-600 dark:text-indigo-200/80 mt-1 whitespace-pre-line">
-          {t(slide.prompt, lang)}
+          {t(puzzle.intro ?? slide.prompt, lang)}
         </p>
         <div className="mt-3 flex items-center gap-2 text-xs text-stone-500 dark:text-indigo-200/60">
           <span className="uppercase tracking-wider">
@@ -206,7 +206,11 @@ function PuzzleView({
   const runCheck = () => {
     if (!allSlotsFilled) return;
     const placedTexts = slots.map((s) => puzzle.chips[s as number]);
-    const ok = placedTexts.every((txt, i) => txt === puzzle.solution[i]);
+    const matches = (candidate: string[]) =>
+      placedTexts.every((txt, i) => txt === candidate[i]);
+    const ok =
+      matches(puzzle.solution) ||
+      (puzzle.alternatives ?? []).some(matches);
     if (ok) {
       setCheck("right");
     } else {

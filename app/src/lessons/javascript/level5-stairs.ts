@@ -622,6 +622,12 @@ export const stairsLesson: Lesson = {
         },
         // p3: code B (n dashes) — pick the right body shape
         {
+          intro: {
+            en:
+              "Now build a line of n dashes. For n = 4 the answer is \"----\".\nSame shape — different character.",
+            sv:
+              "Nu bygger vi en rad med n streck. För n = 4 är svaret \"----\".\nSamma form — annat tecken.",
+          },
           prompt: {
             en: "Pick the right body line — the one that adds to the accumulator.",
             sv: "Välj rätt kropps-rad — den som lägger till i ackumulatorn.",
@@ -638,6 +644,12 @@ export const stairsLesson: Lesson = {
         },
         // p4: code B — full assembly with distractors
         {
+          intro: {
+            en:
+              "Now build a line of n dashes. For n = 4 the answer is \"----\".\nSame shape — different character.",
+            sv:
+              "Nu bygger vi en rad med n streck. För n = 4 är svaret \"----\".\nSamma form — annat tecken.",
+          },
           prompt: {
             en: "Put it all together — five pieces in order. Three chips don't belong.",
             sv: "Sätt ihop allt — fem bitar i ordning. Tre chips hör inte hit.",

@@ -579,6 +579,12 @@ export const doorLesson: Lesson = {
         },
         // p3: code B (mood) — just the else keyword
         {
+          intro: {
+            en:
+              "Same shape, different story — smile when happy, frown otherwise.",
+            sv:
+              "Samma form, annan berättelse — le när glad, surmula annars.",
+          },
           prompt: {
             en: "Pick the keyword between the } and the {.",
             sv: "Välj ordet mellan } och {.",
@@ -590,6 +596,12 @@ export const doorLesson: Lesson = {
         },
         // p4: code B — full assembly
         {
+          intro: {
+            en:
+              "Same shape, different story — smile when happy, frown otherwise.",
+            sv:
+              "Samma form, annan berättelse — le när glad, surmula annars.",
+          },
           prompt: {
             en: "Put it all together.",
             sv: "Sätt ihop hela.",
@@ -829,6 +841,12 @@ export const doorLesson: Lesson = {
         },
         // p3: code B (door) — just the operator
         {
+          intro: {
+            en:
+              "Same idea with a door — pick the operator that compares STRICTLY so only \"open\" passes.",
+            sv:
+              "Samma idé med en dörr — välj operatorn som jämför STRIKT så att bara \"open\" släpps igenom.",
+          },
           prompt: {
             en: "Which operator asks 'are these exactly equal'?",
             sv: "Vilken operator frågar 'är dessa exakt lika'?",
@@ -840,6 +858,12 @@ export const doorLesson: Lesson = {
         },
         // p4: code B — full assembly
         {
+          intro: {
+            en:
+              "Same idea with a door — pick the operator that compares STRICTLY so only \"open\" passes.",
+            sv:
+              "Samma idé med en dörr — välj operatorn som jämför STRIKT så att bara \"open\" släpps igenom.",
+          },
           prompt: {
             en: "Put it all together — strict comparison only.",
             sv: "Sätt ihop hela — bara strikt jämförelse.",

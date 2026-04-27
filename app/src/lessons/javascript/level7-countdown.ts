@@ -374,6 +374,12 @@ export const countdownLesson: Lesson = {
         },
         // p3: code B (coins/goal) — condition pieces
         {
+          intro: {
+            en:
+              "Same idea, different names: count coins up to a goal of 5.",
+            sv:
+              "Samma idé, andra namn: räkna mynt upp till ett mål på 5.",
+          },
           prompt: {
             en: "Build the condition that keeps the loop going.",
             sv: "Bygg villkoret som håller loopen igång.",
@@ -385,6 +391,12 @@ export const countdownLesson: Lesson = {
         },
         // p4: code B — full assembly
         {
+          intro: {
+            en:
+              "Same idea, different names: count coins up to a goal of 5.",
+            sv:
+              "Samma idé, andra namn: räkna mynt upp till ett mål på 5.",
+          },
           prompt: {
             en: "Put it all together.",
             sv: "Sätt ihop hela.",
@@ -455,6 +467,12 @@ export const countdownLesson: Lesson = {
         },
         // p3: code B (subtract 5) — pick the body operation
         {
+          intro: {
+            en:
+              "Now: subtract 5 from n until it's no longer positive. Count the subtractions.",
+            sv:
+              "Nu: dra 5 från n tills den inte längre är positiv. Räkna avdragen.",
+          },
           prompt: {
             en: "Pick the expression that modifies n.",
             sv: "Välj uttrycket som ändrar n.",
@@ -466,6 +484,12 @@ export const countdownLesson: Lesson = {
         },
         // p4: code B — full assembly
         {
+          intro: {
+            en:
+              "Now: subtract 5 from n until it's no longer positive. Count the subtractions.",
+            sv:
+              "Nu: dra 5 från n tills den inte längre är positiv. Räkna avdragen.",
+          },
           prompt: {
             en: "Put it all together.",
             sv: "Sätt ihop hela.",

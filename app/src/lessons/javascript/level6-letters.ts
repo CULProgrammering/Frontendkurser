@@ -380,6 +380,12 @@ export const lettersLesson: Lesson = {
         },
         // p3: code B (phrase/vowel, loop var renamed to letter) — for…of header pieces
         {
+          intro: {
+            en:
+              "Same idea, different names: count how often `vowel` appears in `phrase`. The loop variable is now called `letter`.",
+            sv:
+              "Samma idé, andra namn: räkna hur ofta `vowel` finns i `phrase`. Loop-variabeln heter nu `letter`.",
+          },
           prompt: {
             en: "Place the pieces of the for…of header.",
             sv: "Placera delarna i for…of-huvudet.",
@@ -391,6 +397,12 @@ export const lettersLesson: Lesson = {
         },
         // p4: code B — full assembly
         {
+          intro: {
+            en:
+              "Same idea, different names: count how often `vowel` appears in `phrase`. The loop variable is now called `letter`.",
+            sv:
+              "Samma idé, andra namn: räkna hur ofta `vowel` finns i `phrase`. Loop-variabeln heter nu `letter`.",
+          },
           prompt: {
             en: "Put it all together.",
             sv: "Sätt ihop hela.",
@@ -446,9 +458,16 @@ export const lettersLesson: Lesson = {
             'let count = 0;\nfor (const ch of word) {\n  if ([[]] [[]] [[]] [[]] [[]] [[]] [[]]) {\n    count = count + 1;\n  }\n}\nreturn count;',
           chips: ["ch", "===", '"a"', "||", "ch", "===", '"e"', "&&"],
           solution: ["ch", "===", '"a"', "||", "ch", "===", '"e"'],
+          alternatives: [["ch", "===", '"e"', "||", "ch", "===", '"a"']],
         },
         // p3: code B (text, "r" or "n") — pick the operator
         {
+          intro: {
+            en:
+              "Now count letters that are 'r' OR 'n'. Same shape — combine two checks with ||.",
+            sv:
+              "Nu räknar vi bokstäver som är 'r' ELLER 'n'. Samma form — kombinera två kontroller med ||.",
+          },
           prompt: {
             en: "Which operator means 'one match is enough'?",
             sv: "Vilken operator betyder 'en matchning räcker'?",
@@ -460,6 +479,12 @@ export const lettersLesson: Lesson = {
         },
         // p4: code B — full assembly of condition
         {
+          intro: {
+            en:
+              "Now count letters that are 'r' OR 'n'. Same shape — combine two checks with ||.",
+            sv:
+              "Nu räknar vi bokstäver som är 'r' ELLER 'n'. Samma form — kombinera två kontroller med ||.",
+          },
           prompt: {
             en: "Build the whole condition.",
             sv: "Bygg hela villkoret.",
@@ -468,6 +493,7 @@ export const lettersLesson: Lesson = {
             'let count = 0;\nfor (const ch of text) {\n  if ([[]] [[]] [[]] [[]] [[]] [[]] [[]]) {\n    count = count + 1;\n  }\n}\nreturn count;',
           chips: ["ch", "===", '"r"', "||", "ch", "===", '"n"', "&&"],
           solution: ["ch", "===", '"r"', "||", "ch", "===", '"n"'],
+          alternatives: [["ch", "===", '"n"', "||", "ch", "===", '"r"']],
         },
       ],
       legend: [

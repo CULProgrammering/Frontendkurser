@@ -85,10 +85,8 @@ export function LettersScene({ step }: Props) {
           return (
             <g
               className="text-stone-700 dark:text-indigo-100"
-              style={{
-                transition: "transform 500ms ease-out",
-                transform: `translateX(${tx}px)`,
-              }}
+              transform={`translate(${tx}, 0)`}
+              style={{ transition: "transform 500ms ease-out" }}
             >
               <StickFigure
                 x={figureBaseX}

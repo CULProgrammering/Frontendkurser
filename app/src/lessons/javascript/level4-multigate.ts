@@ -145,9 +145,16 @@ export const multiGateLesson: Lesson = {
             "if ([[]] [[]] [[]]) {\n  return [[]];\n} else {\n  return [[]];\n}",
           chips: ["age >= 18", "&&", "hasTicket", '"let in"', '"stopped"'],
           solution: ["age >= 18", "&&", "hasTicket", '"let in"', '"stopped"'],
+          alternatives: [["hasTicket", "&&", "age >= 18", '"let in"', '"stopped"']],
         },
         // p3: code B (fuel/hasKey) — combine with && and second operand
         {
+          intro: {
+            en:
+              "Now: enough fuel AND has the key. Same shape with different variables.",
+            sv:
+              "Nu: tillräckligt med bränsle OCH har nyckeln. Samma form med andra variabler.",
+          },
           prompt: {
             en: "Combine the two checks with the right operator.",
             sv: "Kombinera de två kontrollerna med rätt operator.",
@@ -159,6 +166,12 @@ export const multiGateLesson: Lesson = {
         },
         // p4: code B — full assembly
         {
+          intro: {
+            en:
+              "Now: enough fuel AND has the key. Same shape with different variables.",
+            sv:
+              "Nu: tillräckligt med bränsle OCH har nyckeln. Samma form med andra variabler.",
+          },
           prompt: {
             en: "Put it all together.",
             sv: "Sätt ihop hela.",
@@ -167,6 +180,7 @@ export const multiGateLesson: Lesson = {
             "if ([[]] [[]] [[]]) {\n  return [[]];\n} else {\n  return [[]];\n}",
           chips: ["fuel >= 10", "&&", "hasKey", '"drive"', '"wait"'],
           solution: ["fuel >= 10", "&&", "hasKey", '"drive"', '"wait"'],
+          alternatives: [["hasKey", "&&", "fuel >= 10", '"drive"', '"wait"']],
         },
       ],
       legend: [
@@ -297,9 +311,25 @@ export const multiGateLesson: Lesson = {
             "else",
             '"stopped"',
           ],
+          alternatives: [
+            [
+              "hasTicket",
+              "||",
+              "isVip",
+              '"let in"',
+              "else",
+              '"stopped"',
+            ],
+          ],
         },
         // p3: code B (isStudent/hasCoupon) — pick the right operator
         {
+          intro: {
+            en:
+              "Now: student OR holds a coupon → discount. Same shape, different variables.",
+            sv:
+              "Nu: student ELLER har kupong → rabatt. Samma form, andra variabler.",
+          },
           prompt: {
             en: "Which operator means 'one side is enough'?",
             sv: "Vilken operator betyder 'en sida räcker'?",
@@ -311,6 +341,12 @@ export const multiGateLesson: Lesson = {
         },
         // p4: code B — full assembly
         {
+          intro: {
+            en:
+              "Now: student OR holds a coupon → discount. Same shape, different variables.",
+            sv:
+              "Nu: student ELLER har kupong → rabatt. Samma form, andra variabler.",
+          },
           prompt: {
             en: "Put it all together.",
             sv: "Sätt ihop hela.",
@@ -334,6 +370,16 @@ export const multiGateLesson: Lesson = {
             '"discount"',
             "else",
             '"full"',
+          ],
+          alternatives: [
+            [
+              "hasCoupon",
+              "||",
+              "isStudent",
+              '"discount"',
+              "else",
+              '"full"',
+            ],
           ],
         },
       ],

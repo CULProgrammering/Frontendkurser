@@ -298,6 +298,12 @@ export const tastingLesson: Lesson = {
         },
         // p3: code B (add 5 until reaching 100) — body line + condition
         {
+          intro: {
+            en:
+              "Now: add 5 in a do…while loop. Keep going while n is below 100.\nThe body still runs at least once — even if n already starts past 100.",
+            sv:
+              "Nu: lägg till 5 i en do…while-loop. Fortsätt så länge n är under 100.\nKroppen körs ändå minst en gång — även om n redan börjar över 100.",
+          },
           prompt: {
             en: "Place the body line and the keep-going condition.",
             sv: "Placera kropps-raden och fortsätt-villkoret.",
@@ -309,6 +315,12 @@ export const tastingLesson: Lesson = {
         },
         // p4: code B — full assembly with do/while keywords
         {
+          intro: {
+            en:
+              "Now: add 5 in a do…while loop. Keep going while n is below 100.\nThe body still runs at least once — even if n already starts past 100.",
+            sv:
+              "Nu: lägg till 5 i en do…while-loop. Fortsätt så länge n är under 100.\nKroppen körs ändå minst en gång — även om n redan börjar över 100.",
+          },
           prompt: {
             en: "Put it all together.",
             sv: "Sätt ihop hela.",

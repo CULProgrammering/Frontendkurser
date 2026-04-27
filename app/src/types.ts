@@ -225,6 +225,13 @@ export type JsChipPuzzle = {
   /** Optional sub-prompt above this puzzle. */
   prompt?: Loc;
   /**
+   * Optional per-puzzle override of the slide-level prompt, shown at the
+   * top of the slide while this puzzle is active. Useful when the same
+   * chip-assignment slide cycles through different "code A / code B"
+   * variants with different named values.
+   */
+  intro?: Loc;
+  /**
    * Code template with `[[]]` markers where chips go (left-to-right).
    * Newlines preserved with monospace rendering.
    */
@@ -239,6 +246,12 @@ export type JsChipPuzzle = {
    * Length must equal the number of `[[]]` markers in template.
    */
   solution: string[];
+  /**
+   * Additional accepted orderings — useful for commutative operators
+   * like `||` and `&&` where operand order doesn't matter semantically.
+   * Each entry is a full alternative to `solution`, same length.
+   */
+  alternatives?: string[][];
 };
 
 /**
