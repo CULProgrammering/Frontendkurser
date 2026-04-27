@@ -537,5 +537,172 @@ export const conveyorLesson: Lesson = {
         },
       },
     },
+
+    // L3 final lab — music player button. Uses switch with five named cases
+    // plus default. Distinct from the recycling/animal-sounds themes used
+    // in this chapter.
+    {
+      kind: "exercise",
+      title: { en: "Lab: Music Player Button", sv: "Labb: Musikspelar-knapp" },
+      prompt: {
+        en:
+          "Pick the right action when a music player button is pressed.\n\n" +
+          "User stories (variable names are suggestions — pick your own if you like):\n" +
+          "1. Declare a string variable (e.g. button) and set it to one of: \"play\", \"pause\", \"stop\", \"next\", \"prev\".\n" +
+          "2. Declare a string variable (e.g. action) and set it to \"\".\n" +
+          "3. Use a switch on button with these cases (each ending with break):\n" +
+          "   - \"play\"  → action = \"Playing track\"\n" +
+          "   - \"pause\" → action = \"Paused\"\n" +
+          "   - \"stop\"  → action = \"Stopped\"\n" +
+          "   - \"next\"  → action = \"Skipped to next\"\n" +
+          "   - \"prev\"  → action = \"Back one track\"\n" +
+          "4. Add a default case that sets action to \"Unknown button\".\n" +
+          "5. Print button.\n" +
+          "6. Print action.\n\n" +
+          "Don't forget break — without it, cases fall through.",
+        sv:
+          "Välj rätt åtgärd när en knapp på musikspelaren trycks.\n\n" +
+          "Användarberättelser (variabelnamnen är förslag — välj egna om du vill):\n" +
+          "1. Deklarera en strängvariabel (t.ex. button) och sätt den till en av: \"play\", \"pause\", \"stop\", \"next\", \"prev\".\n" +
+          "2. Deklarera en strängvariabel (t.ex. action) och sätt den till \"\".\n" +
+          "3. Använd en switch på button med dessa case (varje slutar med break):\n" +
+          "   - \"play\"  → action = \"Playing track\"\n" +
+          "   - \"pause\" → action = \"Paused\"\n" +
+          "   - \"stop\"  → action = \"Stopped\"\n" +
+          "   - \"next\"  → action = \"Skipped to next\"\n" +
+          "   - \"prev\"  → action = \"Back one track\"\n" +
+          "4. Lägg till en default som sätter action till \"Unknown button\".\n" +
+          "5. Skriv ut button.\n" +
+          "6. Skriv ut action.\n\n" +
+          "Glöm inte break — utan det faller case igenom.",
+      },
+      starterJs:
+        "// Follow the user stories shown to the left.\n\n" +
+        "// 1-2. Declare your variables:\n\n\n\n" +
+        "// 3-4. switch (button) { ... }\n\n\n\n\n\n\n\n\n" +
+        "// 5-6. Print button, then action:\n\n",
+      tests: [
+        {
+          label: {
+            en: "Console shows exactly two lines",
+            sv: "Konsolen visar exakt två rader",
+          },
+          assert:
+            "var c = window.__console || []; return c.length === 2;",
+          hint: {
+            en: "One console.log for button, one for action.",
+            sv: "En console.log för button, en för action.",
+          },
+        },
+        {
+          label: {
+            en: "Each variable you print is one you declared",
+            sv: "Varje variabel du skriver ut är en du deklarerat",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "var logs = []; var re = /console\\.log\\s*\\(\\s*([A-Za-z_$][A-Za-z0-9_$]*)\\s*\\)/g;" +
+            "var m; while ((m = re.exec(src)) !== null) logs.push(m[1]);" +
+            "if (logs.length === 0) return false;" +
+            "for (var i = 0; i < logs.length; i++) {" +
+            "  var name = logs[i];" +
+            "  var d = new RegExp('(?:let|const|var|function)\\\\s+' + name + '\\\\b');" +
+            "  if (!d.test(src)) return false;" +
+            "}" +
+            "return true;",
+          hint: {
+            en:
+              "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
+            sv:
+              "Om en console.log-rad är tom eller fel, dubbelkolla variabelnamnet — det måste matcha det du deklarerade med let.",
+          },
+        },
+        {
+          label: {
+            en: 'Line 1 is one of "play", "pause", "stop", "next", "prev"',
+            sv: 'Rad 1 är "play", "pause", "stop", "next" eller "prev"',
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 1) return false;" +
+            "return ['play','pause','stop','next','prev'].indexOf(c[0].text) !== -1;",
+          hint: {
+            en: "Set button to one of the five lowercase strings.",
+            sv: "Sätt button till en av de fem strängarna med små bokstäver.",
+          },
+        },
+        {
+          label: {
+            en: "Action matches the rule for the chosen button",
+            sv: "Action matchar regeln för den valda knappen",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 2) return false;" +
+            "var map = {play:'Playing track', pause:'Paused', stop:'Stopped', next:'Skipped to next', prev:'Back one track'};" +
+            "var btn = c[0].text;" +
+            "if (!(btn in map)) return false;" +
+            "return c[1].text === map[btn];",
+          hint: {
+            en: "Use the exact action strings from the user stories — capitalization counts.",
+            sv: "Använd exakta action-strängar från användarberättelserna — versaler räknas.",
+          },
+        },
+        {
+          label: {
+            en: "Code uses a switch statement",
+            sv: "Koden använder switch",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "return /switch\\s*\\(/.test(src);",
+          hint: {
+            en: "Start the dispatch with: switch (button) { ... }",
+            sv: "Börja med: switch (button) { ... }",
+          },
+        },
+        {
+          label: {
+            en: "Code has at least five case clauses",
+            sv: "Koden har minst fem case-klausuler",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "var n = (src.match(/case\\s+/g) || []).length;" +
+            "return n >= 5;",
+          hint: {
+            en: 'One case per button: case "play":, case "pause":, etc.',
+            sv: 'Ett case per knapp: case "play":, case "pause":, osv.',
+          },
+        },
+        {
+          label: {
+            en: "Code has a default case",
+            sv: "Koden har en default-klausul",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "return /default\\s*:/.test(src);",
+          hint: {
+            en: 'Add: default: action = "Unknown button";',
+            sv: 'Lägg till: default: action = "Unknown button";',
+          },
+        },
+        {
+          label: {
+            en: "Code uses break at least five times",
+            sv: "Koden använder break minst fem gånger",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "var n = (src.match(/\\bbreak\\b/g) || []).length;" +
+            "return n >= 5;",
+          hint: {
+            en: "Each named case needs its own break to stop the fall-through.",
+            sv: "Varje namngivet case behöver sitt eget break för att stoppa fall-through.",
+          },
+        },
+      ],
+    },
   ],
 };

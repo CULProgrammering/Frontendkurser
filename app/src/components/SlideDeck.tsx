@@ -5,6 +5,7 @@ import { AssignmentSlideView } from "./AssignmentSlideView";
 import { JsAssignmentSlideView } from "./JsAssignmentSlideView";
 import { JsChipAssignmentSlideView } from "./JsChipAssignmentSlideView";
 import { JsTypedAssignmentSlideView } from "./JsTypedAssignmentSlideView";
+import { ExerciseSlideView } from "./ExerciseSlideView";
 import { markComplete } from "../progress";
 import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
@@ -121,6 +122,18 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
             slide={slide}
             storageKey={`${courseId}:${lesson.id}:${idx}`}
             key={`t-${idx}`}
+            onPass={
+              idx === total - 1
+                ? () => markComplete(courseId, lesson.id)
+                : undefined
+            }
+          />
+        )}
+        {slide.kind === "exercise" && (
+          <ExerciseSlideView
+            slide={slide}
+            storageKey={`${courseId}:${lesson.id}:${idx}`}
+            key={`x-${idx}`}
             onPass={
               idx === total - 1
                 ? () => markComplete(courseId, lesson.id)

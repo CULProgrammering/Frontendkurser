@@ -390,5 +390,130 @@ export const tastingLesson: Lesson = {
         },
       ],
     },
+
+    // L8 final lab — refill a cup. Body must run at least once (do…while);
+    // counts pours of a fixed size until target is reached. Distinct from
+    // the chapter's tasting/subtract-7/doubling exercises.
+    {
+      kind: "exercise",
+      title: { en: "Lab: Refill a Cup", sv: "Labb: Fyll på koppen" },
+      prompt: {
+        en:
+          "Pour a fixed amount of water into a cup until it's full enough; count the pours.\n\n" +
+          "User stories (variable names are suggestions):\n" +
+          "1. Declare a number variable (e.g. target) — the desired amount in ml (e.g. 250).\n" +
+          "2. Declare a number variable (e.g. pourSize) — how much each pour adds (e.g. 60).\n" +
+          "3. Declare a number variable (e.g. cup) and set it to 0.\n" +
+          "4. Declare a number variable (e.g. pours) and set it to 0.\n" +
+          "5. Use a do…while loop: each iteration adds pourSize to cup and increments pours by 1.\n" +
+          "   The loop continues while cup < target.\n" +
+          "6. Print pours.\n" +
+          "7. Print cup (the final volume).\n\n" +
+          "do…while runs the body once before checking the condition — useful when at least one pour must happen.",
+        sv:
+          "Häll en fast mängd vatten i en kopp tills den är tillräckligt full; räkna hällningarna.\n\n" +
+          "Användarberättelser (variabelnamnen är förslag):\n" +
+          "1. Deklarera en talvariabel (t.ex. target) — önskat belopp i ml (t.ex. 250).\n" +
+          "2. Deklarera en talvariabel (t.ex. pourSize) — hur mycket varje hällning lägger till (t.ex. 60).\n" +
+          "3. Deklarera en talvariabel (t.ex. cup) och sätt den till 0.\n" +
+          "4. Deklarera en talvariabel (t.ex. pours) och sätt den till 0.\n" +
+          "5. Använd en do…while-loop: varje iteration lägger till pourSize i cup och ökar pours med 1.\n" +
+          "   Loopen fortsätter så länge cup < target.\n" +
+          "6. Skriv ut pours.\n" +
+          "7. Skriv ut cup (slutvolymen).\n\n" +
+          "do…while kör kroppen en gång innan villkoret kollas — bra när minst en hällning måste ske.",
+      },
+      starterJs:
+        "// Follow the user stories shown to the left.\n\n" +
+        "// 1-4. Declare target, pourSize, cup, pours:\n\n\n\n\n\n" +
+        "// 5. do { ... } while (cup < target);\n\n\n\n\n" +
+        "// 6-7. Print pours, then cup:\n\n",
+      tests: [
+        {
+          label: {
+            en: "Console shows exactly two lines",
+            sv: "Konsolen visar exakt två rader",
+          },
+          assert:
+            "var c = window.__console || []; return c.length === 2;",
+          hint: {
+            en: "One console.log for pours, one for cup — both AFTER the loop ends.",
+            sv: "En console.log för pours, en för cup — båda EFTER loopen.",
+          },
+        },
+        {
+          label: {
+            en: "Each variable you print is one you declared",
+            sv: "Varje variabel du skriver ut är en du deklarerat",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "var logs = []; var re = /console\\.log\\s*\\(\\s*([A-Za-z_$][A-Za-z0-9_$]*)\\s*\\)/g;" +
+            "var m; while ((m = re.exec(src)) !== null) logs.push(m[1]);" +
+            "if (logs.length === 0) return false;" +
+            "for (var i = 0; i < logs.length; i++) {" +
+            "  var name = logs[i];" +
+            "  var d = new RegExp('(?:let|const|var|function)\\\\s+' + name + '\\\\b');" +
+            "  if (!d.test(src)) return false;" +
+            "}" +
+            "return true;",
+          hint: {
+            en:
+              "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
+            sv:
+              "Om en console.log-rad är tom eller fel, dubbelkolla variabelnamnet — det måste matcha det du deklarerade med let.",
+          },
+        },
+        {
+          label: {
+            en: "Line 1 (pours) is a positive whole number",
+            sv: "Rad 1 (pours) är ett positivt heltal",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 1) return false;" +
+            "var p = Number(c[0].text);" +
+            "return Number.isInteger(p) && p > 0;",
+          hint: {
+            en: "pours must be at least 1 because do…while always runs the body once.",
+            sv: "pours måste vara minst 1 eftersom do…while alltid kör kroppen en gång.",
+          },
+        },
+        {
+          label: {
+            en: "Line 2 (cup) equals pours × pourSize",
+            sv: "Rad 2 (cup) är pours × pourSize",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 2) return false;" +
+            "var pours = Number(c[0].text);" +
+            "var cup = Number(c[1].text);" +
+            "if (!Number.isFinite(pours) || !Number.isFinite(cup)) return false;" +
+            "if (pours <= 0 || cup <= 0) return false;" +
+            "var pourSize = cup / pours;" +
+            "return Number.isFinite(pourSize) && pourSize > 0 && Math.abs(pours * pourSize - cup) < 0.0001;",
+          hint: {
+            en:
+              "Inside the loop: cup = cup + pourSize; pours = pours + 1. cup ends up as a multiple of pourSize.",
+            sv:
+              "I loopen: cup = cup + pourSize; pours = pours + 1. cup blir en multipel av pourSize.",
+          },
+        },
+        {
+          label: {
+            en: "Code uses do…while",
+            sv: "Koden använder do…while",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "return /\\bdo\\s*\\{[\\s\\S]*\\}\\s*while\\s*\\(/.test(src);",
+          hint: {
+            en: "Use the form: do { ... } while (cup < target);",
+            sv: "Använd formen: do { ... } while (cup < target);",
+          },
+        },
+      ],
+    },
   ],
 };

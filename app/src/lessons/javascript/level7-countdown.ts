@@ -578,5 +578,146 @@ export const countdownLesson: Lesson = {
         },
       ],
     },
+
+    // L7 final lab — savings goal. Repeats while a running total falls short
+    // of a target; counts the iterations. Distinct from the chapter's
+    // count-up-to-n and keep-doubling exercises (linear addition until cross).
+    {
+      kind: "exercise",
+      title: { en: "Lab: Save Up Money", sv: "Labb: Spara ihop" },
+      prompt: {
+        en:
+          "Count how many weeks of fixed savings are needed to reach a goal.\n\n" +
+          "User stories (variable names are suggestions):\n" +
+          "1. Declare a number variable (e.g. goal) — the amount you want to save (e.g. 1000).\n" +
+          "2. Declare a number variable (e.g. weekly) — how much you save each week (e.g. 75).\n" +
+          "3. Declare a number variable (e.g. saved) and set it to 0.\n" +
+          "4. Declare a number variable (e.g. weeks) and set it to 0.\n" +
+          "5. Use a while loop that runs while saved < goal:\n" +
+          "   - add weekly to saved\n" +
+          "   - increment weeks by 1\n" +
+          "6. Print weeks.\n" +
+          "7. Print saved (the final amount, after the loop ends).",
+        sv:
+          "Räkna hur många veckors fast sparande som krävs för att nå ett mål.\n\n" +
+          "Användarberättelser (variabelnamnen är förslag):\n" +
+          "1. Deklarera en talvariabel (t.ex. goal) — beloppet du vill spara (t.ex. 1000).\n" +
+          "2. Deklarera en talvariabel (t.ex. weekly) — hur mycket du sparar per vecka (t.ex. 75).\n" +
+          "3. Deklarera en talvariabel (t.ex. saved) och sätt den till 0.\n" +
+          "4. Deklarera en talvariabel (t.ex. weeks) och sätt den till 0.\n" +
+          "5. Använd en while-loop som körs så länge saved < goal:\n" +
+          "   - lägg weekly till saved\n" +
+          "   - öka weeks med 1\n" +
+          "6. Skriv ut weeks.\n" +
+          "7. Skriv ut saved (det slutgiltiga beloppet efter loopen).",
+      },
+      starterJs:
+        "// Follow the user stories shown to the left.\n\n" +
+        "// 1-4. Declare goal, weekly, saved, weeks:\n\n\n\n\n\n" +
+        "// 5. while loop — keep adding weekly until saved reaches goal:\n\n\n\n\n" +
+        "// 6-7. Print weeks, then saved:\n\n",
+      tests: [
+        {
+          label: {
+            en: "Console shows exactly two lines",
+            sv: "Konsolen visar exakt två rader",
+          },
+          assert:
+            "var c = window.__console || []; return c.length === 2;",
+          hint: {
+            en: "One console.log for weeks (after the loop), one for saved.",
+            sv: "En console.log för weeks (efter loopen), en för saved.",
+          },
+        },
+        {
+          label: {
+            en: "Each variable you print is one you declared",
+            sv: "Varje variabel du skriver ut är en du deklarerat",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "var logs = []; var re = /console\\.log\\s*\\(\\s*([A-Za-z_$][A-Za-z0-9_$]*)\\s*\\)/g;" +
+            "var m; while ((m = re.exec(src)) !== null) logs.push(m[1]);" +
+            "if (logs.length === 0) return false;" +
+            "for (var i = 0; i < logs.length; i++) {" +
+            "  var name = logs[i];" +
+            "  var d = new RegExp('(?:let|const|var|function)\\\\s+' + name + '\\\\b');" +
+            "  if (!d.test(src)) return false;" +
+            "}" +
+            "return true;",
+          hint: {
+            en:
+              "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
+            sv:
+              "Om en console.log-rad är tom eller fel, dubbelkolla variabelnamnet — det måste matcha det du deklarerade med let.",
+          },
+        },
+        {
+          label: {
+            en: "Line 1 (weeks) is a positive whole number",
+            sv: "Rad 1 (weeks) är ett positivt heltal",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 1) return false;" +
+            "var w = Number(c[0].text);" +
+            "return Number.isInteger(w) && w > 0;",
+          hint: {
+            en: "weeks should be incremented inside the loop and printed at the end.",
+            sv: "weeks ska ökas i loopen och skrivas ut efter loopen.",
+          },
+        },
+        {
+          label: {
+            en: "Line 2 (saved) is a positive number",
+            sv: "Rad 2 (saved) är ett positivt tal",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 2) return false;" +
+            "var s = Number(c[1].text);" +
+            "return Number.isFinite(s) && s > 0;",
+          hint: {
+            en: "saved should hold the running total at the end of the loop.",
+            sv: "saved ska innehålla totalsumman när loopen är klar.",
+          },
+        },
+        {
+          label: {
+            en: "saved equals weekly × weeks (the loop accumulated correctly)",
+            sv: "saved är lika med weekly × weeks (loopen ackumulerade rätt)",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 2) return false;" +
+            "var weeks = Number(c[0].text);" +
+            "var saved = Number(c[1].text);" +
+            "if (!Number.isFinite(weeks) || !Number.isFinite(saved)) return false;" +
+            "if (weeks <= 0) return false;" +
+            "var weekly = saved / weeks;" +
+            "if (!Number.isFinite(weekly) || weekly <= 0) return false;" +
+            "return Math.abs(weekly * weeks - saved) < 0.0001;",
+          hint: {
+            en:
+              "Inside the loop: saved = saved + weekly; weeks = weeks + 1. The loop runs until saved >= goal.",
+            sv:
+              "I loopen: saved = saved + weekly; weeks = weeks + 1. Loopen kör tills saved >= goal.",
+          },
+        },
+        {
+          label: {
+            en: "Code uses a while loop",
+            sv: "Koden använder en while-loop",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "return /\\bwhile\\s*\\(/.test(src);",
+          hint: {
+            en: "Use the form: while (saved < goal) { ... }",
+            sv: "Använd formen: while (saved < goal) { ... }",
+          },
+        },
+      ],
+    },
   ],
 };
