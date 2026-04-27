@@ -555,5 +555,148 @@ export const lettersLesson: Lesson = {
         },
       ],
     },
+
+    // L6 final lab — letter search. Walks the string with for...of looking for
+    // a chosen single character; produces a boolean result. Distinct from the
+    // chapter's "count a or e" exercise (which counts characters).
+    {
+      kind: "exercise",
+      title: { en: "Lab: Letter Search", sv: "Labb: Bokstavssök" },
+      prompt: {
+        en:
+          "Check whether a word contains a chosen letter.\n\n" +
+          "User stories (variable names are suggestions):\n" +
+          "1. Declare a string (e.g. word) with at least 5 characters.\n" +
+          "2. Declare a string (e.g. letter) with exactly one character.\n" +
+          "3. Declare a boolean (e.g. found) and set it to false.\n" +
+          "4. Use a for…of loop to walk through word.\n" +
+          "5. Inside the loop, if the current character === letter, set found to true.\n" +
+          "6. Print word, letter, and found (three lines, in that order).",
+        sv:
+          "Kontrollera om ett ord innehåller en vald bokstav.\n\n" +
+          "Användarberättelser (variabelnamnen är förslag):\n" +
+          "1. Deklarera en sträng (t.ex. word) med minst 5 tecken.\n" +
+          "2. Deklarera en sträng (t.ex. letter) med exakt ett tecken.\n" +
+          "3. Deklarera en boolean (t.ex. found) och sätt den till false.\n" +
+          "4. Använd en for…of-loop som går igenom word.\n" +
+          "5. Inuti loopen, om nuvarande tecken === letter, sätt found till true.\n" +
+          "6. Skriv ut word, letter och found (tre rader, i den ordningen).",
+      },
+      starterJs:
+        "// Follow the user stories shown to the left.\n\n" +
+        "// 1-3. Declare word, letter, found:\n\n\n\n" +
+        "// 4-5. for...of loop that flips found if it sees letter:\n\n\n\n" +
+        "// 6. Print word, letter, found:\n\n",
+      tests: [
+        {
+          label: {
+            en: "Console shows exactly three lines",
+            sv: "Konsolen visar exakt tre rader",
+          },
+          assert:
+            "var c = window.__console || []; return c.length === 3;",
+          hint: {
+            en: "One console.log for word, one for letter, one for found.",
+            sv: "En console.log för word, en för letter, en för found.",
+          },
+        },
+        {
+          label: {
+            en: "Each variable you print is one you declared",
+            sv: "Varje variabel du skriver ut är en du deklarerat",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "var logs = []; var re = /console\\.log\\s*\\(\\s*([A-Za-z_$][A-Za-z0-9_$]*)\\s*\\)/g;" +
+            "var m; while ((m = re.exec(src)) !== null) logs.push(m[1]);" +
+            "if (logs.length === 0) return false;" +
+            "for (var i = 0; i < logs.length; i++) {" +
+            "  var name = logs[i];" +
+            "  var d = new RegExp('(?:let|const|var|function)\\\\s+' + name + '\\\\b');" +
+            "  if (!d.test(src)) return false;" +
+            "}" +
+            "return true;",
+          hint: {
+            en:
+              "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
+            sv:
+              "Om en console.log-rad är tom eller fel, dubbelkolla variabelnamnet — det måste matcha det du deklarerade med let.",
+          },
+        },
+        {
+          label: {
+            en: "Line 1 is a string with at least 5 characters",
+            sv: "Rad 1 är en sträng med minst 5 tecken",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 1) return false;" +
+            "return typeof c[0].text === 'string' && c[0].text.length >= 5;",
+          hint: {
+            en: "Pick a longer word — at least 5 letters.",
+            sv: "Välj ett längre ord — minst 5 bokstäver.",
+          },
+        },
+        {
+          label: {
+            en: "Line 2 is exactly one character",
+            sv: "Rad 2 är exakt ett tecken",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 2) return false;" +
+            "return c[1].text.length === 1;",
+          hint: {
+            en: "letter should be a single character, e.g. \"r\".",
+            sv: "letter ska vara ett enda tecken, t.ex. \"r\".",
+          },
+        },
+        {
+          label: {
+            en: 'Line 3 is "true" or "false"',
+            sv: 'Rad 3 är "true" eller "false"',
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 3) return false;" +
+            "return c[2].text === 'true' || c[2].text === 'false';",
+          hint: {
+            en: "found must be a boolean (not a string).",
+            sv: "found ska vara en boolean (inte en sträng).",
+          },
+        },
+        {
+          label: {
+            en: "found correctly reports whether word contains letter",
+            sv: "found rapporterar korrekt om word innehåller letter",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 3) return false;" +
+            "var word = c[0].text;" +
+            "var letter = c[1].text;" +
+            "var actual = c[2].text === 'true';" +
+            "var expected = word.indexOf(letter) !== -1;" +
+            "return actual === expected;",
+          hint: {
+            en: "Inside the loop: if (ch === letter) { found = true; }",
+            sv: "I loopen: if (ch === letter) { found = true; }",
+          },
+        },
+        {
+          label: {
+            en: "Code uses for…of",
+            sv: "Koden använder for…of",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "return /\\bfor\\s*\\(\\s*(?:let|const|var)\\s+\\w+\\s+of\\b/.test(src);",
+          hint: {
+            en: "Use the form: for (let ch of word) { ... }",
+            sv: "Använd formen: for (let ch of word) { ... }",
+          },
+        },
+      ],
+    },
   ],
 };

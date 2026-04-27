@@ -625,5 +625,159 @@ export const multiGateLesson: Lesson = {
         },
       },
     },
+
+    // L4 final lab — smart light. Combines &&, ||, ! with grouping
+    // parentheses on a different scenario than the bouncer/door theme.
+    {
+      kind: "exercise",
+      title: { en: "Lab: Smart Light", sv: "Labb: Smart lampa" },
+      prompt: {
+        en:
+          "A smart light should turn on only at night when it senses motion — unless someone has switched it off manually.\n\n" +
+          "User stories (variable names are suggestions — pick your own if you like):\n" +
+          "1. Declare a number variable (e.g. hour) between 0 and 23.\n" +
+          "2. Declare a boolean variable (e.g. motion) — true if motion is sensed.\n" +
+          "3. Declare a boolean variable (e.g. manualOff) — true if the manual switch is off.\n" +
+          "4. Declare a boolean variable (e.g. lightOn) and set it to false.\n" +
+          "5. Set lightOn to true when ALL of these hold:\n" +
+          "   - motion is true\n" +
+          "   - it's night: hour < 7 OR hour >= 19\n" +
+          "   - manualOff is NOT true\n" +
+          "   Use && , || and ! together. Wrap the night check in parentheses.\n" +
+          "6. Print hour, motion, manualOff and lightOn (four lines, in that order).",
+        sv:
+          "En smart lampa ska tändas endast på natten när rörelse upptäcks — om den inte är manuellt avstängd.\n\n" +
+          "Användarberättelser (variabelnamnen är förslag — välj egna om du vill):\n" +
+          "1. Deklarera en talvariabel (t.ex. hour) mellan 0 och 23.\n" +
+          "2. Deklarera en boolesk variabel (t.ex. motion) — true om rörelse upptäcks.\n" +
+          "3. Deklarera en boolesk variabel (t.ex. manualOff) — true om brytaren är manuellt av.\n" +
+          "4. Deklarera en boolesk variabel (t.ex. lightOn) och sätt den till false.\n" +
+          "5. Sätt lightOn till true när ALLA dessa stämmer:\n" +
+          "   - motion är true\n" +
+          "   - det är natt: hour < 7 ELLER hour >= 19\n" +
+          "   - manualOff är INTE true\n" +
+          "   Använd && , || och ! tillsammans. Sätt parentes runt natt-kollen.\n" +
+          "6. Skriv ut hour, motion, manualOff och lightOn (fyra rader, i den ordningen).",
+      },
+      starterJs:
+        "// Follow the user stories shown to the left.\n\n" +
+        "// 1-4. Declare hour, motion, manualOff and lightOn:\n\n\n\n\n\n" +
+        "// 5. One assignment that combines &&, || and ! — with parentheses:\n" +
+        "// lightOn = ...\n\n\n" +
+        "// 6. Print all four values in order:\n\n",
+      tests: [
+        {
+          label: {
+            en: "Console shows exactly four lines",
+            sv: "Konsolen visar exakt fyra rader",
+          },
+          assert:
+            "var c = window.__console || []; return c.length === 4;",
+          hint: {
+            en: "Print hour, motion, manualOff, lightOn — one console.log each.",
+            sv: "Skriv ut hour, motion, manualOff, lightOn — en console.log var.",
+          },
+        },
+        {
+          label: {
+            en: "Each variable you print is one you declared",
+            sv: "Varje variabel du skriver ut är en du deklarerat",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "var logs = []; var re = /console\\.log\\s*\\(\\s*([A-Za-z_$][A-Za-z0-9_$]*)\\s*\\)/g;" +
+            "var m; while ((m = re.exec(src)) !== null) logs.push(m[1]);" +
+            "if (logs.length === 0) return false;" +
+            "for (var i = 0; i < logs.length; i++) {" +
+            "  var name = logs[i];" +
+            "  var d = new RegExp('(?:let|const|var|function)\\\\s+' + name + '\\\\b');" +
+            "  if (!d.test(src)) return false;" +
+            "}" +
+            "return true;",
+          hint: {
+            en:
+              "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
+            sv:
+              "Om en console.log-rad är tom eller fel, dubbelkolla variabelnamnet — det måste matcha det du deklarerade med let.",
+          },
+        },
+        {
+          label: {
+            en: "Line 1 is a number between 0 and 23",
+            sv: "Rad 1 är ett tal mellan 0 och 23",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 1) return false;" +
+            "var n = Number(c[0].text);" +
+            "return Number.isFinite(n) && n >= 0 && n <= 23;",
+          hint: {
+            en: "Set hour to an integer 0-23.",
+            sv: "Sätt hour till ett heltal 0-23.",
+          },
+        },
+        {
+          label: {
+            en: 'Lines 2-4 are "true" or "false"',
+            sv: 'Rad 2-4 är "true" eller "false"',
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 4) return false;" +
+            "var ok = function(s){ return s === 'true' || s === 'false'; };" +
+            "return ok(c[1].text) && ok(c[2].text) && ok(c[3].text);",
+          hint: {
+            en: "motion, manualOff and lightOn must all be booleans (not strings).",
+            sv: "motion, manualOff och lightOn måste vara booleans (inte strängar).",
+          },
+        },
+        {
+          label: {
+            en: "lightOn matches the rule given hour, motion and manualOff",
+            sv: "lightOn matchar regeln givet hour, motion och manualOff",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 4) return false;" +
+            "var hour = Number(c[0].text);" +
+            "var motion = c[1].text === 'true';" +
+            "var manualOff = c[2].text === 'true';" +
+            "var actual = c[3].text === 'true';" +
+            "var night = hour < 7 || hour >= 19;" +
+            "var expected = motion && night && !manualOff;" +
+            "return actual === expected;",
+          hint: {
+            en: "lightOn = motion && (hour < 7 || hour >= 19) && !manualOff",
+            sv: "lightOn = motion && (hour < 7 || hour >= 19) && !manualOff",
+          },
+        },
+        {
+          label: {
+            en: "Code uses && , || and ! together",
+            sv: "Koden använder && , || och ! tillsammans",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "return /&&/.test(src) && /\\|\\|/.test(src) && /(^|[^!])!\\s*[A-Za-z_$]/.test(src);",
+          hint: {
+            en: "All three operators are needed: && for AND, || for OR, ! to flip a boolean.",
+            sv: "Alla tre operatorer behövs: && för OCH, || för ELLER, ! för att vända en boolean.",
+          },
+        },
+        {
+          label: {
+            en: "Code uses parentheses to group the night check",
+            sv: "Koden använder parenteser för att gruppera natt-kollen",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "return /\\([^()]*\\|\\|[^()]*\\)/.test(src);",
+          hint: {
+            en: "Wrap the OR in parentheses: (hour < 7 || hour >= 19).",
+            sv: "Sätt OR inom parentes: (hour < 7 || hour >= 19).",
+          },
+        },
+      ],
+    },
   ],
 };

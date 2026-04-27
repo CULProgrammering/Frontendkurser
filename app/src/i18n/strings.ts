@@ -58,6 +58,25 @@ export const ui = {
   yourCodeGave: { en: "Your code gave:", sv: "Din kod gav:" },
   errorPrefix: { en: "Error:", sv: "Fel:" },
 
+  // ExerciseSlideView
+  htmlLabel: { en: "HTML", sv: "HTML" },
+  exerciseRun: { en: "Run", sv: "Kör" },
+  exerciseTests: { en: "Tests", sv: "Tester" },
+  exerciseAllPass: {
+    en: "✓ All checks pass. Nice work.",
+    sv: "✓ Alla kontroller klara. Bra jobbat.",
+  },
+  exerciseRunHint: {
+    en: "Press Run to check your work.",
+    sv: "Tryck Kör för att kontrollera.",
+  },
+  exercisePassedCount: { en: "passing", sv: "klara" },
+  consoleLabel: { en: "Console", sv: "Konsol" },
+  consoleEmpty: {
+    en: "(no output yet — press Run)",
+    sv: "(ingen utskrift än — tryck Kör)",
+  },
+
   // ThemeToggle / LanguageToggle
   toLight: { en: "Light mode", sv: "Ljust läge" },
   toDark: { en: "Dark mode", sv: "Mörkt läge" },

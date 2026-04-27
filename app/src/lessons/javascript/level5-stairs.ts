@@ -744,5 +744,100 @@ export const stairsLesson: Lesson = {
         },
       ],
     },
+
+    // L5 final lab — multiplication table. Uses a counted for-loop with a
+    // multiplication body. Distinct from the chapter's stairs/sum/n-stars
+    // exercises; new theme entirely.
+    {
+      kind: "exercise",
+      title: { en: "Lab: Multiplication Table", sv: "Labb: Multiplikationstabell" },
+      prompt: {
+        en:
+          "Print the first ten multiples of a number you pick.\n\n" +
+          "User stories (variable names are suggestions):\n" +
+          "1. Declare a number variable (e.g. factor) between 2 and 12.\n" +
+          "2. Use a for loop with an index from 1 to 10 (inclusive).\n" +
+          "3. Inside the loop, console.log factor multiplied by the current index.\n" +
+          "4. There should be exactly ten lines of output, and each line is the product.",
+        sv:
+          "Skriv ut de första tio multiplerna av ett tal du väljer.\n\n" +
+          "Användarberättelser (variabelnamnen är förslag):\n" +
+          "1. Deklarera en talvariabel (t.ex. factor) mellan 2 och 12.\n" +
+          "2. Använd en for-loop med ett index från 1 till 10 (inklusive).\n" +
+          "3. I loopen, console.log factor multiplicerat med aktuellt index.\n" +
+          "4. Det ska bli exakt tio rader, var och en är produkten.",
+      },
+      starterJs:
+        "// Follow the user stories shown to the left.\n\n" +
+        "// 1. Declare your factor variable:\n\n\n" +
+        "// 2-3. for loop printing factor × i for i = 1..10:\n\n",
+      tests: [
+        {
+          label: {
+            en: "Console shows exactly ten lines",
+            sv: "Konsolen visar exakt tio rader",
+          },
+          assert:
+            "var c = window.__console || []; return c.length === 10;",
+          hint: {
+            en: "Loop from 1 to 10 inclusive — that's ten iterations, ten console.log calls.",
+            sv: "Loopa från 1 till 10 inklusive — tio iterationer, tio console.log.",
+          },
+        },
+        {
+          label: {
+            en: "Every line is a finite number",
+            sv: "Varje rad är ett ändligt tal",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length !== 10) return false;" +
+            "for (var i = 0; i < 10; i++) {" +
+            "  var n = Number(c[i].text);" +
+            "  if (!Number.isFinite(n)) return false;" +
+            "}" +
+            "return true;",
+          hint: {
+            en: "Use console.log on a numeric expression like factor * i.",
+            sv: "Använd console.log på ett numeriskt uttryck som factor * i.",
+          },
+        },
+        {
+          label: {
+            en: "Lines form a multiplication table (each line = factor × position)",
+            sv: "Raderna bildar en multiplikationstabell (varje rad = factor × position)",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length !== 10) return false;" +
+            "var first = Number(c[0].text);" +
+            "if (!Number.isFinite(first) || first === 0) return false;" +
+            "var factor = first;" +
+            "for (var i = 0; i < 10; i++) {" +
+            "  if (Number(c[i].text) !== factor * (i + 1)) return false;" +
+            "}" +
+            "return true;",
+          hint: {
+            en:
+              "Inside the loop, log factor * i where i runs 1, 2, … 10. The first line should be factor itself.",
+            sv:
+              "I loopen, logga factor * i där i går 1, 2, … 10. Första raden är factor själv.",
+          },
+        },
+        {
+          label: {
+            en: "Code uses a for loop",
+            sv: "Koden använder en for-loop",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "return /\\bfor\\s*\\(/.test(src);",
+          hint: {
+            en: "Start with: for (let i = 1; i <= 10; i++) { ... }",
+            sv: "Börja med: for (let i = 1; i <= 10; i++) { ... }",
+          },
+        },
+      ],
+    },
   ],
 };

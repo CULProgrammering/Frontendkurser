@@ -300,12 +300,47 @@ export type JsTypedAssignmentSlide = {
   legend?: LegendEntry[];
 };
 
+/**
+ * One assertion in a freeform exercise. The `assert` string is treated as the
+ * BODY of a function executed inside the iframe's window. Use `return <expr>`
+ * to yield a boolean — truthy = pass, falsy or thrown = fail. Multiple
+ * statements are allowed, so a single test can call a student-defined function
+ * and then check the resulting DOM state.
+ *
+ * Inside the body, `document`, `window`, and any globals declared by the
+ * student's code (function declarations, var) are available directly. Note
+ * that top-level `let`/`const` in the student's code are NOT on `window`;
+ * source-regex checks against `__userJs` are required for those.
+ */
+export type ExerciseTest = {
+  label: Loc;
+  assert: string;
+  hint?: Loc;
+};
+
+/**
+ * Freeform "lab"-style exercise. The student edits HTML, CSS, and JS in a
+ * Monaco editor; output renders live in a sandboxed iframe; a list of named
+ * checks reports pass/fail. The exercise is purely formative — the user's
+ * code is never persisted into the rest of the app.
+ */
+export type ExerciseSlide = {
+  kind: "exercise";
+  title: Loc;
+  prompt: Loc;
+  starterHtml?: Loc;
+  starterCss?: Loc;
+  starterJs?: Loc;
+  tests: ExerciseTest[];
+};
+
 export type Slide =
   | ExplanationSlide
   | AssignmentSlide
   | JsAssignmentSlide
   | JsChipAssignmentSlide
-  | JsTypedAssignmentSlide;
+  | JsTypedAssignmentSlide
+  | ExerciseSlide;
 
 export type Lesson = {
   id: string;

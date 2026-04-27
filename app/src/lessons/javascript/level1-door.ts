@@ -937,5 +937,157 @@ export const doorLesson: Lesson = {
         },
       },
     },
+
+    // Final lab — a freeform Monaco exercise. JS-only, console-based: no
+    // functions and no DOM (those concepts haven't been introduced yet). The
+    // student declares variables, picks a number, and uses three separate
+    // `if` statements (no `else if` in L1) to assign the matching value.
+    {
+      kind: "exercise",
+      title: { en: "Lab: Fortune Picker", sv: "Labb: Lyckokakan" },
+      prompt: {
+        en:
+          "Pick a fortune from a list of three based on a number.\n\n" +
+          "User stories (variable names are suggestions — pick your own if you like, " +
+          "as long as they stay consistent through the program):\n" +
+          "1. Declare three string variables (e.g. fortune1, fortune2, fortune3) — any short fortune you like.\n" +
+          "2. Declare a number variable (e.g. n) and set it to 1, 2 or 3.\n" +
+          "3. Declare a string variable (e.g. selected) and set it to \"\".\n" +
+          "4. If your number === 1, set selected to the first fortune.\n" +
+          "5. If your number === 2, set selected to the second fortune.\n" +
+          "6. If your number === 3, set selected to the third fortune.\n" +
+          "7. Print the three fortunes in order (three console.log lines).\n" +
+          "8. Print selected (one more console.log line).\n\n" +
+          "You don't have else if yet — write three separate if statements, " +
+          "and compare the same number variable in each.",
+        sv:
+          "Välj en lyckokaka från en lista med tre baserat på ett nummer.\n\n" +
+          "Användarberättelser (variabelnamnen är förslag — välj egna om du vill, " +
+          "bara du håller dem konsekventa genom programmet):\n" +
+          "1. Deklarera tre strängvariabler (t.ex. fortune1, fortune2, fortune3) — välj fritt.\n" +
+          "2. Deklarera en talvariabel (t.ex. n) och sätt den till 1, 2 eller 3.\n" +
+          "3. Deklarera en strängvariabel (t.ex. selected) och sätt den till \"\".\n" +
+          "4. Om ditt nummer === 1, sätt selected till första lyckokakan.\n" +
+          "5. Om ditt nummer === 2, sätt selected till andra lyckokakan.\n" +
+          "6. Om ditt nummer === 3, sätt selected till tredje lyckokakan.\n" +
+          "7. Skriv ut de tre lyckokakorna i ordning (tre console.log-rader).\n" +
+          "8. Skriv ut selected (en till console.log-rad).\n\n" +
+          "Du har inte else if än — skriv tre separata if-satser, " +
+          "och jämför samma talvariabel i varje.",
+      },
+      starterJs:
+        "// Follow the user stories shown to the left.\n" +
+        "// Reminder: declare variables with `let`, e.g.\n" +
+        '//   let myWord = "hello";\n' +
+        '//   let myNumber = 3;\n\n' +
+        "// 1-3. Declare your variables here:\n\n\n\n" +
+        "// 4-6. Three separate if-statements:\n\n\n\n\n" +
+        "// 7-8. Print the three fortunes, then selected:\n\n",
+      tests: [
+        {
+          label: {
+            en: "Console shows exactly four lines",
+            sv: "Konsolen visar exakt fyra rader",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "return c.length === 4;",
+          hint: {
+            en: "Three console.log for the fortunes plus one for selected — four in total.",
+            sv: "Tre console.log för lyckokakorna plus en för selected — fyra totalt.",
+          },
+        },
+        {
+          label: {
+            en: "Each variable you print is one you declared",
+            sv: "Varje variabel du skriver ut är en du deklarerat",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "var logs = []; var re = /console\\.log\\s*\\(\\s*([A-Za-z_$][A-Za-z0-9_$]*)\\s*\\)/g;" +
+            "var m; while ((m = re.exec(src)) !== null) logs.push(m[1]);" +
+            "if (logs.length === 0) return false;" +
+            "for (var i = 0; i < logs.length; i++) {" +
+            "  var name = logs[i];" +
+            "  var d = new RegExp('(?:let|const|var|function)\\\\s+' + name + '\\\\b');" +
+            "  if (!d.test(src)) return false;" +
+            "}" +
+            "return true;",
+          hint: {
+            en:
+              "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
+            sv:
+              "Om en console.log-rad är tom eller fel, dubbelkolla variabelnamnet — det måste matcha det du deklarerade med let.",
+          },
+        },
+        {
+          label: {
+            en: "All three fortunes are non-empty strings",
+            sv: "Alla tre lyckokakor är icke-tomma strängar",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 3) return false;" +
+            "return c[0].text.length > 0 && c[1].text.length > 0 && c[2].text.length > 0;",
+          hint: {
+            en: 'Set fortune1, fortune2 and fortune3 to actual strings, not "".',
+            sv: 'Sätt fortune1, fortune2 och fortune3 till riktiga strängar, inte "".',
+          },
+        },
+        {
+          label: {
+            en: "The three fortunes are different from each other",
+            sv: "De tre lyckokakorna är olika varandra",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 3) return false;" +
+            "return c[0].text !== c[1].text && c[1].text !== c[2].text && c[0].text !== c[2].text;",
+          hint: {
+            en: "Give each fortune a different string so the picker has real choices.",
+            sv: "Ge varje lyckokaka en egen sträng så det blir riktiga val.",
+          },
+        },
+        {
+          label: {
+            en: "selected matches one of the three fortunes",
+            sv: "selected matchar en av de tre lyckokakorna",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 4) return false;" +
+            "var sel = c[3].text;" +
+            "return sel === c[0].text || sel === c[1].text || sel === c[2].text;",
+          hint: {
+            en: "Inside each if, assign one of fortune1, fortune2 or fortune3 to selected.",
+            sv: "Inuti varje if, tilldela en av fortune1, fortune2 eller fortune3 till selected.",
+          },
+        },
+        {
+          label: {
+            en:
+              "Code has three separate if-statements comparing the same variable to 1, 2 and 3",
+            sv:
+              "Koden har tre separata if-satser som jämför samma variabel med 1, 2 och 3",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "var re = /if\\s*\\(\\s*([A-Za-z_$][A-Za-z0-9_$]*)\\s*===\\s*([123])\\s*\\)/g;" +
+            "var hits = []; var m;" +
+            "while ((m = re.exec(src)) !== null) hits.push({ name: m[1], num: m[2] });" +
+            "if (hits.length !== 3) return false;" +
+            "var name = hits[0].name;" +
+            "if (!hits.every(function(h){ return h.name === name; })) return false;" +
+            "var nums = hits.map(function(h){ return h.num; }).sort().join(',');" +
+            "return nums === '1,2,3';",
+          hint: {
+            en:
+              "Write three separate if-statements that all compare the same variable to 1, 2 and 3.",
+            sv:
+              "Skriv tre separata if-satser som alla jämför samma variabel med 1, 2 och 3.",
+          },
+        },
+      ],
+    },
   ],
 };

@@ -519,5 +519,145 @@ export const forkLesson: Lesson = {
         },
       ],
     },
+
+    // L2 final lab — battery indicator. Uses else if + numeric ranges, so it
+    // exercises ordering (cases narrow as you go down). Distinct from the
+    // wardrobe/grade themes used in this chapter.
+    {
+      kind: "exercise",
+      title: { en: "Lab: Battery Indicator", sv: "Labb: Batteriindikator" },
+      prompt: {
+        en:
+          "Show a battery's status based on its charge level.\n\n" +
+          "User stories (variable names are suggestions — pick your own if you like):\n" +
+          "1. Declare a number variable (e.g. level) between 0 and 100.\n" +
+          "2. Declare a string variable (e.g. status) and set it to \"\".\n" +
+          "3. If level is less than 10, set status to \"Critical\".\n" +
+          "4. Else if level is less than 25, set status to \"Low\".\n" +
+          "5. Else if level is less than 75, set status to \"Medium\".\n" +
+          "6. Else, set status to \"High\".\n" +
+          "7. Print level.\n" +
+          "8. Print status.\n\n" +
+          "Use one if / else if / else chain — the order of the checks matters.",
+        sv:
+          "Visa ett batteris status baserat på laddningsnivå.\n\n" +
+          "Användarberättelser (variabelnamnen är förslag — välj egna om du vill):\n" +
+          "1. Deklarera en talvariabel (t.ex. level) mellan 0 och 100.\n" +
+          "2. Deklarera en strängvariabel (t.ex. status) och sätt den till \"\".\n" +
+          "3. Om level är mindre än 10, sätt status till \"Critical\".\n" +
+          "4. Annars om level är mindre än 25, sätt status till \"Low\".\n" +
+          "5. Annars om level är mindre än 75, sätt status till \"Medium\".\n" +
+          "6. Annars, sätt status till \"High\".\n" +
+          "7. Skriv ut level.\n" +
+          "8. Skriv ut status.\n\n" +
+          "Använd en if / else if / else-kedja — ordningen på kontrollerna spelar roll.",
+      },
+      starterJs:
+        "// Follow the user stories shown to the left.\n" +
+        "// Reminder: declare with `let` (e.g. let myNumber = 5;).\n\n" +
+        "// 1-2. Declare your variables here:\n\n\n\n" +
+        "// 3-6. One if / else if / else chain:\n\n\n\n\n\n" +
+        "// 7-8. Print level, then status:\n\n",
+      tests: [
+        {
+          label: {
+            en: "Console shows exactly two lines",
+            sv: "Konsolen visar exakt två rader",
+          },
+          assert:
+            "var c = window.__console || []; return c.length === 2;",
+          hint: {
+            en: "One console.log for the level, one for the status.",
+            sv: "En console.log för level, en för status.",
+          },
+        },
+        {
+          label: {
+            en: "Each variable you print is one you declared",
+            sv: "Varje variabel du skriver ut är en du deklarerat",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "var logs = []; var re = /console\\.log\\s*\\(\\s*([A-Za-z_$][A-Za-z0-9_$]*)\\s*\\)/g;" +
+            "var m; while ((m = re.exec(src)) !== null) logs.push(m[1]);" +
+            "if (logs.length === 0) return false;" +
+            "for (var i = 0; i < logs.length; i++) {" +
+            "  var name = logs[i];" +
+            "  var d = new RegExp('(?:let|const|var|function)\\\\s+' + name + '\\\\b');" +
+            "  if (!d.test(src)) return false;" +
+            "}" +
+            "return true;",
+          hint: {
+            en:
+              "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
+            sv:
+              "Om en console.log-rad är tom eller fel, dubbelkolla variabelnamnet — det måste matcha det du deklarerade med let.",
+          },
+        },
+        {
+          label: {
+            en: "Line 1 is a number between 0 and 100",
+            sv: "Rad 1 är ett tal mellan 0 och 100",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 1) return false;" +
+            "var n = Number(c[0].text);" +
+            "return Number.isFinite(n) && n >= 0 && n <= 100;",
+          hint: {
+            en: "Set the level variable to a number 0-100, then print it.",
+            sv: "Sätt level till ett tal 0-100 och skriv ut det.",
+          },
+        },
+        {
+          label: {
+            en: 'Line 2 is one of "Critical", "Low", "Medium", "High"',
+            sv: 'Rad 2 är "Critical", "Low", "Medium" eller "High"',
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 2) return false;" +
+            "return ['Critical','Low','Medium','High'].indexOf(c[1].text) !== -1;",
+          hint: {
+            en: "Use exactly those four words (capitalized) inside your branches.",
+            sv: 'Använd exakt de fyra orden (med stor bokstav) i dina grenar.',
+          },
+        },
+        {
+          label: {
+            en: "Status matches the rule for the chosen level",
+            sv: "Status matchar regeln för det valda level-värdet",
+          },
+          assert:
+            "var c = window.__console || [];" +
+            "if (c.length < 2) return false;" +
+            "var n = Number(c[0].text);" +
+            "var expected = n < 10 ? 'Critical' : n < 25 ? 'Low' : n < 75 ? 'Medium' : 'High';" +
+            "return c[1].text === expected;",
+          hint: {
+            en: "Check the boundaries — < 10, < 25, < 75. Order them from smallest up.",
+            sv: "Kolla gränserna — < 10, < 25, < 75. Sortera från minsta uppåt.",
+          },
+        },
+        {
+          label: {
+            en: "Code uses one if, two else if, and a final else",
+            sv: "Koden använder ett if, två else if och ett avslutande else",
+          },
+          assert:
+            "var src = window.__userSrc || '';" +
+            "var elseIfs = (src.match(/\\belse\\s+if\\b/g) || []).length;" +
+            "var allElses = (src.match(/\\belse\\b/g) || []).length;" +
+            "var bareElses = allElses - elseIfs;" +
+            "return elseIfs >= 2 && bareElses >= 1;",
+          hint: {
+            en:
+              "Use one if, then two else if branches for the middle ranges, then a final else for everything left over.",
+            sv:
+              "Använd ett if, sedan två else if-grenar för mellanlägena, och till sist ett else för resten.",
+          },
+        },
+      ],
+    },
   ],
 };
