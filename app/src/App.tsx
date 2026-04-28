@@ -48,7 +48,7 @@ function App() {
       <>
         <ThemeToggle />
         <LanguageToggle />
-        <div className="min-h-full p-10">
+        <div className="min-h-full p-4 sm:p-10">
           <div className="max-w-4xl mx-auto">
             <button
               onClick={() => setView({ kind: "home" })}
@@ -58,7 +58,7 @@ function App() {
             >
               ← {t(view.course.title, lang)}
             </button>
-            <h1 className="text-4xl font-semibold text-stone-900 dark:text-indigo-50">
+            <h1 className="text-2xl sm:text-4xl font-semibold text-stone-900 dark:text-indigo-50">
               {t(view.topic.title, lang)}
             </h1>
             {view.topic.summary && (
@@ -86,12 +86,12 @@ function App() {
     <>
       <ThemeToggle />
       <LanguageToggle />
-      <div className="min-h-full p-10">
+      <div className="min-h-full p-4 sm:p-10">
         <div className="max-w-4xl mx-auto">
           <div className="mb-8">
             <RoomScene />
           </div>
-          <h1 className="text-4xl font-semibold mb-1 text-stone-900 dark:text-indigo-50">
+          <h1 className="text-2xl sm:text-4xl font-semibold mb-1 text-stone-900 dark:text-indigo-50">
             {t(ui.appTitle, lang)}
           </h1>
           <p className="text-stone-500 dark:text-indigo-200/70 mb-10">

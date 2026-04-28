@@ -5,6 +5,7 @@ import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
 import { sessionGet, sessionSet } from "../storage";
+import { useSlideFontSize } from "./SlideFontSize";
 
 type Props = {
   slide: ExerciseSlide;
@@ -139,6 +140,7 @@ ${html}
 
 export function ExerciseSlideView({ slide, storageKey, onPass }: Props) {
   const { lang } = useLang();
+  const { codePx } = useSlideFontSize();
 
   const startHtml = slide.starterHtml ? t(slide.starterHtml, lang) : "";
   const startCss = slide.starterCss ? t(slide.starterCss, lang) : "";
@@ -274,207 +276,205 @@ export function ExerciseSlideView({ slide, storageKey, onPass }: Props) {
     slide.starterHtml !== undefined || slide.starterCss !== undefined;
 
   return (
-    <div className="h-full w-full flex flex-col">
-      <div className="px-10 pt-8">
-        <h2 className="text-3xl font-semibold text-stone-900 dark:text-indigo-50">
-          {t(slide.title, lang)}
-        </h2>
-        <p className="text-stone-600 dark:text-indigo-200/80 mt-1 whitespace-pre-line">
-          {t(slide.prompt, lang)}
-        </p>
+    <div className="h-full w-full flex flex-col md:flex-row gap-4 p-4 sm:p-5">
+      {/* ── LEFT: full-height editor ── */}
+      <div
+        className="flex-1 flex flex-col min-h-0 rounded-2xl overflow-hidden
+                   bg-white ring-1 ring-stone-200 shadow-sm
+                   dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none"
+      >
+        <div
+          className="flex items-center gap-1 border-b border-stone-200 dark:border-white/10
+                     bg-stone-50 dark:bg-slate-900/40"
+        >
+          {tabs.map((k) => (
+            <button
+              key={k}
+              onClick={() => setTab(k)}
+              className={
+                "px-3 py-2 text-xs uppercase tracking-wider font-medium transition-colors " +
+                (tab === k
+                  ? "text-amber-700 dark:text-indigo-200 border-b-2 border-amber-500 dark:border-indigo-300"
+                  : "text-stone-500 hover:text-stone-700 dark:text-indigo-200/60 dark:hover:text-indigo-100")
+              }
+            >
+              {tabLabel(k)}
+            </button>
+          ))}
+        </div>
+        <div className="flex-1 min-h-0">
+          <Editor
+            height="100%"
+            language={editorLang}
+            theme={isDark ? "vs-dark" : "vs"}
+            value={editorValue}
+            onChange={(v) => setEditorValue(v ?? "")}
+            options={{
+              minimap: { enabled: false },
+              fontSize: codePx,
+              scrollBeyondLastLine: false,
+              wordWrap: "on",
+              tabSize: 2,
+              automaticLayout: true,
+              lineNumbers: "on",
+              renderLineHighlight: "line",
+            }}
+          />
+        </div>
+        <div className="flex gap-2 p-3 border-t border-stone-200 dark:border-white/10">
+          <button
+            onClick={run}
+            className="px-3 py-1.5 rounded-lg text-white text-sm font-medium
+                       bg-amber-500 hover:bg-amber-600
+                       dark:bg-indigo-500 dark:hover:bg-indigo-400"
+          >
+            {t(ui.exerciseRun, lang)}
+          </button>
+          <button
+            onClick={reset}
+            className="px-3 py-1.5 rounded-lg text-sm
+                       bg-stone-100 hover:bg-stone-200 text-stone-700
+                       dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white"
+          >
+            {t(ui.reset, lang)}
+          </button>
+        </div>
       </div>
 
-      <div className="flex-1 grid grid-cols-2 gap-6 px-10 py-6 min-h-0">
-        {/* Editor column */}
-        <div
-          className="flex flex-col rounded-2xl overflow-hidden
-                        bg-white ring-1 ring-stone-200 shadow-sm
-                        dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none"
-        >
-          <div
-            className="flex items-center gap-1 border-b border-stone-200 dark:border-white/10
-                          bg-stone-50 dark:bg-slate-900/40"
-          >
-            {tabs.map((k) => (
-              <button
-                key={k}
-                onClick={() => setTab(k)}
-                className={
-                  "px-3 py-2 text-xs uppercase tracking-wider font-medium transition-colors " +
-                  (tab === k
-                    ? "text-amber-700 dark:text-indigo-200 border-b-2 border-amber-500 dark:border-indigo-300"
-                    : "text-stone-500 hover:text-stone-700 dark:text-indigo-200/60 dark:hover:text-indigo-100")
-                }
-              >
-                {tabLabel(k)}
-              </button>
-            ))}
-          </div>
-          <div className="flex-1 min-h-0">
-            <Editor
-              height="100%"
-              language={editorLang}
-              theme={isDark ? "vs-dark" : "vs"}
-              value={editorValue}
-              onChange={(v) => setEditorValue(v ?? "")}
-              options={{
-                minimap: { enabled: false },
-                fontSize: 13,
-                scrollBeyondLastLine: false,
-                wordWrap: "on",
-                tabSize: 2,
-                automaticLayout: true,
-                lineNumbers: "on",
-                renderLineHighlight: "line",
-              }}
-            />
-          </div>
-          <div className="flex gap-2 p-3 border-t border-stone-200 dark:border-white/10">
-            <button
-              onClick={run}
-              className="px-3 py-1.5 rounded-lg text-white text-sm font-medium
-                         bg-amber-500 hover:bg-amber-600
-                         dark:bg-indigo-500 dark:hover:bg-indigo-400"
-            >
-              {t(ui.exerciseRun, lang)}
-            </button>
-            <button
-              onClick={reset}
-              className="px-3 py-1.5 rounded-lg text-sm
-                         bg-stone-100 hover:bg-stone-200 text-stone-700
-                         dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white"
-            >
-              {t(ui.reset, lang)}
-            </button>
-          </div>
+      {/* ── RIGHT: instructions + console + tests (scrollable) ── */}
+      <div
+        className="flex-1 min-h-0 overflow-y-auto rounded-2xl
+                   bg-white ring-1 ring-stone-200 shadow-sm
+                   dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none"
+      >
+        {/* Instructions */}
+        <div className="px-5 pt-5 pb-4 border-b border-stone-200 dark:border-white/10">
+          <h2 className="text-xl sm:text-2xl font-semibold text-stone-900 dark:text-indigo-50">
+            {t(slide.title, lang)}
+          </h2>
+          <p className="text-stone-600 dark:text-indigo-200/80 mt-1 whitespace-pre-line text-sm">
+            {t(slide.prompt, lang)}
+          </p>
         </div>
 
-        {/* Preview + tests column */}
-        <div
-          className="flex flex-col rounded-2xl overflow-hidden
-                        bg-white ring-1 ring-stone-200 shadow-sm
-                        dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none"
-        >
-          {hasVisualPreview && (
-            <>
-              <div
-                className="px-4 py-2 text-xs uppercase tracking-wider border-b
-                              text-amber-600 border-stone-200
-                              dark:text-indigo-300/70 dark:border-white/10"
-              >
-                {t(ui.preview, lang)}
-              </div>
-              <iframe
-                ref={iframeRef}
-                srcDoc={srcDoc}
-                onLoad={onIframeLoad}
-                title="exercise preview"
-                sandbox="allow-scripts"
-                className="flex-1 bg-white min-h-0"
-              />
-            </>
-          )}
-          {/* For JS-only exercises, the iframe still has to exist (it runs the
-              code) but we keep it offscreen since there's nothing to show. */}
-          {!hasVisualPreview && (
+        {/* Visual preview */}
+        {hasVisualPreview && (
+          <>
+            <div
+              className="px-4 py-2 text-xs uppercase tracking-wider border-b
+                         text-amber-600 border-stone-200
+                         dark:text-indigo-300/70 dark:border-white/10"
+            >
+              {t(ui.preview, lang)}
+            </div>
             <iframe
               ref={iframeRef}
               srcDoc={srcDoc}
               onLoad={onIframeLoad}
-              title="exercise runner"
+              title="exercise preview"
               sandbox="allow-scripts"
-              aria-hidden
-              className="absolute w-px h-px opacity-0 pointer-events-none"
+              className="w-full h-48 bg-white"
             />
+          </>
+        )}
+        {/* JS-only: hidden runner iframe */}
+        {!hasVisualPreview && (
+          <iframe
+            ref={iframeRef}
+            srcDoc={srcDoc}
+            onLoad={onIframeLoad}
+            title="exercise runner"
+            sandbox="allow-scripts"
+            aria-hidden
+            className="absolute w-px h-px opacity-0 pointer-events-none"
+          />
+        )}
+
+        {/* Console */}
+        <div
+          className="px-4 py-2 text-xs uppercase tracking-wider border-b
+                     text-amber-600 border-stone-200
+                     dark:text-indigo-300/70 dark:border-white/10"
+        >
+          {t(ui.consoleLabel, lang)}
+        </div>
+        <div className="font-mono text-xs overflow-auto bg-stone-950 text-stone-100 dark:bg-black min-h-[3rem] max-h-48">
+          {consoleEntries.length === 0 ? (
+            <div className="p-3 text-stone-500 italic">
+              {t(ui.consoleEmpty, lang)}
+            </div>
+          ) : (
+            consoleEntries.map((c, i) => (
+              <div
+                key={i}
+                className={
+                  "px-3 py-0.5 border-b border-white/5 whitespace-pre-wrap " +
+                  (c.level === "error"
+                    ? "text-rose-300"
+                    : c.level === "warn"
+                    ? "text-amber-300"
+                    : "text-stone-100")
+                }
+              >
+                {c.text}
+              </div>
+            ))
           )}
-          <div
-            className="px-4 py-2 text-xs uppercase tracking-wider border-b
-                          text-amber-600 border-stone-200
-                          dark:text-indigo-300/70 dark:border-white/10"
-          >
-            {t(ui.consoleLabel, lang)}
-          </div>
-          <div
-            className={
-              "font-mono text-xs overflow-auto bg-stone-950 text-stone-100 dark:bg-black " +
-              (hasVisualPreview ? "max-h-40" : "flex-1 min-h-0")
-            }
-          >
-            {consoleEntries.length === 0 ? (
-              <div className="p-3 text-stone-500 italic">
-                {t(ui.consoleEmpty, lang)}
+        </div>
+
+        {/* Tests */}
+        <div
+          className="px-4 py-2 text-xs uppercase tracking-wider border-y
+                     text-amber-600 border-stone-200
+                     dark:text-indigo-300/70 dark:border-white/10"
+        >
+          {t(ui.exerciseTests, lang)}
+        </div>
+        <div className="p-3 text-sm space-y-1">
+          {results === null ? (
+            <div className="text-stone-500 dark:text-indigo-200/60 italic">
+              {t(ui.exerciseRunHint, lang)}
+            </div>
+          ) : allPass ? (
+            <div className="text-emerald-700 dark:text-emerald-300 font-medium">
+              {t(ui.exerciseAllPass, lang)}
+            </div>
+          ) : (
+            <>
+              {slide.tests.map((tt, i) => {
+                const r = results[i];
+                const passed = !!r?.pass;
+                return (
+                  <div
+                    key={i}
+                    className={
+                      passed
+                        ? "text-emerald-700 dark:text-emerald-300"
+                        : "text-amber-700 dark:text-amber-300"
+                    }
+                  >
+                    {passed ? "✓" : "•"} {t(tt.label, lang)}
+                    {!passed && tt.hint && (
+                      <span className="text-stone-500 dark:text-indigo-200/60">
+                        {" "}
+                        — {t(tt.hint, lang)}
+                      </span>
+                    )}
+                    {!passed && r?.error && (
+                      <span className="text-stone-500 dark:text-indigo-200/60 font-mono text-xs">
+                        {" "}
+                        ({r.error})
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+              <div className="text-emerald-700/80 dark:text-emerald-300/80 pt-1 text-xs">
+                {results.filter((r) => r.pass).length} / {slide.tests.length}{" "}
+                {t(ui.exercisePassedCount, lang)}
               </div>
-            ) : (
-              consoleEntries.map((c, i) => (
-                <div
-                  key={i}
-                  className={
-                    "px-3 py-0.5 border-b border-white/5 whitespace-pre-wrap " +
-                    (c.level === "error"
-                      ? "text-rose-300"
-                      : c.level === "warn"
-                      ? "text-amber-300"
-                      : "text-stone-100")
-                  }
-                >
-                  {c.text}
-                </div>
-              ))
-            )}
-          </div>
-          <div
-            className="px-4 py-2 text-xs uppercase tracking-wider border-y
-                          text-amber-600 border-stone-200
-                          dark:text-indigo-300/70 dark:border-white/10"
-          >
-            {t(ui.exerciseTests, lang)}
-          </div>
-          <div className="border-stone-200 dark:border-white/10 p-3 text-sm space-y-1 max-h-56 overflow-auto">
-            {results === null ? (
-              <div className="text-stone-500 dark:text-indigo-200/60 italic">
-                {t(ui.exerciseRunHint, lang)}
-              </div>
-            ) : allPass ? (
-              <div className="text-emerald-700 dark:text-emerald-300 font-medium">
-                {t(ui.exerciseAllPass, lang)}
-              </div>
-            ) : (
-              <>
-                {slide.tests.map((tt, i) => {
-                  const r = results[i];
-                  const passed = !!r?.pass;
-                  return (
-                    <div
-                      key={i}
-                      className={
-                        passed
-                          ? "text-emerald-700 dark:text-emerald-300"
-                          : "text-amber-700 dark:text-amber-300"
-                      }
-                    >
-                      {passed ? "✓" : "•"} {t(tt.label, lang)}
-                      {!passed && tt.hint && (
-                        <span className="text-stone-500 dark:text-indigo-200/60">
-                          {" "}
-                          — {t(tt.hint, lang)}
-                        </span>
-                      )}
-                      {!passed && r?.error && (
-                        <span className="text-stone-500 dark:text-indigo-200/60 font-mono text-xs">
-                          {" "}
-                          ({r.error})
-                        </span>
-                      )}
-                    </div>
-                  );
-                })}
-                <div className="text-emerald-700/80 dark:text-emerald-300/80 pt-1 text-xs">
-                  {results.filter((r) => r.pass).length} / {slide.tests.length}{" "}
-                  {t(ui.exercisePassedCount, lang)}
-                </div>
-              </>
-            )}
-          </div>
+            </>
+          )}
         </div>
       </div>
     </div>
