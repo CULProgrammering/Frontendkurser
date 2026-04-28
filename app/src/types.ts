@@ -19,6 +19,13 @@ export type ExplanationStep = {
   narration?: Loc;
   styles?: Record<string, CSSProperties>;
   highlight?: string[];
+  /**
+   * Literal substrings to highlight inside any code box's label on this
+   * step. All occurrences of each substring are highlighted (matching is
+   * case-sensitive, no word-boundary). Useful for drawing the eye to the
+   * piece of syntax the narration is currently describing.
+   */
+  tokenHighlight?: string[];
 };
 
 /** Identifier of a custom intro scene component (e.g. stick-figure animation). */

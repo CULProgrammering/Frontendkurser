@@ -85,6 +85,7 @@ export const multiGateLesson: Lesson = {
             sv:
               "&& står MELLAN två villkor.\nVänster sida OCH höger sida — båda måste vara sanna.",
           },
+          tokenHighlight: ["&&"],
         },
         {
           narration: {
@@ -93,6 +94,7 @@ export const multiGateLesson: Lesson = {
             sv:
               "Föreställ dig två grindar i rad.\nDu måste passera BÅDA för att komma fram.\nMissar du en så stoppas du.",
           },
+          tokenHighlight: ["age >= 18", "hasTicket"],
         },
         {
           narration: {
@@ -109,6 +111,7 @@ export const multiGateLesson: Lesson = {
             sv:
               "Läs högt: 'ålder 18 eller mer OCH har biljett'.\nFaller ett av dem så blir allt false.",
           },
+          tokenHighlight: ["age >= 18 && hasTicket"],
         },
       ],
     },
@@ -235,6 +238,7 @@ export const multiGateLesson: Lesson = {
             sv:
               "|| står MELLAN två villkor, precis som &&.\nMen regeln är omvänd:\nvänster ELLER höger — en sann sida räcker.",
           },
+          tokenHighlight: ["||"],
         },
         {
           narration: {
@@ -243,6 +247,7 @@ export const multiGateLesson: Lesson = {
             sv:
               "Föreställ dig två dörrar till samma rum.\nGår du in genom någon av dem är du inne.",
           },
+          tokenHighlight: ["isVip", "hasTicket"],
         },
         {
           narration: {
@@ -259,6 +264,7 @@ export const multiGateLesson: Lesson = {
             sv:
               "Vanlig sammanblandning: && och || är INTE samma.\n• && är strikt — båda måste vara sanna.\n• || är slappare — en räcker.",
           },
+          tokenHighlight: ["&&", "||"],
         },
       ],
     },
@@ -428,6 +434,7 @@ export const multiGateLesson: Lesson = {
             sv:
               "Till skillnad från && och || tar ! bara ETT värde\noch vänder det.",
           },
+          tokenHighlight: ["!"],
         },
         {
           narration: {
@@ -436,6 +443,7 @@ export const multiGateLesson: Lesson = {
             sv:
               "Användbart när variabeln redan beskriver\nMOTSATSEN av det du vill kolla.\n\nExempel: en variabel som heter `banned`.\nVi vill släppa in folk som INTE är bannade.\nSå vi använder !banned.",
           },
+          tokenHighlight: ["!banned"],
         },
         {
           narration: {
@@ -444,6 +452,7 @@ export const multiGateLesson: Lesson = {
             sv:
               "Läs högt: '!banned' är 'inte bannad'.\nDet är sant när banned är false.",
           },
+          tokenHighlight: ["!banned"],
         },
       ],
     },
@@ -562,6 +571,7 @@ export const multiGateLesson: Lesson = {
             sv:
               "Vi sluter OR-uttrycket inom parenteser\nså det är tydligt vilka villkor som hör ihop.",
           },
+          tokenHighlight: ["(isVip || hasTicket)"],
         },
         {
           narration: {
@@ -570,6 +580,7 @@ export const multiGateLesson: Lesson = {
             sv:
               "Sen lägger vi till && !banned på slutet.\nNu måste VARJE vinnande kombination också klara\n'inte bannad'-kontrollen.",
           },
+          tokenHighlight: ["&& !banned"],
         },
         {
           narration: {
@@ -578,6 +589,7 @@ export const multiGateLesson: Lesson = {
             sv:
               "Tips: när du läser raden högt\nvisar parenteserna var du ska pausa.\nKan du inte läsa rent — lägg till fler parenteser.",
           },
+          tokenHighlight: ["(", ")"],
         },
       ],
     },

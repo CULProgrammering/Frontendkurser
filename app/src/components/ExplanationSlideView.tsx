@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import type { DemoBox, ExplanationSlide } from "../types";
 import { Typewriter } from "./Typewriter";
 import { useLang } from "../i18n/LanguageContext";
@@ -44,16 +44,64 @@ function collectIds(boxes: DemoBox[], out: string[] = []): string[] {
   return out;
 }
 
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Splits `text` so that every occurrence of any string in `tokens` is
+ * wrapped in a highlighted <mark>. Tokens are matched as literal
+ * substrings. For tokens made of a single repeated character (e.g. "=",
+ * "==", "===") we add boundary lookarounds so that matching "=" does NOT
+ * also light up the equals signs inside "==" or "===".
+ */
+function renderWithTokenHighlights(
+  text: string,
+  tokens: string[],
+): ReactNode {
+  const filtered = tokens.filter((t) => t.length > 0);
+  if (filtered.length === 0) return text;
+  const sorted = [...filtered].sort((a, b) => b.length - a.length);
+  const patterns = sorted.map((tok) => {
+    const ch = tok[0];
+    const allSame = tok.split("").every((c) => c === ch);
+    const body = escapeRegExp(tok);
+    if (allSame) {
+      const guard = escapeRegExp(ch);
+      return `(?<!${guard})${body}(?!${guard})`;
+    }
+    return body;
+  });
+  const re = new RegExp(`(${patterns.join("|")})`, "g");
+  const parts = text.split(re);
+  return parts.map((part, i) =>
+    i % 2 === 1 ? (
+      <mark
+        key={i}
+        className="rounded px-0.5
+                   bg-amber-200 text-stone-900
+                   dark:bg-amber-300/40 dark:text-amber-50"
+      >
+        {part}
+      </mark>
+    ) : (
+      <span key={i}>{part}</span>
+    ),
+  );
+}
+
 function RenderBox({
   box,
   styles,
   highlights,
+  tokenHighlights,
   resolveLabel,
   fontPx,
 }: {
   box: DemoBox;
   styles: Record<string, CSSProperties>;
   highlights: Set<string>;
+  tokenHighlights: string[];
   resolveLabel: (b: DemoBox) => string;
   fontPx: number;
 }) {
@@ -73,11 +121,12 @@ function RenderBox({
               box={c}
               styles={styles}
               highlights={highlights}
+              tokenHighlights={tokenHighlights}
               resolveLabel={resolveLabel}
               fontPx={fontPx}
             />
           ))
-        : resolveLabel(box)}
+        : renderWithTokenHighlights(resolveLabel(box), tokenHighlights)}
     </div>
   );
 }
@@ -129,6 +178,7 @@ export function ExplanationSlideView({ slide }: Props) {
 
   const current = slide.steps[step];
   const highlights = new Set(current?.highlight ?? []);
+  const tokenHighlights = current?.tokenHighlight ?? [];
 
   const advance = () => {
     if (helpOpen) return;
@@ -317,6 +367,7 @@ export function ExplanationSlideView({ slide }: Props) {
                       box={b}
                       styles={mergedStyles}
                       highlights={highlights}
+                      tokenHighlights={tokenHighlights}
                       resolveLabel={resolveLabel}
                       fontPx={codePx}
                     />
