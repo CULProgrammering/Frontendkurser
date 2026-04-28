@@ -82,6 +82,7 @@ export const doorLesson: Lesson = {
             sv:
               "1.  if  är ett speciellt ord. Det betyder 'om'.\nDet frågar: ska nästa kod köras?",
           },
+          tokenHighlight: ["if"],
         },
         {
           narration: {
@@ -90,6 +91,7 @@ export const doorLesson: Lesson = {
             sv:
               "2.  ( )  parenteser kommer direkt efter if.\nFrågan står inuti.",
           },
+          tokenHighlight: ["(", ")"],
         },
         {
           narration: {
@@ -98,6 +100,7 @@ export const doorLesson: Lesson = {
             sv:
               "3.  Inuti parenteserna\nstår något som är sant eller falskt.\nVi tittar närmare på det i nästa steg.",
           },
+          tokenHighlight: ['light === "green"'],
         },
         {
           narration: {
@@ -106,6 +109,7 @@ export const doorLesson: Lesson = {
             sv:
               "4.  { }  klammerparenteser.\nKoden som körs om svaret är JA (true)\nstår inuti.",
           },
+          tokenHighlight: ["{", "}"],
         },
         {
           narration: {
@@ -114,6 +118,7 @@ export const doorLesson: Lesson = {
             sv:
               "5.  return  är ett annat speciellt ord.\nDet skickar tillbaka ett värde som svar.\nVi ser det mer strax.",
           },
+          tokenHighlight: ["return"],
         },
       ],
     },
@@ -189,6 +194,7 @@ export const doorLesson: Lesson = {
             sv:
               "return är ett speciellt ord.\nDet skickar tillbaka ett värde från din kod.",
           },
+          tokenHighlight: ["return"],
         },
         {
           narration: {
@@ -197,6 +203,7 @@ export const doorLesson: Lesson = {
             sv:
               "I exemplet:\n• om ljuset är grönt returnerar vi \"walk\".\n• annars hoppas if över — och funktionen tar slut utan att returnera något.",
           },
+          tokenHighlight: ['"walk"'],
         },
         {
           narration: {
@@ -205,6 +212,7 @@ export const doorLesson: Lesson = {
             sv:
               "return stoppar också koden direkt.\nInget efter ett return körs.",
           },
+          tokenHighlight: ["return"],
         },
         {
           narration: {
@@ -213,6 +221,7 @@ export const doorLesson: Lesson = {
             sv:
               "Du kan returnera vilket värde som helst:\n• en sträng, som \"walk\"\n• ett tal, som 42\n• true eller false",
           },
+          tokenHighlight: ['"walk"'],
         },
       ],
     },
@@ -410,6 +419,7 @@ export const doorLesson: Lesson = {
             sv:
               "else är ett annat speciellt ord. Det betyder 'annars'.\nDet kommer direkt efter den stängande } i if.",
           },
+          tokenHighlight: ["else"],
         },
         {
           narration: {
@@ -418,6 +428,7 @@ export const doorLesson: Lesson = {
             sv:
               "Sen kommer dess EGNA klammerparenteser { }\nmed kod som körs när if-svaret var false.",
           },
+          tokenHighlight: ["{", "}"],
         },
         {
           narration: {
@@ -426,6 +437,7 @@ export const doorLesson: Lesson = {
             sv:
               "Bara en gren körs någonsin —\nantingen if eller else, aldrig båda.",
           },
+          tokenHighlight: ["if", "else"],
         },
         {
           narration: {
@@ -434,6 +446,7 @@ export const doorLesson: Lesson = {
             sv:
               "Nu leder BÅDA fallen till ett return.\nVi läser den här versionen rad för rad också.",
           },
+          tokenHighlight: ["return"],
         },
       ],
     },
@@ -682,6 +695,7 @@ export const doorLesson: Lesson = {
             sv:
               "Ett likhetstecken — = — sätter ett värde.\nDet är inte en fråga, det är ett besked.",
           },
+          tokenHighlight: ["="],
         },
         {
           narration: {
@@ -690,6 +704,7 @@ export const doorLesson: Lesson = {
             sv:
               "Tre likhetstecken — === — frågar om två värden är lika.\nDet är vad du vill ha i ett villkor.",
           },
+          tokenHighlight: ["==="],
         },
         {
           narration: {
@@ -698,6 +713,7 @@ export const doorLesson: Lesson = {
             sv:
               "Två likhetstecken — == — frågar också, men slarvigt.\nDet säger att 5 och \"5\" är lika, vilket sällan stämmer.\nAnvänd ===.",
           },
+          tokenHighlight: ["=="],
         },
       ],
     },

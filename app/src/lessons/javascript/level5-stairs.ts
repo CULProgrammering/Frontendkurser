@@ -97,6 +97,7 @@ export const stairsLesson: Lesson = {
             sv:
               "Vänster: 'climb' skriven fem gånger.\nDet funkar — men för 100 klättringar behövs 100 rader.",
           },
+          tokenHighlight: ["climbStep();"],
         },
         {
           narration: {
@@ -105,6 +106,7 @@ export const stairsLesson: Lesson = {
             sv:
               "Höger: en for-loop. Kroppen 'climbStep()' skrivs EN gång.\nLoopen säger 'gör detta 5 gånger'. För 100 klättringar — ändra 5 till 100.",
           },
+          tokenHighlight: ["for"],
         },
         {
           narration: {
@@ -113,6 +115,7 @@ export const stairsLesson: Lesson = {
             sv:
               "En for-loop är för när du vet HUR MÅNGA GÅNGER.\nI nästa steg bryter vi ner den del för del.",
           },
+          tokenHighlight: ["for"],
         },
       ],
     },
@@ -145,6 +148,7 @@ export const stairsLesson: Lesson = {
             sv:
               "1.  for  är nyckelordet. Det säger till JavaScript:\n'Jag ska upprepa nästa block.'",
           },
+          tokenHighlight: ["for"],
         },
         {
           narration: {
@@ -153,6 +157,7 @@ export const stairsLesson: Lesson = {
             sv:
               "2.  ( )  parenteserna håller TRE saker,\nseparerade med SEMIKOLON — inte komma.",
           },
+          tokenHighlight: ["(", ")", ";"],
         },
         {
           narration: {
@@ -161,6 +166,7 @@ export const stairsLesson: Lesson = {
             sv:
               "3.  init:  let i = 0\nDetta körs EN gång innan loopen startar.\nDen skapar en räknare — nästan alltid kallad i.",
           },
+          tokenHighlight: ["let i = 0"],
         },
         {
           narration: {
@@ -169,6 +175,7 @@ export const stairsLesson: Lesson = {
             sv:
               "4.  villkor:  i < 5\nFöre varje varv kollar JavaScript detta.\nOm sant → kör kroppen. Om falskt → STANNA, lämna loopen.",
           },
+          tokenHighlight: ["i < 5"],
         },
         {
           narration: {
@@ -177,6 +184,7 @@ export const stairsLesson: Lesson = {
             sv:
               "5.  update:  i++\nDet körs efter varje varv av kroppen.\ni++ betyder 'lägg till 1 till i'. Så i blir 0, 1, 2, 3, 4.",
           },
+          tokenHighlight: ["i++"],
         },
         {
           narration: {
@@ -185,6 +193,7 @@ export const stairsLesson: Lesson = {
             sv:
               "6.  { kropp }  är det som upprepas.\nVariabeln i finns inuti — du kan använda den.",
           },
+          tokenHighlight: ["{", "}"],
         },
         {
           narration: {
@@ -375,6 +384,7 @@ export const stairsLesson: Lesson = {
             sv:
               "x = x + 1 — det långa, tydliga sättet.\nLäses nästan som svenska: 'x blir (vad x var) plus ett'.",
           },
+          tokenHighlight: ["x = x + 1"],
         },
         {
           narration: {
@@ -383,6 +393,7 @@ export const stairsLesson: Lesson = {
             sv:
               "x += 1 — sammansatt tilldelning.\n'+=' betyder 'ta det till höger och lägg till x'.\nFungerar med vilket tal som helst: x += 5 lägger till 5, x += i lägger till i.",
           },
+          tokenHighlight: ["x += 1"],
         },
         {
           narration: {
@@ -391,6 +402,7 @@ export const stairsLesson: Lesson = {
             sv:
               "x++ — öka med 1.\nKortaste formen. Gör bara +1 — för andra tal, använd +=.",
           },
+          tokenHighlight: ["x++"],
         },
         {
           narration: {
@@ -548,6 +560,7 @@ export const stairsLesson: Lesson = {
             sv:
               "Vänster: i < 3. Loopen kör så länge i är MINDRE ÄN 3.\ni tar värdena 0, 1, 2. Tre varv.\nNär i blir 3 är villkoret falskt — klart.",
           },
+          tokenHighlight: ["i < 3"],
         },
         {
           narration: {
@@ -556,6 +569,7 @@ export const stairsLesson: Lesson = {
             sv:
               "Höger: i <= 3. Loopen kör så länge i är MINDRE ELLER LIKA MED 3.\ni tar värdena 0, 1, 2, 3. FYRA varv.\nLägg märke: samma tal men ETT varv mer.",
           },
+          tokenHighlight: ["i <= 3"],
         },
         {
           narration: {

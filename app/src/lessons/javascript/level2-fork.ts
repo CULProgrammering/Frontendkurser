@@ -78,6 +78,7 @@ export const forkLesson: Lesson = {
             sv:
               "Med if/else finns bara två utfall.\nVi kan skilja kallt från ej-kallt,\nmen vi kan inte skilja milt från varmt.",
           },
+          tokenHighlight: ["if", "else"],
         },
         {
           narration: {
@@ -118,6 +119,7 @@ export const forkLesson: Lesson = {
             sv:
               "1.  if  är den första frågan.\nÄr svaret ja körs den grenen, och vi är klara.",
           },
+          tokenHighlight: ["if (temp <= 0)"],
         },
         {
           narration: {
@@ -126,6 +128,7 @@ export const forkLesson: Lesson = {
             sv:
               "2.  else if  betyder 'annars, om'.\nDen ställer sin fråga BARA om den FÖRSTA var falsk.\nDu kan kedja hur många else if du vill.",
           },
+          tokenHighlight: ["else if"],
         },
         {
           narration: {
@@ -134,6 +137,7 @@ export const forkLesson: Lesson = {
             sv:
               "3.  else  på slutet är reservutgången.\nDen körs när INGET ovan stämde.",
           },
+          tokenHighlight: ["} else {"],
         },
         {
           narration: {
@@ -445,6 +449,7 @@ export const forkLesson: Lesson = {
             sv:
               "Om temp = -5,\nförsta frågan är: är -5 <= 25?\nJa! Så den returnerar 'shirt'.\nCoat-grenen kollas aldrig ens.",
           },
+          tokenHighlight: ["temp <= 25", '"shirt"'],
         },
         {
           narration: {

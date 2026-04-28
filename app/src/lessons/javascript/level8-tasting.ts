@@ -116,6 +116,7 @@ export const tastingLesson: Lesson = {
             sv:
               "Vänster: vanlig while.\nÄr villkoret false vid FÖRSTA kollen\nkörs kroppen aldrig.",
           },
+          tokenHighlight: ["while (n > 0)"],
         },
         {
           narration: {
@@ -124,6 +125,7 @@ export const tastingLesson: Lesson = {
             sv:
               "Höger: do…while.\nKroppen körs FÖRST.\nSen kollas villkoret på slutet.\nTrue → loopa igen. False → lämna.",
           },
+          tokenHighlight: ["do", "} while (n > 0);"],
         },
         {
           narration: {
@@ -164,6 +166,7 @@ export const tastingLesson: Lesson = {
             sv:
               "1.  do  är nyckelordet.\nDet öppnar kroppsblocket.",
           },
+          tokenHighlight: ["do"],
         },
         {
           narration: {
@@ -172,6 +175,7 @@ export const tastingLesson: Lesson = {
             sv:
               "2.  { kropp }  körs en gång UTAN VILLKOR,\nsen ev. fler.",
           },
+          tokenHighlight: ["{", "}"],
         },
         {
           narration: {
@@ -180,6 +184,7 @@ export const tastingLesson: Lesson = {
             sv:
               "3.  while ( villkor )  kollas EFTER kroppen.\nSamma slags uttryck som i vanlig while.",
           },
+          tokenHighlight: ["while (condition)"],
         },
         {
           narration: {
@@ -188,6 +193,7 @@ export const tastingLesson: Lesson = {
             sv:
               "4.  ;  semikolonet på slutet KRÄVS.\nTill skillnad från while och for slutar do…while med semikolon\neftersom den slutar med ett uttryck, inte ett block.",
           },
+          tokenHighlight: [";"],
         },
       ],
     },

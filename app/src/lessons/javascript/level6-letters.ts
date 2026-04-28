@@ -132,6 +132,7 @@ export const lettersLesson: Lesson = {
             sv:
               "1.  for  är samma nyckelord som förra lektionen.",
           },
+          tokenHighlight: ["for"],
         },
         {
           narration: {
@@ -140,6 +141,7 @@ export const lettersLesson: Lesson = {
             sv:
               "2.  const ch  skapar en NY variabel.\nDen håller den nuvarande bokstaven.\nNamnet 'ch' är bara en etikett — du kan kalla den vad du vill.",
           },
+          tokenHighlight: ["const ch"],
         },
         {
           narration: {
@@ -148,6 +150,7 @@ export const lettersLesson: Lesson = {
             sv:
               "3.  of  är ett speciellt nyckelord.\nLäs 'for varje ch OF strängen'.\nDet är inte =  inte in — det är of.",
           },
+          tokenHighlight: [" of "],
         },
         {
           narration: {
@@ -156,6 +159,7 @@ export const lettersLesson: Lesson = {
             sv:
               "4.  strängen  till höger är vad vi går igenom.\nDet kan vara en literal som \"HELLO\" eller en variabel.",
           },
+          tokenHighlight: ['"HELLO"'],
         },
         {
           narration: {
@@ -164,6 +168,7 @@ export const lettersLesson: Lesson = {
             sv:
               "5.  { kropp }  körs en gång per bokstav.\nInne i kroppen är ch den nuvarande bokstaven.\nNästa varv blir ch automatiskt nästa bokstav.",
           },
+          tokenHighlight: ["{", "}"],
         },
         {
           narration: {
@@ -323,6 +328,7 @@ export const lettersLesson: Lesson = {
             sv:
               "Vänster: klassisk for. Du får ett tal i.\nVille du ha en bokstav fick du skriva word[i] — ett extra steg.",
           },
+          tokenHighlight: ["let i = 0"],
         },
         {
           narration: {
@@ -331,6 +337,7 @@ export const lettersLesson: Lesson = {
             sv:
               "Höger: for…of. Du får bokstaven direkt.\nIngen räknare, ingen indexering — bara värdet du vill ha.",
           },
+          tokenHighlight: ["const ch of"],
         },
         {
           narration: {

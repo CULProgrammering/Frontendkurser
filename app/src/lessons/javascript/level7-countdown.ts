@@ -114,6 +114,7 @@ export const countdownLesson: Lesson = {
             sv:
               "Vänster: en for-loop. Den kör exakt 5 varv.\nAntalet är inbyggt i loopen själv.",
           },
+          tokenHighlight: ["for"],
         },
         {
           narration: {
@@ -122,6 +123,7 @@ export const countdownLesson: Lesson = {
             sv:
               "Höger: en while-loop. Den kör tills n blir 0.\nÄr n från början 5 — 5 varv. Är n från början 100 — 100 varv.\nAntalet bestäms av datan, inte koden.",
           },
+          tokenHighlight: ["while"],
         },
         {
           narration: {
@@ -130,6 +132,7 @@ export const countdownLesson: Lesson = {
             sv:
               "Lägg märke till: while har ingen init eller update.\nDu sätter upp variabeln INNAN loopen,\noch du måste ändra den INNE i kroppen.\nGlömmer du så kör loopen för evigt.",
           },
+          tokenHighlight: ["let n = 5;", "n = n - 1;"],
         },
       ],
     },
@@ -162,6 +165,7 @@ export const countdownLesson: Lesson = {
             sv:
               "1.  while  är nyckelordet.\nLiksom for säger det 'jag ska upprepa'.",
           },
+          tokenHighlight: ["while"],
         },
         {
           narration: {
@@ -170,6 +174,7 @@ export const countdownLesson: Lesson = {
             sv:
               "2.  ( villkor )  kollas INNAN varje varv.\nDet måste landa i true eller false (en boolean).\nSamma slags uttryck som i ett if.",
           },
+          tokenHighlight: ["(n > 0)"],
         },
         {
           narration: {
@@ -178,6 +183,7 @@ export const countdownLesson: Lesson = {
             sv:
               "3.  { kropp }  körs när villkoret är true.\nNär kroppen slutar HOPPAR JavaScript TILLBAKA\noch kollar villkoret igen.",
           },
+          tokenHighlight: ["{", "}"],
         },
         {
           narration: {
@@ -321,6 +327,7 @@ export const countdownLesson: Lesson = {
             sv:
               "Vänster: trasig loop. n stannar på 5 för evigt.\n5 > 0 är alltid true. Loopen slutar aldrig.\nWebbläsaren skulle frysa.",
           },
+          highlight: ["bad"],
         },
         {
           narration: {
@@ -329,6 +336,8 @@ export const countdownLesson: Lesson = {
             sv:
               "Höger: lösningen. I kroppen ändrar vi n.\nVarje varv minskar n med 1, så till slut blir det 0\noch villkoret blir false.",
           },
+          highlight: ["good"],
+          tokenHighlight: ["n = n - 1;"],
         },
         {
           narration: {

@@ -91,6 +91,7 @@ export const conveyorLesson: Lesson = {
             sv:
               "Vänster: else-if-kedjan vi redan kan.\nSe hur `item ===` upprepas tre gånger?",
           },
+          tokenHighlight: ["item ==="],
         },
         {
           narration: {
@@ -99,6 +100,7 @@ export const conveyorLesson: Lesson = {
             sv:
               "Höger: samma logik, skriven som switch.\nVariabelnamnet skrivs EN gång överst.\nVarje case listar bara värdet att jämföra mot.",
           },
+          tokenHighlight: ["switch (item)", "case"],
         },
         {
           narration: {
@@ -107,6 +109,7 @@ export const conveyorLesson: Lesson = {
             sv:
               "switch passar bara en form: jämför en variabel\nmot KONKRETA VÄRDEN (inga intervall, inga andra variabler).\nFör temperaturer — håll dig till else-if.",
           },
+          tokenHighlight: ["switch"],
         },
       ],
     },
@@ -139,6 +142,7 @@ export const conveyorLesson: Lesson = {
             sv:
               "1.  switch  är nyckelordet.\nDet säger: jag ska titta på ETT värde\noch välja gren baserat på det.",
           },
+          tokenHighlight: ["switch"],
         },
         {
           narration: {
@@ -147,6 +151,7 @@ export const conveyorLesson: Lesson = {
             sv:
               "2.  ( )  parenteser innehåller värdet\ndu vill testa. Här: item.",
           },
+          tokenHighlight: ["(", ")"],
         },
         {
           narration: {
@@ -155,6 +160,7 @@ export const conveyorLesson: Lesson = {
             sv:
               "3.  { }  klammerparenteser håller ALLA case.\nAllt mellan dem hör till denna switch.",
           },
+          tokenHighlight: ["{", "}"],
         },
         {
           narration: {
@@ -163,6 +169,7 @@ export const conveyorLesson: Lesson = {
             sv:
               "4.  case  är ett annat nyckelord.\nDet är som att fråga 'är item lika med DETTA värde?'\ncase 'paper': betyder 'när item är \"paper\"...'",
           },
+          tokenHighlight: ["case"],
         },
         {
           narration: {
@@ -171,6 +178,7 @@ export const conveyorLesson: Lesson = {
             sv:
               "5.  :  kolonet avslutar case-etiketten.\nSen följer koden som ska köras vid match\npå nästa rad/rader.",
           },
+          tokenHighlight: [":"],
         },
         {
           narration: {
@@ -179,6 +187,7 @@ export const conveyorLesson: Lesson = {
             sv:
               "6.  default  är reservutgången.\nDen körs när INGEN case matchade.\nSom else i slutet av en else-if-kedja.",
           },
+          tokenHighlight: ["default"],
         },
         {
           narration: {
@@ -387,6 +396,7 @@ export const conveyorLesson: Lesson = {
               "Den högra koden är lösningen.\nbreak; sist i varje case STOPPAR switch.\n\nNu skriver item = \"paper\" bara \"Paper!\" och slutar.",
           },
           highlight: ["fixed"],
+          tokenHighlight: ["break;"],
         },
         {
           narration: {
@@ -395,6 +405,7 @@ export const conveyorLesson: Lesson = {
             sv:
               "return stoppar också fall-through —\noch avslutar hela funktionen samtidigt.\n\nDärför behövde våra andra exempel inte break:\nde returnerade direkt.",
           },
+          tokenHighlight: ["break;"],
         },
         {
           narration: {
@@ -403,6 +414,7 @@ export const conveyorLesson: Lesson = {
             sv:
               "Tumregel: om en case inte returnerar\nMÅSTE den sluta med break;.\nGlömmer du båda så rinner koden in i nästa case.",
           },
+          tokenHighlight: ["break;"],
         },
       ],
     },
