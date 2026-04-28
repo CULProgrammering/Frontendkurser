@@ -97,9 +97,9 @@ export const multiGateLesson: Lesson = {
         {
           narration: {
             en:
-              "The little table on the left shows all four cases.\nOnly the FIRST line ends in true.",
+              "The little table below shows all four cases.\nOnly the FIRST line ends in true.",
             sv:
-              "Lilla tabellen till vänster visar alla fyra fall.\nBara FÖRSTA raden slutar i true.",
+              "Lilla tabellen nedanför visar alla fyra fall.\nBara FÖRSTA raden slutar i true.",
           },
         },
         {
@@ -536,6 +536,7 @@ export const multiGateLesson: Lesson = {
         },
         {
           id: "note",
+          kind: "note",
           label: {
             en:
               "Read it left to right:\n• ( isVip OR hasTicket )  — at least one of these,\n• AND  !banned  — and they are not banned.\n\nWithout parentheses the rules are easy to misread.\nAlways group with ( ) when you mix && and ||.",

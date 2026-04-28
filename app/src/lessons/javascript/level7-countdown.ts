@@ -96,6 +96,7 @@ export const countdownLesson: Lesson = {
         },
         {
           id: "note",
+          kind: "note",
           label: {
             en:
               "for is best when you KNOW the count up front.\nwhile is best when you only know the STOPPING CONDITION.\n\nA while loop has no init or update built in —\nyou prepare the variable BEFORE,\nand change it INSIDE the body.",
@@ -109,17 +110,17 @@ export const countdownLesson: Lesson = {
         {
           narration: {
             en:
-              "Top: a for loop. It runs exactly 5 times.\nThe count is hard-coded into the loop itself.",
+              "Left: a for loop. It runs exactly 5 times.\nThe count is hard-coded into the loop itself.",
             sv:
-              "Överst: en for-loop. Den kör exakt 5 varv.\nAntalet är inbyggt i loopen själv.",
+              "Vänster: en for-loop. Den kör exakt 5 varv.\nAntalet är inbyggt i loopen själv.",
           },
         },
         {
           narration: {
             en:
-              "Bottom: a while loop. It runs until n hits 0.\nIf n started as 5 it runs 5 times. If n started as 100 it runs 100.\nThe count is decided by the data, not the code.",
+              "Right: a while loop. It runs until n hits 0.\nIf n started as 5 it runs 5 times. If n started as 100 it runs 100.\nThe count is decided by the data, not the code.",
             sv:
-              "Nedre: en while-loop. Den kör tills n blir 0.\nÄr n från början 5 — 5 varv. Är n från början 100 — 100 varv.\nAntalet bestäms av datan, inte koden.",
+              "Höger: en while-loop. Den kör tills n blir 0.\nÄr n från början 5 — 5 varv. Är n från början 100 — 100 varv.\nAntalet bestäms av datan, inte koden.",
           },
         },
         {
@@ -302,6 +303,7 @@ export const countdownLesson: Lesson = {
         },
         {
           id: "note",
+          kind: "note",
           label: {
             en:
               "Rule: every while loop should change the\nvariable used in its condition,\nin a way that EVENTUALLY makes the condition false.\n\nIf you write while (true) on purpose, you need\na break inside (we don't use that yet).",
@@ -315,17 +317,17 @@ export const countdownLesson: Lesson = {
         {
           narration: {
             en:
-              "Top: a broken loop. n stays 5 forever.\n5 > 0 is always true. The loop never ends.\nYour browser tab would freeze.",
+              "Left: a broken loop. n stays 5 forever.\n5 > 0 is always true. The loop never ends.\nYour browser tab would freeze.",
             sv:
-              "Överst: trasig loop. n stannar på 5 för evigt.\n5 > 0 är alltid true. Loopen slutar aldrig.\nWebbläsaren skulle frysa.",
+              "Vänster: trasig loop. n stannar på 5 för evigt.\n5 > 0 är alltid true. Loopen slutar aldrig.\nWebbläsaren skulle frysa.",
           },
         },
         {
           narration: {
             en:
-              "Bottom: the fix. Inside the body we change n.\nEach lap n drops by 1, so eventually it hits 0\nand the condition becomes false.",
+              "Right: the fix. Inside the body we change n.\nEach lap n drops by 1, so eventually it hits 0\nand the condition becomes false.",
             sv:
-              "Nedre: lösningen. I kroppen ändrar vi n.\nVarje varv minskar n med 1, så till slut blir det 0\noch villkoret blir false.",
+              "Höger: lösningen. I kroppen ändrar vi n.\nVarje varv minskar n med 1, så till slut blir det 0\noch villkoret blir false.",
           },
         },
         {

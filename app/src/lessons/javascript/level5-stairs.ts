@@ -93,17 +93,17 @@ export const stairsLesson: Lesson = {
         {
           narration: {
             en:
-              "Top: 'climb' written out five times.\nIt works — but if we wanted 100 climbs we'd need 100 lines.",
+              "Left: 'climb' written out five times.\nIt works — but if we wanted 100 climbs we'd need 100 lines.",
             sv:
-              "Överst: 'climb' skriven fem gånger.\nDet funkar — men för 100 klättringar behövs 100 rader.",
+              "Vänster: 'climb' skriven fem gånger.\nDet funkar — men för 100 klättringar behövs 100 rader.",
           },
         },
         {
           narration: {
             en:
-              "Bottom: a for loop. The body 'climbStep()' is written ONCE.\nThe loop says 'do this 5 times'. To climb 100 times, change 5 to 100.",
+              "Right: a for loop. The body 'climbStep()' is written ONCE.\nThe loop says 'do this 5 times'. To climb 100 times, change 5 to 100.",
             sv:
-              "Nedre: en for-loop. Kroppen 'climbStep()' skrivs EN gång.\nLoopen säger 'gör detta 5 gånger'. För 100 klättringar — ändra 5 till 100.",
+              "Höger: en for-loop. Kroppen 'climbStep()' skrivs EN gång.\nLoopen säger 'gör detta 5 gånger'. För 100 klättringar — ändra 5 till 100.",
           },
         },
         {
@@ -345,6 +345,7 @@ export const stairsLesson: Lesson = {
         },
         {
           id: "note",
+          kind: "note",
           label: {
             en:
               "Same family for other operators:\n\n  x -= 1   subtract 1\n  x *= 2   multiply by 2\n  x /= 2   divide by 2\n  x--      subtract 1 (like x++)\n\nFrom now on we usually write\ni++ in for-loop updates.",
@@ -529,6 +530,7 @@ export const stairsLesson: Lesson = {
         },
         {
           id: "note",
+          kind: "note",
           label: {
             en:
               "Two common patterns:\n• Start at 0, use i < n  → runs n times\n• Start at 1, use i <= n  → runs n times\n\nMixing them up causes off-by-one bugs.",
@@ -542,17 +544,17 @@ export const stairsLesson: Lesson = {
         {
           narration: {
             en:
-              "Top: i < 3. The loop runs while i is LESS THAN 3.\ni takes values 0, 1, 2. Three iterations.\nWhen i becomes 3, the condition is false — done.",
+              "Left: i < 3. The loop runs while i is LESS THAN 3.\ni takes values 0, 1, 2. Three iterations.\nWhen i becomes 3, the condition is false — done.",
             sv:
-              "Överst: i < 3. Loopen kör så länge i är MINDRE ÄN 3.\ni tar värdena 0, 1, 2. Tre varv.\nNär i blir 3 är villkoret falskt — klart.",
+              "Vänster: i < 3. Loopen kör så länge i är MINDRE ÄN 3.\ni tar värdena 0, 1, 2. Tre varv.\nNär i blir 3 är villkoret falskt — klart.",
           },
         },
         {
           narration: {
             en:
-              "Bottom: i <= 3. The loop runs while i is LESS THAN OR EQUAL TO 3.\ni takes values 0, 1, 2, 3. FOUR iterations.\nNotice: same numbers but ONE more lap.",
+              "Right: i <= 3. The loop runs while i is LESS THAN OR EQUAL TO 3.\ni takes values 0, 1, 2, 3. FOUR iterations.\nNotice: same numbers but ONE more lap.",
             sv:
-              "Nedre: i <= 3. Loopen kör så länge i är MINDRE ELLER LIKA MED 3.\ni tar värdena 0, 1, 2, 3. FYRA varv.\nLägg märke: samma tal men ETT varv mer.",
+              "Höger: i <= 3. Loopen kör så länge i är MINDRE ELLER LIKA MED 3.\ni tar värdena 0, 1, 2, 3. FYRA varv.\nLägg märke: samma tal men ETT varv mer.",
           },
         },
         {

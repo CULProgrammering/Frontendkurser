@@ -13,6 +13,7 @@ import { t } from "../i18n";
 import type { Lang } from "../i18n";
 import { ui } from "../i18n/strings";
 import { sessionGet, sessionSet } from "../storage";
+import { useSlideFontSize } from "./SlideFontSize";
 
 type Props = {
   slide: JsTypedAssignmentSlide;
@@ -29,6 +30,7 @@ type TestRun = { test: JsTest; result: RunResult; pass: boolean };
  */
 export function JsTypedAssignmentSlideView({ slide, storageKey, onPass }: Props) {
   const { lang } = useLang();
+  const { codePx, prosePx } = useSlideFontSize();
   const template = t(slide.template, lang);
 
   // Parse the template into segments and slot ids.
@@ -141,10 +143,11 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, onPass }: Props)
           </div>
           {slide.varNames.length > 0 && (
             <div
-              className="font-mono text-sm px-4 pt-3 pb-1 select-none border-b
+              className="font-mono px-4 pt-3 pb-1 select-none border-b
                          text-stone-500 bg-stone-100 border-stone-200
                          dark:text-indigo-200/60 dark:bg-slate-900/40 dark:border-white/10"
               aria-label="declared variables"
+              style={{ fontSize: `${codePx}px` }}
             >
               {slide.varNames.map((name) => {
                 const value = displayedVars[name];
@@ -155,8 +158,9 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, onPass }: Props)
             </div>
           )}
           <div
-            className="flex-1 font-mono text-sm p-4 whitespace-pre overflow-auto
+            className="flex-1 font-mono p-4 whitespace-pre overflow-auto
                        bg-slate-900 text-indigo-50 dark:bg-slate-950"
+            style={{ fontSize: `${codePx}px` }}
           >
             {segments.map((seg, i) =>
               seg.kind === "text" ? (
@@ -225,16 +229,21 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, onPass }: Props)
             </div>
 
             {runs && allPass && (
-              <div className="border-t border-stone-200 dark:border-white/10 px-4 py-3
-                              text-sm font-medium text-emerald-700 dark:text-emerald-300">
+              <div
+                className="border-t border-stone-200 dark:border-white/10 px-4 py-3
+                              font-medium text-emerald-700 dark:text-emerald-300"
+                style={{ fontSize: `${prosePx}px` }}
+              >
                 {t({ en: "✓ Done", sv: "✓ Klart" }, lang)}
               </div>
             )}
             {runs && !allPass && runtimeError && (
-              <div className="border-t border-stone-200 dark:border-white/10 px-4 py-3
-                              text-sm
+              <div
+                className="border-t border-stone-200 dark:border-white/10 px-4 py-3
                               bg-rose-50 text-rose-800
-                              dark:bg-rose-500/10 dark:text-rose-200">
+                              dark:bg-rose-500/10 dark:text-rose-200"
+                style={{ fontSize: `${prosePx}px` }}
+              >
                 <div className="font-medium mb-1">
                   {t(
                     {
@@ -248,8 +257,11 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, onPass }: Props)
               </div>
             )}
             {runs && !allPass && !runtimeError && slide.goalHint && (
-              <div className="border-t border-stone-200 dark:border-white/10 px-4 py-3
-                              text-sm text-stone-600 dark:text-indigo-200/80">
+              <div
+                className="border-t border-stone-200 dark:border-white/10 px-4 py-3
+                              text-stone-600 dark:text-indigo-200/80"
+                style={{ fontSize: `${prosePx}px` }}
+              >
                 {t(slide.goalHint, lang)}
               </div>
             )}
@@ -259,15 +271,15 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, onPass }: Props)
 
       {/* Status row when there's no allegory column */}
       {!slide.allegory && runs && (
-        <div className="mx-10 mb-4">
+        <div className="mx-10 mb-4" style={{ fontSize: `${prosePx}px` }}>
           {allPass ? (
-            <div className="rounded-xl px-4 py-3 text-sm font-medium
+            <div className="rounded-xl px-4 py-3 font-medium
                             bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200
                             dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-400/30">
               {t({ en: "✓ Done — all tests pass.", sv: "✓ Klart — alla testfall stämmer." }, lang)}
             </div>
           ) : runtimeError ? (
-            <div className="rounded-xl px-4 py-3 text-sm
+            <div className="rounded-xl px-4 py-3
                             bg-rose-50 text-rose-800 ring-1 ring-rose-200
                             dark:bg-rose-500/10 dark:text-rose-200 dark:ring-rose-400/30">
               <div className="font-medium mb-1">
@@ -276,7 +288,7 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, onPass }: Props)
               <div className="font-mono text-xs">{runtimeError}</div>
             </div>
           ) : slide.goalHint ? (
-            <div className="rounded-xl px-4 py-3 text-sm
+            <div className="rounded-xl px-4 py-3
                             bg-stone-50 text-stone-700 ring-1 ring-stone-200
                             dark:bg-slate-900/60 dark:text-indigo-200 dark:ring-white/10">
               {t(slide.goalHint, lang)}
@@ -383,12 +395,12 @@ function SlotInput({
       autoCapitalize="off"
       autoCorrect="off"
       className="inline-block align-baseline mx-0.5 px-1.5 py-0 rounded
-                 font-mono text-sm
+                 font-mono
                  bg-amber-500/20 text-amber-100 ring-1 ring-amber-400/60
                  focus:outline-none focus:ring-2 focus:ring-amber-300
                  dark:bg-indigo-500/20 dark:text-indigo-100 dark:ring-indigo-400/60
                  dark:focus:ring-indigo-300"
-      style={{ width: `${width}ch`, boxSizing: "content-box" }}
+      style={{ width: `${width}ch`, boxSizing: "content-box", fontSize: "inherit" }}
     />
   );
 }

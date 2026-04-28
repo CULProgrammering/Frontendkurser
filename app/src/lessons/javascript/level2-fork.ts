@@ -419,6 +419,7 @@ export const forkLesson: Lesson = {
         },
         {
           id: "warning",
+          kind: "note",
           label: {
             en:
               "Same conditions, wrong order:\n-5 <= 25 is true,\nso the chain stops at the FIRST branch\nand returns 'shirt' even though it's freezing.",

@@ -87,17 +87,17 @@ export const conveyorLesson: Lesson = {
         {
           narration: {
             en:
-              "Top: the else-if chain we already know.\nSee how `item ===` repeats three times?",
+              "Left: the else-if chain we already know.\nSee how `item ===` repeats three times?",
             sv:
-              "Överst: else-if-kedjan vi redan kan.\nSe hur `item ===` upprepas tre gånger?",
+              "Vänster: else-if-kedjan vi redan kan.\nSe hur `item ===` upprepas tre gånger?",
           },
         },
         {
           narration: {
             en:
-              "Bottom: the same logic, written as a switch.\nThe variable name appears ONCE at the top.\nEach case lists just the value to compare against.",
+              "Right: the same logic, written as a switch.\nThe variable name appears ONCE at the top.\nEach case lists just the value to compare against.",
             sv:
-              "Nedre: samma logik, skriven som switch.\nVariabelnamnet skrivs EN gång överst.\nVarje case listar bara värdet att jämföra mot.",
+              "Höger: samma logik, skriven som switch.\nVariabelnamnet skrivs EN gång överst.\nVarje case listar bara värdet att jämföra mot.",
           },
         },
         {
@@ -350,6 +350,7 @@ export const conveyorLesson: Lesson = {
         },
         {
           id: "note",
+          kind: "note",
           label: {
             en:
               "Two ways to stop:\n• return — exits the function entirely.\n• break; — exits just the switch.\n\nIn our lessons we always return,\nso fall-through can't bite us.",
@@ -372,18 +373,18 @@ export const conveyorLesson: Lesson = {
         {
           narration: {
             en:
-              'Look at the top code. With item = "paper",\nthe first case matches and prints "Paper!".\n\nBut then JavaScript keeps going DOWN —\nit also runs the "glass" case and prints "Glass!".\n\nThat\'s called fall-through. Almost always a bug.',
+              'Look at the left code. With item = "paper",\nthe first case matches and prints "Paper!".\n\nBut then JavaScript keeps going DOWN —\nit also runs the "glass" case and prints "Glass!".\n\nThat\'s called fall-through. Almost always a bug.',
             sv:
-              'Titta på koden överst. Med item = "paper"\nmatchar första case och skriver "Paper!".\n\nMen sen FORTSÄTTER JavaScript nedåt —\nden kör också "glass"-case och skriver "Glass!".\n\nDet kallas fall-through. Nästan alltid en bugg.',
+              'Titta på koden till vänster. Med item = "paper"\nmatchar första case och skriver "Paper!".\n\nMen sen FORTSÄTTER JavaScript nedåt —\nden kör också "glass"-case och skriver "Glass!".\n\nDet kallas fall-through. Nästan alltid en bugg.',
           },
           highlight: ["buggy"],
         },
         {
           narration: {
             en:
-              "The bottom code is the fix.\nbreak; at the end of each case STOPS the switch.\n\nNow item = \"paper\" prints just \"Paper!\" and exits.",
+              "The right code is the fix.\nbreak; at the end of each case STOPS the switch.\n\nNow item = \"paper\" prints just \"Paper!\" and exits.",
             sv:
-              "Nedre koden är lösningen.\nbreak; sist i varje case STOPPAR switch.\n\nNu skriver item = \"paper\" bara \"Paper!\" och slutar.",
+              "Den högra koden är lösningen.\nbreak; sist i varje case STOPPAR switch.\n\nNu skriver item = \"paper\" bara \"Paper!\" och slutar.",
           },
           highlight: ["fixed"],
         },

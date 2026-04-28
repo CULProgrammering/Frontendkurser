@@ -98,6 +98,7 @@ export const tastingLesson: Lesson = {
         },
         {
           id: "note",
+          kind: "note",
           label: {
             en:
               "If n starts at 0:\n• while  →  body runs ZERO times.\n• do…while  →  body runs ONCE, then exits.\n\nThat's the whole difference.\nUse do…while when the body MUST run at least once\n— like 'taste before deciding'.",
@@ -111,17 +112,17 @@ export const tastingLesson: Lesson = {
         {
           narration: {
             en:
-              "Top: a regular while.\nIf the condition is false on the FIRST check,\nthe body never runs.",
+              "Left: a regular while.\nIf the condition is false on the FIRST check,\nthe body never runs.",
             sv:
-              "Överst: vanlig while.\nÄr villkoret false vid FÖRSTA kollen\nkörs kroppen aldrig.",
+              "Vänster: vanlig while.\nÄr villkoret false vid FÖRSTA kollen\nkörs kroppen aldrig.",
           },
         },
         {
           narration: {
             en:
-              "Bottom: do…while.\nThe body runs FIRST.\nThen the condition is checked at the end.\nIf true → loop again. If false → exit.",
+              "Right: do…while.\nThe body runs FIRST.\nThen the condition is checked at the end.\nIf true → loop again. If false → exit.",
             sv:
-              "Nedre: do…while.\nKroppen körs FÖRST.\nSen kollas villkoret på slutet.\nTrue → loopa igen. False → lämna.",
+              "Höger: do…while.\nKroppen körs FÖRST.\nSen kollas villkoret på slutet.\nTrue → loopa igen. False → lämna.",
           },
         },
         {

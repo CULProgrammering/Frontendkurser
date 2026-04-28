@@ -1,6 +1,7 @@
 import { StickFigure } from "./StickFigure";
 import { useLang } from "../../i18n/LanguageContext";
 import { t } from "../../i18n";
+import { useSlideFontSize } from "../SlideFontSize";
 
 type Props = { step: number };
 
@@ -360,10 +361,14 @@ function CodePanel({
   highlight?: LineKey;
   evalNote?: string;
 }) {
+  const { codePx } = useSlideFontSize();
   return (
-    <div className="rounded-2xl px-5 py-4 font-mono text-xs leading-relaxed
+    <div
+      className="rounded-2xl px-5 py-4 font-mono leading-relaxed
                     bg-white ring-1 ring-stone-200 shadow-sm
-                    dark:bg-slate-900/60 dark:ring-white/10">
+                    dark:bg-slate-900/60 dark:ring-white/10"
+      style={{ fontSize: `${codePx}px` }}
+    >
       <Line lineKey="decl" highlight={highlight}>
         <span>let item = </span>
         <span className="text-emerald-600 dark:text-emerald-300">
