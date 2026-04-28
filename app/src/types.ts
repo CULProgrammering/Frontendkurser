@@ -6,6 +6,13 @@ export type DemoBox = {
   label?: Loc;
   baseStyle?: CSSProperties;
   children?: DemoBox[];
+  /**
+   * Auxiliary "tip" content rather than a primary code/visual demo. When
+   * present, the explanation view pulls the box out of the demo flow and
+   * renders it beside the centered pane on wide screens (or inline below
+   * the demos on narrower ones).
+   */
+  kind?: "note";
 };
 
 export type ExplanationStep = {

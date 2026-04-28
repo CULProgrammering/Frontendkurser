@@ -305,6 +305,7 @@ export const lettersLesson: Lesson = {
         },
         {
           id: "note",
+          kind: "note",
           label: {
             en:
               "Use plain  for  when you need the COUNT or INDEX.\nUse  for…of  when you need each VALUE in turn.\n\nFor strings, for…of is almost always cleaner.",
@@ -318,17 +319,17 @@ export const lettersLesson: Lesson = {
         {
           narration: {
             en:
-              "Top: classic for. You get a number i.\nIf you wanted a letter, you'd have to write word[i] — extra step.",
+              "Left: classic for. You get a number i.\nIf you wanted a letter, you'd have to write word[i] — extra step.",
             sv:
-              "Överst: klassisk for. Du får ett tal i.\nVille du ha en bokstav fick du skriva word[i] — ett extra steg.",
+              "Vänster: klassisk for. Du får ett tal i.\nVille du ha en bokstav fick du skriva word[i] — ett extra steg.",
           },
         },
         {
           narration: {
             en:
-              "Bottom: for…of. You get the letter directly.\nNo counter, no indexing — just the value you want.",
+              "Right: for…of. You get the letter directly.\nNo counter, no indexing — just the value you want.",
             sv:
-              "Nedre: for…of. Du får bokstaven direkt.\nIngen räknare, ingen indexering — bara värdet du vill ha.",
+              "Höger: for…of. Du får bokstaven direkt.\nIngen räknare, ingen indexering — bara värdet du vill ha.",
           },
         },
         {

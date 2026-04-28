@@ -4,6 +4,7 @@ import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
 import { sessionGet, sessionSet } from "../storage";
+import { useSlideFontSize } from "./SlideFontSize";
 
 type Props = {
   slide: AssignmentSlide;
@@ -15,6 +16,7 @@ type CheckResult = { check: StyleCheck; actual: string; pass: boolean };
 
 export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
   const { lang } = useLang();
+  const { codePx, prosePx } = useSlideFontSize();
   const startingCss = t(slide.startingCss, lang);
 
   const [css, setCss] = useState<string>(() => {
@@ -96,9 +98,10 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
             value={css}
             onChange={(e) => setCss(e.target.value)}
             spellCheck={false}
-            className="flex-1 font-mono text-sm p-4 outline-none resize-none
+            className="flex-1 font-mono p-4 outline-none resize-none
                        bg-stone-50 text-stone-900
                        dark:bg-transparent dark:text-indigo-50"
+            style={{ fontSize: `${codePx}px` }}
           />
           <div className="flex gap-2 p-3 border-t border-stone-200 dark:border-white/10">
             <button
@@ -161,8 +164,11 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
             </>
           )}
           {results && (
-            <div className="border-t p-3 text-sm space-y-1 max-h-48 overflow-auto
-                            border-stone-200 dark:border-white/10">
+            <div
+              className="border-t p-3 space-y-1 max-h-48 overflow-auto
+                            border-stone-200 dark:border-white/10"
+              style={{ fontSize: `${prosePx}px` }}
+            >
               {allPass ? (
                 <div className="text-emerald-700 dark:text-emerald-300 font-medium">
                   {t(ui.doneCheers, lang)}

@@ -13,6 +13,7 @@ import { t } from "../i18n";
 import type { Lang } from "../i18n";
 import { ui } from "../i18n/strings";
 import { sessionGet, sessionSet } from "../storage";
+import { useSlideFontSize } from "./SlideFontSize";
 
 type Props = {
   slide: JsAssignmentSlide;
@@ -24,6 +25,7 @@ type TestRun = { test: JsTest; result: RunResult; pass: boolean };
 
 export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
   const { lang } = useLang();
+  const { codePx, prosePx } = useSlideFontSize();
   const starter = t(slide.starterCode, lang);
 
   const [code, setCode] = useState<string>(
@@ -141,10 +143,11 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
           </div>
           {slide.varNames.length > 0 && (
             <div
-              className="font-mono text-sm px-4 pt-3 pb-1 select-none border-b
+              className="font-mono px-4 pt-3 pb-1 select-none border-b
                          text-stone-500 bg-stone-100 border-stone-200
                          dark:text-indigo-200/60 dark:bg-slate-900/40 dark:border-white/10"
               aria-label="declared variables"
+              style={{ fontSize: `${codePx}px` }}
             >
               {slide.varNames.map((name) => {
                 const value = displayedVars[name];
@@ -161,9 +164,10 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
             onChange={(e) => setCode(e.target.value)}
             spellCheck={false}
             className={
-              "flex-1 font-mono text-sm outline-none resize-none p-4 " +
+              "flex-1 font-mono outline-none resize-none p-4 " +
               "bg-stone-50 text-stone-900 dark:bg-transparent dark:text-indigo-50"
             }
+            style={{ fontSize: `${codePx}px` }}
           />
           <div className="flex gap-2 p-3 border-t border-stone-200 dark:border-white/10">
             <button
@@ -219,16 +223,21 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
           {/* Status footer: appears after Check.
               showSuccess → "✓ Done"; otherwise → placeholder hint or goalHint. */}
           {runs && showSuccess && (
-            <div className="border-t border-stone-200 dark:border-white/10 px-4 py-3
-                            text-sm font-medium text-emerald-700 dark:text-emerald-300">
+            <div
+              className="border-t border-stone-200 dark:border-white/10 px-4 py-3
+                            font-medium text-emerald-700 dark:text-emerald-300"
+              style={{ fontSize: `${prosePx}px` }}
+            >
               {t({ en: "✓ Done", sv: "✓ Klart" }, lang)}
             </div>
           )}
           {runs && !showSuccess && runtimeError && (
-            <div className="border-t border-stone-200 dark:border-white/10 px-4 py-3
-                            text-sm
+            <div
+              className="border-t border-stone-200 dark:border-white/10 px-4 py-3
                             bg-rose-50 text-rose-800
-                            dark:bg-rose-500/10 dark:text-rose-200">
+                            dark:bg-rose-500/10 dark:text-rose-200"
+              style={{ fontSize: `${prosePx}px` }}
+            >
               <div className="font-medium mb-1">
                 {t(
                   {
@@ -242,8 +251,11 @@ export function JsAssignmentSlideView({ slide, storageKey, onPass }: Props) {
             </div>
           )}
           {runs && !showSuccess && !runtimeError && (placeholderHint || slide.goalHint) && (
-            <div className="border-t border-stone-200 dark:border-white/10 px-4 py-3
-                            text-sm text-stone-600 dark:text-indigo-200/80">
+            <div
+              className="border-t border-stone-200 dark:border-white/10 px-4 py-3
+                            text-stone-600 dark:text-indigo-200/80"
+              style={{ fontSize: `${prosePx}px` }}
+            >
               {placeholderHint
                 ? t(placeholderHint, lang)
                 : t(slide.goalHint!, lang)}

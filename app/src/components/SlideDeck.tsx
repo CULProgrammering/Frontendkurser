@@ -10,6 +10,7 @@ import { markComplete } from "../progress";
 import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
+import { SlideFontSizeControl } from "./SlideFontSize";
 
 type Props = { courseId: string; lesson: Lesson; onExit: () => void };
 
@@ -142,6 +143,12 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
           />
         )}
       </div>
+
+      {slide.kind !== "exercise" && (
+        <div className="flex justify-center px-6 pb-2">
+          <SlideFontSizeControl />
+        </div>
+      )}
 
       <footer className="flex items-center justify-between px-6 py-3 border-t border-stone-200 dark:border-white/10">
         <button

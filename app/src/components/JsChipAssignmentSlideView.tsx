@@ -3,6 +3,7 @@ import type { JsChipAssignmentSlide, JsChipPuzzle } from "../types";
 import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
+import { useSlideFontSize } from "./SlideFontSize";
 
 const SETTLE_MS = 400;
 
@@ -21,6 +22,7 @@ type CheckState = "pending" | "right" | "wrong";
  */
 export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, onPass }: Props) {
   const { lang } = useLang();
+  const { codePx, prosePx } = useSlideFontSize();
   const [puzzleIdx, setPuzzleIdx] = useState(0);
   const puzzle = slide.puzzles[puzzleIdx];
   const total = slide.puzzles.length;
@@ -35,74 +37,85 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, onPa
   return (
     <div className="h-full w-full flex flex-col">
       <div className="px-10 pt-8">
-        <h2 className="text-3xl font-semibold text-stone-900 dark:text-indigo-50">
-          {t(slide.title, lang)}
-        </h2>
-        <p className="text-stone-600 dark:text-indigo-200/80 mt-1 whitespace-pre-line">
-          {t(puzzle.intro ?? slide.prompt, lang)}
-        </p>
-        <div className="mt-3 flex items-center gap-2 text-xs text-stone-500 dark:text-indigo-200/60">
-          <span className="uppercase tracking-wider">
-            {lang === "sv" ? "Pussel" : "Puzzle"} {puzzleIdx + 1} / {total}
-          </span>
-          <div className="flex gap-1">
-            {slide.puzzles.map((_, i) => (
-              <div
-                key={i}
-                className={
-                  "h-1.5 w-6 rounded-full transition-colors " +
-                  (i === puzzleIdx
-                    ? "bg-amber-500 dark:bg-indigo-300"
-                    : i < puzzleIdx
-                    ? "bg-amber-300 dark:bg-indigo-500/60"
-                    : "bg-stone-300 dark:bg-white/20")
-                }
-              />
-            ))}
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-3xl font-semibold text-stone-900 dark:text-indigo-50">
+            {t(slide.title, lang)}
+          </h2>
+          <p
+            className="text-stone-600 dark:text-indigo-200/80 mt-1 whitespace-pre-line"
+            style={{ fontSize: `${prosePx}px` }}
+          >
+            {t(puzzle.intro ?? slide.prompt, lang)}
+          </p>
+          <div className="mt-3 flex items-center gap-2 text-xs text-stone-500 dark:text-indigo-200/60">
+            <span className="uppercase tracking-wider">
+              {lang === "sv" ? "Pussel" : "Puzzle"} {puzzleIdx + 1} / {total}
+            </span>
+            <div className="flex gap-1">
+              {slide.puzzles.map((_, i) => (
+                <div
+                  key={i}
+                  className={
+                    "h-1.5 w-6 rounded-full transition-colors " +
+                    (i === puzzleIdx
+                      ? "bg-amber-500 dark:bg-indigo-300"
+                      : i < puzzleIdx
+                      ? "bg-amber-300 dark:bg-indigo-500/60"
+                      : "bg-stone-300 dark:bg-white/20")
+                  }
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
       <div className="flex-1 px-10 py-6 min-h-0 flex flex-col">
-        <PuzzleView
-          key={puzzleIdx}
-          puzzle={puzzle}
-          isLast={isLast}
-          onAdvance={() => {
-            if (isLast) {
-              if (!allDoneRef.current) {
-                allDoneRef.current = true;
-                onPass?.();
+        <div className="max-w-3xl mx-auto w-full flex-1 flex flex-col min-h-0">
+          <PuzzleView
+            key={puzzleIdx}
+            puzzle={puzzle}
+            isLast={isLast}
+            onAdvance={() => {
+              if (isLast) {
+                if (!allDoneRef.current) {
+                  allDoneRef.current = true;
+                  onPass?.();
+                }
+              } else {
+                setPuzzleIdx((i) => i + 1);
               }
-            } else {
-              setPuzzleIdx((i) => i + 1);
-            }
-          }}
-          lang={lang}
-        />
+            }}
+            lang={lang}
+            codePx={codePx}
+            prosePx={prosePx}
+          />
+        </div>
       </div>
 
-      <div className="px-10 pb-2 flex items-center gap-2">
-        {hasLegend && (
-          <button
-            onClick={() => setShowLegend((v) => !v)}
-            className="px-3 py-1.5 rounded-lg text-sm ring-1
-                       bg-amber-100 hover:bg-amber-200 text-amber-800 ring-amber-300
-                       dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:text-amber-200 dark:ring-amber-400/30"
-          >
-            {t(showLegend ? ui.hideHelp : ui.showHelp, lang)}
-          </button>
-        )}
-        {puzzleIdx > 0 && (
-          <button
-            onClick={() => setPuzzleIdx((i) => Math.max(0, i - 1))}
-            className="ml-auto px-3 py-1.5 rounded-lg text-sm
-                       bg-stone-100 hover:bg-stone-200 text-stone-700
-                       dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white"
-          >
-            ◀ {lang === "sv" ? "Föregående pussel" : "Previous puzzle"}
-          </button>
-        )}
+      <div className="px-10 pb-2">
+        <div className="max-w-3xl mx-auto flex items-center gap-2">
+          {hasLegend && (
+            <button
+              onClick={() => setShowLegend((v) => !v)}
+              className="px-3 py-1.5 rounded-lg text-sm ring-1
+                         bg-amber-100 hover:bg-amber-200 text-amber-800 ring-amber-300
+                         dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:text-amber-200 dark:ring-amber-400/30"
+            >
+              {t(showLegend ? ui.hideHelp : ui.showHelp, lang)}
+            </button>
+          )}
+          {puzzleIdx > 0 && (
+            <button
+              onClick={() => setPuzzleIdx((i) => Math.max(0, i - 1))}
+              className="ml-auto px-3 py-1.5 rounded-lg text-sm
+                         bg-stone-100 hover:bg-stone-200 text-stone-700
+                         dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white"
+            >
+              ◀ {lang === "sv" ? "Föregående pussel" : "Previous puzzle"}
+            </button>
+          )}
+        </div>
       </div>
 
       {showLegend && hasLegend && (
@@ -149,11 +162,15 @@ function PuzzleView({
   isLast,
   onAdvance,
   lang,
+  codePx,
+  prosePx,
 }: {
   puzzle: JsChipPuzzle;
   isLast: boolean;
   onAdvance: () => void;
   lang: import("../i18n").Lang;
+  codePx: number;
+  prosePx: number;
 }) {
   const template = t(puzzle.template, lang);
   const numSlots = useMemo(
@@ -258,7 +275,10 @@ function PuzzleView({
   return (
     <div className="flex-1 flex flex-col gap-4 min-h-0">
       {puzzle.prompt && (
-        <p className="text-stone-700 dark:text-indigo-100 whitespace-pre-line">
+        <p
+          className="text-stone-700 dark:text-indigo-100 whitespace-pre-line"
+          style={{ fontSize: `${prosePx}px` }}
+        >
           {t(puzzle.prompt, lang)}
         </p>
       )}
@@ -266,9 +286,10 @@ function PuzzleView({
       {/* Code panel with embedded slots */}
       <div
         className={
-          "rounded-xl p-5 font-mono text-sm whitespace-pre " +
+          "rounded-xl p-5 font-mono whitespace-pre " +
           "bg-slate-900 text-indigo-50 ring-1 ring-white/10"
         }
+        style={{ fontSize: `${codePx}px` }}
       >
         {parts.map((segment, i) => (
           <span key={i}>
@@ -304,11 +325,12 @@ function PuzzleView({
               onClick={() => handleChipClick(idx)}
               disabled={check === "right"}
               className={
-                "px-3 py-2 rounded-lg font-mono text-sm transition-all ring-1 " +
+                "px-3 py-2 rounded-lg font-mono transition-all ring-1 " +
                 (placed
                   ? "bg-stone-100 text-stone-300 ring-stone-200 cursor-not-allowed dark:bg-slate-800/40 dark:text-slate-600 dark:ring-white/5"
                   : "bg-amber-100 hover:bg-amber-200 text-amber-900 ring-amber-300 active:scale-95 dark:bg-indigo-500/20 dark:hover:bg-indigo-500/30 dark:text-indigo-100 dark:ring-indigo-400/30")
               }
+              style={{ fontSize: `${codePx}px` }}
             >
               {text}
             </button>
@@ -404,9 +426,10 @@ function Slot({
       style={{
         opacity: settling ? 0 : 1,
         transition: `opacity ${SETTLE_MS}ms ease-out`,
+        fontSize: "inherit",
       }}
       className={
-        "inline-block align-baseline mx-0.5 px-2 py-0.5 rounded font-mono text-sm ring-1 transition-colors " +
+        "inline-block align-baseline mx-0.5 px-2 py-0.5 rounded font-mono ring-1 transition-colors " +
         (empty
           ? "bg-slate-800 ring-dashed ring-indigo-300/40 text-indigo-300/40 min-w-[3em]"
           : showRight

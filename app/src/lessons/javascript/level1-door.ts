@@ -70,9 +70,9 @@ export const doorLesson: Lesson = {
         {
           narration: {
             en:
-              "Look at the code on the left. Five parts:\nif   ( ... )   { ... }   return.",
+              "Look at the code below. Five parts:\nif   ( ... )   { ... }   return.",
             sv:
-              "Titta på koden till vänster. Fem delar:\nif   ( ... )   { ... }   return.",
+              "Titta på koden nedanför. Fem delar:\nif   ( ... )   { ... }   return.",
           },
         },
         {
@@ -664,6 +664,7 @@ export const doorLesson: Lesson = {
         },
         {
           id: "warning",
+          kind: "note",
           label: {
             en:
               "Common trap:\nif (x = 5) — sets x to 5\nand is always true.\nAlmost never what you want.",

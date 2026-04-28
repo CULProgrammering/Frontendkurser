@@ -1,7 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect } from "react";
 import type { ReactNode } from "react";
 import type { Lang } from ".";
-import { sessionGet, sessionSet } from "../storage";
 
 type Ctx = { lang: Lang; setLang: (l: Lang) => void };
 
@@ -10,18 +9,12 @@ const LanguageCtx = createContext<Ctx>({
   setLang: () => {},
 });
 
-const STORAGE_KEY = "cul:lang";
-
+// Swedish output is temporarily disabled pending translation review — every
+// consumer is force-pinned to English regardless of any persisted preference.
+// To re-enable, restore the storage-backed state from git history.
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(() => {
-    const v = sessionGet(STORAGE_KEY);
-    return v === "sv" ? "sv" : "en";
-  });
-
-  const setLang = (l: Lang) => {
-    setLangState(l);
-    sessionSet(STORAGE_KEY, l);
-  };
+  const lang: Lang = "en";
+  const setLang = () => {};
 
   useEffect(() => {
     document.documentElement.lang = lang;
