@@ -352,61 +352,64 @@ export const countdownLesson: Lesson = {
           "n är satt till 10. Bygg en while-loop som räknar upp till det.",
       },
       puzzles: [
-        // p1: code A — condition pieces (the new piece this lesson)
+        // p1: while keyword (vs for/do/if)
         {
           prompt: {
-            en: "Build the condition that keeps the loop going.",
-            sv: "Bygg villkoret som håller loopen igång.",
+            en: "Which keyword runs a loop while a condition holds?",
+            sv: "Vilket nyckelord kör en loop så länge ett villkor stämmer?",
           },
           template:
-            "let count = 0;\nlet n = 10;\nwhile ([[]] [[]] [[]]) {\n  count = count + 1;\n}\nreturn count;",
-          chips: ["count", "<", "n"],
-          solution: ["count", "<", "n"],
+            "let count = 0;\nlet n = 10;\n[[]] (count < n) {\n  count = count + 1;\n}\nreturn count;",
+          chips: ["while", "for", "do", "if"],
+          solution: ["while"],
         },
-        // p2: code A — full assembly
+        // p2: ( ) around the condition
         {
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "What wraps the while condition?",
+            sv: "Vad omger while-villkoret?",
           },
           template:
-            "[[]];\nlet n = 10;\nwhile ([[]]) {\n  [[]];\n}\nreturn count;",
-          chips: ["let count = 0", "count < n", "count = count + 1"],
-          solution: ["let count = 0", "count < n", "count = count + 1"],
+            "let count = 0;\nlet n = 10;\nwhile [[]]count < n[[]] {\n  count = count + 1;\n}\nreturn count;",
+          chips: ["(", ")", "{", "}"],
+          solution: ["(", ")"],
         },
-        // p3: code B (coins/goal) — condition pieces
+        // p3: { } around the loop body
+        {
+          prompt: {
+            en: "What wraps the loop body?",
+            sv: "Vad omger loop-kroppen?",
+          },
+          template:
+            "let count = 0;\nlet n = 10;\nwhile (count < n) [[]]\n  count = count + 1;\n[[]]\nreturn count;",
+          chips: ["{", "}", "(", ")"],
+          solution: ["{", "}"],
+        },
+        // p4: < condition operator (coins/goal scenario)
         {
           intro: {
-            en:
-              "Same idea, different names: count coins up to a goal of 5.",
-            sv:
-              "Samma idé, andra namn: räkna mynt upp till ett mål på 5.",
+            en: "Same shape — count coins up to a goal.",
+            sv: "Samma form — räkna mynt upp till ett mål.",
           },
           prompt: {
-            en: "Build the condition that keeps the loop going.",
-            sv: "Bygg villkoret som håller loopen igång.",
+            en: "Which operator keeps the loop running while coins hasn't reached the goal?",
+            sv: "Vilken operator håller loopen igång medan mynt inte nått målet?",
           },
           template:
-            "let coins = 0;\nlet goal = 5;\nwhile ([[]] [[]] [[]]) {\n  coins = coins + 1;\n}\nreturn coins;",
-          chips: ["coins", "<", "goal"],
-          solution: ["coins", "<", "goal"],
+            "let coins = 0;\nlet goal = 5;\nwhile (coins [[]] goal) {\n  coins = coins + 1;\n}\nreturn coins;",
+          chips: ["<", "<=", ">", ">="],
+          solution: ["<"],
         },
-        // p4: code B — full assembly
+        // p5: synthesis — all syntax pieces together
         {
-          intro: {
-            en:
-              "Same idea, different names: count coins up to a goal of 5.",
-            sv:
-              "Samma idé, andra namn: räkna mynt upp till ett mål på 5.",
-          },
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "Now place all the syntax pieces you've practised.",
+            sv: "Placera nu alla syntaxdelar du övat på.",
           },
           template:
-            "[[]];\nlet goal = 5;\nwhile ([[]]) {\n  [[]];\n}\nreturn coins;",
-          chips: ["let coins = 0", "coins < goal", "coins = coins + 1"],
-          solution: ["let coins = 0", "coins < goal", "coins = coins + 1"],
+            "let count = 0;\nlet n = 10;\n[[]] [[]]count [[]] n[[]] [[]]\n  count = count + 1;\n[[]]\nreturn count;",
+          chips: ["while", "(", "<", ")", "{", "}", "for", ">"],
+          solution: ["while", "(", "<", ")", "{", "}"],
         },
       ],
       legend: [
@@ -445,61 +448,64 @@ export const countdownLesson: Lesson = {
           "Halvera n tills den är under 1. Räkna halveringarna.",
       },
       puzzles: [
-        // p1: code A — pick the halving expression
+        // p1: n / 2 halving expression (vs n * 2, n - 2, n + 2)
         {
           prompt: {
-            en: "Pick the expression that modifies n.",
-            sv: "Välj uttrycket som ändrar n.",
+            en: "Which expression halves n each lap?",
+            sv: "Vilket uttryck halverar n varje varv?",
           },
           template:
             "let count = 0;\nwhile (n >= 1) {\n  n = [[]];\n  count = count + 1;\n}\nreturn count;",
           chips: ["n / 2", "n * 2", "n - 2", "n + 2"],
           solution: ["n / 2"],
         },
-        // p2: code A — full assembly
+        // p2: >= condition (vs >, <=, <)
         {
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "Which condition keeps looping while n is at least 1?",
+            sv: "Vilket villkor håller loopen igång så länge n är minst 1?",
           },
           template:
-            "let count = 0;\nwhile ([[]]) {\n  n = [[]];\n  count = [[]];\n}\nreturn count;",
-          chips: ["n >= 1", "n / 2", "count + 1", "n < 1", "n * 2"],
-          solution: ["n >= 1", "n / 2", "count + 1"],
+            "let count = 0;\nwhile ([[]] 1) {\n  n = n / 2;\n  count = count + 1;\n}\nreturn count;",
+          chips: ["n >=", "n >", "n <=", "n <"],
+          solution: ["n >="],
         },
-        // p3: code B (subtract 5) — pick the body operation
+        // p3: { } around the body
+        {
+          prompt: {
+            en: "What wraps the loop body?",
+            sv: "Vad omger loop-kroppen?",
+          },
+          template:
+            "let count = 0;\nwhile (n >= 1) [[]]\n  n = n / 2;\n  count = count + 1;\n[[]]\nreturn count;",
+          chips: ["{", "}", "(", ")"],
+          solution: ["{", "}"],
+        },
+        // p4: n - 5 subtraction expression (subtract 5 scenario)
         {
           intro: {
-            en:
-              "Now: subtract 5 from n until it's no longer positive. Count the subtractions.",
-            sv:
-              "Nu: dra 5 från n tills den inte längre är positiv. Räkna avdragen.",
+            en: "Same shape — subtract 5 until n is no longer positive.",
+            sv: "Samma form — dra 5 tills n inte längre är positiv.",
           },
           prompt: {
-            en: "Pick the expression that modifies n.",
-            sv: "Välj uttrycket som ändrar n.",
+            en: "Which expression subtracts 5 from n each lap?",
+            sv: "Vilket uttryck drar 5 från n varje varv?",
           },
           template:
             "let count = 0;\nwhile (n > 0) {\n  n = [[]];\n  count = count + 1;\n}\nreturn count;",
           chips: ["n - 5", "n + 5", "n * 5", "n / 5"],
           solution: ["n - 5"],
         },
-        // p4: code B — full assembly
+        // p5: synthesis — all syntax pieces together
         {
-          intro: {
-            en:
-              "Now: subtract 5 from n until it's no longer positive. Count the subtractions.",
-            sv:
-              "Nu: dra 5 från n tills den inte längre är positiv. Räkna avdragen.",
-          },
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "Now place all the syntax pieces you've practised.",
+            sv: "Placera nu alla syntaxdelar du övat på.",
           },
           template:
-            "let count = 0;\nwhile ([[]]) {\n  n = [[]];\n  count = [[]];\n}\nreturn count;",
-          chips: ["n > 0", "n - 5", "count + 1", "n < 0", "n + 5"],
-          solution: ["n > 0", "n - 5", "count + 1"],
+            "let count = 0;\nwhile ([[]] 1) [[]]\n  n = [[]];\n  count = count + 1;\n[[]]\nreturn count;",
+          chips: ["n >=", "{", "n / 2", "}", "n >", "n * 2"],
+          solution: ["n >=", "{", "n / 2", "}"],
         },
       ],
       legend: [

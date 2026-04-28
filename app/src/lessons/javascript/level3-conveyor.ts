@@ -421,49 +421,64 @@ export const conveyorLesson: Lesson = {
           "Fyll i case-värdena så att varje sak hamnar i rätt fack.",
       },
       puzzles: [
-        // p1: code A — case keyword + value for the first branch
+        // p1: switch keyword (vs if/for/while)
         {
           prompt: {
-            en: "Place the keyword and the value for the first branch.",
-            sv: "Placera ordet och värdet för första grenen.",
+            en: "Which keyword starts this kind of multi-branch?",
+            sv: "Vilket nyckelord startar den här typen av flergren?",
           },
           template:
-            'switch (item) {\n  [[]] [[]]:\n    return "paper-bin";\n  case "glass":\n    return "glass-bin";\n  case "plastic":\n    return "plastic-bin";\n  default:\n    return "rest-bin";\n}',
-          chips: ["case", '"paper"'],
-          solution: ["case", '"paper"'],
+            '[[]] (item) {\n  case "paper": return "paper-bin";\n  case "glass": return "glass-bin";\n  default: return "rest-bin";\n}',
+          chips: ["switch", "if", "for", "while"],
+          solution: ["switch"],
         },
-        // p2: code A — full assembly — case values + default keyword
+        // p2: ( ) around the switch expression
         {
           prompt: {
-            en: "Place the case values and the fallback keyword.",
-            sv: "Placera case-värdena och reservordet.",
+            en: "What wraps the value being tested?",
+            sv: "Vad omger värdet som testas?",
           },
           template:
-            'switch (item) {\n  case [[]]:\n    return "paper-bin";\n  case [[]]:\n    return "glass-bin";\n  case [[]]:\n    return "plastic-bin";\n  [[]]:\n    return "rest-bin";\n}',
-          chips: ['"paper"', '"glass"', '"plastic"', "default"],
-          solution: ['"paper"', '"glass"', '"plastic"', "default"],
+            'switch [[]]item[[]] {\n  case "paper": return "paper-bin";\n  default: return "rest-bin";\n}',
+          chips: ["(", ")", "{", "}"],
+          solution: ["(", ")"],
         },
-        // p3: code B (color) — case keyword + value for the first branch
+        // p3: case keyword (vs if/when/else)
         {
           prompt: {
-            en: "Place the keyword and the value for the first branch.",
-            sv: "Placera ordet och värdet för första grenen.",
+            en: "Which keyword introduces each branch value?",
+            sv: "Vilket nyckelord inleder varje grenings-värde?",
           },
           template:
-            'switch (color) {\n  [[]] [[]]:\n    return "stop";\n  case "yellow":\n    return "slow";\n  case "green":\n    return "go";\n  default:\n    return "off";\n}',
-          chips: ["case", '"red"'],
-          solution: ["case", '"red"'],
+            'switch (item) {\n  [[]] "paper": return "paper-bin";\n  case "glass": return "glass-bin";\n  default: return "rest-bin";\n}',
+          chips: ["case", "if", "when", "else"],
+          solution: ["case"],
         },
-        // p4: code B — full assembly
+        // p4: default keyword + : colon (color scenario)
         {
+          intro: {
+            en: "Same shape — traffic-light colors.",
+            sv: "Samma form — trafikljusfärger.",
+          },
           prompt: {
-            en: "Place the case values and the fallback keyword.",
-            sv: "Placera case-värdena och reservordet.",
+            en: "Place the fallback keyword and the colon after it.",
+            sv: "Placera reservordet och kolonet efter det.",
           },
           template:
-            'switch (color) {\n  case [[]]:\n    return "stop";\n  case [[]]:\n    return "slow";\n  case [[]]:\n    return "go";\n  [[]]:\n    return "off";\n}',
-          chips: ['"red"', '"yellow"', '"green"', "default"],
-          solution: ['"red"', '"yellow"', '"green"', "default"],
+            'switch (color) {\n  case "red": return "stop";\n  case "yellow": return "slow";\n  [[]][[]]\n    return "off";\n}',
+          chips: ["default", ":", ";", "case"],
+          solution: ["default", ":"],
+        },
+        // p5: synthesis — all syntax pieces together
+        {
+          prompt: {
+            en: "Now place all the syntax pieces you've practised.",
+            sv: "Placera nu alla syntaxdelar du övat på.",
+          },
+          template:
+            '[[]] [[]]item[[]] {\n  [[]] "paper": return "paper-bin";\n  [[]][[]]\n    return "rest-bin";\n}',
+          chips: ["switch", "(", ")", "case", "default", ":", "if", ";"],
+          solution: ["switch", "(", ")", "case", "default", ":"],
         },
       ],
       legend: [

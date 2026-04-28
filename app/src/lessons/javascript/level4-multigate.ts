@@ -124,63 +124,64 @@ export const multiGateLesson: Lesson = {
           "Bygg villkoret: 18 eller äldre OCH har biljett.",
       },
       puzzles: [
-        // p1: code A — combine with && and second operand (the new piece this lesson)
+        // p1: && operator (vs ||, !, ===)
         {
           prompt: {
-            en: "Combine the two checks with the right operator.",
-            sv: "Kombinera de två kontrollerna med rätt operator.",
+            en: "Which operator means 'both must be true'?",
+            sv: "Vilken operator betyder 'båda måste vara sanna'?",
           },
           template:
-            'if (age >= 18 [[]] [[]]) {\n  return "let in";\n} else {\n  return "stopped";\n}',
-          chips: ["&&", "hasTicket"],
-          solution: ["&&", "hasTicket"],
+            'if (age >= 18 [[]] hasTicket) {\n  return "let in";\n} else {\n  return "stopped";\n}',
+          chips: ["&&", "||", "!", "==="],
+          solution: ["&&"],
         },
-        // p2: code A — full assembly
+        // p2: ( ) around the condition
         {
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "What wraps the combined condition?",
+            sv: "Vad omger det kombinerade villkoret?",
           },
           template:
-            "if ([[]] [[]] [[]]) {\n  return [[]];\n} else {\n  return [[]];\n}",
-          chips: ["age >= 18", "&&", "hasTicket", '"let in"', '"stopped"'],
-          solution: ["age >= 18", "&&", "hasTicket", '"let in"', '"stopped"'],
-          alternatives: [["hasTicket", "&&", "age >= 18", '"let in"', '"stopped"']],
+            'if [[]]age >= 18 && hasTicket[[]] {\n  return "let in";\n} else {\n  return "stopped";\n}',
+          chips: ["(", ")", "{", "}"],
+          solution: ["(", ")"],
         },
-        // p3: code B (fuel/hasKey) — combine with && and second operand
+        // p3: { } around the if body
+        {
+          prompt: {
+            en: "What wraps the if body?",
+            sv: "Vad omger if-kroppen?",
+          },
+          template:
+            'if (age >= 18 && hasTicket) [[]]\n  return "let in";\n[[]] else {\n  return "stopped";\n}',
+          chips: ["{", "}", "(", ")"],
+          solution: ["{", "}"],
+        },
+        // p4: ; after return value (fuel/hasKey scenario)
         {
           intro: {
-            en:
-              "Now: enough fuel AND has the key. Same shape with different variables.",
-            sv:
-              "Nu: tillräckligt med bränsle OCH har nyckeln. Samma form med andra variabler.",
+            en: "Same shape — enough fuel AND has the key.",
+            sv: "Samma form — tillräckligt bränsle OCH har nyckeln.",
           },
           prompt: {
-            en: "Combine the two checks with the right operator.",
-            sv: "Kombinera de två kontrollerna med rätt operator.",
+            en: "What ends a return statement?",
+            sv: "Vad avslutar en return-sats?",
           },
           template:
-            'if (fuel >= 10 [[]] [[]]) {\n  return "drive";\n} else {\n  return "wait";\n}',
-          chips: ["&&", "hasKey"],
-          solution: ["&&", "hasKey"],
+            'if (fuel >= 10 && hasKey) {\n  return "drive"[[]]\n} else {\n  return "wait";\n}',
+          chips: [";", ",", ".", ":"],
+          solution: [";"],
         },
-        // p4: code B — full assembly
+        // p5: synthesis — all syntax pieces together
         {
-          intro: {
-            en:
-              "Now: enough fuel AND has the key. Same shape with different variables.",
-            sv:
-              "Nu: tillräckligt med bränsle OCH har nyckeln. Samma form med andra variabler.",
-          },
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "Now place all the syntax pieces you've practised.",
+            sv: "Placera nu alla syntaxdelar du övat på.",
           },
           template:
-            "if ([[]] [[]] [[]]) {\n  return [[]];\n} else {\n  return [[]];\n}",
-          chips: ["fuel >= 10", "&&", "hasKey", '"drive"', '"wait"'],
-          solution: ["fuel >= 10", "&&", "hasKey", '"drive"', '"wait"'],
-          alternatives: [["hasKey", "&&", "fuel >= 10", '"drive"', '"wait"']],
+            'if [[]]age >= 18 [[]] hasTicket[[]] [[]]\n  return "let in"[[]]\n[[]] else {\n  return "stopped";\n}',
+          chips: ["(", "&&", ")", "{", ";", "}", "||", ","],
+          solution: ["(", "&&", ")", "{", ";", "}"],
         },
       ],
       legend: [
@@ -274,7 +275,7 @@ export const multiGateLesson: Lesson = {
           "VIP ELLER biljett släpper in dig. Välj rätt operator.",
       },
       puzzles: [
-        // p1: code A — pick the right operator (with distractors)
+        // p1: || operator (vs &&, !, ===)
         {
           prompt: {
             en: "Which operator means 'one side is enough'?",
@@ -282,53 +283,36 @@ export const multiGateLesson: Lesson = {
           },
           template:
             'if (isVip [[]] hasTicket) {\n  return "let in";\n} else {\n  return "stopped";\n}',
-          chips: ["||", "&&", "!"],
+          chips: ["||", "&&", "!", "==="],
           solution: ["||"],
         },
-        // p2: code A — full assembly
+        // p2: ( ) around the combined condition
         {
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "What wraps the combined condition?",
+            sv: "Vad omger det kombinerade villkoret?",
           },
           template:
-            "if ([[]] [[]] [[]]) {\n  return [[]];\n} [[]] {\n  return [[]];\n}",
-          chips: [
-            "isVip",
-            "||",
-            "hasTicket",
-            '"let in"',
-            "else",
-            '"stopped"',
-            "&&",
-            "!",
-          ],
-          solution: [
-            "isVip",
-            "||",
-            "hasTicket",
-            '"let in"',
-            "else",
-            '"stopped"',
-          ],
-          alternatives: [
-            [
-              "hasTicket",
-              "||",
-              "isVip",
-              '"let in"',
-              "else",
-              '"stopped"',
-            ],
-          ],
+            'if [[]]isVip || hasTicket[[]] {\n  return "let in";\n} else {\n  return "stopped";\n}',
+          chips: ["(", ")", "{", "}"],
+          solution: ["(", ")"],
         },
-        // p3: code B (isStudent/hasCoupon) — pick the right operator
+        // p3: { } around the else body
+        {
+          prompt: {
+            en: "What wraps the else body?",
+            sv: "Vad omger else-kroppen?",
+          },
+          template:
+            'if (isVip || hasTicket) {\n  return "let in";\n} else [[]]\n  return "stopped";\n[[]]',
+          chips: ["{", "}", "(", ")"],
+          solution: ["{", "}"],
+        },
+        // p4: || vs && (isStudent/hasCoupon scenario)
         {
           intro: {
-            en:
-              "Now: student OR holds a coupon → discount. Same shape, different variables.",
-            sv:
-              "Nu: student ELLER har kupong → rabatt. Samma form, andra variabler.",
+            en: "Student OR holds a coupon — one is enough for a discount.",
+            sv: "Student ELLER har kupong — en räcker för rabatt.",
           },
           prompt: {
             en: "Which operator means 'one side is enough'?",
@@ -336,51 +320,19 @@ export const multiGateLesson: Lesson = {
           },
           template:
             'if (isStudent [[]] hasCoupon) {\n  return "discount";\n} else {\n  return "full";\n}',
-          chips: ["||", "&&", "!"],
+          chips: ["||", "&&", "!", "==="],
           solution: ["||"],
         },
-        // p4: code B — full assembly
+        // p5: synthesis — all syntax pieces together
         {
-          intro: {
-            en:
-              "Now: student OR holds a coupon → discount. Same shape, different variables.",
-            sv:
-              "Nu: student ELLER har kupong → rabatt. Samma form, andra variabler.",
-          },
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "Now place all the syntax pieces you've practised.",
+            sv: "Placera nu alla syntaxdelar du övat på.",
           },
           template:
-            "if ([[]] [[]] [[]]) {\n  return [[]];\n} [[]] {\n  return [[]];\n}",
-          chips: [
-            "isStudent",
-            "||",
-            "hasCoupon",
-            '"discount"',
-            "else",
-            '"full"',
-            "&&",
-            "!",
-          ],
-          solution: [
-            "isStudent",
-            "||",
-            "hasCoupon",
-            '"discount"',
-            "else",
-            '"full"',
-          ],
-          alternatives: [
-            [
-              "hasCoupon",
-              "||",
-              "isStudent",
-              '"discount"',
-              "else",
-              '"full"',
-            ],
-          ],
+            'if [[]]isVip [[]] hasTicket[[]] [[]]\n  return "let in";\n[[]] else {\n  return "stopped";\n}',
+          chips: ["(", "||", ")", "{", "}", "&&", "!"],
+          solution: ["(", "||", ")", "{", "}"],
         },
       ],
       legend: [
@@ -459,49 +411,64 @@ export const multiGateLesson: Lesson = {
           "Använd ! för att vända variabelns sanningsvärde.",
       },
       puzzles: [
-        // p1: code A — place ! and the variable
+        // p1: ! operator placed before variable (vs &&, ||, ===)
         {
           prompt: {
-            en: "Use ! to flip the variable's value.",
-            sv: "Använd ! för att vända variabelns värde.",
+            en: "Which operator flips a boolean?",
+            sv: "Vilken operator vänder en boolean?",
           },
           template:
-            'if ([[]][[]]) {\n  return "let in";\n} else {\n  return "stopped";\n}',
-          chips: ["!", "banned", "&&", "||"],
-          solution: ["!", "banned"],
+            'if ([[]]banned) {\n  return "let in";\n} else {\n  return "stopped";\n}',
+          chips: ["!", "&&", "||", "==="],
+          solution: ["!"],
         },
-        // p2: code A — full assembly
+        // p2: ( ) around !banned condition
         {
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "What wraps the condition?",
+            sv: "Vad omger villkoret?",
           },
           template:
-            "if ([[]][[]]) {\n  return [[]];\n} [[]] {\n  return [[]];\n}",
-          chips: ["!", "banned", '"let in"', "else", '"stopped"', "&&", "||"],
-          solution: ["!", "banned", '"let in"', "else", '"stopped"'],
+            'if [[]]!banned[[]] {\n  return "let in";\n} else {\n  return "stopped";\n}',
+          chips: ["(", ")", "{", "}"],
+          solution: ["(", ")"],
         },
-        // p3: code B (raining) — place ! and the variable
+        // p3: { } around the if body
         {
           prompt: {
-            en: "Use ! to flip the variable's value.",
-            sv: "Använd ! för att vända variabelns värde.",
+            en: "What wraps the if body?",
+            sv: "Vad omger if-kroppen?",
           },
           template:
-            'if ([[]][[]]) {\n  return "walk";\n} else {\n  return "umbrella";\n}',
-          chips: ["!", "raining", "&&", "||"],
-          solution: ["!", "raining"],
+            'if (!banned) [[]]\n  return "let in";\n[[]] else {\n  return "stopped";\n}',
+          chips: ["{", "}", "(", ")"],
+          solution: ["{", "}"],
         },
-        // p4: code B — full assembly
+        // p4: ! operator (raining scenario)
         {
+          intro: {
+            en: "Walk when it is NOT raining.",
+            sv: "Gå när det INTE regnar.",
+          },
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "Which operator flips a boolean?",
+            sv: "Vilken operator vänder en boolean?",
           },
           template:
-            "if ([[]][[]]) {\n  return [[]];\n} [[]] {\n  return [[]];\n}",
-          chips: ["!", "raining", '"walk"', "else", '"umbrella"', "&&", "||"],
-          solution: ["!", "raining", '"walk"', "else", '"umbrella"'],
+            'if ([[]]raining) {\n  return "walk";\n} else {\n  return "umbrella";\n}',
+          chips: ["!", "&&", "||", "==="],
+          solution: ["!"],
+        },
+        // p5: synthesis — all syntax pieces together
+        {
+          prompt: {
+            en: "Now place all the syntax pieces you've practised.",
+            sv: "Placera nu alla syntaxdelar du övat på.",
+          },
+          template:
+            'if [[]][[]]banned[[]] [[]]\n  return "let in";\n[[]] else {\n  return "stopped";\n}',
+          chips: ["(", "!", ")", "{", "}", "&&", "||"],
+          solution: ["(", "!", ")", "{", "}"],
         },
       ],
       legend: [

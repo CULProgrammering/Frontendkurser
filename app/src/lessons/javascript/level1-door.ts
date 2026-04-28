@@ -327,45 +327,59 @@ export const doorLesson: Lesson = {
           "Bygg if-satsen bit för bit.\nGå igenom de fyra delpusslen.",
       },
       puzzles: [
-        // p1: code A — condition pieces
+        // p1: keyword — if vs while/for/else
         {
           prompt: {
-            en: "Place the three pieces of the comparison.",
-            sv: "Placera de tre delarna av jämförelsen.",
+            en: "Which keyword starts a conditional?",
+            sv: "Vilket nyckelord startar ett villkor?",
           },
-          template: 'if ([[]] [[]] [[]]) {\n  return "walk";\n}',
-          chips: ["light", "===", '"green"'],
-          solution: ["light", "===", '"green"'],
+          template: '[[]] (light === "green") {\n  return "walk";\n}',
+          chips: ["if", "while", "for", "else"],
+          solution: ["if"],
         },
-        // p2: code A — full assembly
+        // p2: parentheses ( ) around the condition
         {
           prompt: {
-            en: "Put the whole thing together.",
-            sv: "Sätt ihop hela.",
+            en: "What wraps the condition — ( ) or { }?",
+            sv: "Vad omger villkoret — ( ) eller { }?",
           },
-          template: "[[]] ([[]]) {\n  [[]] [[]];\n}",
-          chips: ["if", 'light === "green"', "return", '"walk"'],
-          solution: ["if", 'light === "green"', "return", '"walk"'],
+          template: 'if [[]]light === "green"[[]] {\n  return "walk";\n}',
+          chips: ["(", ")", "{", "}"],
+          solution: ["(", ")"],
         },
-        // p3: code B (door) — condition pieces
+        // p3: === operator (vs == and =)
         {
           prompt: {
-            en: "Place the three pieces of the comparison.",
-            sv: "Placera de tre delarna av jämförelsen.",
+            en: "Which operator checks strict equality?",
+            sv: "Vilken operator kontrollerar strikt likhet?",
           },
-          template: 'if ([[]] [[]] [[]]) {\n  return "enter";\n}',
-          chips: ["door", "===", '"open"'],
-          solution: ["door", "===", '"open"'],
+          template: 'if (light [[]] "green") {\n  return "walk";\n}',
+          chips: ["===", "==", "=", "!=="],
+          solution: ["==="],
         },
-        // p4: code B — full assembly
+        // p4: curly braces { } around the body (door scenario)
+        {
+          intro: {
+            en: "Same shape — a door that opens.",
+            sv: "Samma form — en dörr som öppnas.",
+          },
+          prompt: {
+            en: "What wraps the body of the if?",
+            sv: "Vad omger kroppen av if?",
+          },
+          template: 'if (door === "open") [[]]\n  return "enter";\n[[]]',
+          chips: ["{", "}", "(", ")"],
+          solution: ["{", "}"],
+        },
+        // p5: synthesis — all four elements together
         {
           prompt: {
-            en: "Put the whole thing together.",
-            sv: "Sätt ihop hela.",
+            en: "Now place all the syntax pieces you've practised.",
+            sv: "Placera nu alla syntaxdelar du övat på.",
           },
-          template: "[[]] ([[]]) {\n  [[]] [[]];\n}",
-          chips: ["if", 'door === "open"', "return", '"enter"'],
-          solution: ["if", 'door === "open"', "return", '"enter"'],
+          template: '[[]] [[]]light [[]] "green"[[]] [[]]\n  return "walk";\n[[]]',
+          chips: ["if", "(", ")", "===", "{", "}", "while", "="],
+          solution: ["if", "(", ")", "===", "{", "}"],
         },
       ],
       legend: [
@@ -548,7 +562,7 @@ export const doorLesson: Lesson = {
           "Nu spelar båda grenarna roll — gå på grönt, vänta på allt annat.",
       },
       puzzles: [
-        // p1: code A — just the else keyword
+        // p1: else keyword (vs elif/otherwise/if)
         {
           prompt: {
             en: "Pick the keyword between the } and the {.",
@@ -556,73 +570,55 @@ export const doorLesson: Lesson = {
           },
           template:
             'if (light === "green") {\n  return "walk";\n} [[]] {\n  return "wait";\n}',
-          chips: ["else", "elif", "otherwise", "or"],
+          chips: ["else", "elif", "otherwise", "if"],
           solution: ["else"],
         },
-        // p2: code A — full assembly
+        // p2: { } curly braces around the else body
         {
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "What wraps the else body?",
+            sv: "Vad omger else-kroppen?",
           },
           template:
-            "if ([[]]) {\n  return [[]];\n} [[]] {\n  return [[]];\n}",
-          chips: [
-            'light === "green"',
-            '"walk"',
-            "else",
-            '"wait"',
-            'light = "green"',
-            '"red"',
-          ],
-          solution: ['light === "green"', '"walk"', "else", '"wait"'],
-          wrongHint: {
-            en:
-              "Watch out for the = trap: one equals sign assigns, three compare. With = the code would change light to green and walk every time.",
-            sv:
-              "Se upp för =-fällan: ett likhetstecken tilldelar, tre jämför. Med = ändrar koden light till green och går varje gång.",
-          },
+            'if (light === "green") {\n  return "walk";\n} else [[]]\n  return "wait";\n[[]]',
+          chips: ["{", "}", "(", ")"],
+          solution: ["{", "}"],
         },
-        // p3: code B (mood) — just the else keyword
+        // p3: === vs = (assignment trap)
+        {
+          prompt: {
+            en: "Which operator compares — does not assign?",
+            sv: "Vilken operator jämför — tilldelar inte?",
+          },
+          template:
+            'if (light [[]] "green") {\n  return "walk";\n} else {\n  return "wait";\n}',
+          chips: ["===", "=", "=="],
+          solution: ["==="],
+        },
+        // p4: ; semicolon after return value (mood scenario)
         {
           intro: {
-            en:
-              "Same shape, different story — smile when happy, frown otherwise.",
-            sv:
-              "Samma form, annan berättelse — le när glad, surmula annars.",
+            en: "Same shape — smile when happy, frown otherwise.",
+            sv: "Samma form — le när glad, surmula annars.",
           },
           prompt: {
-            en: "Pick the keyword between the } and the {.",
-            sv: "Välj ordet mellan } och {.",
+            en: "What ends a return statement?",
+            sv: "Vad avslutar en return-sats?",
           },
           template:
-            'if (mood === "happy") {\n  return "smile";\n} [[]] {\n  return "frown";\n}',
-          chips: ["else", "elif", "otherwise", "or"],
-          solution: ["else"],
+            'if (mood === "happy") {\n  return "smile"[[]]\n} else {\n  return "frown";\n}',
+          chips: [";", ",", ".", ":"],
+          solution: [";"],
         },
-        // p4: code B — full assembly
+        // p5: synthesis — all four elements together
         {
-          intro: {
-            en:
-              "Same shape, different story — smile when happy, frown otherwise.",
-            sv:
-              "Samma form, annan berättelse — le när glad, surmula annars.",
-          },
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "Now place all the syntax pieces you've practised.",
+            sv: "Placera nu alla syntaxdelar du övat på.",
           },
-          template:
-            "if ([[]]) {\n  return [[]];\n} [[]] {\n  return [[]];\n}",
-          chips: [
-            'mood === "happy"',
-            '"smile"',
-            "else",
-            '"frown"',
-            'mood = "happy"',
-            '"sad"',
-          ],
-          solution: ['mood === "happy"', '"smile"', "else", '"frown"'],
+          template: 'if (light [[]] "green") {\n  return "walk"[[]];\n} [[]] [[]]\n  return "wait";\n[[]]',
+          chips: ["===", ";", "else", "{", "}", "=", "elif"],
+          solution: ["===", ";", "else", "{", "}"],
         },
       ],
       legend: [
@@ -815,7 +811,7 @@ export const doorLesson: Lesson = {
           "Välj operatorn som jämför STRIKT — så att \"GREEN\" inte smiter förbi.",
       },
       puzzles: [
-        // p1: code A — just the operator
+        // p1: === vs == vs = (light scenario)
         {
           prompt: {
             en: "Which operator asks 'are these exactly equal'?",
@@ -826,33 +822,33 @@ export const doorLesson: Lesson = {
           chips: ["===", "==", "="],
           solution: ["==="],
         },
-        // p2: code A — full assembly
+        // p2: ( ) around the condition
         {
           prompt: {
-            en: "Put it all together — strict comparison only.",
-            sv: "Sätt ihop hela — bara strikt jämförelse.",
+            en: "What wraps the condition — ( ) or { }?",
+            sv: "Vad omger villkoret — ( ) eller { }?",
           },
           template:
-            "if ([[]] [[]] [[]]) {\n  return [[]];\n} [[]] {\n  return [[]];\n}",
-          chips: [
-            "light",
-            "===",
-            '"green"',
-            '"walk"',
-            "else",
-            '"wait"',
-            "==",
-            "=",
-          ],
-          solution: ["light", "===", '"green"', '"walk"', "else", '"wait"'],
+            'if [[]]light === "green"[[]] {\n  return "walk";\n} else {\n  return "wait";\n}',
+          chips: ["(", ")", "{", "}"],
+          solution: ["(", ")"],
         },
-        // p3: code B (door) — just the operator
+        // p3: } else { the joint between branches
+        {
+          prompt: {
+            en: "Place the } else { between the two branches.",
+            sv: "Placera } else { mellan de två grenarna.",
+          },
+          template:
+            'if (light === "green") {\n  return "walk";\n[[]] [[]] [[]]\n  return "wait";\n}',
+          chips: ["}", "else", "{", "(", ")"],
+          solution: ["}", "else", "{"],
+        },
+        // p4: === vs == vs = (door scenario)
         {
           intro: {
-            en:
-              "Same idea with a door — pick the operator that compares STRICTLY so only \"open\" passes.",
-            sv:
-              "Samma idé med en dörr — välj operatorn som jämför STRIKT så att bara \"open\" släpps igenom.",
+            en: "Same idea with a door — strict comparison only.",
+            sv: "Samma idé med en dörr — bara strikt jämförelse.",
           },
           prompt: {
             en: "Which operator asks 'are these exactly equal'?",
@@ -860,35 +856,18 @@ export const doorLesson: Lesson = {
           },
           template:
             'if (door [[]] "open") {\n  return "enter";\n} else {\n  return "knock";\n}',
-          chips: ["===", "==", "="],
+          chips: ["===", "==", "=", "!=="],
           solution: ["==="],
         },
-        // p4: code B — full assembly
+        // p5: synthesis — all four elements together
         {
-          intro: {
-            en:
-              "Same idea with a door — pick the operator that compares STRICTLY so only \"open\" passes.",
-            sv:
-              "Samma idé med en dörr — välj operatorn som jämför STRIKT så att bara \"open\" släpps igenom.",
-          },
           prompt: {
-            en: "Put it all together — strict comparison only.",
-            sv: "Sätt ihop hela — bara strikt jämförelse.",
+            en: "Now place all the syntax pieces you've practised.",
+            sv: "Placera nu alla syntaxdelar du övat på.",
           },
-          template:
-            "if ([[]] [[]] [[]]) {\n  return [[]];\n} [[]] {\n  return [[]];\n}",
-          chips: [
-            "door",
-            "===",
-            '"open"',
-            '"enter"',
-            "else",
-            '"knock"',
-            "==",
-            "=",
-            '"closed"',
-          ],
-          solution: ["door", "===", '"open"', '"enter"', "else", '"knock"'],
+          template: 'if [[]]light [[]] "green"[[]] {\n  return "walk";\n[[]] [[]] [[]]\n  return "wait";\n}',
+          chips: ["(", "===", ")", "}", "else", "{", "==", "="],
+          solution: ["(", "===", ")", "}", "else", "{"],
         },
       ],
       legend: [

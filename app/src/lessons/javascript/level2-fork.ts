@@ -300,73 +300,64 @@ export const forkLesson: Lesson = {
           "Bygg if / else-if / else-kedjan bit för bit.",
       },
       puzzles: [
-        // p1: code A — build the else-if condition (the new piece this lesson)
+        // p1: else if keywords (both needed, vs while/or)
         {
           prompt: {
-            en: "Build the condition for the middle branch.",
-            sv: "Bygg villkoret för mellangrenen.",
+            en: "Which two keywords open the middle branch?",
+            sv: "Vilka två nyckelord öppnar mellangrenen?",
           },
           template:
-            'if (temp <= 0) {\n  return "coat";\n} else if ([[]] [[]] [[]]) {\n  return "jacket";\n} else {\n  return "shirt";\n}',
-          chips: ["temp", "<=", "15"],
-          solution: ["temp", "<=", "15"],
+            'if (temp <= 0) {\n  return "coat";\n} [[]] [[]] (temp <= 15) {\n  return "jacket";\n} else {\n  return "shirt";\n}',
+          chips: ["else", "if", "while", "or"],
+          solution: ["else", "if"],
         },
-        // p2: code A — full assembly
+        // p2: ( ) around the else-if condition
         {
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "What wraps the else-if condition?",
+            sv: "Vad omger else-if-villkoret?",
           },
           template:
-            'if ([[]]) {\n  return [[]];\n} else if ([[]]) {\n  return [[]];\n} else {\n  return [[]];\n}',
-          chips: [
-            "temp <= 0",
-            '"coat"',
-            "temp <= 15",
-            '"jacket"',
-            '"shirt"',
-          ],
-          solution: [
-            "temp <= 0",
-            '"coat"',
-            "temp <= 15",
-            '"jacket"',
-            '"shirt"',
-          ],
+            'if (temp <= 0) {\n  return "coat";\n} else if [[]]temp <= 15[[]] {\n  return "jacket";\n} else {\n  return "shirt";\n}',
+          chips: ["(", ")", "{", "}"],
+          solution: ["(", ")"],
         },
-        // p3: code B (hour) — build the else-if condition
+        // p3: <= operator in the middle condition
         {
           prompt: {
-            en: "Build the condition for the middle branch.",
-            sv: "Bygg villkoret för mellangrenen.",
+            en: "Which operator means 'less than or equal'?",
+            sv: "Vilken operator betyder 'mindre än eller lika med'?",
           },
           template:
-            'if (hour <= 11) {\n  return "morning";\n} else if ([[]] [[]] [[]]) {\n  return "afternoon";\n} else {\n  return "evening";\n}',
-          chips: ["hour", "<=", "17"],
-          solution: ["hour", "<=", "17"],
+            'if (temp <= 0) {\n  return "coat";\n} else if (temp [[]] 15) {\n  return "jacket";\n} else {\n  return "shirt";\n}',
+          chips: ["<=", "<", ">=", "==="],
+          solution: ["<="],
         },
-        // p4: code B — full assembly
+        // p4: { } around the else-if body (hour scenario)
         {
+          intro: {
+            en: "Same shape — morning, afternoon, or evening.",
+            sv: "Samma form — morgon, eftermiddag eller kväll.",
+          },
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "What wraps the else-if body?",
+            sv: "Vad omger else-if-kroppen?",
           },
           template:
-            'if ([[]]) {\n  return [[]];\n} else if ([[]]) {\n  return [[]];\n} else {\n  return [[]];\n}',
-          chips: [
-            "hour <= 11",
-            '"morning"',
-            "hour <= 17",
-            '"afternoon"',
-            '"evening"',
-          ],
-          solution: [
-            "hour <= 11",
-            '"morning"',
-            "hour <= 17",
-            '"afternoon"',
-            '"evening"',
-          ],
+            'if (hour <= 11) {\n  return "morning";\n} else if (hour <= 17) [[]]\n  return "afternoon";\n[[]] else {\n  return "evening";\n}',
+          chips: ["{", "}", "(", ")"],
+          solution: ["{", "}"],
+        },
+        // p5: synthesis — all syntax pieces together
+        {
+          prompt: {
+            en: "Now place all the syntax pieces you've practised.",
+            sv: "Placera nu alla syntaxdelar du övat på.",
+          },
+          template:
+            'if (temp <= 0) {\n  return "coat";\n} [[]] [[]] [[]]temp [[]] 15[[]] [[]]\n  return "jacket";\n[[]] else {\n  return "shirt";\n}',
+          chips: ["else", "if", "(", "<=", ")", "{", "}", "<", "while"],
+          solution: ["else", "if", "(", "<=", ")", "{", "}"],
         },
       ],
       legend: [
