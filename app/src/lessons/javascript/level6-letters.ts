@@ -364,61 +364,64 @@ export const lettersLesson: Lesson = {
           "Bygg for…of-loopen som räknar hur ofta `target` finns i `word`.",
       },
       puzzles: [
-        // p1: code A — for…of header pieces (the new piece this lesson)
+        // p1: of keyword (vs in/from/===)
         {
           prompt: {
-            en: "Place the pieces of the for…of header.",
-            sv: "Placera delarna i for…of-huvudet.",
+            en: "Which keyword walks through each character of a string?",
+            sv: "Vilket nyckelord går igenom varje tecken i en sträng?",
           },
           template:
-            "let count = 0;\nfor ([[]] [[]] [[]] [[]]) {\n  if (ch === target) {\n    count = count + 1;\n  }\n}\nreturn count;",
-          chips: ["const", "ch", "of", "word"],
-          solution: ["const", "ch", "of", "word"],
+            "let count = 0;\nfor (const ch [[]] word) {\n  if (ch === target) count = count + 1;\n}\nreturn count;",
+          chips: ["of", "in", "from", "==="],
+          solution: ["of"],
         },
-        // p2: code A — full assembly
+        // p2: ( ) around the for…of header
         {
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "What wraps the for…of header?",
+            sv: "Vad omger for…of-huvudet?",
           },
           template:
-            "let count = 0;\nfor ([[]] [[]] [[]] [[]]) {\n  if ([[]] [[]] [[]]) {\n    count = count + 1;\n  }\n}\nreturn count;",
-          chips: ["const", "ch", "of", "word", "ch", "===", "target"],
-          solution: ["const", "ch", "of", "word", "ch", "===", "target"],
+            "let count = 0;\nfor [[]]const ch of word[[]] {\n  if (ch === target) count = count + 1;\n}\nreturn count;",
+          chips: ["(", ")", "{", "}"],
+          solution: ["(", ")"],
         },
-        // p3: code B (phrase/vowel, loop var renamed to letter) — for…of header pieces
+        // p3: { } around the loop body
+        {
+          prompt: {
+            en: "What wraps the loop body?",
+            sv: "Vad omger loop-kroppen?",
+          },
+          template:
+            "let count = 0;\nfor (const ch of word) [[]]\n  if (ch === target) count = count + 1;\n[[]]\nreturn count;",
+          chips: ["{", "}", "(", ")"],
+          solution: ["{", "}"],
+        },
+        // p4: of keyword (phrase/vowel scenario)
         {
           intro: {
-            en:
-              "Same idea, different names: count how often `vowel` appears in `phrase`. The loop variable is now called `letter`.",
-            sv:
-              "Samma idé, andra namn: räkna hur ofta `vowel` finns i `phrase`. Loop-variabeln heter nu `letter`.",
+            en: "Same idea — count how often `vowel` appears in `phrase`.",
+            sv: "Samma idé — räkna hur ofta `vowel` finns i `phrase`.",
           },
           prompt: {
-            en: "Place the pieces of the for…of header.",
-            sv: "Placera delarna i for…of-huvudet.",
+            en: "Which keyword walks through each character of a string?",
+            sv: "Vilket nyckelord går igenom varje tecken i en sträng?",
           },
           template:
-            "let count = 0;\nfor ([[]] [[]] [[]] [[]]) {\n  if (letter === vowel) {\n    count = count + 1;\n  }\n}\nreturn count;",
-          chips: ["const", "letter", "of", "phrase"],
-          solution: ["const", "letter", "of", "phrase"],
+            "let count = 0;\nfor (const letter [[]] phrase) {\n  if (letter === vowel) count = count + 1;\n}\nreturn count;",
+          chips: ["of", "in", "from", "for"],
+          solution: ["of"],
         },
-        // p4: code B — full assembly
+        // p5: synthesis — all syntax pieces together
         {
-          intro: {
-            en:
-              "Same idea, different names: count how often `vowel` appears in `phrase`. The loop variable is now called `letter`.",
-            sv:
-              "Samma idé, andra namn: räkna hur ofta `vowel` finns i `phrase`. Loop-variabeln heter nu `letter`.",
-          },
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "Now place all the syntax pieces you've practised.",
+            sv: "Placera nu alla syntaxdelar du övat på.",
           },
           template:
-            "let count = 0;\nfor ([[]] [[]] [[]] [[]]) {\n  if ([[]] [[]] [[]]) {\n    count = count + 1;\n  }\n}\nreturn count;",
-          chips: ["const", "letter", "of", "phrase", "letter", "===", "vowel"],
-          solution: ["const", "letter", "of", "phrase", "letter", "===", "vowel"],
+            "let count = 0;\nfor [[]]const ch [[]] word[[]] [[]]\n  if (ch === target) count = count + 1;\n[[]]\nreturn count;",
+          chips: ["(", "of", ")", "{", "}", "in", "from"],
+          solution: ["(", "of", ")", "{", "}"],
         },
       ],
       legend: [
@@ -445,7 +448,7 @@ export const lettersLesson: Lesson = {
           "Räkna bokstäver som är 'a' ELLER 'e'. Kombinera två kontroller med ||.",
       },
       puzzles: [
-        // p1: code A — pick the operator
+        // p1: || operator inside if (vs &&, ===, !)
         {
           prompt: {
             en: "Which operator means 'one match is enough'?",
@@ -453,28 +456,36 @@ export const lettersLesson: Lesson = {
           },
           template:
             'let count = 0;\nfor (const ch of word) {\n  if (ch === "a" [[]] ch === "e") {\n    count = count + 1;\n  }\n}\nreturn count;',
-          chips: ["||", "&&", "==="],
+          chips: ["||", "&&", "===", "!"],
           solution: ["||"],
         },
-        // p2: code A — full assembly of condition
+        // p2: ( ) around the if condition
         {
           prompt: {
-            en: "Build the whole condition.",
-            sv: "Bygg hela villkoret.",
+            en: "What wraps the if condition?",
+            sv: "Vad omger if-villkoret?",
           },
           template:
-            'let count = 0;\nfor (const ch of word) {\n  if ([[]] [[]] [[]] [[]] [[]] [[]] [[]]) {\n    count = count + 1;\n  }\n}\nreturn count;',
-          chips: ["ch", "===", '"a"', "||", "ch", "===", '"e"', "&&"],
-          solution: ["ch", "===", '"a"', "||", "ch", "===", '"e"'],
-          alternatives: [["ch", "===", '"e"', "||", "ch", "===", '"a"']],
+            'let count = 0;\nfor (const ch of word) {\n  if [[]]ch === "a" || ch === "e"[[]] {\n    count = count + 1;\n  }\n}\nreturn count;',
+          chips: ["(", ")", "{", "}"],
+          solution: ["(", ")"],
         },
-        // p3: code B (text, "r" or "n") — pick the operator
+        // p3: { } around the if body
+        {
+          prompt: {
+            en: "What wraps the if body?",
+            sv: "Vad omger if-kroppen?",
+          },
+          template:
+            'let count = 0;\nfor (const ch of word) {\n  if (ch === "a" || ch === "e") [[]]\n    count = count + 1;\n  [[]]\n}\nreturn count;',
+          chips: ["{", "}", "(", ")"],
+          solution: ["{", "}"],
+        },
+        // p4: || operator (r or n scenario)
         {
           intro: {
-            en:
-              "Now count letters that are 'r' OR 'n'. Same shape — combine two checks with ||.",
-            sv:
-              "Nu räknar vi bokstäver som är 'r' ELLER 'n'. Samma form — kombinera två kontroller med ||.",
+            en: "Same shape — count 'r' OR 'n'.",
+            sv: "Samma form — räkna 'r' ELLER 'n'.",
           },
           prompt: {
             en: "Which operator means 'one match is enough'?",
@@ -482,26 +493,19 @@ export const lettersLesson: Lesson = {
           },
           template:
             'let count = 0;\nfor (const ch of text) {\n  if (ch === "r" [[]] ch === "n") {\n    count = count + 1;\n  }\n}\nreturn count;',
-          chips: ["||", "&&", "==="],
+          chips: ["||", "&&", "===", "!"],
           solution: ["||"],
         },
-        // p4: code B — full assembly of condition
+        // p5: synthesis — all syntax pieces together
         {
-          intro: {
-            en:
-              "Now count letters that are 'r' OR 'n'. Same shape — combine two checks with ||.",
-            sv:
-              "Nu räknar vi bokstäver som är 'r' ELLER 'n'. Samma form — kombinera två kontroller med ||.",
-          },
           prompt: {
-            en: "Build the whole condition.",
-            sv: "Bygg hela villkoret.",
+            en: "Now place all the syntax pieces you've practised.",
+            sv: "Placera nu alla syntaxdelar du övat på.",
           },
           template:
-            'let count = 0;\nfor (const ch of text) {\n  if ([[]] [[]] [[]] [[]] [[]] [[]] [[]]) {\n    count = count + 1;\n  }\n}\nreturn count;',
-          chips: ["ch", "===", '"r"', "||", "ch", "===", '"n"', "&&"],
-          solution: ["ch", "===", '"r"', "||", "ch", "===", '"n"'],
-          alternatives: [["ch", "===", '"n"', "||", "ch", "===", '"r"']],
+            'let count = 0;\nfor (const ch of word) {\n  if [[]]ch === "a" [[]] ch === "e"[[]] [[]]\n    count = count + 1;\n  [[]]\n}\nreturn count;',
+          chips: ["(", "||", ")", "{", "}", "&&", "==="],
+          solution: ["(", "||", ")", "{", "}"],
         },
       ],
       legend: [

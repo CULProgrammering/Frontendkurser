@@ -281,61 +281,64 @@ export const tastingLesson: Lesson = {
           "Dra 7 i en do…while-loop. Fortsätt så länge n är positiv.\nKroppen körs minst en gång — även för n = 0.",
       },
       puzzles: [
-        // p1: code A — body line + condition
+        // p1: do keyword (vs while/for/if)
         {
           prompt: {
-            en: "Place the body line and the keep-going condition.",
-            sv: "Placera kropps-raden och fortsätt-villkoret.",
+            en: "Which keyword opens the body that runs first?",
+            sv: "Vilket nyckelord öppnar kroppen som körs först?",
           },
           template:
-            "let count = 0;\ndo {\n  [[]];\n  count = count + 1;\n} while ([[]]);\nreturn count;",
-          chips: ["n = n - 7", "n > 0"],
-          solution: ["n = n - 7", "n > 0"],
+            "let count = 0;\n[[]] {\n  n = n - 7;\n  count = count + 1;\n} while (n > 0);\nreturn count;",
+          chips: ["do", "while", "for", "if"],
+          solution: ["do"],
         },
-        // p2: code A — full assembly with do/while keywords
+        // p2: while keyword after the closing }
         {
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "Which keyword comes after the closing } to check the condition?",
+            sv: "Vilket nyckelord kommer efter stängande } för att kolla villkoret?",
           },
           template:
-            "let count = 0;\n[[]] {\n  [[]];\n  count = count + 1;\n} [[]] ([[]]);\nreturn count;",
-          chips: ["do", "n = n - 7", "while", "n > 0"],
-          solution: ["do", "n = n - 7", "while", "n > 0"],
+            "let count = 0;\ndo {\n  n = n - 7;\n  count = count + 1;\n} [[]] (n > 0);\nreturn count;",
+          chips: ["while", "do", "for", "if"],
+          solution: ["while"],
         },
-        // p3: code B (add 5 until reaching 100) — body line + condition
+        // p3: ; semicolon at the very end (vs , . :)
+        {
+          prompt: {
+            en: "What ends the do…while statement?",
+            sv: "Vad avslutar do…while-satsen?",
+          },
+          template:
+            "let count = 0;\ndo {\n  n = n - 7;\n  count = count + 1;\n} while (n > 0)[[]]\nreturn count;",
+          chips: [";", ",", ".", ":"],
+          solution: [";"],
+        },
+        // p4: ( ) around the while condition (add 5 scenario)
         {
           intro: {
-            en:
-              "Now: add 5 in a do…while loop. Keep going while n is below 100.\nThe body still runs at least once — even if n already starts past 100.",
-            sv:
-              "Nu: lägg till 5 i en do…while-loop. Fortsätt så länge n är under 100.\nKroppen körs ändå minst en gång — även om n redan börjar över 100.",
+            en: "Same shape — add 5 until n reaches 100.",
+            sv: "Samma form — lägg till 5 tills n når 100.",
           },
           prompt: {
-            en: "Place the body line and the keep-going condition.",
-            sv: "Placera kropps-raden och fortsätt-villkoret.",
+            en: "What wraps the while condition?",
+            sv: "Vad omger while-villkoret?",
           },
           template:
-            "let count = 0;\ndo {\n  [[]];\n  count = count + 1;\n} while ([[]]);\nreturn count;",
-          chips: ["n = n + 5", "n < 100"],
-          solution: ["n = n + 5", "n < 100"],
+            "let count = 0;\ndo {\n  n = n + 5;\n  count = count + 1;\n} while [[]]n < 100[[]];\nreturn count;",
+          chips: ["(", ")", "{", "}"],
+          solution: ["(", ")"],
         },
-        // p4: code B — full assembly with do/while keywords
+        // p5: synthesis — all syntax pieces together
         {
-          intro: {
-            en:
-              "Now: add 5 in a do…while loop. Keep going while n is below 100.\nThe body still runs at least once — even if n already starts past 100.",
-            sv:
-              "Nu: lägg till 5 i en do…while-loop. Fortsätt så länge n är under 100.\nKroppen körs ändå minst en gång — även om n redan börjar över 100.",
-          },
           prompt: {
-            en: "Put it all together.",
-            sv: "Sätt ihop hela.",
+            en: "Now place all the syntax pieces you've practised.",
+            sv: "Placera nu alla syntaxdelar du övat på.",
           },
           template:
-            "let count = 0;\n[[]] {\n  [[]];\n  count = count + 1;\n} [[]] ([[]]);\nreturn count;",
-          chips: ["do", "n = n + 5", "while", "n < 100"],
-          solution: ["do", "n = n + 5", "while", "n < 100"],
+            "let count = 0;\n[[]] {\n  n = n - 7;\n  count = count + 1;\n} [[]] [[]]n > 0[[]][[]]\nreturn count;",
+          chips: ["do", "while", "(", ")", ";", "for", "if"],
+          solution: ["do", "while", "(", ")", ";"],
         },
       ],
       legend: [

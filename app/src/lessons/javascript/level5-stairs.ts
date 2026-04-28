@@ -426,73 +426,64 @@ export const stairsLesson: Lesson = {
           "Bygg en loop som lägger ihop talen från 1 till n.\nJobba dig igenom de fyra mini-pusslen — de bygger svaret bit för bit.",
       },
       puzzles: [
-        // p1: code A — for-loop header pieces (the new concept this lesson)
+        // p1: for keyword (vs while/do/if)
         {
           prompt: {
-            en: "Place the three pieces of the for-loop header in order.",
-            sv: "Placera de tre delarna av for-loopens huvud i ordning.",
+            en: "Which keyword starts a counted loop?",
+            sv: "Vilket nyckelord startar en räknad loop?",
           },
           template:
-            "let sum = 0;\nfor ([[]]; [[]]; [[]]) {\n  sum = sum + i;\n}\nreturn sum;",
-          chips: ["let i = 1", "i <= n", "i++"],
-          solution: ["let i = 1", "i <= n", "i++"],
+            "let sum = 0;\n[[]] (let i = 1; i <= n; i++) {\n  sum = sum + i;\n}\nreturn sum;",
+          chips: ["for", "while", "do", "if"],
+          solution: ["for"],
         },
-        // p2: code A — full assembly
+        // p2: ; semicolons separating the three header parts
         {
           prompt: {
-            en: "Put it all together — five pieces in order.",
-            sv: "Sätt ihop allt — fem bitar i ordning.",
+            en: "What separates the three parts of the for header?",
+            sv: "Vad separerar de tre delarna i for-huvudet?",
           },
           template:
-            "[[]];\nfor ([[]]; [[]]; [[]]) {\n  [[]];\n}\nreturn sum;",
-          chips: [
-            "let sum = 0",
-            "let i = 1",
-            "i <= n",
-            "i++",
-            "sum = sum + i",
-          ],
-          solution: [
-            "let sum = 0",
-            "let i = 1",
-            "i <= n",
-            "i++",
-            "sum = sum + i",
-          ],
+            "let sum = 0;\nfor (let i = 1 [[]] i <= n [[]] i++) {\n  sum = sum + i;\n}\nreturn sum;",
+          chips: [";", ",", ".", ":"],
+          solution: [";", ";"],
         },
-        // p3: code B (count to n) — for-loop header pieces
+        // p3: ( ) around the header
         {
           prompt: {
-            en: "Place the three pieces of the for-loop header in order.",
-            sv: "Placera de tre delarna av for-loopens huvud i ordning.",
+            en: "What wraps the for-loop header?",
+            sv: "Vad omger for-loopens huvud?",
           },
           template:
-            "let count = 0;\nfor ([[]]; [[]]; [[]]) {\n  count = count + 1;\n}\nreturn count;",
-          chips: ["let i = 1", "i <= n", "i++"],
-          solution: ["let i = 1", "i <= n", "i++"],
+            "let sum = 0;\nfor [[]]let i = 1; i <= n; i++[[]] {\n  sum = sum + i;\n}\nreturn sum;",
+          chips: ["(", ")", "{", "}"],
+          solution: ["(", ")"],
         },
-        // p4: code B — full assembly
+        // p4: { } around the body (count to n scenario)
         {
+          intro: {
+            en: "Same shape — count to n instead of summing.",
+            sv: "Samma form — räkna till n istället för att summera.",
+          },
           prompt: {
-            en: "Put it all together — five pieces in order.",
-            sv: "Sätt ihop allt — fem bitar i ordning.",
+            en: "What wraps the loop body?",
+            sv: "Vad omger loop-kroppen?",
           },
           template:
-            "[[]];\nfor ([[]]; [[]]; [[]]) {\n  [[]];\n}\nreturn count;",
-          chips: [
-            "let count = 0",
-            "let i = 1",
-            "i <= n",
-            "i++",
-            "count = count + 1",
-          ],
-          solution: [
-            "let count = 0",
-            "let i = 1",
-            "i <= n",
-            "i++",
-            "count = count + 1",
-          ],
+            "let count = 0;\nfor (let i = 1; i <= n; i++) [[]]\n  count = count + 1;\n[[]]",
+          chips: ["{", "}", "(", ")"],
+          solution: ["{", "}"],
+        },
+        // p5: synthesis — all syntax pieces together
+        {
+          prompt: {
+            en: "Now place all the syntax pieces you've practised.",
+            sv: "Placera nu alla syntaxdelar du övat på.",
+          },
+          template:
+            "let sum = 0;\n[[]] [[]]let i = 1; i <= n[[]] i++[[]] [[]]\n  sum = sum + i;\n[[]]\nreturn sum;",
+          chips: ["for", "(", ";", ")", "{", "}", "while", ","],
+          solution: ["for", "(", ";", ")", "{", "}"],
         },
       ],
       legend: [
@@ -593,103 +584,64 @@ export const stairsLesson: Lesson = {
           "Bygg en sträng med n asterisker. För n = 4 är svaret \"****\".\nChipsen innehåller nu även FELAKTIGA alternativ — välj rätt.",
       },
       puzzles: [
-        // p1: code A — pick the right body shape
+        // p1: i < n vs i <= n (off-by-one)
         {
           prompt: {
-            en: "Pick the right body line — the one that adds to the accumulator.",
-            sv: "Välj rätt kropps-rad — den som lägger till i ackumulatorn.",
+            en: "Which condition runs the loop exactly n times when i starts at 0?",
+            sv: "Vilket villkor kör loopen exakt n gånger när i börjar på 0?",
+          },
+          template:
+            "let stars = \"\";\nfor (let i = 0; [[]]; i++) {\n  stars = stars + \"*\";\n}\nreturn stars;",
+          chips: ["i < n", "i <= n", "i < n - 1", "i > n"],
+          solution: ["i < n"],
+        },
+        // p2: i++ update expression (vs i--, i+2, i*2)
+        {
+          prompt: {
+            en: "Which expression advances the counter by one each lap?",
+            sv: "Vilket uttryck ökar räknaren med ett per varv?",
+          },
+          template:
+            "let stars = \"\";\nfor (let i = 0; i < n; [[]]) {\n  stars = stars + \"*\";\n}\nreturn stars;",
+          chips: ["i++", "i--", "i + 1", "i * 2"],
+          solution: ["i++"],
+        },
+        // p3: body accumulator expression (vs missing assignment)
+        {
+          prompt: {
+            en: "Which body line correctly adds a star to the result?",
+            sv: "Vilken kroppsrad lägger korrekt till en stjärna i resultatet?",
           },
           template:
             "let stars = \"\";\nfor (let i = 0; i < n; i++) {\n  [[]];\n}\nreturn stars;",
-          chips: [
-            "stars = stars + \"*\"",
-            "stars + \"*\"",
-            "stars = \"*\"",
-            "i += \"*\"",
-          ],
+          chips: ["stars = stars + \"*\"", "stars + \"*\"", "stars = \"*\"", "i += \"*\""],
           solution: ["stars = stars + \"*\""],
         },
-        // p2: code A — full assembly with distractors
-        {
-          prompt: {
-            en: "Put it all together — five pieces in order. Three chips don't belong.",
-            sv: "Sätt ihop allt — fem bitar i ordning. Tre chips hör inte hit.",
-          },
-          template:
-            "[[]];\nfor ([[]]; [[]]; [[]]) {\n  [[]];\n}\nreturn stars;",
-          chips: [
-            "let stars = \"\"",
-            "let i = 0",
-            "i < n",
-            "i++",
-            "stars = stars + \"*\"",
-            // distractors:
-            "let stars = 0",
-            "i <= n",
-            "stars + \"*\"",
-          ],
-          solution: [
-            "let stars = \"\"",
-            "let i = 0",
-            "i < n",
-            "i++",
-            "stars = stars + \"*\"",
-          ],
-        },
-        // p3: code B (n dashes) — pick the right body shape
+        // p4: ( ) around header (n dashes scenario)
         {
           intro: {
-            en:
-              "Now build a line of n dashes. For n = 4 the answer is \"----\".\nSame shape — different character.",
-            sv:
-              "Nu bygger vi en rad med n streck. För n = 4 är svaret \"----\".\nSamma form — annat tecken.",
+            en: "Same shape — build a line of n dashes.",
+            sv: "Samma form — bygg en rad med n streck.",
           },
           prompt: {
-            en: "Pick the right body line — the one that adds to the accumulator.",
-            sv: "Välj rätt kropps-rad — den som lägger till i ackumulatorn.",
+            en: "What wraps the for-loop header?",
+            sv: "Vad omger for-loopens huvud?",
           },
           template:
-            "let line = \"\";\nfor (let i = 0; i < n; i++) {\n  [[]];\n}\nreturn line;",
-          chips: [
-            "line = line + \"-\"",
-            "line + \"-\"",
-            "line = \"-\"",
-            "i += \"-\"",
-          ],
-          solution: ["line = line + \"-\""],
+            "let line = \"\";\nfor [[]]let i = 0; i < n; i++[[]] {\n  line = line + \"-\";\n}\nreturn line;",
+          chips: ["(", ")", "{", "}"],
+          solution: ["(", ")"],
         },
-        // p4: code B — full assembly with distractors
+        // p5: synthesis — all syntax pieces together
         {
-          intro: {
-            en:
-              "Now build a line of n dashes. For n = 4 the answer is \"----\".\nSame shape — different character.",
-            sv:
-              "Nu bygger vi en rad med n streck. För n = 4 är svaret \"----\".\nSamma form — annat tecken.",
-          },
           prompt: {
-            en: "Put it all together — five pieces in order. Three chips don't belong.",
-            sv: "Sätt ihop allt — fem bitar i ordning. Tre chips hör inte hit.",
+            en: "Now place all the syntax pieces you've practised.",
+            sv: "Placera nu alla syntaxdelar du övat på.",
           },
           template:
-            "[[]];\nfor ([[]]; [[]]; [[]]) {\n  [[]];\n}\nreturn line;",
-          chips: [
-            "let line = \"\"",
-            "let i = 0",
-            "i < n",
-            "i++",
-            "line = line + \"-\"",
-            // distractors:
-            "let line = 0",
-            "i <= n",
-            "line + \"-\"",
-          ],
-          solution: [
-            "let line = \"\"",
-            "let i = 0",
-            "i < n",
-            "i++",
-            "line = line + \"-\"",
-          ],
+            'let stars = "";\nfor [[]]let i = 0; [[]]; [[]][[]] {\n  [[]];\n}\nreturn stars;',
+          chips: ["(", "i < n", "i++", ")", 'stars = stars + "*"', "i <= n", "i--"],
+          solution: ["(", "i < n", "i++", ")", 'stars = stars + "*"'],
         },
       ],
       legend: [
