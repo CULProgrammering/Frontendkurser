@@ -46,14 +46,14 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
 
   return (
     <div className="h-full flex flex-col bg-[#faf7f2] dark:bg-slate-950">
-      <header className="flex items-center gap-3 px-6 py-3 border-b border-stone-200 dark:border-white/10">
+      <header className="flex items-center gap-3 px-4 sm:px-6 py-3 border-b border-stone-200 dark:border-white/10">
         <button
           onClick={onExit}
-          className="text-sm text-stone-500 hover:text-stone-800 dark:text-indigo-200/70 dark:hover:text-indigo-100"
+          className="shrink-0 text-sm text-stone-500 hover:text-stone-800 dark:text-indigo-200/70 dark:hover:text-indigo-100"
         >
           {t(ui.backToLessons, lang)}
         </button>
-        <div className="text-sm text-stone-500 dark:text-indigo-200/60">
+        <div className="min-w-0 truncate text-sm text-stone-500 dark:text-indigo-200/60">
           {t(lesson.title, lang)}
         </div>
       </header>
@@ -144,11 +144,9 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
         )}
       </div>
 
-      {slide.kind !== "exercise" && (
-        <div className="flex justify-center px-6 pb-2">
-          <SlideFontSizeControl />
-        </div>
-      )}
+      <div className="flex justify-center px-6 pb-2">
+        <SlideFontSizeControl />
+      </div>
 
       <footer className="flex items-center justify-between px-6 py-3 border-t border-stone-200 dark:border-white/10">
         <button
@@ -161,7 +159,7 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
           {t(ui.prev, lang)}
         </button>
         <div className="text-xs text-stone-500 dark:text-indigo-200/50">
-          {idx + 1} / {total} · {t(ui.escapeHint, lang)}
+          {idx + 1} / {total}<span className="hidden sm:inline"> · {t(ui.escapeHint, lang)}</span>
         </div>
         <button
           onClick={next}

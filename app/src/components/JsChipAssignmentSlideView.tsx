@@ -36,9 +36,9 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, onPa
 
   return (
     <div className="h-full w-full flex flex-col">
-      <div className="px-10 pt-8">
+      <div className="px-4 sm:px-10 pt-4 sm:pt-8">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-semibold text-stone-900 dark:text-indigo-50">
+          <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-indigo-50">
             {t(slide.title, lang)}
           </h2>
           <p
@@ -70,7 +70,7 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, onPa
         </div>
       </div>
 
-      <div className="flex-1 px-10 py-6 min-h-0 flex flex-col">
+      <div className="flex-1 px-4 sm:px-10 py-3 sm:py-6 min-h-0 flex flex-col">
         <div className="max-w-3xl mx-auto w-full flex-1 flex flex-col min-h-0">
           <PuzzleView
             key={puzzleIdx}
@@ -93,7 +93,7 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, onPa
         </div>
       </div>
 
-      <div className="px-10 pb-2">
+      <div className="px-4 sm:px-10 pb-2">
         <div className="max-w-3xl mx-auto flex items-center gap-2">
           {hasLegend && (
             <button
@@ -119,7 +119,7 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, onPa
       </div>
 
       {showLegend && hasLegend && (
-        <div className="mx-10 mb-6 rounded-2xl p-4 ring-1
+        <div className="mx-4 sm:mx-10 mb-4 sm:mb-6 rounded-2xl p-4 ring-1
                         bg-amber-50 ring-amber-200
                         dark:bg-amber-500/10 dark:ring-amber-400/30">
           <div className="text-xs uppercase tracking-wider mb-2

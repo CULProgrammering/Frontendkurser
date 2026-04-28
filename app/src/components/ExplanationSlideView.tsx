@@ -171,7 +171,7 @@ export function ExplanationSlideView({ slide }: Props) {
 
   const titleBlock = (
     <>
-      <h2 className="text-3xl font-semibold text-stone-900 dark:text-indigo-50">
+      <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-indigo-50">
         {t(slide.title, lang)}
       </h2>
       {slide.intro && (
@@ -187,10 +187,10 @@ export function ExplanationSlideView({ slide }: Props) {
       className="h-full w-full flex flex-col cursor-pointer select-none"
       onClick={advance}
     >
-      {isCodeTrace && <div className="px-10 pt-8">{titleBlock}</div>}
+      {isCodeTrace && <div className="px-4 sm:px-10 pt-4 sm:pt-8">{titleBlock}</div>}
 
       {isCodeTrace ? (
-        <div className="flex-1 grid grid-cols-2 gap-8 px-10 py-8 min-h-0">
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 px-4 sm:px-10 py-4 sm:py-8 min-h-0">
           <div className="flex items-center justify-center overflow-auto p-2">
             <CustomScene id={slide.customScene!} step={step} />
           </div>
@@ -233,7 +233,7 @@ export function ExplanationSlideView({ slide }: Props) {
           </div>
         </div>
       ) : (
-        <div className="flex-1 px-10 pt-8 pb-8 min-h-0 flex flex-col">
+        <div className="flex-1 px-4 sm:px-10 pt-4 sm:pt-8 pb-4 sm:pb-8 min-h-0 flex flex-col">
           <div
             className="mx-auto flex flex-col flex-1 min-h-0 gap-6"
             style={{

@@ -76,8 +76,8 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
 
   return (
     <div className="h-full w-full flex flex-col">
-      <div className="px-10 pt-8">
-        <h2 className="text-3xl font-semibold text-stone-900 dark:text-indigo-50">
+      <div className="px-4 sm:px-10 pt-4 sm:pt-8">
+        <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-indigo-50">
           {t(slide.title, lang)}
         </h2>
         <p className="text-stone-600 dark:text-indigo-200/80 mt-1 whitespace-pre-line">
@@ -85,7 +85,7 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
         </p>
       </div>
 
-      <div className="flex-1 grid grid-cols-2 gap-6 px-10 py-6 min-h-0">
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 px-4 sm:px-10 py-3 sm:py-6 min-h-0">
         <div className="flex flex-col rounded-2xl overflow-hidden
                         bg-white ring-1 ring-stone-200 shadow-sm
                         dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
@@ -210,7 +210,7 @@ export function AssignmentSlideView({ slide, storageKey, onPass }: Props) {
       </div>
 
       {showLegend && hasLegend && (
-        <div className="mx-10 mb-6 rounded-2xl p-4 ring-1
+        <div className="mx-4 sm:mx-10 mb-4 sm:mb-6 rounded-2xl p-4 ring-1
                         bg-amber-50 ring-amber-200
                         dark:bg-amber-500/10 dark:ring-amber-400/30">
           <div className="text-xs uppercase tracking-wider mb-2
