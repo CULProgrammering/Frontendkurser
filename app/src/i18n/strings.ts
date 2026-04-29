@@ -15,9 +15,34 @@ export const ui = {
 
   // SlideDeck
   backToLessons: { en: "← Lessons", sv: "← Lektioner" },
+  backToTiers: { en: "← Lesson", sv: "← Lektion" },
   prev: { en: "◀ Back", sv: "◀ Förra" },
   next: { en: "Next ▶", sv: "Nästa ▶" },
   escapeHint: { en: "Esc to go back", sv: "Esc för att gå tillbaka" },
+
+  // LessonTierMenu
+  tierExplanation: { en: "Explanation", sv: "Förklaring" },
+  tierChips: { en: "Chips", sv: "Pussel" },
+  tierWorkshop: { en: "Workshop", sv: "Verkstad" },
+  tierExercise: { en: "Exercise", sv: "Övning" },
+  tierExplanationDesc: {
+    en: "Read through the idea, step by step.",
+    sv: "Läs igenom idén, steg för steg.",
+  },
+  tierChipsDesc: {
+    en: "Assemble the code from chips and slots.",
+    sv: "Sätt ihop koden från pusselbitar.",
+  },
+  tierWorkshopDesc: {
+    en: "Guided edits in a real editor.",
+    sv: "Vägledda steg i en riktig editor.",
+  },
+  tierExerciseDesc: {
+    en: "Solve it from scratch in the lab.",
+    sv: "Lös det från noll i labbet.",
+  },
+  tierSlideCount: { en: "slides", sv: "sidor" },
+  tierEmpty: { en: "No content yet.", sv: "Inget innehåll än." },
 
   // ExplanationSlideView
   stepLabel: { en: "Step", sv: "Steg" },

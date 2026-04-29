@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Lesson } from "../types";
 import { ExplanationSlideView } from "./ExplanationSlideView";
 import { AssignmentSlideView } from "./AssignmentSlideView";
@@ -6,18 +6,30 @@ import { JsAssignmentSlideView } from "./JsAssignmentSlideView";
 import { JsChipAssignmentSlideView } from "./JsChipAssignmentSlideView";
 import { JsTypedAssignmentSlideView } from "./JsTypedAssignmentSlideView";
 import { ExerciseSlideView } from "./ExerciseSlideView";
-import { markComplete } from "../progress";
+import { markTierComplete } from "../progress";
+import { slidesForTier, type Tier } from "../tiers";
 import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
 import { SlideFontSizeControl } from "./SlideFontSize";
 
-type Props = { courseId: string; lesson: Lesson; onExit: () => void };
+type Props = {
+  courseId: string;
+  lesson: Lesson;
+  /** When provided, the deck shows only that tier's slides. */
+  tier?: Tier;
+  onExit: () => void;
+};
 
-export function SlideDeck({ courseId, lesson, onExit }: Props) {
+export function SlideDeck({ courseId, lesson, tier, onExit }: Props) {
   const [idx, setIdx] = useState(0);
-  const total = lesson.slides.length;
   const { lang } = useLang();
+
+  const slides = useMemo(
+    () => (tier ? slidesForTier(lesson, tier) : lesson.slides),
+    [lesson, tier]
+  );
+  const total = slides.length;
 
   const next = useCallback(
     () => setIdx((i) => Math.min(i + 1, total - 1)),
@@ -42,7 +54,45 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
     return () => window.removeEventListener("keydown", onKey);
   }, [next, prev, onExit]);
 
-  const slide = lesson.slides[idx];
+  // Explanation tier has no per-slide pass event — mark the tier complete as
+  // soon as the student reaches the final slide.
+  useEffect(() => {
+    if (tier === "explanation" && total > 0 && idx === total - 1) {
+      markTierComplete(courseId, lesson.id, "explanation");
+    }
+  }, [tier, idx, total, courseId, lesson.id]);
+
+  const onTierPass = tier
+    ? () => markTierComplete(courseId, lesson.id, tier)
+    : undefined;
+
+  // Empty tier (Workshop today) — show a placeholder with just a back button.
+  if (total === 0) {
+    return (
+      <div className="h-full flex flex-col bg-[#faf7f2] dark:bg-slate-950">
+        <header className="flex items-center gap-3 px-4 sm:px-6 py-3 border-b border-stone-200 dark:border-white/10">
+          <button
+            onClick={onExit}
+            className="shrink-0 text-sm text-stone-500 hover:text-stone-800 dark:text-indigo-200/70 dark:hover:text-indigo-100"
+          >
+            {t(ui.backToTiers, lang)}
+          </button>
+          <div className="min-w-0 truncate text-sm text-stone-500 dark:text-indigo-200/60">
+            {t(lesson.title, lang)}
+          </div>
+        </header>
+        <div className="flex-1 min-h-0 flex items-center justify-center">
+          <p className="text-stone-500 dark:text-indigo-200/60 italic">
+            {t(ui.tierEmpty, lang)}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const slide = slides[idx];
+  const isLastSlide = idx === total - 1;
+  const passHandler = isLastSlide ? onTierPass : undefined;
 
   return (
     <div className="h-full flex flex-col bg-[#faf7f2] dark:bg-slate-950">
@@ -51,7 +101,7 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
           onClick={onExit}
           className="shrink-0 text-sm text-stone-500 hover:text-stone-800 dark:text-indigo-200/70 dark:hover:text-indigo-100"
         >
-          {t(ui.backToLessons, lang)}
+          {t(tier ? ui.backToTiers : ui.backToLessons, lang)}
         </button>
         <div className="min-w-0 truncate text-sm text-stone-500 dark:text-indigo-200/60">
           {t(lesson.title, lang)}
@@ -63,7 +113,7 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
         className="fixed top-16 right-4 z-40 flex flex-wrap items-center gap-1 max-w-[12rem] justify-end"
         aria-label="Slide progress"
       >
-        {lesson.slides.map((_, i) => (
+        {slides.map((_, i) => (
           <div
             key={i}
             className={
@@ -87,11 +137,7 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
             slide={slide}
             storageKey={`${courseId}:${lesson.id}:${idx}`}
             key={`a-${idx}`}
-            onPass={
-              idx === total - 1
-                ? () => markComplete(courseId, lesson.id)
-                : undefined
-            }
+            onPass={passHandler}
           />
         )}
         {slide.kind === "js-assignment" && (
@@ -99,11 +145,7 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
             slide={slide}
             storageKey={`${courseId}:${lesson.id}:${idx}`}
             key={`j-${idx}`}
-            onPass={
-              idx === total - 1
-                ? () => markComplete(courseId, lesson.id)
-                : undefined
-            }
+            onPass={passHandler}
           />
         )}
         {slide.kind === "js-chip-assignment" && (
@@ -111,11 +153,7 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
             slide={slide}
             storageKey={`${courseId}:${lesson.id}:${idx}`}
             key={`c-${idx}`}
-            onPass={
-              idx === total - 1
-                ? () => markComplete(courseId, lesson.id)
-                : undefined
-            }
+            onPass={passHandler}
           />
         )}
         {slide.kind === "js-typed-assignment" && (
@@ -123,11 +161,7 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
             slide={slide}
             storageKey={`${courseId}:${lesson.id}:${idx}`}
             key={`t-${idx}`}
-            onPass={
-              idx === total - 1
-                ? () => markComplete(courseId, lesson.id)
-                : undefined
-            }
+            onPass={passHandler}
           />
         )}
         {slide.kind === "exercise" && (
@@ -135,11 +169,7 @@ export function SlideDeck({ courseId, lesson, onExit }: Props) {
             slide={slide}
             storageKey={`${courseId}:${lesson.id}:${idx}`}
             key={`x-${idx}`}
-            onPass={
-              idx === total - 1
-                ? () => markComplete(courseId, lesson.id)
-                : undefined
-            }
+            onPass={passHandler}
           />
         )}
       </div>

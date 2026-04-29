@@ -2,11 +2,13 @@ import { useState } from "react";
 import "./App.css";
 import { COURSES } from "./lessons";
 import { SlideDeck } from "./components/SlideDeck";
+import { LessonTierMenu } from "./components/LessonTierMenu";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { LanguageToggle } from "./components/LanguageToggle";
 import { RoomScene } from "./components/RoomScene";
 import type { Course, Lesson, Topic } from "./types";
 import { isComplete } from "./progress";
+import type { Tier } from "./tiers";
 import { useLang } from "./i18n/LanguageContext";
 import { t } from "./i18n";
 import { ui } from "./i18n/strings";
@@ -14,7 +16,22 @@ import { ui } from "./i18n/strings";
 type View =
   | { kind: "home" }
   | { kind: "topic"; course: Course; topic: Topic }
+  | { kind: "tier-menu"; course: Course; lesson: Lesson; topic?: Topic }
+  | {
+      kind: "tier-deck";
+      course: Course;
+      lesson: Lesson;
+      tier: Tier;
+      topic?: Topic;
+    }
   | { kind: "lesson"; course: Course; lesson: Lesson; topic?: Topic };
+
+function pickLesson(course: Course, lesson: Lesson, topic?: Topic): View {
+  // JS course uses the four-tier menu; everything else stays linear.
+  return course.id === "javascript"
+    ? { kind: "tier-menu", course, lesson, topic }
+    : { kind: "lesson", course, lesson, topic };
+}
 
 function App() {
   const [view, setView] = useState<View>({ kind: "home" });
@@ -30,7 +47,59 @@ function App() {
           courseId={view.course.id}
           lesson={view.lesson}
           onExit={() => {
-            // Return to topic view if we came from a topic, otherwise home.
+            if (view.topic) {
+              setView({ kind: "topic", course: view.course, topic: view.topic });
+            } else {
+              setView({ kind: "home" });
+            }
+            setTick((tick) => tick + 1);
+          }}
+        />
+      </>
+    );
+  }
+
+  if (view.kind === "tier-deck") {
+    return (
+      <>
+        <ThemeToggle />
+        <LanguageToggle />
+        <SlideDeck
+          courseId={view.course.id}
+          lesson={view.lesson}
+          tier={view.tier}
+          onExit={() => {
+            setView({
+              kind: "tier-menu",
+              course: view.course,
+              lesson: view.lesson,
+              topic: view.topic,
+            });
+            setTick((tick) => tick + 1);
+          }}
+        />
+      </>
+    );
+  }
+
+  if (view.kind === "tier-menu") {
+    return (
+      <>
+        <ThemeToggle />
+        <LanguageToggle />
+        <LessonTierMenu
+          courseId={view.course.id}
+          lesson={view.lesson}
+          onPick={(tier) =>
+            setView({
+              kind: "tier-deck",
+              course: view.course,
+              lesson: view.lesson,
+              tier,
+              topic: view.topic,
+            })
+          }
+          onBack={() => {
             if (view.topic) {
               setView({ kind: "topic", course: view.course, topic: view.topic });
             } else {
@@ -72,7 +141,7 @@ function App() {
               topic={view.topic}
               lessons={view.topic.lessons}
               onPick={(lesson) =>
-                setView({ kind: "lesson", course: view.course, topic: view.topic, lesson })
+                setView(pickLesson(view.course, lesson, view.topic))
               }
               lang={lang}
             />
@@ -124,9 +193,7 @@ function App() {
                   <LessonGrid
                     course={course}
                     lessons={course.lessons}
-                    onPick={(lesson) =>
-                      setView({ kind: "lesson", course, lesson })
-                    }
+                    onPick={(lesson) => setView(pickLesson(course, lesson))}
                     lang={lang}
                   />
                 ) : (
@@ -200,7 +267,7 @@ function LessonGrid({
   return (
     <div className="grid sm:grid-cols-2 gap-4">
       {lessons.map((lesson) => {
-        const done = isComplete(course.id, lesson.id);
+        const done = isComplete(course.id, lesson);
         return (
           <button
             key={lesson.id}
