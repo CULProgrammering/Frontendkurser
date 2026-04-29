@@ -10,6 +10,7 @@ type Props = {
   run: SceneRun | null;
   replayKey: number;
   lang: Lang;
+  hideConditionLabel?: boolean;
 };
 
 type Phase = "idle" | "decide" | "act";
@@ -36,7 +37,7 @@ function classifyLamp(signal: string): "red" | "yellow" | "green" | null {
   return null;
 }
 
-export function CrosswalkAllegory({ config, run, replayKey, lang }: Props) {
+export function CrosswalkAllegory({ config, run, replayKey, lang, hideConditionLabel }: Props) {
   const [phase, setPhase] = useState<Phase>("idle");
 
   useEffect(() => {
@@ -65,11 +66,13 @@ export function CrosswalkAllegory({ config, run, replayKey, lang }: Props) {
 
   return (
     <div className="w-full h-full flex flex-col p-6">
-      <div className="rounded-lg px-3 py-2 mb-3 font-mono text-sm
-                      bg-stone-100 text-stone-700
-                      dark:bg-slate-800/60 dark:text-indigo-100">
-        {t(config.conditionLabel, lang)}
-      </div>
+      {!hideConditionLabel && (
+        <div className="rounded-lg px-3 py-2 mb-3 font-mono text-sm
+                        bg-stone-100 text-stone-700
+                        dark:bg-slate-800/60 dark:text-indigo-100">
+          {t(config.conditionLabel, lang)}
+        </div>
+      )}
 
       <div className="relative flex-1 rounded-2xl overflow-hidden
                       bg-stone-50 ring-1 ring-stone-200

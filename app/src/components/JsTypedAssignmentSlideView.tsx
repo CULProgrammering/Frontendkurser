@@ -211,14 +211,6 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, onPass }: Props)
           <div className="flex flex-col rounded-2xl overflow-hidden min-h-0
                           bg-white ring-1 ring-stone-200 shadow-sm
                           dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
-            <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
-                            text-amber-600 border-stone-200
-                            dark:text-indigo-300/70 dark:border-white/10">
-              {focusedRun
-                ? `${t(ui.testLabel, lang)} ${focusedIdx + 1}: ${t(focusedRun.test.label, lang)}`
-                : t(ui.testCases, lang)}
-            </div>
-
             <div className="flex-1 min-h-0">
               <SceneMount
                 allegory={slide.allegory}
@@ -416,17 +408,19 @@ function SceneMount({
   replayKey: number;
   lang: Lang;
 }) {
+  // Typed-assignment slides ask the student to type the condition itself —
+  // showing the conditionLabel above the scene would spoil the answer.
   switch (allegory.kind) {
     case "door":
-      return <DoorScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
+      return <DoorScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} hideConditionLabel />;
     case "fork":
-      return <ForkScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
+      return <ForkScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} hideConditionLabel />;
     case "conveyor":
       return <ConveyorScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
     case "multi-gate":
       return <MultiGateScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
     case "crosswalk":
-      return <CrosswalkAllegory config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
+      return <CrosswalkAllegory config={allegory.config} run={run} replayKey={replayKey} lang={lang} hideConditionLabel />;
     case "loop-result":
       return <LoopResultScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
   }
