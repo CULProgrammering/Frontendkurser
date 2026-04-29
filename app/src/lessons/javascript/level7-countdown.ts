@@ -596,6 +596,193 @@ export const countdownLesson: Lesson = {
       ],
     },
 
+    // Workshop tier — guided micro-steps for `while`.
+    // Surface: halve a balance until it drops below 1; count the halvings.
+    // Distinct from chips (limit / countdown) and exercise (goal/weekly/saved/weeks).
+    {
+      kind: "js-workshop",
+      title: { en: "Workshop: halving balance", sv: "Verkstad: halvera balans" },
+      prompt: {
+        en:
+          "Use a `while` loop to halve a number until it drops below 1, counting the halvings.",
+        sv:
+          "Använd en `while`-loop för att halvera ett tal tills det är under 1, och räkna halveringarna.",
+      },
+      designNote:
+        "L7 while-loop workshop. Surface: balance → halvings (count operations until balance < 1). Distinct from chips (limit) and exercise (goal/weekly/saved/weeks). The student writes a while header that reads from a state and a body that mutates that state — the heart of the while pattern.",
+      steps: [
+        {
+          id: "halve-declare-balance",
+          instruction: {
+            en:
+              "Use `let` to declare `balance` and assign it any positive number greater than 1.",
+            sv:
+              "Använd `let` för att deklarera `balance` och tilldela ett positivt tal större än 1.",
+          },
+          starterCode: {
+            en: "// Declare balance below.\n",
+            sv: "// Deklarera balance nedan.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `let` to declare a variable named `balance`.",
+                sv: "Använd `let` för att deklarera en variabel som heter `balance`.",
+              },
+              requirePattern: /\blet\s+balance\b/,
+            },
+            {
+              message: {
+                en: "`balance` should hold a number greater than 1.",
+                sv: "`balance` ska vara ett tal större än 1.",
+              },
+              assert: "return typeof balance === 'number' && balance > 1;",
+            },
+          ],
+          reveal: {
+            en: "let balance = 100;\n",
+            sv: "let balance = 100;\n",
+          },
+        },
+        {
+          id: "halve-declare-halvings",
+          instruction: {
+            en:
+              "Below `balance`, use `let` to declare `halvings` and start it at 0 — the loop will count up.",
+            sv:
+              "Under `balance`, använd `let` för att deklarera `halvings` och börja på 0 — loopen räknar upp.",
+          },
+          starterCode: {
+            en: "let balance = 100;\n// Declare halvings = 0 below.\n",
+            sv: "let balance = 100;\n// Deklarera halvings = 0 nedan.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `let` to declare a variable named `halvings`.",
+                sv: "Använd `let` för att deklarera en variabel som heter `halvings`.",
+              },
+              requirePattern: /\blet\s+halvings\b/,
+            },
+            {
+              message: {
+                en: "`halvings` should start at 0.",
+                sv: "`halvings` ska börja på 0.",
+              },
+              assert: "return halvings === 0;",
+            },
+          ],
+          reveal: {
+            en: "let balance = 100;\nlet halvings = 0;\n",
+            sv: "let balance = 100;\nlet halvings = 0;\n",
+          },
+        },
+        {
+          id: "halve-while-header",
+          instruction: {
+            en:
+              "Write a `while` loop that keeps running as long as `balance` is still 1 or more. Leave the body empty for now.",
+            sv:
+              "Skriv en `while`-loop som fortsätter så länge `balance` fortfarande är 1 eller mer. Lämna kroppen tom tills vidare.",
+          },
+          starterCode: {
+            en:
+              "let balance = 100;\nlet halvings = 0;\n// Add the while header. Empty body for now.\n",
+            sv:
+              "let balance = 100;\nlet halvings = 0;\n// Lägg till while-rubriken. Tom kropp tills vidare.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `while` to start the loop.",
+                sv: "Använd `while` för att börja loopen.",
+              },
+              requirePattern: /\bwhile\s*\(/,
+            },
+            {
+              message: {
+                en: "Compare `balance` to `1` with `>=`.",
+                sv: "Jämför `balance` med `1` med hjälp av `>=`.",
+              },
+              requirePattern: /\bbalance\s*>=\s*1\b/,
+            },
+          ],
+          reveal: {
+            en:
+              "let balance = 100;\nlet halvings = 0;\nwhile (balance >= 1) {\n}\n",
+            sv:
+              "let balance = 100;\nlet halvings = 0;\nwhile (balance >= 1) {\n}\n",
+          },
+        },
+        {
+          id: "halve-loop-body",
+          instruction: {
+            en:
+              "Inside the loop, halve `balance` and increment `halvings` by 1. After the loop, `balance` should be less than 1 — and `halvings` should record how many rounds it took to get there.",
+            sv:
+              "Inne i loopen, halvera `balance` och räkna upp `halvings` med 1. Efter loopen ska `balance` vara mindre än 1 — och `halvings` ska visa hur många varv det tog att komma dit.",
+          },
+          starterCode: {
+            en:
+              "let balance = 100;\nlet halvings = 0;\nwhile (balance >= 1) {\n  // Halve balance, then increment halvings.\n}\n",
+            sv:
+              "let balance = 100;\nlet halvings = 0;\nwhile (balance >= 1) {\n  // Halvera balance, räkna sedan upp halvings.\n}\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Halve `balance` (e.g. `balance = balance / 2` or `balance /= 2`).",
+                sv: "Halvera `balance` (t.ex. `balance = balance / 2` eller `balance /= 2`).",
+              },
+              requirePattern: /\bbalance\s*=\s*balance\s*\/\s*2\b|\bbalance\s*\/=\s*2\b/,
+            },
+            {
+              message: {
+                en: "Increment `halvings` (e.g. `halvings++`).",
+                sv: "Räkna upp `halvings` (t.ex. `halvings++`).",
+              },
+              requirePattern: /\bhalvings\s*\+\+|\bhalvings\s*\+=\s*1\b|\bhalvings\s*=\s*halvings\s*\+\s*1\b/,
+            },
+            {
+              message: {
+                en:
+                  "After the loop, `balance` should be less than 1 and `halvings` should be a positive number.",
+                sv:
+                  "Efter loopen ska `balance` vara mindre än 1 och `halvings` vara ett positivt tal.",
+              },
+              assert: "return balance < 1 && halvings > 0;",
+            },
+          ],
+          reveal: {
+            en:
+              "let balance = 100;\nlet halvings = 0;\nwhile (balance >= 1) {\n  balance = balance / 2;\n  halvings++;\n}\n",
+            sv:
+              "let balance = 100;\nlet halvings = 0;\nwhile (balance >= 1) {\n  balance = balance / 2;\n  halvings++;\n}\n",
+          },
+        },
+      ],
+      legend: [
+        {
+          name: { en: "while", sv: "while" },
+          syntax: "while (condition) { ... }",
+          example: "while (balance >= 1) { ... }",
+          note: {
+            en: "Repeats the body as long as the condition is true. Make sure something inside changes the condition.",
+            sv: "Upprepar kroppen så länge villkoret är true. Se till att något inne ändrar villkoret.",
+          },
+        },
+        {
+          name: { en: "/=", sv: "/=" },
+          syntax: "x /= y",
+          example: "balance /= 2",
+          note: {
+            en: "Shorthand for `x = x / y`.",
+            sv: "Kort form för `x = x / y`.",
+          },
+        },
+      ],
+    },
+
     // L7 final lab — savings goal. Repeats while a running total falls short
     // of a target; counts the iterations. Distinct from the chapter's
     // count-up-to-n and keep-doubling exercises (linear addition until cross).

@@ -517,6 +517,298 @@ export const forkLesson: Lesson = {
       ],
     },
 
+    // Workshop tier — guided micro-steps. Pilot content for the L2 fork
+    // lesson. Surface-shifted from Chips (wardrobe/temp), Typed-Assignment
+    // (grade/score), and Exercise (battery/level): wind speed → sailing flag.
+    //
+    // Each step's starterCode changes the test value of `wind` so the
+    // newly-added branch is exercised by the assert. This deliberately
+    // deviates from "reveal of N == starterCode of N+1" on the wind-init
+    // line — the structural code carries forward, only the test value flips.
+    {
+      kind: "js-workshop",
+      title: { en: "Workshop: wind to flag", sv: "Verkstad: vind till flagga" },
+      prompt: {
+        en:
+          "Build a classifier that picks a sailing flag from a wind speed.\nOne branch at a time, type each piece into the editor.",
+        sv:
+          "Bygg en klassificerare som väljer en seglingsflagga utifrån en vindstyrka.\nEn gren i taget — skriv varje del i editorn.",
+      },
+      designNote:
+        "Pilot Workshop for L2-fork. Six steps build a 4-branch if/else-if/else chain over the wind-flag domain. Surface chosen to differ from chips (wardrobe), typed-assignment (grades), and exercise (battery). Wind init value flips per step to exercise each newly-added branch via a single-shot assert. String values inside each branch are NOT pinned — checks only require `typeof flag === 'string'`, leaving the student free to label branches creatively. Canonical labels (\"calm\", etc.) appear in subsequent steps' starterCode reveals so the student sees them organically. Threshold numbers (10, 25, 50) ARE pinned because they encode the lesson's branch ordering.",
+      steps: [
+        {
+          id: "wind-declare-input",
+          instruction: {
+            en:
+              "Use `let` to declare a variable called `wind` and assign it any number (knots — wind speed).",
+            sv:
+              "Använd `let` för att deklarera en variabel som heter `wind` och tilldela den ett tal (knop — vindhastighet).",
+          },
+          starterCode: {
+            en: "// Declare wind below.\n",
+            sv: "// Deklarera wind nedan.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `let` to declare a variable named `wind`.",
+                sv: "Använd `let` för att deklarera en variabel som heter `wind`.",
+              },
+              requirePattern: /\blet\s+wind\b/,
+            },
+            {
+              message: {
+                en: "`wind` should hold a number.",
+                sv: "`wind` ska innehålla ett tal.",
+              },
+              assert: "return typeof wind === 'number';",
+            },
+          ],
+          reveal: {
+            en: "let wind = 30;\n",
+            sv: "let wind = 30;\n",
+          },
+        },
+        {
+          id: "wind-declare-flag",
+          instruction: {
+            en:
+              "Below `wind`, use `let` to declare `flag` with no value yet — the branches you'll add next will set it.",
+            sv:
+              "Under `wind`, använd `let` för att deklarera `flag` utan något värde — grenarna du lägger till härnäst sätter värdet.",
+          },
+          starterCode: {
+            en: "let wind = 30;\n// Declare flag below (no value).\n",
+            sv: "let wind = 30;\n// Deklarera flag nedan (inget värde).\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `let` to declare a variable named `flag`.",
+                sv: "Använd `let` för att deklarera en variabel som heter `flag`.",
+              },
+              requirePattern: /\blet\s+flag\b/,
+            },
+            {
+              message: {
+                en:
+                  "Don't assign `flag` yet — the if-branches will set its value.",
+                sv:
+                  "Tilldela inte `flag` än — if-grenarna sätter värdet.",
+              },
+              assert: "return typeof flag === 'undefined';",
+            },
+          ],
+          reveal: {
+            en: "let wind = 30;\nlet flag;\n",
+            sv: "let wind = 30;\nlet flag;\n",
+          },
+        },
+        {
+          id: "wind-if-calm",
+          instruction: {
+            en:
+              "Add an `if` for the calmest range — wind at most 10. Inside, set `flag` to a string (the lesson uses `\"calm\"`).",
+            sv:
+              "Lägg till en `if` för det lugnaste intervallet — vind högst 10. Sätt `flag` till en sträng inne i grenen (lektionen använder `\"calm\"`).",
+          },
+          starterCode: {
+            en:
+              "let wind = 5;\nlet flag;\n// Add an if that sets flag to a string when wind <= 10.\n",
+            sv:
+              "let wind = 5;\nlet flag;\n// Lägg till en if som sätter flag till en sträng när wind <= 10.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `if` to start the branch.",
+                sv: "Använd `if` för att börja grenen.",
+              },
+              requirePattern: /\bif\s*\(/,
+            },
+            {
+              message: {
+                en: "Compare `wind` to `10` with `<=`.",
+                sv: "Jämför `wind` med `10` med hjälp av `<=`.",
+              },
+              requirePattern: /wind\s*<=\s*10\b/,
+            },
+            {
+              message: {
+                en: "Inside the branch, set `flag` to a string.",
+                sv: "Inne i grenen, sätt `flag` till en sträng.",
+              },
+              assert: "return typeof flag === 'string';",
+            },
+          ],
+          reveal: {
+            en:
+              "let wind = 5;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n}\n",
+            sv:
+              "let wind = 5;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n}\n",
+          },
+        },
+        {
+          id: "wind-elseif-small-craft",
+          instruction: {
+            en:
+              "After the `if`, add an `else if` for the next range — wind at most 25. Inside, set `flag` to a string (the lesson uses `\"small craft\"`).",
+            sv:
+              "Efter `if`-grenen, lägg till en `else if` för nästa intervall — vind högst 25. Sätt `flag` till en sträng inne i grenen (lektionen använder `\"small craft\"`).",
+          },
+          starterCode: {
+            en:
+              "let wind = 20;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n}\n// Add an else if for wind <= 25 that sets flag to a string.\n",
+            sv:
+              "let wind = 20;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n}\n// Lägg till en else if för wind <= 25 som sätter flag till en sträng.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `else if` to add the next branch.",
+                sv: "Använd `else if` för att lägga till nästa gren.",
+              },
+              requirePattern: /\belse\s+if\s*\(/,
+            },
+            {
+              message: {
+                en: "Compare `wind` to `25` with `<=`.",
+                sv: "Jämför `wind` med `25` med hjälp av `<=`.",
+              },
+              requirePattern: /wind\s*<=\s*25\b/,
+            },
+            {
+              message: {
+                en: "Inside the new branch, set `flag` to a string.",
+                sv: "Inne i den nya grenen, sätt `flag` till en sträng.",
+              },
+              assert: "return typeof flag === 'string';",
+            },
+          ],
+          reveal: {
+            en:
+              "let wind = 20;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n}\n",
+            sv:
+              "let wind = 20;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n}\n",
+          },
+        },
+        {
+          id: "wind-elseif-gale",
+          instruction: {
+            en:
+              "Add another `else if` for the next range — wind at most 50. Inside, set `flag` to a string (the lesson uses `\"gale\"`).",
+            sv:
+              "Lägg till ytterligare en `else if` för nästa intervall — vind högst 50. Sätt `flag` till en sträng inne i grenen (lektionen använder `\"gale\"`).",
+          },
+          starterCode: {
+            en:
+              "let wind = 40;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n}\n// Add an else if for wind <= 50 that sets flag to a string.\n",
+            sv:
+              "let wind = 40;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n}\n// Lägg till en else if för wind <= 50 som sätter flag till en sträng.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Compare `wind` to `50` with `<=`.",
+                sv: "Jämför `wind` med `50` med hjälp av `<=`.",
+              },
+              requirePattern: /wind\s*<=\s*50\b/,
+            },
+            {
+              message: {
+                en: "Inside the new branch, set `flag` to a string.",
+                sv: "Inne i den nya grenen, sätt `flag` till en sträng.",
+              },
+              assert: "return typeof flag === 'string';",
+            },
+          ],
+          reveal: {
+            en:
+              "let wind = 40;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n} else if (wind <= 50) {\n  flag = \"gale\";\n}\n",
+            sv:
+              "let wind = 40;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n} else if (wind <= 50) {\n  flag = \"gale\";\n}\n",
+          },
+        },
+        {
+          id: "wind-else-storm",
+          instruction: {
+            en:
+              "Finish the chain with a final `else` for everything that didn't match above. Set `flag` to a string (the lesson uses `\"storm\"`).",
+            sv:
+              "Avsluta kedjan med ett sista `else` för allt som inte stämde ovan. Sätt `flag` till en sträng (lektionen använder `\"storm\"`).",
+          },
+          starterCode: {
+            en:
+              "let wind = 70;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n} else if (wind <= 50) {\n  flag = \"gale\";\n}\n// Add a final else (no condition) that sets flag to a string.\n",
+            sv:
+              "let wind = 70;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n} else if (wind <= 50) {\n  flag = \"gale\";\n}\n// Lägg till ett sista else (utan villkor) som sätter flag till en sträng.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Add a bare `else { ... }` at the end (no `if` after `else`).",
+                sv: "Lägg till ett rent `else { ... }` på slutet (inget `if` efter `else`).",
+              },
+              // Bare else: `else` followed by `{` (not `if`). Whitespace tolerant.
+              requirePattern: /\belse\s*\{/,
+            },
+            {
+              message: {
+                en: "Inside the else, set `flag` to a string.",
+                sv: "Inne i else, sätt `flag` till en sträng.",
+              },
+              assert: "return typeof flag === 'string';",
+            },
+          ],
+          reveal: {
+            en:
+              "let wind = 70;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n} else if (wind <= 50) {\n  flag = \"gale\";\n} else {\n  flag = \"storm\";\n}\n",
+            sv:
+              "let wind = 70;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n} else if (wind <= 50) {\n  flag = \"gale\";\n} else {\n  flag = \"storm\";\n}\n",
+          },
+        },
+      ],
+      legend: [
+        {
+          name: { en: "if", sv: "if" },
+          syntax: "if (condition) { ... }",
+          example: "if (wind <= 10) { flag = \"calm\"; }",
+          note: {
+            en: "The first branch. Runs when its condition is true.",
+            sv: "Första grenen. Körs när dess villkor är true.",
+          },
+        },
+        {
+          name: { en: "else if", sv: "else if" },
+          syntax: "} else if (condition) { ... }",
+          example: "} else if (wind <= 25) { flag = \"small craft\"; }",
+          note: {
+            en: "Only checked when the conditions above were false.",
+            sv: "Kollas bara om villkoren ovan var false.",
+          },
+        },
+        {
+          name: { en: "else", sv: "else" },
+          syntax: "} else { ... }",
+          example: "} else { flag = \"storm\"; }",
+          note: {
+            en: "The fallback. Runs when nothing above matched.",
+            sv: "Reservutgången. Körs när inget ovan stämde.",
+          },
+        },
+        {
+          name: { en: "<=", sv: "<=" },
+          syntax: "a <= b",
+          example: "wind <= 10",
+          note: {
+            en: "True when a is less than or equal to b.",
+            sv: "Sant när a är mindre än eller lika med b.",
+          },
+        },
+      ],
+    },
+
     // L2 final lab — battery indicator. Uses else if + numeric ranges, so it
     // exercises ordering (cases narrow as you go down). Distinct from the
     // wardrobe/grade themes used in this chapter.

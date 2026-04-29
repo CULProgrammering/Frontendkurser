@@ -713,6 +713,201 @@ export const stairsLesson: Lesson = {
       ],
     },
 
+    // Workshop tier — guided micro-steps for the classic for-loop.
+    // Surface: build a string of repeated symbols (count → stars).
+    // Distinct from chips (n / stairs) and exercise (factor × i).
+    {
+      kind: "js-workshop",
+      title: { en: "Workshop: row of stars", sv: "Verkstad: rad av stjärnor" },
+      prompt: {
+        en:
+          "Build a string of `*` characters using a for-loop, one piece at a time.",
+        sv:
+          "Bygg en sträng av `*`-tecken med en for-loop, en bit i taget.",
+      },
+      designNote:
+        "L5 for-loop workshop. Surface: count → stars (a string accumulator). Distinct from chips (n) and exercise (factor/i). The student writes the canonical `for (let i = 0; i < count; i++)` header and accumulates inside. The literal symbol `\"*\"` is free (any single-char string accepted via typeof string).",
+      steps: [
+        {
+          id: "stars-declare-count",
+          instruction: {
+            en:
+              "Use `let` to declare a variable called `count` and assign it any positive whole number — how many stars you want.",
+            sv:
+              "Använd `let` för att deklarera en variabel som heter `count` och tilldela den ett positivt heltal — hur många stjärnor du vill ha.",
+          },
+          starterCode: {
+            en: "// Declare count below.\n",
+            sv: "// Deklarera count nedan.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `let` to declare a variable named `count`.",
+                sv: "Använd `let` för att deklarera en variabel som heter `count`.",
+              },
+              requirePattern: /\blet\s+count\b/,
+            },
+            {
+              message: {
+                en: "`count` should hold a number.",
+                sv: "`count` ska innehålla ett tal.",
+              },
+              assert: "return typeof count === 'number';",
+            },
+          ],
+          reveal: {
+            en: "let count = 5;\n",
+            sv: "let count = 5;\n",
+          },
+        },
+        {
+          id: "stars-declare-stars",
+          instruction: {
+            en:
+              "Below `count`, use `let` to declare `stars` and assign it the empty string `\"\"` — the loop will append to it.",
+            sv:
+              "Under `count`, använd `let` för att deklarera `stars` och tilldela den den tomma strängen `\"\"` — loopen lägger till tecken senare.",
+          },
+          starterCode: {
+            en: "let count = 5;\n// Declare stars as an empty string below.\n",
+            sv: "let count = 5;\n// Deklarera stars som en tom sträng nedan.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `let` to declare a variable named `stars`.",
+                sv: "Använd `let` för att deklarera en variabel som heter `stars`.",
+              },
+              requirePattern: /\blet\s+stars\b/,
+            },
+            {
+              message: {
+                en: "`stars` should start as the empty string `\"\"`.",
+                sv: "`stars` ska börja som den tomma strängen `\"\"`.",
+              },
+              assert: "return stars === '';",
+            },
+          ],
+          reveal: {
+            en: 'let count = 5;\nlet stars = "";\n',
+            sv: 'let count = 5;\nlet stars = "";\n',
+          },
+        },
+        {
+          id: "stars-for-header",
+          instruction: {
+            en:
+              "Write a for-loop header so the body will run `count` times. Remember a for-loop's header has three parts — an initialization, a condition, and an update. Leave the body empty for now.",
+            sv:
+              "Skriv en for-loop-rubrik så kroppen körs `count` gånger. Kom ihåg att en for-loops rubrik har tre delar — en initialisering, ett villkor och en uppdatering. Lämna kroppen tom tills vidare.",
+          },
+          starterCode: {
+            en:
+              'let count = 5;\nlet stars = "";\n// Add the for-loop header. Leave the body empty.\n',
+            sv:
+              'let count = 5;\nlet stars = "";\n// Lägg till for-loop-rubriken. Lämna kroppen tom.\n',
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `for` to start the loop.",
+                sv: "Använd `for` för att börja loopen.",
+              },
+              requirePattern: /\bfor\s*\(/,
+            },
+            {
+              message: {
+                en: "Initialize `let i = 0` in the loop header.",
+                sv: "Initiera `let i = 0` i loop-rubriken.",
+              },
+              requirePattern: /\blet\s+i\s*=\s*0\b/,
+            },
+            {
+              message: {
+                en: "Set the condition `i < count`.",
+                sv: "Sätt villkoret `i < count`.",
+              },
+              requirePattern: /\bi\s*<\s*count\b/,
+            },
+            {
+              message: {
+                en: "Update `i` with `i++` in the loop header.",
+                sv: "Uppdatera `i` med `i++` i loop-rubriken.",
+              },
+              requirePattern: /\bi\s*\+\+/,
+            },
+          ],
+          reveal: {
+            en:
+              'let count = 5;\nlet stars = "";\nfor (let i = 0; i < count; i++) {\n}\n',
+            sv:
+              'let count = 5;\nlet stars = "";\nfor (let i = 0; i < count; i++) {\n}\n',
+          },
+        },
+        {
+          id: "stars-loop-body",
+          instruction: {
+            en:
+              "Inside the loop body, append one `\"*\"` to `stars` each time the loop runs. After the loop, `stars` should be one star longer for every round.",
+            sv:
+              "Inne i loop-kroppen, lägg till en `\"*\"` till `stars` varje varv. Efter loopen ska `stars` vara en stjärna längre per varv.",
+          },
+          starterCode: {
+            en:
+              'let count = 5;\nlet stars = "";\nfor (let i = 0; i < count; i++) {\n  // Append a star to stars here.\n}\n',
+            sv:
+              'let count = 5;\nlet stars = "";\nfor (let i = 0; i < count; i++) {\n  // Lägg till en stjärna till stars här.\n}\n',
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `+=` to append onto `stars`.",
+                sv: "Använd `+=` för att lägga till på `stars`.",
+              },
+              requirePattern: /\bstars\s*\+=/,
+            },
+            {
+              message: {
+                en:
+                  "After the loop, `stars` should be a string with as many characters as `count`.",
+                sv:
+                  "Efter loopen ska `stars` vara en sträng med lika många tecken som `count`.",
+              },
+              assert:
+                "return typeof stars === 'string' && stars.length === count;",
+            },
+          ],
+          reveal: {
+            en:
+              'let count = 5;\nlet stars = "";\nfor (let i = 0; i < count; i++) {\n  stars += "*";\n}\n',
+            sv:
+              'let count = 5;\nlet stars = "";\nfor (let i = 0; i < count; i++) {\n  stars += "*";\n}\n',
+          },
+        },
+      ],
+      legend: [
+        {
+          name: { en: "for", sv: "for" },
+          syntax: "for (init; condition; update) { ... }",
+          example: "for (let i = 0; i < count; i++) { ... }",
+          note: {
+            en: "Three parts: where to start, when to keep going, what to change each round.",
+            sv: "Tre delar: var den börjar, när den fortsätter, vad som ändras varje varv.",
+          },
+        },
+        {
+          name: { en: "+=", sv: "+=" },
+          syntax: "x += y",
+          example: 'stars += "*"',
+          note: {
+            en: "Shorthand for `x = x + y`.",
+            sv: "Kort form för `x = x + y`.",
+          },
+        },
+      ],
+    },
+
     // L5 final lab — multiplication table. Uses a counted for-loop with a
     // multiplication body. Distinct from the chapter's stairs/sum/n-stars
     // exercises; new theme entirely.

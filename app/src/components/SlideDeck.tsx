@@ -5,6 +5,7 @@ import { AssignmentSlideView } from "./AssignmentSlideView";
 import { JsAssignmentSlideView } from "./JsAssignmentSlideView";
 import { JsChipAssignmentSlideView } from "./JsChipAssignmentSlideView";
 import { JsTypedAssignmentSlideView } from "./JsTypedAssignmentSlideView";
+import { JsWorkshopSlideView } from "./JsWorkshopSlideView";
 import { ExerciseSlideView } from "./ExerciseSlideView";
 import { markTierComplete } from "../progress";
 import { slidesForTier, type Tier } from "../tiers";
@@ -66,7 +67,7 @@ export function SlideDeck({ courseId, lesson, tier, onExit }: Props) {
     ? () => markTierComplete(courseId, lesson.id, tier)
     : undefined;
 
-  // Empty tier (Workshop today) — show a placeholder with just a back button.
+  // Empty tier — show a placeholder with just a back button.
   if (total === 0) {
     return (
       <div className="h-full flex flex-col bg-[#faf7f2] dark:bg-slate-950">
@@ -167,6 +168,14 @@ export function SlideDeck({ courseId, lesson, tier, onExit }: Props) {
             slide={slide}
             storageKey={`${courseId}:${lesson.id}:${idx}`}
             key={`t-${idx}`}
+            onPass={passHandler}
+          />
+        )}
+        {slide.kind === "js-workshop" && (
+          <JsWorkshopSlideView
+            slide={slide}
+            storageKey={`${courseId}:${lesson.id}:${idx}`}
+            key={`w-${idx}`}
             onPass={passHandler}
           />
         )}

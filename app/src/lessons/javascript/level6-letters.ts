@@ -568,6 +568,184 @@ export const lettersLesson: Lesson = {
       ],
     },
 
+    // Workshop tier — guided micro-steps for for…of over a string.
+    // Surface: count the length of a string by walking each character.
+    // Distinct from chips (word/count vowels) and exercise (word/letter/found).
+    {
+      kind: "js-workshop",
+      title: { en: "Workshop: count chars", sv: "Verkstad: räkna tecken" },
+      prompt: {
+        en:
+          "Walk through a string with for…of and count each character into `len`.",
+        sv:
+          "Gå igenom en sträng med for…of och räkna varje tecken i `len`.",
+      },
+      designNote:
+        "L6 for…of workshop. Surface: text → len (count by iteration). Distinct from chips (word/count vowels) and exercise (word/letter/found bool). The student demonstrates that for…of yields each char so that incrementing once per iteration gives string length.",
+      steps: [
+        {
+          id: "len-declare-text",
+          instruction: {
+            en:
+              "Use `let` to declare a variable called `text` and assign it any string.",
+            sv:
+              "Använd `let` för att deklarera en variabel som heter `text` och tilldela den en sträng.",
+          },
+          starterCode: {
+            en: "// Declare text below.\n",
+            sv: "// Deklarera text nedan.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `let` to declare a variable named `text`.",
+                sv: "Använd `let` för att deklarera en variabel som heter `text`.",
+              },
+              requirePattern: /\blet\s+text\b/,
+            },
+            {
+              message: {
+                en: "`text` should hold a string.",
+                sv: "`text` ska innehålla en sträng.",
+              },
+              assert: "return typeof text === 'string';",
+            },
+          ],
+          reveal: {
+            en: 'let text = "hello";\n',
+            sv: 'let text = "hello";\n',
+          },
+        },
+        {
+          id: "len-declare-len",
+          instruction: {
+            en:
+              "Below `text`, use `let` to declare `len` and start it at 0 — the loop will increment it.",
+            sv:
+              "Under `text`, använd `let` för att deklarera `len` och börja på 0 — loopen räknar upp.",
+          },
+          starterCode: {
+            en: 'let text = "hello";\n// Declare len and start at 0.\n',
+            sv: 'let text = "hello";\n// Deklarera len och börja på 0.\n',
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `let` to declare a variable named `len`.",
+                sv: "Använd `let` för att deklarera en variabel som heter `len`.",
+              },
+              requirePattern: /\blet\s+len\b/,
+            },
+            {
+              message: {
+                en: "`len` should start at 0.",
+                sv: "`len` ska börja på 0.",
+              },
+              assert: "return len === 0;",
+            },
+          ],
+          reveal: {
+            en: 'let text = "hello";\nlet len = 0;\n',
+            sv: 'let text = "hello";\nlet len = 0;\n',
+          },
+        },
+        {
+          id: "len-for-of-header",
+          instruction: {
+            en:
+              "Write a `for…of` header that walks each character of `text`. Name the loop variable `ch`. Leave the body empty for now.",
+            sv:
+              "Skriv en `for…of`-rubrik som går igenom varje tecken i `text`. Namnge loop-variabeln `ch`. Lämna kroppen tom tills vidare.",
+          },
+          starterCode: {
+            en:
+              'let text = "hello";\nlet len = 0;\n// Add the for…of header walking text. Empty body.\n',
+            sv:
+              'let text = "hello";\nlet len = 0;\n// Lägg till for…of-rubriken som går igenom text. Tom kropp.\n',
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `for ( ... of ... )` to iterate.",
+                sv: "Använd `for ( ... of ... )` för att iterera.",
+              },
+              requirePattern: /\bfor\s*\(\s*let\s+\w+\s+of\s+text\b/,
+            },
+            {
+              message: {
+                en: "Name the loop variable `ch`.",
+                sv: "Namnge loop-variabeln `ch`.",
+              },
+              requirePattern: /\bfor\s*\(\s*let\s+ch\s+of\b/,
+            },
+          ],
+          reveal: {
+            en:
+              'let text = "hello";\nlet len = 0;\nfor (let ch of text) {\n}\n',
+            sv:
+              'let text = "hello";\nlet len = 0;\nfor (let ch of text) {\n}\n',
+          },
+        },
+        {
+          id: "len-loop-body",
+          instruction: {
+            en:
+              "Inside the loop, increment `len` by 1 each round. After the loop, `len` should equal the number of characters in `text`.",
+            sv:
+              "Inne i loopen, räkna upp `len` med 1 varje varv. Efter loopen ska `len` vara antalet tecken i `text`.",
+          },
+          starterCode: {
+            en:
+              'let text = "hello";\nlet len = 0;\nfor (let ch of text) {\n  // Increment len here.\n}\n',
+            sv:
+              'let text = "hello";\nlet len = 0;\nfor (let ch of text) {\n  // Räkna upp len här.\n}\n',
+          },
+          checks: [
+            {
+              message: {
+                en: "Increment `len` (e.g. `len++` or `len += 1`).",
+                sv: "Räkna upp `len` (t.ex. `len++` eller `len += 1`).",
+              },
+              requirePattern: /\blen\s*\+\+|\blen\s*\+=\s*1\b|\blen\s*=\s*len\s*\+\s*1\b/,
+            },
+            {
+              message: {
+                en: "After the loop, `len` should equal the length of `text`.",
+                sv: "Efter loopen ska `len` vara lika med längden på `text`.",
+              },
+              assert: "return len === text.length;",
+            },
+          ],
+          reveal: {
+            en:
+              'let text = "hello";\nlet len = 0;\nfor (let ch of text) {\n  len++;\n}\n',
+            sv:
+              'let text = "hello";\nlet len = 0;\nfor (let ch of text) {\n  len++;\n}\n',
+          },
+        },
+      ],
+      legend: [
+        {
+          name: { en: "for…of", sv: "for…of" },
+          syntax: "for (let ch of string) { ... }",
+          example: "for (let ch of text) { ... }",
+          note: {
+            en: "Walks each character of the string in order.",
+            sv: "Går igenom varje tecken i strängen i ordning.",
+          },
+        },
+        {
+          name: { en: "++", sv: "++" },
+          syntax: "x++",
+          example: "len++",
+          note: {
+            en: "Adds 1 to `x`. Same as `x = x + 1`.",
+            sv: "Lägger till 1 till `x`. Samma som `x = x + 1`.",
+          },
+        },
+      ],
+    },
+
     // L6 final lab — letter search. Walks the string with for...of looking for
     // a chosen single character; produces a boolean result. Distinct from the
     // chapter's "count a or e" exercise (which counts characters).

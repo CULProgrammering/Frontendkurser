@@ -606,6 +606,229 @@ export const multiGateLesson: Lesson = {
       },
     },
 
+    // Workshop tier — guided micro-steps for &&, ||, ! and grouping.
+    // Surface: members-only club door (isMember || hasGuest) && !isClosed.
+    // Distinct from chips (age/hasTicket/isVip/banned) and exercise
+    // (hour/motion/manualOff/lightOn).
+    {
+      kind: "js-workshop",
+      title: { en: "Workshop: club door", sv: "Verkstad: klubbdörren" },
+      prompt: {
+        en:
+          "Build a single boolean expression that decides whether someone can enter.\nAdd one operator at a time.",
+        sv:
+          "Bygg ett enda booleanskt uttryck som avgör om någon får komma in.\nLägg till en operator i taget.",
+      },
+      designNote:
+        "L4 boolean-operators workshop. Surface: isMember/hasGuest/isClosed → canEnter. Each step exercises one operator (||, then && + !). Boolean values are free; the expression's STRUCTURE (operator usage and grouping) is what's pinned.",
+      steps: [
+        {
+          id: "club-declare-isMember",
+          instruction: {
+            en:
+              "Use `let` to declare a variable called `isMember` and assign it `true` or `false`.",
+            sv:
+              "Använd `let` för att deklarera en variabel som heter `isMember` och tilldela den `true` eller `false`.",
+          },
+          starterCode: {
+            en: "// Declare isMember below.\n",
+            sv: "// Deklarera isMember nedan.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `let` to declare a variable named `isMember`.",
+                sv: "Använd `let` för att deklarera en variabel som heter `isMember`.",
+              },
+              requirePattern: /\blet\s+isMember\b/,
+            },
+            {
+              message: {
+                en: "`isMember` should hold a boolean.",
+                sv: "`isMember` ska innehålla en boolean.",
+              },
+              assert: "return typeof isMember === 'boolean';",
+            },
+          ],
+          reveal: {
+            en: "let isMember = true;\n",
+            sv: "let isMember = true;\n",
+          },
+        },
+        {
+          id: "club-declare-hasGuest",
+          instruction: {
+            en:
+              "Below `isMember`, declare `hasGuest` and `isClosed` as booleans (any values you like).",
+            sv:
+              "Under `isMember`, deklarera `hasGuest` och `isClosed` som booleans (vilka värden du vill).",
+          },
+          starterCode: {
+            en:
+              "let isMember = true;\n// Declare hasGuest and isClosed below.\n",
+            sv:
+              "let isMember = true;\n// Deklarera hasGuest och isClosed nedan.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Declare `hasGuest` with `let`.",
+                sv: "Deklarera `hasGuest` med `let`.",
+              },
+              requirePattern: /\blet\s+hasGuest\b/,
+            },
+            {
+              message: {
+                en: "Declare `isClosed` with `let`.",
+                sv: "Deklarera `isClosed` med `let`.",
+              },
+              requirePattern: /\blet\s+isClosed\b/,
+            },
+            {
+              message: {
+                en: "Both `hasGuest` and `isClosed` should be booleans.",
+                sv: "Både `hasGuest` och `isClosed` ska vara booleans.",
+              },
+              assert:
+                "return typeof hasGuest === 'boolean' && typeof isClosed === 'boolean';",
+            },
+          ],
+          reveal: {
+            en: "let isMember = true;\nlet hasGuest = false;\nlet isClosed = false;\n",
+            sv: "let isMember = true;\nlet hasGuest = false;\nlet isClosed = false;\n",
+          },
+        },
+        {
+          id: "club-or",
+          instruction: {
+            en:
+              "Use `let` to declare `canEnter` and set it based on whether the person is a member OR has a guest pass. The result should be true if either is true.",
+            sv:
+              "Använd `let` för att deklarera `canEnter` och sätt den baserat på om personen är medlem ELLER har en gästpass. Resultatet ska vara true om minst en av dem är true.",
+          },
+          starterCode: {
+            en:
+              "let isMember = false;\nlet hasGuest = true;\nlet isClosed = false;\n// Declare canEnter below using ||.\n",
+            sv:
+              "let isMember = false;\nlet hasGuest = true;\nlet isClosed = false;\n// Deklarera canEnter nedan med ||.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `let` to declare a variable named `canEnter`.",
+                sv: "Använd `let` för att deklarera en variabel som heter `canEnter`.",
+              },
+              requirePattern: /\blet\s+canEnter\b/,
+            },
+            {
+              message: {
+                en: "Use the `||` operator on `isMember` and `hasGuest`.",
+                sv: "Använd `||`-operatorn på `isMember` och `hasGuest`.",
+              },
+              requirePattern: /isMember\s*\|\|\s*hasGuest|hasGuest\s*\|\|\s*isMember/,
+            },
+            {
+              message: {
+                en:
+                  "When isMember is false but hasGuest is true, `canEnter` should be true.",
+                sv:
+                  "När isMember är false men hasGuest är true ska `canEnter` vara true.",
+              },
+              assert: "return canEnter === true;",
+            },
+          ],
+          reveal: {
+            en:
+              "let isMember = false;\nlet hasGuest = true;\nlet isClosed = false;\nlet canEnter = isMember || hasGuest;\n",
+            sv:
+              "let isMember = false;\nlet hasGuest = true;\nlet isClosed = false;\nlet canEnter = isMember || hasGuest;\n",
+          },
+        },
+        {
+          id: "club-and-not",
+          instruction: {
+            en:
+              "Update `canEnter` so it's also blocked when the club is closed. Remember you can use `( )` to group conditions together.",
+            sv:
+              "Uppdatera `canEnter` så att den också blockeras när klubben är stängd. Tänk på att du kan använda `( )` för att gruppera villkor.",
+          },
+          starterCode: {
+            en:
+              "let isMember = true;\nlet hasGuest = false;\nlet isClosed = true;\nlet canEnter = isMember || hasGuest;\n// Update canEnter to also require !isClosed.\n",
+            sv:
+              "let isMember = true;\nlet hasGuest = false;\nlet isClosed = true;\nlet canEnter = isMember || hasGuest;\n// Uppdatera canEnter så !isClosed också krävs.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use parentheses around `isMember || hasGuest`.",
+                sv: "Använd parenteser runt `isMember || hasGuest`.",
+              },
+              requirePattern: /\(\s*(isMember\s*\|\|\s*hasGuest|hasGuest\s*\|\|\s*isMember)\s*\)/,
+            },
+            {
+              message: {
+                en: "Combine the group with `&&`.",
+                sv: "Kombinera gruppen med `&&`.",
+              },
+              requirePattern: /&&/,
+            },
+            {
+              message: {
+                en: "Apply `!` (not) to `isClosed`.",
+                sv: "Använd `!` (not) på `isClosed`.",
+              },
+              requirePattern: /!\s*isClosed\b/,
+            },
+            {
+              message: {
+                en:
+                  "When the club is closed, `canEnter` should be false even for a member.",
+                sv:
+                  "När klubben är stängd ska `canEnter` vara false även för en medlem.",
+              },
+              assert: "return canEnter === false;",
+            },
+          ],
+          reveal: {
+            en:
+              "let isMember = true;\nlet hasGuest = false;\nlet isClosed = true;\nlet canEnter = (isMember || hasGuest) && !isClosed;\n",
+            sv:
+              "let isMember = true;\nlet hasGuest = false;\nlet isClosed = true;\nlet canEnter = (isMember || hasGuest) && !isClosed;\n",
+          },
+        },
+      ],
+      legend: [
+        {
+          name: { en: "&& (and)", sv: "&& (och)" },
+          syntax: "a && b",
+          example: "open && !isClosed",
+          note: {
+            en: "True only when both sides are true.",
+            sv: "True bara när båda sidor är true.",
+          },
+        },
+        {
+          name: { en: "|| (or)", sv: "|| (eller)" },
+          syntax: "a || b",
+          example: "isMember || hasGuest",
+          note: {
+            en: "True when at least one side is true.",
+            sv: "True när minst en sida är true.",
+          },
+        },
+        {
+          name: { en: "! (not)", sv: "! (icke)" },
+          syntax: "!a",
+          example: "!isClosed",
+          note: {
+            en: "Flips true to false and vice versa.",
+            sv: "Vänder true till false och tvärtom.",
+          },
+        },
+      ],
+    },
+
     // L4 final lab — smart light. Combines &&, ||, ! with grouping
     // parentheses on a different scenario than the bouncer/door theme.
     {

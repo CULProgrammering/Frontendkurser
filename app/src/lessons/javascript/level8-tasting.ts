@@ -401,6 +401,195 @@ export const tastingLesson: Lesson = {
       ],
     },
 
+    // Workshop tier — guided micro-steps for `do…while`.
+    // Surface: keep doubling a starting value until it exceeds 1000; count
+    // the doublings. Distinct from chips (n/limit) and exercise (target/
+    // pourSize/cup/pours). The do…while shape ensures the body runs at least
+    // once even when the start already satisfies the exit condition.
+    {
+      kind: "js-workshop",
+      title: { en: "Workshop: keep doubling", sv: "Verkstad: fortsätt fördubbla" },
+      prompt: {
+        en:
+          "Use a `do…while` loop to keep doubling a number until it exceeds 1000.\nThe body always runs at least once.",
+        sv:
+          "Använd en `do…while`-loop för att fördubbla ett tal tills det överstiger 1000.\nKroppen körs alltid minst en gång.",
+      },
+      designNote:
+        "L8 do…while workshop. Surface: value/steps (keep doubling). Distinct from chips (n/limit) and exercise (target/pourSize/cup/pours). The starterCode for the final step uses an initial value already > 1000 to highlight do…while's at-least-once property — but the assert tolerates either case.",
+      steps: [
+        {
+          id: "double-declare-value",
+          instruction: {
+            en:
+              "Use `let` to declare `value` and assign it any positive number.",
+            sv:
+              "Använd `let` för att deklarera `value` och tilldela vilket positivt tal som helst.",
+          },
+          starterCode: {
+            en: "// Declare value below.\n",
+            sv: "// Deklarera value nedan.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `let` to declare a variable named `value`.",
+                sv: "Använd `let` för att deklarera en variabel som heter `value`.",
+              },
+              requirePattern: /\blet\s+value\b/,
+            },
+            {
+              message: {
+                en: "`value` should hold a positive number.",
+                sv: "`value` ska vara ett positivt tal.",
+              },
+              assert: "return typeof value === 'number' && value > 0;",
+            },
+          ],
+          reveal: {
+            en: "let value = 50;\n",
+            sv: "let value = 50;\n",
+          },
+        },
+        {
+          id: "double-declare-steps",
+          instruction: {
+            en:
+              "Below `value`, use `let` to declare `steps` and start it at 0 — the loop counts doublings.",
+            sv:
+              "Under `value`, använd `let` för att deklarera `steps` och börja på 0 — loopen räknar fördubblingar.",
+          },
+          starterCode: {
+            en: "let value = 50;\n// Declare steps = 0 below.\n",
+            sv: "let value = 50;\n// Deklarera steps = 0 nedan.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `let` to declare a variable named `steps`.",
+                sv: "Använd `let` för att deklarera en variabel som heter `steps`.",
+              },
+              requirePattern: /\blet\s+steps\b/,
+            },
+            {
+              message: {
+                en: "`steps` should start at 0.",
+                sv: "`steps` ska börja på 0.",
+              },
+              assert: "return steps === 0;",
+            },
+          ],
+          reveal: {
+            en: "let value = 50;\nlet steps = 0;\n",
+            sv: "let value = 50;\nlet steps = 0;\n",
+          },
+        },
+        {
+          id: "double-do-while-skeleton",
+          instruction: {
+            en:
+              "Write the `do…while` skeleton. The loop should keep running while `value` is still 1000 or below. Leave the body empty for now — note that a `do…while` ends with a semicolon after the while-condition.",
+            sv:
+              "Skriv `do…while`-skelettet. Loopen ska fortsätta så länge `value` fortfarande är 1000 eller mindre. Lämna kroppen tom tills vidare — notera att `do…while` slutar med semikolon efter while-villkoret.",
+          },
+          starterCode: {
+            en:
+              "let value = 50;\nlet steps = 0;\n// Add the do { } while (value <= 1000); skeleton, body empty.\n",
+            sv:
+              "let value = 50;\nlet steps = 0;\n// Lägg till do { } while (value <= 1000);-skelettet, tom kropp.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Open with `do {`.",
+                sv: "Börja med `do {`.",
+              },
+              requirePattern: /\bdo\s*\{/,
+            },
+            {
+              message: {
+                en: "Close with `} while (value <= 1000);`.",
+                sv: "Avsluta med `} while (value <= 1000);`.",
+              },
+              requirePattern: /\}\s*while\s*\(\s*value\s*<=\s*1000\s*\)\s*;/,
+            },
+          ],
+          reveal: {
+            en:
+              "let value = 50;\nlet steps = 0;\ndo {\n} while (value <= 1000);\n",
+            sv:
+              "let value = 50;\nlet steps = 0;\ndo {\n} while (value <= 1000);\n",
+          },
+        },
+        {
+          id: "double-loop-body",
+          instruction: {
+            en:
+              "Inside the do block, double `value` and count the doubling in `steps`. Note: the starterCode already has `value` over 1000 — try Check, then look at `steps`. The body runs at least once even when the condition is already false.",
+            sv:
+              "Inne i do-blocket, fördubbla `value` och räkna fördubblingen i `steps`. Obs: starterkoden har redan `value` över 1000 — testa Kontrollera och titta på `steps`. Kroppen körs minst en gång även när villkoret redan är false.",
+          },
+          starterCode: {
+            en:
+              "let value = 2000;\nlet steps = 0;\ndo {\n  // Double value, then increment steps.\n} while (value <= 1000);\n",
+            sv:
+              "let value = 2000;\nlet steps = 0;\ndo {\n  // Fördubbla value, räkna sedan upp steps.\n} while (value <= 1000);\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Double `value` (e.g. `value = value * 2` or `value *= 2`).",
+                sv: "Fördubbla `value` (t.ex. `value = value * 2` eller `value *= 2`).",
+              },
+              requirePattern: /\bvalue\s*=\s*value\s*\*\s*2\b|\bvalue\s*\*=\s*2\b/,
+            },
+            {
+              message: {
+                en: "Increment `steps` (e.g. `steps++`).",
+                sv: "Räkna upp `steps` (t.ex. `steps++`).",
+              },
+              requirePattern: /\bsteps\s*\+\+|\bsteps\s*\+=\s*1\b|\bsteps\s*=\s*steps\s*\+\s*1\b/,
+            },
+            {
+              message: {
+                en:
+                  "Even when `value` started above 1000, `steps` should be at least 1 — the do block runs once.",
+                sv:
+                  "Även när `value` började över 1000 ska `steps` vara minst 1 — do-blocket körs en gång.",
+              },
+              assert: "return steps >= 1;",
+            },
+          ],
+          reveal: {
+            en:
+              "let value = 2000;\nlet steps = 0;\ndo {\n  value = value * 2;\n  steps++;\n} while (value <= 1000);\n",
+            sv:
+              "let value = 2000;\nlet steps = 0;\ndo {\n  value = value * 2;\n  steps++;\n} while (value <= 1000);\n",
+          },
+        },
+      ],
+      legend: [
+        {
+          name: { en: "do…while", sv: "do…while" },
+          syntax: "do { ... } while (condition);",
+          example: "do { value *= 2; steps++; } while (value <= 1000);",
+          note: {
+            en: "Like while, but the body runs at least once before the condition is checked.",
+            sv: "Som while, men kroppen körs minst en gång innan villkoret kollas.",
+          },
+        },
+        {
+          name: { en: "*=", sv: "*=" },
+          syntax: "x *= y",
+          example: "value *= 2",
+          note: {
+            en: "Shorthand for `x = x * y`.",
+            sv: "Kort form för `x = x * y`.",
+          },
+        },
+      ],
+    },
+
     // L8 final lab — refill a cup. Body must run at least once (do…while);
     // counts pours of a fixed size until target is reached. Distinct from
     // the chapter's tasting/subtract-7/doubling exercises.
