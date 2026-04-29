@@ -108,23 +108,29 @@ export function SlideDeck({ courseId, lesson, tier, onExit }: Props) {
         </div>
       </header>
 
-      {/* Progress dots — fixed at top-right, under the theme + language toggles. */}
+      {/* Numbered jump buttons — sit above the slide content, right-aligned.
+          On two-pane slide layouts they line up over the right pane. */}
       <div
-        className="fixed top-16 right-4 z-40 flex flex-wrap items-center gap-1 max-w-[12rem] justify-end"
+        className="flex flex-wrap items-center justify-end gap-1.5 px-4 sm:px-10 pt-3"
         aria-label="Slide progress"
       >
         {slides.map((_, i) => (
-          <div
+          <button
             key={i}
+            onClick={() => setIdx(i)}
+            aria-label={`Go to slide ${i + 1}`}
+            aria-current={i === idx ? "step" : undefined}
             className={
-              "h-2 w-2 rounded-full transition-colors " +
+              "h-7 w-7 rounded-full text-xs font-medium transition-colors " +
               (i === idx
-                ? "bg-amber-500 dark:bg-indigo-300"
+                ? "bg-amber-500 text-white dark:bg-indigo-300 dark:text-slate-900"
                 : i < idx
-                ? "bg-amber-300 dark:bg-indigo-500/60"
-                : "bg-stone-300 dark:bg-white/20")
+                ? "bg-amber-300 text-white hover:bg-amber-400 dark:bg-indigo-500/60 dark:text-indigo-50 dark:hover:bg-indigo-500/80"
+                : "bg-stone-200 text-stone-600 hover:bg-stone-300 dark:bg-white/20 dark:text-indigo-100 dark:hover:bg-white/30")
             }
-          />
+          >
+            {i + 1}
+          </button>
         ))}
       </div>
 
