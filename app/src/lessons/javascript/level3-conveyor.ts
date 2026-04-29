@@ -566,6 +566,283 @@ export const conveyorLesson: Lesson = {
       },
     },
 
+    // Workshop tier — guided micro-steps for switch/case/break/default.
+    // Surface: HTTP status code → message. Distinct from chips (recycling
+    // bin / animal sounds) and exercise (music player button).
+    {
+      kind: "js-workshop",
+      title: { en: "Workshop: HTTP status", sv: "Verkstad: HTTP-status" },
+      prompt: {
+        en:
+          "Build a switch that turns an HTTP status number into a message.\nOne case at a time.",
+        sv:
+          "Bygg en switch som översätter ett HTTP-statusnummer till ett meddelande.\nEtt case i taget.",
+      },
+      designNote:
+        "L3 switch workshop. Surface: HTTP status code (200/404/500) → message. Distinct from chips (animal) and exercise (button/action). Variable named `statusCode` (rather than `status`) to avoid IDE strikethrough on the deprecated DOM `status` property. The threshold numbers ARE the lesson (they encode the cases) so they stay strict; message strings are free.",
+      steps: [
+        {
+          id: "http-declare-statusCode",
+          instruction: {
+            en:
+              "Use `let` to declare a variable called `statusCode` and assign it any number (an HTTP status code).",
+            sv:
+              "Använd `let` för att deklarera en variabel som heter `statusCode` och tilldela den ett tal (en HTTP-statuskod).",
+          },
+          starterCode: {
+            en: "// Declare statusCode below.\n",
+            sv: "// Deklarera statusCode nedan.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `let` to declare a variable named `statusCode`.",
+                sv: "Använd `let` för att deklarera en variabel som heter `statusCode`.",
+              },
+              requirePattern: /\blet\s+statusCode\b/,
+            },
+            {
+              message: {
+                en: "`statusCode` should hold a number.",
+                sv: "`statusCode` ska innehålla ett tal.",
+              },
+              assert: "return typeof statusCode === 'number';",
+            },
+          ],
+          reveal: {
+            en: "let statusCode = 200;\n",
+            sv: "let statusCode = 200;\n",
+          },
+        },
+        {
+          id: "http-declare-message",
+          instruction: {
+            en:
+              "Below `statusCode`, use `let` to declare `message` with no value yet — the switch's cases will set it.",
+            sv:
+              "Under `statusCode`, använd `let` för att deklarera `message` utan något värde — switchens case-grenar sätter värdet.",
+          },
+          starterCode: {
+            en: "let statusCode = 200;\n// Declare message below (no value).\n",
+            sv: "let statusCode = 200;\n// Deklarera message nedan (inget värde).\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `let` to declare a variable named `message`.",
+                sv: "Använd `let` för att deklarera en variabel som heter `message`.",
+              },
+              requirePattern: /\blet\s+message\b/,
+            },
+            {
+              message: {
+                en: "Don't assign `message` yet — the cases will set its value.",
+                sv: "Tilldela inte `message` än — case-grenarna sätter värdet.",
+              },
+              assert: "return typeof message === 'undefined';",
+            },
+          ],
+          reveal: {
+            en: "let statusCode = 200;\nlet message;\n",
+            sv: "let statusCode = 200;\nlet message;\n",
+          },
+        },
+        {
+          id: "http-switch-case-200",
+          instruction: {
+            en:
+              "Open a `switch` on `statusCode` and add the first `case` for `200`. Inside, set `message` to a string (the lesson uses `\"OK\"`). Don't forget to end the case so it doesn't fall through.",
+            sv:
+              "Öppna en `switch` på `statusCode` och lägg till första `case` för `200`. Sätt `message` till en sträng inne i grenen (lektionen använder `\"OK\"`). Glöm inte att avsluta grenen så den inte faller igenom.",
+          },
+          starterCode: {
+            en:
+              "let statusCode = 200;\nlet message;\n// Open a switch (statusCode) and add case 200.\n",
+            sv:
+              "let statusCode = 200;\nlet message;\n// Öppna en switch (statusCode) och lägg till case 200.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Open a `switch (statusCode) { ... }` block.",
+                sv: "Öppna ett `switch (statusCode) { ... }`-block.",
+              },
+              requirePattern: /\bswitch\s*\(\s*statusCode\s*\)/,
+            },
+            {
+              message: {
+                en: "Add `case 200:` inside the switch.",
+                sv: "Lägg till `case 200:` inuti switchen.",
+              },
+              requirePattern: /\bcase\s+200\s*:/,
+            },
+            {
+              message: {
+                en: "End the case with `break;`.",
+                sv: "Avsluta grenen med `break;`.",
+              },
+              requirePattern: /\bbreak\s*;/,
+            },
+            {
+              message: {
+                en: "When `statusCode` is 200, `message` should end up as a string.",
+                sv: "När `statusCode` är 200 ska `message` bli en sträng.",
+              },
+              assert: "return typeof message === 'string';",
+            },
+          ],
+          reveal: {
+            en:
+              'let statusCode = 200;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n}\n',
+            sv:
+              'let statusCode = 200;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n}\n',
+          },
+        },
+        {
+          id: "http-add-case-404",
+          instruction: {
+            en:
+              "Add another `case` for `404`. Set `message` to a string (the lesson uses `\"Not Found\"`). End the case so it doesn't fall through.",
+            sv:
+              "Lägg till en `case` för `404`. Sätt `message` till en sträng (lektionen använder `\"Not Found\"`). Avsluta grenen så den inte faller igenom.",
+          },
+          starterCode: {
+            en:
+              'let statusCode = 404;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  // Add a case for 404.\n}\n',
+            sv:
+              'let statusCode = 404;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  // Lägg till en case för 404.\n}\n',
+          },
+          checks: [
+            {
+              message: {
+                en: "Add `case 404:` inside the switch.",
+                sv: "Lägg till `case 404:` inuti switchen.",
+              },
+              requirePattern: /\bcase\s+404\s*:/,
+            },
+            {
+              message: {
+                en: "When `statusCode` is 404, `message` should end up as a string.",
+                sv: "När `statusCode` är 404 ska `message` bli en sträng.",
+              },
+              assert: "return typeof message === 'string';",
+            },
+          ],
+          reveal: {
+            en:
+              'let statusCode = 404;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n}\n',
+            sv:
+              'let statusCode = 404;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n}\n',
+          },
+        },
+        {
+          id: "http-add-case-500",
+          instruction: {
+            en:
+              "Add another `case` for `500`. Set `message` to a string (the lesson uses `\"Server Error\"`).",
+            sv:
+              "Lägg till en `case` för `500`. Sätt `message` till en sträng (lektionen använder `\"Server Error\"`).",
+          },
+          starterCode: {
+            en:
+              'let statusCode = 500;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  // Add a case for 500.\n}\n',
+            sv:
+              'let statusCode = 500;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  // Lägg till en case för 500.\n}\n',
+          },
+          checks: [
+            {
+              message: {
+                en: "Add `case 500:` inside the switch.",
+                sv: "Lägg till `case 500:` inuti switchen.",
+              },
+              requirePattern: /\bcase\s+500\s*:/,
+            },
+            {
+              message: {
+                en: "When `statusCode` is 500, `message` should end up as a string.",
+                sv: "När `statusCode` är 500 ska `message` bli en sträng.",
+              },
+              assert: "return typeof message === 'string';",
+            },
+          ],
+          reveal: {
+            en:
+              'let statusCode = 500;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  case 500:\n    message = "Server Error";\n    break;\n}\n',
+            sv:
+              'let statusCode = 500;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  case 500:\n    message = "Server Error";\n    break;\n}\n',
+          },
+        },
+        {
+          id: "http-add-default",
+          instruction: {
+            en:
+              "Add a `default:` clause that sets `message` to a string for unknown statusCode codes (the lesson uses `\"Unknown\"`). The default runs when no case matches.",
+            sv:
+              "Lägg till en `default:`-klausul som sätter `message` till en sträng för okända statuskoder (lektionen använder `\"Unknown\"`). default körs när inget case matchar.",
+          },
+          starterCode: {
+            en:
+              'let statusCode = 418;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  case 500:\n    message = "Server Error";\n    break;\n  // Add a default clause.\n}\n',
+            sv:
+              'let statusCode = 418;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  case 500:\n    message = "Server Error";\n    break;\n  // Lägg till en default-klausul.\n}\n',
+          },
+          checks: [
+            {
+              message: {
+                en: "Add `default:` inside the switch.",
+                sv: "Lägg till `default:` inuti switchen.",
+              },
+              requirePattern: /\bdefault\s*:/,
+            },
+            {
+              message: {
+                en:
+                  "When `statusCode` is 418 (no case matches), `message` should end up as a string from the default.",
+                sv:
+                  "När `statusCode` är 418 (inget case matchar) ska `message` bli en sträng från default.",
+              },
+              assert: "return typeof message === 'string';",
+            },
+          ],
+          reveal: {
+            en:
+              'let statusCode = 418;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  case 500:\n    message = "Server Error";\n    break;\n  default:\n    message = "Unknown";\n}\n',
+            sv:
+              'let statusCode = 418;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  case 500:\n    message = "Server Error";\n    break;\n  default:\n    message = "Unknown";\n}\n',
+          },
+        },
+      ],
+      legend: [
+        {
+          name: { en: "switch", sv: "switch" },
+          syntax: "switch (value) { ... }",
+          example: "switch (statusCode) { ... }",
+          note: {
+            en: "Picks one branch based on a value.",
+            sv: "Väljer en gren baserat på ett värde.",
+          },
+        },
+        {
+          name: { en: "case", sv: "case" },
+          syntax: "case constant: ... break;",
+          example: 'case 200: message = "OK"; break;',
+          note: {
+            en: "Runs when the switch's value strictly equals the constant.",
+            sv: "Körs när switchens värde är strikt lika med konstanten.",
+          },
+        },
+        {
+          name: { en: "default", sv: "default" },
+          syntax: "default: ...",
+          example: 'default: message = "Unknown";',
+          note: {
+            en: "Runs when no case matched.",
+            sv: "Körs när inget case matchade.",
+          },
+        },
+      ],
+    },
+
     // L3 final lab — music player button. Uses switch with five named cases
     // plus default. Distinct from the recycling/animal-sounds themes used
     // in this chapter.

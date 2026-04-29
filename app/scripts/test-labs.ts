@@ -1,9 +1,15 @@
 /**
- * Headless test harness for the Monaco lab exercises.
+ * Headless test harness for Monaco lab exercises AND Workshop tiers.
  *
- * Mimics the iframe runner: sets up a vm context with a console capture and
- * window.__userSrc, evals a known-good student solution, then runs every
- * assertion exactly as the iframe would. Reports per-test pass/fail per lab.
+ * Two sections:
+ *   1. Exercise-tier labs — mimics the iframe runner: sets up a vm context with
+ *      a console capture and window.__userSrc, evals a known-good student
+ *      solution, then runs every assertion exactly as the iframe would.
+ *      Each lab needs an entry in `SOLUTIONS` (manually maintained).
+ *   2. Workshop-tier reveals — walks every js-workshop slide in every lesson,
+ *      runs each step's authored `reveal` through runWorkshopChecks (the same
+ *      function the React layer calls), and reports per-step pass/fail.
+ *      No separate solutions array — the reveal IS the canonical solution.
  *
  * Run with: npx tsx scripts/test-labs.ts
  */
@@ -17,7 +23,16 @@ import { stairsLesson } from "../src/lessons/javascript/level5-stairs";
 import { lettersLesson } from "../src/lessons/javascript/level6-letters";
 import { countdownLesson } from "../src/lessons/javascript/level7-countdown";
 import { tastingLesson } from "../src/lessons/javascript/level8-tasting";
-import type { ExerciseSlide, Lesson } from "../src/types";
+import {
+  runWorkshopChecks,
+  stripJsComments,
+} from "../src/runtime/workshopRunner";
+import type {
+  ExerciseSlide,
+  JsWorkshopSlide,
+  Lesson,
+  WorkshopCheck,
+} from "../src/types";
 
 type LabCase = {
   lessonId: string;
@@ -327,13 +342,80 @@ for (const lab of SOLUTIONS) {
 }
 
 console.log(
-  `\n━━━ summary: ${totalPass}/${totalTests} tests passing across ${SOLUTIONS.length} labs ━━━`
+  `\n━━━ exercise summary: ${totalPass}/${totalTests} tests passing across ${SOLUTIONS.length} labs ━━━`
 );
 if (labFailures > 0) {
   console.log(`  ✗ ${labFailures} lab(s) had failures`);
   process.exit(1);
 }
 console.log("  ✓ all labs green");
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Workshop tier — walk every js-workshop slide and verify each step's reveal.
+//
+// No SOLUTIONS array needed: the canonical solution per step is the authored
+// `reveal` field on the WorkshopStep, which the next step's starterCode also
+// builds on. We import the same runWorkshopChecks the React layer calls — no
+// vm/iframe simulation needed because the runner is in-process by design.
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+let workshopChecksTotal = 0;
+let workshopChecksPass = 0;
+let workshopStepFailures = 0;
+let workshopSlideCount = 0;
+
+for (const lesson of LESSONS) {
+  const workshops = lesson.slides.filter(
+    (s): s is JsWorkshopSlide => s.kind === "js-workshop"
+  );
+  for (const workshop of workshops) {
+    workshopSlideCount++;
+    const title =
+      typeof workshop.title === "string" ? workshop.title : workshop.title.en;
+    console.log(`\n━━━ ${lesson.id} — ${title} (workshop) ━━━`);
+
+    for (const step of workshop.steps) {
+      if (!step.reveal) {
+        console.log(`  ⚠ ${step.id} — no reveal authored (skipping)`);
+        continue;
+      }
+      const code =
+        typeof step.reveal === "string" ? step.reveal : step.reveal.en;
+      const results = runWorkshopChecks(code, step.checks);
+      workshopChecksTotal += results.length;
+      workshopChecksPass += results.filter((r) => r.pass).length;
+
+      if (results.every((r) => r.pass)) {
+        console.log(`  ✓ ${step.id} (${results.length} checks)`);
+      } else {
+        console.log(`  ✗ ${step.id}`);
+        results.forEach((r, i) => {
+          if (r.pass) return;
+          const check = step.checks[i];
+          const msg =
+            typeof check.message === "string"
+              ? check.message
+              : check.message.en;
+          const kind = "kind" in r ? r.kind : "?";
+          const err = "error" in r ? ` (${r.error})` : "";
+          console.log(`     ${i}: [${kind}] ${msg}${err}`);
+        });
+        workshopStepFailures++;
+      }
+    }
+  }
+}
+
+if (workshopSlideCount > 0) {
+  console.log(
+    `\n━━━ workshop summary: ${workshopChecksPass}/${workshopChecksTotal} checks passing across ${workshopSlideCount} workshop slide(s) ━━━`
+  );
+  if (workshopStepFailures > 0) {
+    console.log(`  ✗ ${workshopStepFailures} step(s) had failures`);
+    process.exit(1);
+  }
+  console.log("  ✓ all workshop reveals green");
+}
 
 // --------------- loop-guard smoke test ---------------
 //
@@ -374,6 +456,79 @@ console.log("\n━━━ loop guard smoke test ━━━");
     process.exit(1);
   } else {
     console.log(`  ✗ guard fired but took ${ms}ms — too slow`);
+    process.exit(1);
+  }
+}
+
+// --------------- workshop runner smoke test ---------------
+//
+// Verifies invariants of runWorkshopChecks against fixed fixtures, independent
+// of any lesson content. If the runner's behavior regresses (comment-stripping,
+// lexical scope visibility from the assert IIFE, error capture), a per-lesson
+// reveal might still pass while the runner is silently broken. These guard the
+// runner itself.
+console.log("\n━━━ workshop runner smoke test ━━━");
+{
+  const TRIVIAL_MSG = { en: "", sv: "" };
+  type SmokeCase = {
+    label: string;
+    src: string;
+    checks: WorkshopCheck[];
+    expectAllPass: boolean;
+  };
+  const cases: SmokeCase[] = [
+    {
+      label: "comment-stripping defense — commented match doesn't satisfy",
+      src: "// let lux = 5;\nconst x = 1;\n",
+      checks: [{ message: TRIVIAL_MSG, requirePattern: /\blet\s+lux\b/ }],
+      expectAllPass: false,
+    },
+    {
+      label: "lexical scope — assert reads user `let` binding",
+      src: "let lux = 42;\n",
+      checks: [{ message: TRIVIAL_MSG, assert: "return lux === 42;" }],
+      expectAllPass: true,
+    },
+    {
+      label: "syntax error in user code surfaces as error result, not crash",
+      src: "let lux = ;\n",
+      checks: [{ message: TRIVIAL_MSG, assert: "return true;" }],
+      expectAllPass: false,
+    },
+    {
+      label: "hybrid — pattern AND assert both required",
+      src: "let lux = 5;\n",
+      checks: [
+        {
+          message: TRIVIAL_MSG,
+          requirePattern: /\bconst\b/,
+          assert: "return typeof lux === 'number';",
+        },
+      ],
+      expectAllPass: false,
+    },
+  ];
+
+  let smokeFailures = 0;
+  for (const c of cases) {
+    const results = runWorkshopChecks(c.src, c.checks);
+    const allPass = results.every((r) => r.pass);
+    const ok = allPass === c.expectAllPass;
+    console.log(`  ${ok ? "✓" : "✗"} ${c.label}`);
+    if (!ok) smokeFailures++;
+  }
+
+  // stripJsComments — direct test
+  const stripped = stripJsComments(
+    "let x = 1; // for loop later\n/* let y */ let z = 3;"
+  );
+  const strippedOk =
+    !stripped.includes("for loop") && !stripped.includes("let y");
+  console.log(`  ${strippedOk ? "✓" : "✗"} stripJsComments removes line and block comments`);
+  if (!strippedOk) smokeFailures++;
+
+  if (smokeFailures > 0) {
+    console.log(`  ✗ ${smokeFailures} runner invariant(s) broken`);
     process.exit(1);
   }
 }

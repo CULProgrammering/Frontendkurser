@@ -15,6 +15,8 @@ export function tierForSlide(slide: Slide): Tier {
       return "explanation";
     case "exercise":
       return "exercise";
+    case "js-workshop":
+      return "workshop";
     case "js-chip-assignment":
     case "js-typed-assignment":
     case "js-assignment":
@@ -24,7 +26,6 @@ export function tierForSlide(slide: Slide): Tier {
 }
 
 export function slidesForTier(lesson: Lesson, tier: Tier): Slide[] {
-  if (tier === "workshop") return [];
   return lesson.slides.filter((s) => tierForSlide(s) === tier);
 }
 

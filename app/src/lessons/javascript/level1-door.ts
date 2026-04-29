@@ -934,6 +934,205 @@ export const doorLesson: Lesson = {
       },
     },
 
+    // Workshop tier — guided micro-steps for if / else (2 branches).
+    // Surface: password length → verdict. Distinct from chips (signal) and
+    // exercise (fortune1-3 / n / selected). String values are NOT pinned —
+    // checks accept any string, leaving the student free to label creatively.
+    {
+      kind: "js-workshop",
+      title: { en: "Workshop: password check", sv: "Verkstad: lösenordskoll" },
+      prompt: {
+        en:
+          "Build a password-length check step by step.\nA short password is rejected, otherwise it's accepted.",
+        sv:
+          "Bygg en längdkontroll för lösenord steg för steg.\nKort lösenord avvisas, annars godkänns det.",
+      },
+      designNote:
+        "L1 if/else workshop. Surface chosen to differ from chips (signal) and exercise (fortune picker). Five steps build a 2-branch chain. String labels are free (typeof check); the lesson is the if/else shape and the .length comparison.",
+      steps: [
+        {
+          id: "pwd-declare-password",
+          instruction: {
+            en:
+              "Use `let` to declare a variable called `password` and assign it any string.",
+            sv:
+              "Använd `let` för att deklarera en variabel som heter `password` och tilldela den en sträng.",
+          },
+          starterCode: {
+            en: "// Declare password below.\n",
+            sv: "// Deklarera password nedan.\n",
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `let` to declare a variable named `password`.",
+                sv: "Använd `let` för att deklarera en variabel som heter `password`.",
+              },
+              requirePattern: /\blet\s+password\b/,
+            },
+            {
+              message: {
+                en: "`password` should hold a string.",
+                sv: "`password` ska innehålla en sträng.",
+              },
+              assert: "return typeof password === 'string';",
+            },
+          ],
+          reveal: {
+            en: 'let password = "hunter2";\n',
+            sv: 'let password = "hunter2";\n',
+          },
+        },
+        {
+          id: "pwd-declare-verdict",
+          instruction: {
+            en:
+              "Below `password`, use `let` to declare `verdict` with no value yet — the if-branches will set it.",
+            sv:
+              "Under `password`, använd `let` för att deklarera `verdict` utan något värde — if-grenarna sätter värdet.",
+          },
+          starterCode: {
+            en:
+              'let password = "hunter2";\n// Declare verdict below (no value).\n',
+            sv:
+              'let password = "hunter2";\n// Deklarera verdict nedan (inget värde).\n',
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `let` to declare a variable named `verdict`.",
+                sv: "Använd `let` för att deklarera en variabel som heter `verdict`.",
+              },
+              requirePattern: /\blet\s+verdict\b/,
+            },
+            {
+              message: {
+                en:
+                  "Don't assign `verdict` yet — the if-branches will set its value.",
+                sv:
+                  "Tilldela inte `verdict` än — if-grenarna sätter värdet.",
+              },
+              assert: "return typeof verdict === 'undefined';",
+            },
+          ],
+          reveal: {
+            en: 'let password = "hunter2";\nlet verdict;\n',
+            sv: 'let password = "hunter2";\nlet verdict;\n',
+          },
+        },
+        {
+          id: "pwd-if-too-short",
+          instruction: {
+            en:
+              "Add an `if` that runs when the password is too short — fewer than 8 characters. Inside, set `verdict` to a string (the lesson uses `\"too short\"`).",
+            sv:
+              "Lägg till en `if` som körs när lösenordet är för kort — färre än 8 tecken. Sätt `verdict` till en sträng inne i grenen (lektionen använder `\"too short\"`).",
+          },
+          starterCode: {
+            en:
+              'let password = "abc";\nlet verdict;\n// Add an if that sets verdict to a string when password.length < 8.\n',
+            sv:
+              'let password = "abc";\nlet verdict;\n// Lägg till en if som sätter verdict till en sträng när password.length < 8.\n',
+          },
+          checks: [
+            {
+              message: {
+                en: "Use `if` to start the branch.",
+                sv: "Använd `if` för att börja grenen.",
+              },
+              requirePattern: /\bif\s*\(/,
+            },
+            {
+              message: {
+                en: "Compare `password.length` to `8` with `<`.",
+                sv: "Jämför `password.length` med `8` med hjälp av `<`.",
+              },
+              requirePattern: /password\.length\s*<\s*8\b/,
+            },
+            {
+              message: {
+                en: "Inside the branch, set `verdict` to a string.",
+                sv: "Inne i grenen, sätt `verdict` till en sträng.",
+              },
+              assert: "return typeof verdict === 'string';",
+            },
+          ],
+          reveal: {
+            en:
+              'let password = "abc";\nlet verdict;\nif (password.length < 8) {\n  verdict = "too short";\n}\n',
+            sv:
+              'let password = "abc";\nlet verdict;\nif (password.length < 8) {\n  verdict = "too short";\n}\n',
+          },
+        },
+        {
+          id: "pwd-else-ok",
+          instruction: {
+            en:
+              "Add an `else` for the accepted case — when the password isn't too short. The else runs when the if's condition was false. The lesson uses `\"OK\"` for the accepted string.",
+            sv:
+              "Lägg till en `else` för det godkända fallet — när lösenordet inte är för kort. else körs när if-villkoret var false. Lektionen använder `\"OK\"` för den godkända strängen.",
+          },
+          starterCode: {
+            en:
+              'let password = "longenough";\nlet verdict;\nif (password.length < 8) {\n  verdict = "too short";\n}\n// Add an else (no condition) that sets verdict to a string.\n',
+            sv:
+              'let password = "longenough";\nlet verdict;\nif (password.length < 8) {\n  verdict = "too short";\n}\n// Lägg till ett else (utan villkor) som sätter verdict till en sträng.\n',
+          },
+          checks: [
+            {
+              message: {
+                en: "Add a bare `else { ... }` (no `if` after `else`).",
+                sv: "Lägg till ett rent `else { ... }` (inget `if` efter `else`).",
+              },
+              requirePattern: /\belse\s*\{/,
+            },
+            {
+              message: {
+                en: "Inside the else, set `verdict` to a string.",
+                sv: "Inne i else, sätt `verdict` till en sträng.",
+              },
+              assert: "return typeof verdict === 'string';",
+            },
+          ],
+          reveal: {
+            en:
+              'let password = "longenough";\nlet verdict;\nif (password.length < 8) {\n  verdict = "too short";\n} else {\n  verdict = "OK";\n}\n',
+            sv:
+              'let password = "longenough";\nlet verdict;\nif (password.length < 8) {\n  verdict = "too short";\n} else {\n  verdict = "OK";\n}\n',
+          },
+        },
+      ],
+      legend: [
+        {
+          name: { en: "if", sv: "if" },
+          syntax: "if (condition) { ... }",
+          example: "if (password.length < 8) { ... }",
+          note: {
+            en: "Runs when its condition is true.",
+            sv: "Körs när villkoret är true.",
+          },
+        },
+        {
+          name: { en: "else", sv: "else" },
+          syntax: "} else { ... }",
+          example: '} else { verdict = "OK"; }',
+          note: {
+            en: "Runs when the if's condition was false.",
+            sv: "Körs när if-villkoret var false.",
+          },
+        },
+        {
+          name: { en: ".length", sv: ".length" },
+          syntax: "string.length",
+          example: 'password.length',
+          note: {
+            en: "How many characters are in the string.",
+            sv: "Hur många tecken strängen har.",
+          },
+        },
+      ],
+    },
+
     // Final lab — a freeform Monaco exercise. JS-only, console-based: no
     // functions and no DOM (those concepts haven't been introduced yet). The
     // student declares variables, picks a number, and uses three separate

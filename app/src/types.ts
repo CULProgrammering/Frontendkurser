@@ -315,6 +315,58 @@ export type JsTypedAssignmentSlide = {
 };
 
 /**
+ * One step inside a Workshop slide. The student sees `instruction`, edits
+ * `starterCode` in Monaco, and clicks Check. Each `check` is hybrid:
+ *
+ * - `requirePattern`: a regex run against the student's source. Use for
+ *   STRUCTURAL gates ("did they use `let`?", "is there a comparison
+ *   operator?"). Whitespace-tolerant by default; comments are stripped before
+ *   matching.
+ * - `assert`: a JS expression / statement-list run in the iframe sandbox.
+ *   The body should `return <bool>`. Use for BEHAVIORAL gates ("does the
+ *   variable hold the right value?"). Only author this when the value is
+ *   what the step is teaching — otherwise leave it off and accept any value
+ *   the student chose.
+ *
+ * The `message` doubles as the failure hint (fCC pattern). On failure, the
+ * student sees the first failed check's message — no separate hint store.
+ *
+ * Workshop uses the RESET model: the editor is reseeded with `starterCode`
+ * when the student moves to a new step. `reveal`, when present, is the
+ * canonical solution for this step and should equal the next step's
+ * `starterCode` (authored, not computed).
+ */
+export type WorkshopCheck = {
+  message: Loc;
+  requirePattern?: RegExp;
+  assert?: string;
+};
+
+export type WorkshopStep = {
+  /** Stable id for keying React state and progress tracking. */
+  id: string;
+  /** Second-person imperative; 1–4 sentences. Name the keyword. */
+  instruction: Loc;
+  /** Full pre-state code at the start of THIS step. RESET model — never carries over from prior step. */
+  starterCode: Loc;
+  /** Hybrid checks, ≥1 per step. Pattern only is OK for "type this token" steps. */
+  checks: WorkshopCheck[];
+  /** Canonical solution after this step. Should equal next step's starterCode. */
+  reveal?: Loc;
+};
+
+export type JsWorkshopSlide = {
+  kind: "js-workshop";
+  title: Loc;
+  /** Workshop-level intro shown above the editor on every step. */
+  prompt: Loc;
+  steps: WorkshopStep[];
+  legend?: LegendEntry[];
+  /** Author-only design note (Exercism design.md equivalent). Not rendered. */
+  designNote?: string;
+};
+
+/**
  * One assertion in a freeform exercise. The `assert` string is treated as the
  * BODY of a function executed inside the iframe's window. Use `return <expr>`
  * to yield a boolean — truthy = pass, falsy or thrown = fail. Multiple
@@ -354,6 +406,7 @@ export type Slide =
   | JsAssignmentSlide
   | JsChipAssignmentSlide
   | JsTypedAssignmentSlide
+  | JsWorkshopSlide
   | ExerciseSlide;
 
 export type Lesson = {

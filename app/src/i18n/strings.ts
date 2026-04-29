@@ -102,6 +102,30 @@ export const ui = {
     sv: "(ingen utskrift än — tryck Kör)",
   },
 
+  // JsWorkshopSlideView
+  workshopStepLabel: { en: "Step", sv: "Steg" },
+  workshopRestartStep: { en: "Restart step", sv: "Börja om steget" },
+  workshopCheckHint: {
+    en: "Press Check when you're ready.",
+    sv: "Tryck Kontrollera när du är redo.",
+  },
+  workshopCheckShortcut: {
+    en: "Check (Ctrl/Cmd+Enter)",
+    sv: "Kontrollera (Ctrl/Cmd+Enter)",
+  },
+  workshopStepPass: {
+    en: "✓ Step done.",
+    sv: "✓ Steget klart.",
+  },
+  workshopStepPassAdvancing: {
+    en: "✓ Step done — moving on.",
+    sv: "✓ Steget klart — vi går vidare.",
+  },
+  workshopAllStepsPass: {
+    en: "✓ Workshop complete. Nice work.",
+    sv: "✓ Verkstaden klar. Bra jobbat.",
+  },
+
   // ThemeToggle / LanguageToggle
   toLight: { en: "Light mode", sv: "Ljust läge" },
   toDark: { en: "Dark mode", sv: "Mörkt läge" },
