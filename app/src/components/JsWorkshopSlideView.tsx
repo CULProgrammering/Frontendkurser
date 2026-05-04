@@ -10,7 +10,9 @@ import { t } from "../i18n";
 import type { Lang } from "../i18n";
 import { ui } from "../i18n/strings";
 import { sessionGet, sessionSet } from "../storage";
-import { useSlideFontSize } from "./SlideFontSize";
+import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
+import { ThemeToggleInline } from "./ThemeToggle";
+import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
 
 const AUTO_ADVANCE_MS = 1200;
 
@@ -96,6 +98,8 @@ function prepareSeed(starterCode: string): {
 type Props = {
   slide: JsWorkshopSlide;
   storageKey: string;
+  breadcrumb?: BreadcrumbSegment[];
+  slideJumpDots?: React.ReactNode;
   onPass?: () => void;
 };
 
@@ -111,7 +115,7 @@ type Props = {
  * Check / Restart-step buttons in a row above the editor (right-aligned over
  * the editor column).
  */
-export function JsWorkshopSlideView({ slide, storageKey, onPass }: Props) {
+export function JsWorkshopSlideView({ slide, storageKey, breadcrumb, slideJumpDots, onPass }: Props) {
   const { lang } = useLang();
   const [stepIdx, setStepIdx] = useState(0);
   const [completed, setCompleted] = useState<Set<number>>(() => new Set());
@@ -173,7 +177,7 @@ export function JsWorkshopSlideView({ slide, storageKey, onPass }: Props) {
   };
 
   return (
-    <div className="h-full w-full flex flex-col p-4 sm:p-5">
+    <div className="h-full w-full flex flex-col p-4 sm:p-5 max-w-7xl mx-auto">
       <div className="flex-1 min-h-0">
         <WorkshopStepView
           key={step.id}
@@ -185,6 +189,8 @@ export function JsWorkshopSlideView({ slide, storageKey, onPass }: Props) {
           onJump={goToStep}
           storageKey={`${storageKey}:step:${step.id}`}
           lang={lang}
+          breadcrumb={breadcrumb}
+          slideJumpDots={slideJumpDots}
           onPass={handleStepPass}
         />
       </div>
@@ -246,6 +252,8 @@ function WorkshopStepView({
   onJump,
   storageKey,
   lang,
+  breadcrumb,
+  slideJumpDots,
   onPass,
 }: {
   slide: JsWorkshopSlide;
@@ -256,6 +264,8 @@ function WorkshopStepView({
   onJump: (i: number) => void;
   storageKey: string;
   lang: Lang;
+  breadcrumb?: BreadcrumbSegment[];
+  slideJumpDots?: React.ReactNode;
   onPass: () => void;
 }) {
   const { codePx, prosePx } = useSlideFontSize();
@@ -427,15 +437,22 @@ function WorkshopStepView({
                    dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none"
       >
         <div className="px-5 pt-5 pb-4 border-b border-stone-200 dark:border-white/10">
-          <h2 className="text-xl sm:text-2xl font-semibold text-stone-900 dark:text-indigo-50">
-            {t(slide.title, lang)}
-          </h2>
-          <p
-            className="text-stone-600 dark:text-indigo-200/80 mt-1 whitespace-pre-line"
-            style={{ fontSize: `${prosePx}px` }}
-          >
-            {t(slide.prompt, lang)}
-          </p>
+          <SlideTitleRow breadcrumb={breadcrumb}>
+            <h2 className="text-xl sm:text-2xl font-semibold text-stone-900 dark:text-indigo-50">
+              {t(slide.title, lang)}
+            </h2>
+            <SlideFontSizeControl />
+            <ThemeToggleInline />
+          </SlideTitleRow>
+          <div className="flex items-end justify-between gap-4 mt-2">
+            <p
+              className="text-stone-600 dark:text-indigo-200/80 whitespace-pre-line flex-1 min-w-0"
+              style={{ fontSize: `${prosePx}px` }}
+            >
+              {t(slide.prompt, lang)}
+            </p>
+            {slideJumpDots}
+          </div>
         </div>
 
         <div className="px-5 py-4 border-b border-stone-200 dark:border-white/10">

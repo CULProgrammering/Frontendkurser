@@ -5,6 +5,7 @@ import type { LocalizedString } from ".";
 
 export const ui = {
   appTitle: { en: "CUL Programmering", sv: "CUL Programmering" },
+  home: { en: "Home", sv: "Hem" },
   pickerSubtitle: {
     en: "Pick a lesson to begin.",
     sv: "Välj en lektion för att börja.",

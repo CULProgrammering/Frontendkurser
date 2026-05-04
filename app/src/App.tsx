@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import { COURSES } from "./lessons";
-import { SlideDeck } from "./components/SlideDeck";
+import { SlideDeck, Breadcrumb, type BreadcrumbSegment } from "./components/SlideDeck";
 import { LessonTierMenu } from "./components/LessonTierMenu";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { LanguageToggle } from "./components/LanguageToggle";
@@ -12,6 +12,13 @@ import type { Tier } from "./tiers";
 import { useLang } from "./i18n/LanguageContext";
 import { t } from "./i18n";
 import { ui } from "./i18n/strings";
+
+const TIER_LABEL: Record<Tier, typeof ui.tierExplanation> = {
+  explanation: ui.tierExplanation,
+  chips: ui.tierChips,
+  workshop: ui.tierWorkshop,
+  exercise: ui.tierExercise,
+};
 
 type View =
   | { kind: "home" }
@@ -39,13 +46,31 @@ function App() {
   const { lang } = useLang();
 
   if (view.kind === "lesson") {
+    const lessonView = view;
+    const breadcrumb: BreadcrumbSegment[] = [
+      { label: t(ui.home, lang), onNavigate: () => setView({ kind: "home" }) },
+      ...(lessonView.topic
+        ? [
+            {
+              label: t(lessonView.topic.title, lang),
+              onNavigate: () =>
+                setView({
+                  kind: "topic",
+                  course: lessonView.course,
+                  topic: lessonView.topic!,
+                }),
+            },
+          ]
+        : []),
+      { label: t(lessonView.lesson.title, lang) },
+    ];
     return (
       <>
-        <ThemeToggle />
         <LanguageToggle />
         <SlideDeck
           courseId={view.course.id}
           lesson={view.lesson}
+          breadcrumb={breadcrumb}
           onExit={() => {
             if (view.topic) {
               setView({ kind: "topic", course: view.course, topic: view.topic });
@@ -60,14 +85,42 @@ function App() {
   }
 
   if (view.kind === "tier-deck") {
+    const tierDeckView = view;
+    const breadcrumb: BreadcrumbSegment[] = [
+      { label: t(ui.home, lang), onNavigate: () => setView({ kind: "home" }) },
+      ...(tierDeckView.topic
+        ? [
+            {
+              label: t(tierDeckView.topic.title, lang),
+              onNavigate: () =>
+                setView({
+                  kind: "topic",
+                  course: tierDeckView.course,
+                  topic: tierDeckView.topic!,
+                }),
+            },
+          ]
+        : []),
+      {
+        label: t(tierDeckView.lesson.title, lang),
+        onNavigate: () =>
+          setView({
+            kind: "tier-menu",
+            course: tierDeckView.course,
+            lesson: tierDeckView.lesson,
+            topic: tierDeckView.topic,
+          }),
+      },
+      { label: t(TIER_LABEL[tierDeckView.tier], lang) },
+    ];
     return (
       <>
-        <ThemeToggle />
         <LanguageToggle />
         <SlideDeck
           courseId={view.course.id}
           lesson={view.lesson}
           tier={view.tier}
+          breadcrumb={breadcrumb}
           onExit={() => {
             setView({
               kind: "tier-menu",
@@ -83,6 +136,24 @@ function App() {
   }
 
   if (view.kind === "tier-menu") {
+    const tierMenuView = view;
+    const breadcrumb: BreadcrumbSegment[] = [
+      { label: t(ui.home, lang), onNavigate: () => setView({ kind: "home" }) },
+      ...(tierMenuView.topic
+        ? [
+            {
+              label: t(tierMenuView.topic.title, lang),
+              onNavigate: () =>
+                setView({
+                  kind: "topic",
+                  course: tierMenuView.course,
+                  topic: tierMenuView.topic!,
+                }),
+            },
+          ]
+        : []),
+      { label: t(tierMenuView.lesson.title, lang) },
+    ];
     return (
       <>
         <ThemeToggle />
@@ -90,6 +161,7 @@ function App() {
         <LessonTierMenu
           courseId={view.course.id}
           lesson={view.lesson}
+          breadcrumb={breadcrumb}
           onPick={(tier) =>
             setView({
               kind: "tier-deck",
@@ -113,20 +185,19 @@ function App() {
   }
 
   if (view.kind === "topic") {
+    const topicBreadcrumb: BreadcrumbSegment[] = [
+      { label: t(ui.home, lang), onNavigate: () => setView({ kind: "home" }) },
+      { label: t(view.topic.title, lang) },
+    ];
     return (
       <>
         <ThemeToggle />
         <LanguageToggle />
         <div className="min-h-full p-4 sm:p-10">
           <div className="max-w-4xl mx-auto">
-            <button
-              onClick={() => setView({ kind: "home" })}
-              className="text-sm mb-4
-                         text-stone-500 hover:text-stone-800
-                         dark:text-indigo-200/60 dark:hover:text-indigo-100"
-            >
-              ← {t(view.course.title, lang)}
-            </button>
+            <div className="mb-4">
+              <Breadcrumb segments={topicBreadcrumb} />
+            </div>
             <h1 className="text-2xl sm:text-4xl font-semibold text-stone-900 dark:text-indigo-50">
               {t(view.topic.title, lang)}
             </h1>

@@ -20,18 +20,15 @@ export function useTheme() {
   return { theme, setTheme };
 }
 
-export function ThemeToggle() {
+function ThemeButton({ className }: { className: string }) {
   const { theme, setTheme } = useTheme();
   const isDark = theme === "dark";
-
   return (
     <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label={isDark ? "Byt till ljust läge" : "Byt till mörkt läge"}
       title={isDark ? "Ljust läge" : "Mörkt läge"}
-      className="fixed top-3 right-3 z-50 w-9 h-9 rounded-full flex items-center justify-center
-                 bg-white/90 hover:bg-white text-stone-700 shadow-sm ring-1 ring-stone-200
-                 dark:bg-slate-800/90 dark:hover:bg-slate-700 dark:text-indigo-100 dark:ring-white/10"
+      className={className}
     >
       {isDark ? (
         <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor" aria-hidden>
@@ -43,5 +40,25 @@ export function ThemeToggle() {
         </svg>
       )}
     </button>
+  );
+}
+
+export function ThemeToggle() {
+  return (
+    <ThemeButton
+      className="fixed top-3 right-3 z-50 w-9 h-9 rounded-full flex items-center justify-center
+                 bg-white/90 hover:bg-white text-stone-700 shadow-sm ring-1 ring-stone-200
+                 dark:bg-slate-800/90 dark:hover:bg-slate-700 dark:text-indigo-100 dark:ring-white/10"
+    />
+  );
+}
+
+export function ThemeToggleInline() {
+  return (
+    <ThemeButton
+      className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors
+                 bg-white text-stone-700 ring-1 ring-stone-200 hover:bg-stone-100
+                 dark:bg-slate-900/60 dark:text-indigo-100 dark:ring-white/10 dark:hover:bg-slate-800"
+    />
   );
 }

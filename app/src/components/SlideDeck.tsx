@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, Fragment } from "react";
 import type { Lesson } from "../types";
 import { ExplanationSlideView } from "./ExplanationSlideView";
 import { AssignmentSlideView } from "./AssignmentSlideView";
@@ -12,17 +12,26 @@ import { slidesForTier, type Tier } from "../tiers";
 import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
-import { SlideFontSizeControl } from "./SlideFontSize";
+
+export type BreadcrumbSegment = {
+  label: string;
+  onNavigate?: () => void;
+};
 
 type Props = {
   courseId: string;
   lesson: Lesson;
   /** When provided, the deck shows only that tier's slides. */
   tier?: Tier;
+  /**
+   * Multi-segment breadcrumb forwarded to each slide view, which renders
+   * it just above its title.
+   */
+  breadcrumb?: BreadcrumbSegment[];
   onExit: () => void;
 };
 
-export function SlideDeck({ courseId, lesson, tier, onExit }: Props) {
+export function SlideDeck({ courseId, lesson, tier, breadcrumb, onExit }: Props) {
   const [idx, setIdx] = useState(0);
   const { lang } = useLang();
 
@@ -67,21 +76,15 @@ export function SlideDeck({ courseId, lesson, tier, onExit }: Props) {
     ? () => markTierComplete(courseId, lesson.id, tier)
     : undefined;
 
-  // Empty tier — show a placeholder with just a back button.
+  // Empty tier — show breadcrumb-as-fallback on its own.
   if (total === 0) {
     return (
       <div className="h-full flex flex-col bg-[#faf7f2] dark:bg-slate-950">
-        <header className="flex items-center gap-3 px-4 sm:px-6 py-3 border-b border-stone-200 dark:border-white/10">
-          <button
-            onClick={onExit}
-            className="shrink-0 text-sm text-stone-500 hover:text-stone-800 dark:text-indigo-200/70 dark:hover:text-indigo-100"
-          >
-            {t(ui.backToTiers, lang)}
-          </button>
-          <div className="min-w-0 truncate text-sm text-stone-500 dark:text-indigo-200/60">
-            {t(lesson.title, lang)}
+        {breadcrumb && (
+          <div className="px-4 sm:px-10 pt-3">
+            <Breadcrumb segments={breadcrumb} />
           </div>
-        </header>
+        )}
         <div className="flex-1 min-h-0 flex items-center justify-center">
           <p className="text-stone-500 dark:text-indigo-200/60 italic">
             {t(ui.tierEmpty, lang)}
@@ -95,24 +98,10 @@ export function SlideDeck({ courseId, lesson, tier, onExit }: Props) {
   const isLastSlide = idx === total - 1;
   const passHandler = isLastSlide ? onTierPass : undefined;
 
-  return (
-    <div className="h-full flex flex-col bg-[#faf7f2] dark:bg-slate-950">
-      <header className="flex items-center gap-3 px-4 sm:px-6 py-3 border-b border-stone-200 dark:border-white/10">
-        <button
-          onClick={onExit}
-          className="shrink-0 text-sm text-stone-500 hover:text-stone-800 dark:text-indigo-200/70 dark:hover:text-indigo-100"
-        >
-          {t(tier ? ui.backToTiers : ui.backToLessons, lang)}
-        </button>
-        <div className="min-w-0 truncate text-sm text-stone-500 dark:text-indigo-200/60">
-          {t(lesson.title, lang)}
-        </div>
-      </header>
-
-      {/* Numbered jump buttons — sit above the slide content, right-aligned.
-          On two-pane slide layouts they line up over the right pane. */}
+  const slideJumpDots =
+    total > 1 ? (
       <div
-        className="flex flex-wrap items-center justify-end gap-1.5 px-4 sm:px-10 pt-3"
+        className="flex flex-wrap items-center justify-end gap-1.5"
         aria-label="Slide progress"
       >
         {slides.map((_, i) => (
@@ -134,15 +123,25 @@ export function SlideDeck({ courseId, lesson, tier, onExit }: Props) {
           </button>
         ))}
       </div>
+    ) : null;
 
+  return (
+    <div className="h-full flex flex-col bg-[#faf7f2] dark:bg-slate-950">
       <div className="flex-1 min-h-0">
         {slide.kind === "explanation" && (
-          <ExplanationSlideView slide={slide} key={`e-${idx}`} />
+          <ExplanationSlideView
+            slide={slide}
+            breadcrumb={breadcrumb}
+            slideJumpDots={slideJumpDots}
+            key={`e-${idx}`}
+          />
         )}
         {slide.kind === "assignment" && (
           <AssignmentSlideView
             slide={slide}
             storageKey={`${courseId}:${lesson.id}:${idx}`}
+            breadcrumb={breadcrumb}
+            slideJumpDots={slideJumpDots}
             key={`a-${idx}`}
             onPass={passHandler}
           />
@@ -151,6 +150,8 @@ export function SlideDeck({ courseId, lesson, tier, onExit }: Props) {
           <JsAssignmentSlideView
             slide={slide}
             storageKey={`${courseId}:${lesson.id}:${idx}`}
+            breadcrumb={breadcrumb}
+            slideJumpDots={slideJumpDots}
             key={`j-${idx}`}
             onPass={passHandler}
           />
@@ -159,6 +160,8 @@ export function SlideDeck({ courseId, lesson, tier, onExit }: Props) {
           <JsChipAssignmentSlideView
             slide={slide}
             storageKey={`${courseId}:${lesson.id}:${idx}`}
+            breadcrumb={breadcrumb}
+            slideJumpDots={slideJumpDots}
             key={`c-${idx}`}
             onPass={passHandler}
           />
@@ -167,6 +170,8 @@ export function SlideDeck({ courseId, lesson, tier, onExit }: Props) {
           <JsTypedAssignmentSlideView
             slide={slide}
             storageKey={`${courseId}:${lesson.id}:${idx}`}
+            breadcrumb={breadcrumb}
+            slideJumpDots={slideJumpDots}
             key={`t-${idx}`}
             onPass={passHandler}
           />
@@ -175,6 +180,8 @@ export function SlideDeck({ courseId, lesson, tier, onExit }: Props) {
           <JsWorkshopSlideView
             slide={slide}
             storageKey={`${courseId}:${lesson.id}:${idx}`}
+            breadcrumb={breadcrumb}
+            slideJumpDots={slideJumpDots}
             key={`w-${idx}`}
             onPass={passHandler}
           />
@@ -183,39 +190,70 @@ export function SlideDeck({ courseId, lesson, tier, onExit }: Props) {
           <ExerciseSlideView
             slide={slide}
             storageKey={`${courseId}:${lesson.id}:${idx}`}
+            breadcrumb={breadcrumb}
+            slideJumpDots={slideJumpDots}
             key={`x-${idx}`}
             onPass={passHandler}
           />
         )}
       </div>
+    </div>
+  );
+}
 
-      <div className="flex justify-center px-6 pb-2">
-        <SlideFontSizeControl />
-      </div>
+export function Breadcrumb({ segments }: { segments: BreadcrumbSegment[] }) {
+  return (
+    <nav
+      aria-label="Breadcrumb"
+      className="flex items-center gap-2 text-sm text-stone-500 dark:text-indigo-200/60"
+    >
+      {segments.map((seg, i) => {
+        const isLast = i === segments.length - 1;
+        const clickable = !!seg.onNavigate && !isLast;
+        return (
+          <Fragment key={i}>
+            {clickable ? (
+              <button
+                onClick={seg.onNavigate}
+                className="truncate max-w-[14rem] hover:text-stone-800 dark:hover:text-indigo-100 transition-colors"
+              >
+                {seg.label}
+              </button>
+            ) : (
+              <span
+                className={
+                  "truncate max-w-[18rem] " +
+                  (isLast ? "text-stone-800 dark:text-indigo-100 font-medium" : "")
+                }
+                aria-current={isLast ? "page" : undefined}
+              >
+                {seg.label}
+              </span>
+            )}
+            {!isLast && (
+              <span aria-hidden="true" className="text-stone-300 dark:text-indigo-200/30">
+                ›
+              </span>
+            )}
+          </Fragment>
+        );
+      })}
+    </nav>
+  );
+}
 
-      <footer className="flex items-center justify-between px-6 py-3 border-t border-stone-200 dark:border-white/10">
-        <button
-          onClick={prev}
-          disabled={idx === 0}
-          className="px-3 py-1.5 rounded-lg text-sm disabled:opacity-30
-                     bg-stone-100 hover:bg-stone-200 text-stone-700
-                     dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-indigo-100"
-        >
-          {t(ui.prev, lang)}
-        </button>
-        <div className="text-xs text-stone-500 dark:text-indigo-200/50">
-          {idx + 1} / {total}<span className="hidden sm:inline"> · {t(ui.escapeHint, lang)}</span>
-        </div>
-        <button
-          onClick={next}
-          disabled={idx === total - 1}
-          className="px-3 py-1.5 rounded-lg text-sm text-white disabled:opacity-30
-                     bg-amber-500 hover:bg-amber-600
-                     dark:bg-indigo-500 dark:hover:bg-indigo-400"
-        >
-          {t(ui.next, lang)}
-        </button>
-      </footer>
+/** Convenience — breadcrumb + flex row of the title and inline controls. */
+export function SlideTitleRow({
+  breadcrumb,
+  children,
+}: {
+  breadcrumb?: BreadcrumbSegment[];
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-1">
+      {breadcrumb && <Breadcrumb segments={breadcrumb} />}
+      <div className="flex items-center gap-3 flex-wrap">{children}</div>
     </div>
   );
 }

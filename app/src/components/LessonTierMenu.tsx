@@ -4,10 +4,12 @@ import { isTierComplete } from "../progress";
 import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
+import { Breadcrumb, type BreadcrumbSegment } from "./SlideDeck";
 
 type Props = {
   courseId: string;
   lesson: Lesson;
+  breadcrumb?: BreadcrumbSegment[];
   onPick: (tier: Tier) => void;
   onBack: () => void;
 };
@@ -26,20 +28,26 @@ const TIER_DESC = {
   exercise: ui.tierExerciseDesc,
 } as const;
 
-export function LessonTierMenu({ courseId, lesson, onPick, onBack }: Props) {
+export function LessonTierMenu({ courseId, lesson, breadcrumb, onPick, onBack }: Props) {
   const { lang } = useLang();
 
   return (
     <div className="min-h-full p-4 sm:p-10">
       <div className="max-w-4xl mx-auto">
-        <button
-          onClick={onBack}
-          className="text-sm mb-4
-                     text-stone-500 hover:text-stone-800
-                     dark:text-indigo-200/60 dark:hover:text-indigo-100"
-        >
-          ← {t(lesson.title, lang)}
-        </button>
+        {breadcrumb ? (
+          <div className="mb-4">
+            <Breadcrumb segments={breadcrumb} />
+          </div>
+        ) : (
+          <button
+            onClick={onBack}
+            className="text-sm mb-4
+                       text-stone-500 hover:text-stone-800
+                       dark:text-indigo-200/60 dark:hover:text-indigo-100"
+          >
+            ← {t(lesson.title, lang)}
+          </button>
+        )}
         <h1 className="text-2xl sm:text-4xl font-semibold text-stone-900 dark:text-indigo-50">
           {t(lesson.title, lang)}
         </h1>

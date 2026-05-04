@@ -5,7 +5,9 @@ import { Typewriter } from "./Typewriter";
 import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
-import { useSlideFontSize } from "./SlideFontSize";
+import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
+import { ThemeToggleInline } from "./ThemeToggle";
+import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
 import { CrosswalkScene } from "./scenes/CrosswalkScene";
 import { CrosswalkTraceScene } from "./scenes/CrosswalkTraceScene";
 import { ComparisonsTableScene } from "./scenes/ComparisonsTableScene";
@@ -23,7 +25,11 @@ import { CountdownTraceScene } from "./scenes/CountdownTraceScene";
 import { TastingScene } from "./scenes/TastingScene";
 import { TastingTraceScene } from "./scenes/TastingTraceScene";
 
-type Props = { slide: ExplanationSlide };
+type Props = {
+  slide: ExplanationSlide;
+  breadcrumb?: BreadcrumbSegment[];
+  slideJumpDots?: React.ReactNode;
+};
 
 // Narration text is hand-authored with `\n` for visual line breaks. The right
 // pane is now wide enough that those mid-sentence breaks look awkward, so we
@@ -131,7 +137,7 @@ function RenderBox({
   );
 }
 
-export function ExplanationSlideView({ slide }: Props) {
+export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots }: Props) {
   const [step, setStep] = useState(0);
   const [helpOpen, setHelpOpen] = useState(false);
   const atEnd = step >= slide.steps.length - 1;
@@ -221,20 +227,29 @@ export function ExplanationSlideView({ slide }: Props) {
 
   const titleBlock = (
     <>
-      <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-indigo-50">
-        {t(slide.title, lang)}
-      </h2>
-      {slide.intro && (
-        <p className="text-stone-500 dark:text-indigo-200/70 mt-1">
-          {t(slide.intro, lang)}
-        </p>
-      )}
+      <SlideTitleRow breadcrumb={breadcrumb}>
+        <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-indigo-50">
+          {t(slide.title, lang)}
+        </h2>
+        <SlideFontSizeControl />
+        <ThemeToggleInline />
+      </SlideTitleRow>
+      <div className="flex items-end justify-between gap-4 mt-2">
+        {slide.intro ? (
+          <p className="text-stone-500 dark:text-indigo-200/70 flex-1 min-w-0">
+            {t(slide.intro, lang)}
+          </p>
+        ) : (
+          <span className="flex-1" />
+        )}
+        {slideJumpDots}
+      </div>
     </>
   );
 
   return (
     <div
-      className="h-full w-full flex flex-col cursor-pointer select-none"
+      className="h-full w-full max-w-7xl mx-auto flex flex-col cursor-pointer select-none"
       onClick={advance}
     >
       {isCodeTrace && <div className="px-4 sm:px-10 pt-4 sm:pt-8">{titleBlock}</div>}
