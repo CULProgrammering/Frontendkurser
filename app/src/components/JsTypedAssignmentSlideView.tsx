@@ -13,11 +13,15 @@ import { t } from "../i18n";
 import type { Lang } from "../i18n";
 import { ui } from "../i18n/strings";
 import { sessionGet, sessionSet } from "../storage";
-import { useSlideFontSize } from "./SlideFontSize";
+import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
+import { ThemeToggleInline } from "./ThemeToggle";
+import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
 
 type Props = {
   slide: JsTypedAssignmentSlide;
   storageKey: string;
+  breadcrumb?: BreadcrumbSegment[];
+  slideJumpDots?: React.ReactNode;
   onPass?: () => void;
 };
 
@@ -28,7 +32,7 @@ type TestRun = { test: JsTest; result: RunResult; pass: boolean };
  * slots. On Check we substitute input values into the template and run
  * the assembled code through the standard test runner.
  */
-export function JsTypedAssignmentSlideView({ slide, storageKey, onPass }: Props) {
+export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDots, onPass }: Props) {
   const { lang } = useLang();
   const { codePx, prosePx } = useSlideFontSize();
   const template = t(slide.template, lang);
@@ -121,14 +125,21 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, onPass }: Props)
   })();
 
   return (
-    <div className="h-full w-full flex flex-col">
+    <div className="h-full w-full max-w-7xl mx-auto flex flex-col">
       <div className="px-4 sm:px-10 pt-4 sm:pt-8">
-        <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-indigo-50">
-          {t(slide.title, lang)}
-        </h2>
-        <p className="text-stone-600 dark:text-indigo-200/80 mt-1 whitespace-pre-line">
-          {t(slide.prompt, lang)}
-        </p>
+        <SlideTitleRow breadcrumb={breadcrumb}>
+          <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-indigo-50">
+            {t(slide.title, lang)}
+          </h2>
+          <SlideFontSizeControl />
+          <ThemeToggleInline />
+        </SlideTitleRow>
+        <div className="flex items-end justify-between gap-4 mt-2">
+          <p className="text-stone-600 dark:text-indigo-200/80 whitespace-pre-line flex-1 min-w-0">
+            {t(slide.prompt, lang)}
+          </p>
+          {slideJumpDots}
+        </div>
       </div>
 
       <div className={"flex-1 grid gap-6 px-4 sm:px-10 py-3 sm:py-6 min-h-0 " + (slide.allegory ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1")}>

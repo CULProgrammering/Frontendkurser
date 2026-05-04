@@ -3,13 +3,17 @@ import type { JsChipAssignmentSlide, JsChipPuzzle } from "../types";
 import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
-import { useSlideFontSize } from "./SlideFontSize";
+import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
+import { ThemeToggleInline } from "./ThemeToggle";
+import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
 
 const SETTLE_MS = 400;
 
 type Props = {
   slide: JsChipAssignmentSlide;
   storageKey: string;
+  breadcrumb?: BreadcrumbSegment[];
+  slideJumpDots?: React.ReactNode;
   onPass?: () => void;
 };
 
@@ -20,7 +24,7 @@ type CheckState = "pending" | "right" | "wrong";
  * sub-puzzles in order; each is independent state-wise. We persist only
  * the highest puzzle reached, not chip positions (state resets per visit).
  */
-export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, onPass }: Props) {
+export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, breadcrumb, slideJumpDots, onPass }: Props) {
   const { lang } = useLang();
   const { codePx, prosePx } = useSlideFontSize();
   const [puzzleIdx, setPuzzleIdx] = useState(0);
@@ -35,18 +39,25 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, onPa
   const allDoneRef = useRef(false);
 
   return (
-    <div className="h-full w-full flex flex-col">
+    <div className="h-full w-full max-w-7xl mx-auto flex flex-col">
       <div className="px-4 sm:px-10 pt-4 sm:pt-8">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-indigo-50">
-            {t(slide.title, lang)}
-          </h2>
-          <p
-            className="text-stone-600 dark:text-indigo-200/80 mt-1 whitespace-pre-line"
-            style={{ fontSize: `${prosePx}px` }}
-          >
-            {t(puzzle.intro ?? slide.prompt, lang)}
-          </p>
+          <SlideTitleRow breadcrumb={breadcrumb}>
+            <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-indigo-50">
+              {t(slide.title, lang)}
+            </h2>
+            <SlideFontSizeControl />
+            <ThemeToggleInline />
+          </SlideTitleRow>
+          <div className="flex items-end justify-between gap-4 mt-2">
+            <p
+              className="text-stone-600 dark:text-indigo-200/80 whitespace-pre-line flex-1 min-w-0"
+              style={{ fontSize: `${prosePx}px` }}
+            >
+              {t(puzzle.intro ?? slide.prompt, lang)}
+            </p>
+            {slideJumpDots}
+          </div>
           <div className="mt-3 flex items-center gap-2 text-xs text-stone-500 dark:text-indigo-200/60">
             <span className="uppercase tracking-wider">
               {lang === "sv" ? "Pussel" : "Puzzle"} {puzzleIdx + 1} / {total}
