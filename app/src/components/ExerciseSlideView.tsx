@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import Editor from "@monaco-editor/react";
 import type { ExerciseSlide } from "../types";
 import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
@@ -8,6 +7,8 @@ import { sessionGet, sessionSet } from "../storage";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
 import { ThemeToggleInline } from "./ThemeToggle";
 import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
+import { CodeEditor } from "./CodeEditor";
+import { TwoColumnLayout } from "./TwoColumnLayout";
 
 type Props = {
   slide: ExerciseSlide;
@@ -256,10 +257,6 @@ export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allPass]);
 
-  const isDark =
-    typeof document !== "undefined" &&
-    document.documentElement.classList.contains("dark");
-
   const editorValue = tab === "html" ? html : tab === "css" ? css : js;
   const setEditorValue = (v: string) => {
     if (tab === "html") setHtml(v);
@@ -279,78 +276,67 @@ export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots
   const hasVisualPreview =
     slide.starterHtml !== undefined || slide.starterCss !== undefined;
 
-  return (
-    <div className="h-full w-full max-w-7xl mx-auto flex flex-col md:flex-row gap-4 p-4 sm:p-5">
-      {/* ── LEFT: full-height editor ── */}
+  const editorPanel = (
+    <div
+      className="flex-1 flex flex-col min-h-0 rounded-2xl overflow-hidden
+                 bg-white ring-1 ring-stone-200 shadow-sm
+                 dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none"
+    >
       <div
-        className="flex-1 flex flex-col min-h-0 rounded-2xl overflow-hidden
-                   bg-white ring-1 ring-stone-200 shadow-sm
-                   dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none"
+        className="flex items-center gap-1 border-b border-stone-200 dark:border-white/10
+                   bg-stone-50 dark:bg-slate-900/40"
       >
-        <div
-          className="flex items-center gap-1 border-b border-stone-200 dark:border-white/10
-                     bg-stone-50 dark:bg-slate-900/40"
-        >
-          {tabs.map((k) => (
-            <button
-              key={k}
-              onClick={() => setTab(k)}
-              className={
-                "px-3 py-2 text-xs uppercase tracking-wider font-medium transition-colors " +
-                (tab === k
-                  ? "text-amber-700 dark:text-indigo-200 border-b-2 border-amber-500 dark:border-indigo-300"
-                  : "text-stone-500 hover:text-stone-700 dark:text-indigo-200/60 dark:hover:text-indigo-100")
-              }
-            >
-              {tabLabel(k)}
-            </button>
-          ))}
-        </div>
-        <div className="flex-1 min-h-0">
-          <Editor
-            height="100%"
-            language={editorLang}
-            theme={isDark ? "vs-dark" : "vs"}
-            value={editorValue}
-            onChange={(v) => setEditorValue(v ?? "")}
-            options={{
-              minimap: { enabled: false },
-              fontSize: codePx,
-              scrollBeyondLastLine: false,
-              wordWrap: "on",
-              tabSize: 2,
-              automaticLayout: true,
-              lineNumbers: "on",
-              renderLineHighlight: "line",
-            }}
-          />
-        </div>
-        <div className="flex gap-2 p-3 border-t border-stone-200 dark:border-white/10">
+        {tabs.map((k) => (
           <button
-            onClick={run}
-            className="px-3 py-1.5 rounded-lg text-white text-sm font-medium
-                       bg-amber-500 hover:bg-amber-600
-                       dark:bg-indigo-500 dark:hover:bg-indigo-400"
+            key={k}
+            onClick={() => setTab(k)}
+            className={
+              "px-3 py-2 min-h-[44px] text-xs uppercase tracking-wider font-medium transition-colors " +
+              (tab === k
+                ? "text-amber-700 dark:text-indigo-200 border-b-2 border-amber-500 dark:border-indigo-300"
+                : "text-stone-500 hover:text-stone-700 dark:text-indigo-200/60 dark:hover:text-indigo-100")
+            }
           >
-            {t(ui.exerciseRun, lang)}
+            {tabLabel(k)}
           </button>
-          <button
-            onClick={reset}
-            className="px-3 py-1.5 rounded-lg text-sm
-                       bg-stone-100 hover:bg-stone-200 text-stone-700
-                       dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white"
-          >
-            {t(ui.reset, lang)}
-          </button>
-        </div>
+        ))}
       </div>
+      <div className="flex-1 min-h-0">
+        <CodeEditor
+          language={editorLang}
+          value={editorValue}
+          onChange={setEditorValue}
+          fontSize={codePx}
+          onSubmit={run}
+        />
+      </div>
+      <div className="flex gap-2 p-3 border-t border-stone-200 dark:border-white/10">
+        <button
+          onClick={run}
+          className="px-4 py-2 min-h-[44px] sm:min-h-0 sm:px-3 sm:py-1.5 rounded-lg text-white text-sm font-medium
+                     bg-amber-500 hover:bg-amber-600 active:bg-amber-700
+                     dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:active:bg-indigo-600"
+        >
+          {t(ui.exerciseRun, lang)}
+        </button>
+        <button
+          onClick={reset}
+          className="px-4 py-2 min-h-[44px] sm:min-h-0 sm:px-3 sm:py-1.5 rounded-lg text-sm
+                     bg-stone-100 hover:bg-stone-200 active:bg-stone-300 text-stone-700
+                     dark:bg-slate-700 dark:hover:bg-slate-600 dark:active:bg-slate-800 dark:text-white"
+        >
+          {t(ui.reset, lang)}
+        </button>
+      </div>
+    </div>
+  );
 
-      {/* ── RIGHT: instructions + console + tests (scrollable) ── */}
-      <div
-        className="flex-1 min-h-0 overflow-y-auto rounded-2xl
-                   bg-white ring-1 ring-stone-200 shadow-sm
-                   dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none"
-      >
+  const instructionsPanel = (
+    <div
+      className="flex-1 min-h-0 overflow-y-auto rounded-2xl
+                 bg-white ring-1 ring-stone-200 shadow-sm
+                 dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none"
+    >
         {/* Instructions */}
         <div className="px-5 pt-5 pb-4 border-b border-stone-200 dark:border-white/10">
           <SlideTitleRow breadcrumb={breadcrumb}>
@@ -384,7 +370,7 @@ export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots
               onLoad={onIframeLoad}
               title="exercise preview"
               sandbox="allow-scripts"
-              className="w-full h-48 bg-white"
+              className="w-full h-40 sm:h-48 bg-white"
             />
           </>
         )}
@@ -488,6 +474,16 @@ export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots
           )}
         </div>
       </div>
-    </div>
+    );
+
+  return (
+    <TwoColumnLayout
+      className="h-full w-full max-w-7xl mx-auto p-4 sm:p-5"
+      leftLabel={t(ui.tabCode, lang)}
+      rightLabel={t(ui.tabResult, lang)}
+      desktopGap="gap-4"
+      left={editorPanel}
+      right={instructionsPanel}
+    />
   );
 }

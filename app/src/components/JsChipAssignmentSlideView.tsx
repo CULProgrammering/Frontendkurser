@@ -109,9 +109,9 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
           {hasLegend && (
             <button
               onClick={() => setShowLegend((v) => !v)}
-              className="px-3 py-1.5 rounded-lg text-sm ring-1
-                         bg-amber-100 hover:bg-amber-200 text-amber-800 ring-amber-300
-                         dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:text-amber-200 dark:ring-amber-400/30"
+              className="px-4 py-2 min-h-[44px] sm:min-h-0 sm:px-3 sm:py-1.5 rounded-lg text-sm ring-1
+                         bg-amber-100 hover:bg-amber-200 active:bg-amber-300 text-amber-800 ring-amber-300
+                         dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:active:bg-amber-500/40 dark:text-amber-200 dark:ring-amber-400/30"
             >
               {t(showLegend ? ui.hideHelp : ui.showHelp, lang)}
             </button>
@@ -119,9 +119,9 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
           {puzzleIdx > 0 && (
             <button
               onClick={() => setPuzzleIdx((i) => Math.max(0, i - 1))}
-              className="ml-auto px-3 py-1.5 rounded-lg text-sm
-                         bg-stone-100 hover:bg-stone-200 text-stone-700
-                         dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white"
+              className="ml-auto px-4 py-2 min-h-[44px] sm:min-h-0 sm:px-3 sm:py-1.5 rounded-lg text-sm
+                         bg-stone-100 hover:bg-stone-200 active:bg-stone-300 text-stone-700
+                         dark:bg-slate-700 dark:hover:bg-slate-600 dark:active:bg-slate-800 dark:text-white"
             >
               ◀ {lang === "sv" ? "Föregående pussel" : "Previous puzzle"}
             </button>
@@ -297,7 +297,7 @@ function PuzzleView({
       {/* Code panel with embedded slots */}
       <div
         className={
-          "rounded-xl p-5 font-mono whitespace-pre " +
+          "rounded-xl p-5 font-mono whitespace-pre overflow-x-auto " +
           "bg-slate-900 text-indigo-50 ring-1 ring-white/10"
         }
         style={{ fontSize: `${codePx}px` }}
@@ -336,10 +336,10 @@ function PuzzleView({
               onClick={() => handleChipClick(idx)}
               disabled={check === "right"}
               className={
-                "px-3 py-2 rounded-lg font-mono transition-all ring-1 " +
+                "px-3 py-3 sm:py-2 min-h-[44px] sm:min-h-0 rounded-lg font-mono transition-all ring-1 " +
                 (placed
                   ? "bg-stone-100 text-stone-300 ring-stone-200 cursor-not-allowed dark:bg-slate-800/40 dark:text-slate-600 dark:ring-white/5"
-                  : "bg-amber-100 hover:bg-amber-200 text-amber-900 ring-amber-300 active:scale-95 dark:bg-indigo-500/20 dark:hover:bg-indigo-500/30 dark:text-indigo-100 dark:ring-indigo-400/30")
+                  : "bg-amber-100 hover:bg-amber-200 active:bg-amber-300 text-amber-900 ring-amber-300 active:scale-95 dark:bg-indigo-500/20 dark:hover:bg-indigo-500/30 dark:active:bg-indigo-500/40 dark:text-indigo-100 dark:ring-indigo-400/30")
               }
               style={{ fontSize: `${codePx}px` }}
             >
@@ -355,9 +355,9 @@ function PuzzleView({
           <button
             onClick={runCheck}
             disabled={!allSlotsFilled}
-            className="px-4 py-2 rounded-lg text-white text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed
-                       bg-amber-500 hover:bg-amber-600
-                       dark:bg-indigo-500 dark:hover:bg-indigo-400"
+            className="px-4 py-2 min-h-[44px] sm:min-h-0 rounded-lg text-white text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed
+                       bg-amber-500 hover:bg-amber-600 active:bg-amber-700
+                       dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:active:bg-indigo-600"
           >
             {t(ui.check, lang)}
           </button>
@@ -379,9 +379,9 @@ function PuzzleView({
             </span>
             <button
               onClick={onAdvance}
-              className="ml-auto px-4 py-2 rounded-lg text-white text-sm font-medium
-                         bg-emerald-500 hover:bg-emerald-600
-                         dark:bg-emerald-500 dark:hover:bg-emerald-400"
+              className="ml-auto px-4 py-2 min-h-[44px] sm:min-h-0 rounded-lg text-white text-sm font-medium
+                         bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
+                         dark:bg-emerald-500 dark:hover:bg-emerald-400 dark:active:bg-emerald-600"
             >
               {isLast
                 ? lang === "sv"

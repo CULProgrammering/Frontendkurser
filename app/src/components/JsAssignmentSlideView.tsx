@@ -16,6 +16,7 @@ import { sessionGet, sessionSet } from "../storage";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
 import { ThemeToggleInline } from "./ThemeToggle";
 import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
+import { TwoColumnLayout } from "./TwoColumnLayout";
 
 type Props = {
   slide: JsAssignmentSlide;
@@ -142,9 +143,12 @@ export function JsAssignmentSlideView({ slide, storageKey, breadcrumb, slideJump
         </div>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 px-4 sm:px-10 py-3 sm:py-6 min-h-0">
-        {/* Editor column */}
-        <div className="flex flex-col rounded-2xl overflow-hidden
+      <TwoColumnLayout
+        className="flex-1 px-4 sm:px-10 py-3 sm:py-6"
+        leftLabel={t(ui.tabCode, lang)}
+        rightLabel={t(ui.tabVisual, lang)}
+        left={
+          <div className="flex-1 flex flex-col rounded-2xl overflow-hidden min-h-0
                         bg-white ring-1 ring-stone-200 shadow-sm
                         dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
           <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
@@ -209,71 +213,72 @@ export function JsAssignmentSlideView({ slide, storageKey, breadcrumb, slideJump
             )}
           </div>
         </div>
-
-        {/* Scene + results column */}
-        <div className="flex flex-col rounded-2xl overflow-hidden min-h-0
+        }
+        right={
+          <div className="flex-1 flex flex-col rounded-2xl overflow-hidden min-h-0
                         bg-white ring-1 ring-stone-200 shadow-sm
                         dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
-          <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
-                          text-amber-600 border-stone-200
-                          dark:text-indigo-300/70 dark:border-white/10">
-            {focusedRun
-              ? `${t(ui.testLabel, lang)} ${focusedIdx + 1}: ${t(focusedRun.test.label, lang)}`
-              : t(ui.testCases, lang)}
-          </div>
-
-          <div className="flex-1 min-h-0">
-            <SceneMount
-              allegory={slide.allegory}
-              run={animationRun}
-              replayKey={replayKey}
-              lang={lang}
-            />
-          </div>
-
-          {/* Status footer: appears after Check.
-              showSuccess → "✓ Done"; otherwise → placeholder hint or goalHint. */}
-          {runs && showSuccess && (
-            <div
-              className="border-t border-stone-200 dark:border-white/10 px-4 py-3
-                            font-medium text-emerald-700 dark:text-emerald-300"
-              style={{ fontSize: `${prosePx}px` }}
-            >
-              {t({ en: "✓ Done", sv: "✓ Klart" }, lang)}
+            <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
+                            text-amber-600 border-stone-200
+                            dark:text-indigo-300/70 dark:border-white/10">
+              {focusedRun
+                ? `${t(ui.testLabel, lang)} ${focusedIdx + 1}: ${t(focusedRun.test.label, lang)}`
+                : t(ui.testCases, lang)}
             </div>
-          )}
-          {runs && !showSuccess && runtimeError && (
-            <div
-              className="border-t border-stone-200 dark:border-white/10 px-4 py-3
-                            bg-rose-50 text-rose-800
-                            dark:bg-rose-500/10 dark:text-rose-200"
-              style={{ fontSize: `${prosePx}px` }}
-            >
-              <div className="font-medium mb-1">
-                {t(
-                  {
-                    en: "The code couldn't run — check for typos:",
-                    sv: "Koden kunde inte köras — kolla efter typo:",
-                  },
-                  lang
-                )}
+
+            <div className="flex-1 min-h-0">
+              <SceneMount
+                allegory={slide.allegory}
+                run={animationRun}
+                replayKey={replayKey}
+                lang={lang}
+              />
+            </div>
+
+            {/* Status footer: appears after Check.
+                showSuccess → "✓ Done"; otherwise → placeholder hint or goalHint. */}
+            {runs && showSuccess && (
+              <div
+                className="border-t border-stone-200 dark:border-white/10 px-4 py-3
+                              font-medium text-emerald-700 dark:text-emerald-300"
+                style={{ fontSize: `${prosePx}px` }}
+              >
+                {t({ en: "✓ Done", sv: "✓ Klart" }, lang)}
               </div>
-              <div className="font-mono text-xs">{runtimeError}</div>
-            </div>
-          )}
-          {runs && !showSuccess && !runtimeError && (placeholderHint || slide.goalHint) && (
-            <div
-              className="border-t border-stone-200 dark:border-white/10 px-4 py-3
-                            text-stone-600 dark:text-indigo-200/80"
-              style={{ fontSize: `${prosePx}px` }}
-            >
-              {placeholderHint
-                ? t(placeholderHint, lang)
-                : t(slide.goalHint!, lang)}
-            </div>
-          )}
-        </div>
-      </div>
+            )}
+            {runs && !showSuccess && runtimeError && (
+              <div
+                className="border-t border-stone-200 dark:border-white/10 px-4 py-3
+                              bg-rose-50 text-rose-800
+                              dark:bg-rose-500/10 dark:text-rose-200"
+                style={{ fontSize: `${prosePx}px` }}
+              >
+                <div className="font-medium mb-1">
+                  {t(
+                    {
+                      en: "The code couldn't run — check for typos:",
+                      sv: "Koden kunde inte köras — kolla efter typo:",
+                    },
+                    lang
+                  )}
+                </div>
+                <div className="font-mono text-xs">{runtimeError}</div>
+              </div>
+            )}
+            {runs && !showSuccess && !runtimeError && (placeholderHint || slide.goalHint) && (
+              <div
+                className="border-t border-stone-200 dark:border-white/10 px-4 py-3
+                              text-stone-600 dark:text-indigo-200/80"
+                style={{ fontSize: `${prosePx}px` }}
+              >
+                {placeholderHint
+                  ? t(placeholderHint, lang)
+                  : t(slide.goalHint!, lang)}
+              </div>
+            )}
+          </div>
+        }
+      />
 
       {showLegend && hasLegend && (
         <div className="mx-4 sm:mx-10 mb-4 sm:mb-6 rounded-2xl p-4 ring-1

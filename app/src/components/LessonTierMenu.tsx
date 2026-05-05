@@ -65,11 +65,11 @@ export function LessonTierMenu({ courseId, lesson, breadcrumb, onPick, onBack }:
                 onClick={() => onPick(tier)}
                 className={
                   "text-left rounded-2xl p-5 transition-all relative " +
-                  "bg-white shadow-sm hover:shadow " +
+                  "bg-white shadow-sm hover:shadow active:scale-[0.99] " +
                   "dark:bg-slate-900/60 dark:shadow-none " +
                   (done
-                    ? "ring-2 ring-emerald-400 hover:ring-emerald-500 dark:ring-emerald-400/60 dark:hover:ring-emerald-300/80"
-                    : "ring-1 ring-stone-200 hover:ring-amber-400 dark:ring-white/10 dark:hover:ring-indigo-400/50")
+                    ? "ring-2 ring-emerald-400 hover:ring-emerald-500 active:ring-emerald-600 dark:ring-emerald-400/60 dark:hover:ring-emerald-300/80 dark:active:ring-emerald-300"
+                    : "ring-1 ring-stone-200 hover:ring-amber-400 active:ring-amber-500 dark:ring-white/10 dark:hover:ring-indigo-400/50 dark:active:ring-indigo-400")
                 }
               >
                 <div className="flex items-start justify-between gap-3">

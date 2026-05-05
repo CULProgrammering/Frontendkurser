@@ -2,10 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #root {
+html, body {
   height: 100%;
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Use the dynamic viewport height so the layout shrinks gracefully when the
+   mobile soft keyboard is shown (browsers without dvh support fall back to
+   the static viewport height). */
+#root {
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
 }
 
 /* Light (default) */
