@@ -72,6 +72,14 @@ export const ui = {
   outOfRight: { en: "of", sv: "av" },
   legendLabel: { en: "Legend", sv: "Legend" },
 
+  // Mobile tab labels (TwoColumnLayout)
+  tabCode: { en: "Code", sv: "Kod" },
+  tabInstructions: { en: "Instructions", sv: "Instruktioner" },
+  tabResult: { en: "Result", sv: "Resultat" },
+  tabVisual: { en: "Visual", sv: "Visuellt" },
+  tabPreview: { en: "Preview", sv: "Förhandsvisning" },
+  tabStory: { en: "Story", sv: "Förklaring" },
+
   // JsAssignmentSlideView
   testLabel: { en: "Test", sv: "Test" },
   testCases: { en: "Test cases", sv: "Testfall" },

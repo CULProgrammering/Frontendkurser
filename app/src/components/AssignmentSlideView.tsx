@@ -7,6 +7,7 @@ import { sessionGet, sessionSet } from "../storage";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
 import { ThemeToggleInline } from "./ThemeToggle";
 import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
+import { TwoColumnLayout } from "./TwoColumnLayout";
 
 type Props = {
   slide: AssignmentSlide;
@@ -96,8 +97,12 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
         </div>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 px-4 sm:px-10 py-3 sm:py-6 min-h-0">
-        <div className="flex flex-col rounded-2xl overflow-hidden
+      <TwoColumnLayout
+        className="flex-1 px-4 sm:px-10 py-3 sm:py-6"
+        leftLabel={t(ui.tabCode, lang)}
+        rightLabel={t(ui.tabPreview, lang)}
+        left={
+          <div className="flex-1 flex flex-col rounded-2xl overflow-hidden min-h-0
                         bg-white ring-1 ring-stone-200 shadow-sm
                         dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
           <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
@@ -143,82 +148,84 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
             )}
           </div>
         </div>
-
-        <div className="flex flex-col rounded-2xl overflow-hidden
+        }
+        right={
+          <div className="flex-1 flex flex-col rounded-2xl overflow-hidden min-h-0
                         bg-white ring-1 ring-stone-200 shadow-sm
                         dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
-          <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
-                          text-amber-600 border-stone-200
-                          dark:text-indigo-300/70 dark:border-white/10">
-            {t(hasTarget ? ui.yourVersion : ui.preview, lang)}
-          </div>
-          <iframe
-            ref={iframeRef}
-            srcDoc={srcDoc}
-            title="preview"
-            sandbox="allow-same-origin"
-            className="flex-1 bg-white min-h-0"
-          />
-          {hasTarget && (
-            <>
-              <div className="px-4 py-2 text-xs uppercase tracking-wider border-y
-                              text-emerald-700 border-stone-200
-                              dark:text-emerald-300/80 dark:border-white/10">
-                {t(ui.goal, lang)}
-              </div>
-              <iframe
-                srcDoc={targetDoc}
-                title="target"
-                sandbox="allow-same-origin"
-                className="flex-1 bg-white min-h-0"
-              />
-            </>
-          )}
-          {results && (
-            <div
-              className="border-t p-3 space-y-1 max-h-48 overflow-auto
-                            border-stone-200 dark:border-white/10"
-              style={{ fontSize: `${prosePx}px` }}
-            >
-              {allPass ? (
-                <div className="text-emerald-700 dark:text-emerald-300 font-medium">
-                  {t(ui.doneCheers, lang)}
-                </div>
-              ) : (
-                <>
-                  {results.filter((r) => !r.pass).length === 0 ? null : (
-                    <div className="text-stone-600 dark:text-indigo-200/70 mb-1">
-                      {t(ui.needsAdjusting, lang)}
-                    </div>
-                  )}
-                  {results
-                    .filter((r) => !r.pass)
-                    .map((r, i) => (
-                      <div
-                        key={i}
-                        className="text-amber-700 dark:text-amber-300"
-                      >
-                        • {friendlyLabel(r.check)}
-                        {r.check.hint && (
-                          <span className="text-stone-500 dark:text-indigo-200/60">
-                            {" "}
-                            — {t(r.check.hint, lang)}
-                          </span>
-                        )}
-                      </div>
-                    ))}
-                  {results.some((r) => r.pass) && (
-                    <div className="text-emerald-700/80 dark:text-emerald-300/80 pt-1 text-xs">
-                      {results.filter((r) => r.pass).length} {t(ui.outOfRight, lang)}{" "}
-                      {results.length}
-                    </div>
-                  )}
-                </>
-              )}
+            <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
+                            text-amber-600 border-stone-200
+                            dark:text-indigo-300/70 dark:border-white/10">
+              {t(hasTarget ? ui.yourVersion : ui.preview, lang)}
             </div>
-          )}
-        </div>
-      </div>
+            <iframe
+              ref={iframeRef}
+              srcDoc={srcDoc}
+              title="preview"
+              sandbox="allow-same-origin"
+              className="flex-1 bg-white min-h-[10rem] max-h-72 md:max-h-none md:flex-1"
+            />
+            {hasTarget && (
+              <>
+                <div className="px-4 py-2 text-xs uppercase tracking-wider border-y
+                                text-emerald-700 border-stone-200
+                                dark:text-emerald-300/80 dark:border-white/10">
+                  {t(ui.goal, lang)}
+                </div>
+                <iframe
+                  srcDoc={targetDoc}
+                  title="target"
+                  sandbox="allow-same-origin"
+                  className="flex-1 bg-white min-h-[10rem] max-h-72 md:max-h-none md:flex-1"
+                />
+              </>
+            )}
+            {results && (
+              <div
+                className="border-t p-3 space-y-1 max-h-48 overflow-auto
+                              border-stone-200 dark:border-white/10"
+                style={{ fontSize: `${prosePx}px` }}
+              >
+                {allPass ? (
+                  <div className="text-emerald-700 dark:text-emerald-300 font-medium">
+                    {t(ui.doneCheers, lang)}
+                  </div>
+                ) : (
+                  <>
+                    {results.filter((r) => !r.pass).length === 0 ? null : (
+                      <div className="text-stone-600 dark:text-indigo-200/70 mb-1">
+                        {t(ui.needsAdjusting, lang)}
+                      </div>
+                    )}
+                    {results
+                      .filter((r) => !r.pass)
+                      .map((r, i) => (
+                        <div
+                          key={i}
+                          className="text-amber-700 dark:text-amber-300"
+                        >
+                          • {friendlyLabel(r.check)}
+                          {r.check.hint && (
+                            <span className="text-stone-500 dark:text-indigo-200/60">
+                              {" "}
+                              — {t(r.check.hint, lang)}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    {results.some((r) => r.pass) && (
+                      <div className="text-emerald-700/80 dark:text-emerald-300/80 pt-1 text-xs">
+                        {results.filter((r) => r.pass).length} {t(ui.outOfRight, lang)}{" "}
+                        {results.length}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        }
+      />
 
       {showLegend && hasLegend && (
         <div className="mx-4 sm:mx-10 mb-4 sm:mb-6 rounded-2xl p-4 ring-1

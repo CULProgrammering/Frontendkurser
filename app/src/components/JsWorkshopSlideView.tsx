@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import Editor from "@monaco-editor/react";
 import type { JsWorkshopSlide, WorkshopCheck, WorkshopStep } from "../types";
 import {
   runWorkshopChecks,
@@ -13,19 +12,10 @@ import { sessionGet, sessionSet } from "../storage";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
 import { ThemeToggleInline } from "./ThemeToggle";
 import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
+import { CodeEditor, type CodeEditorHandle } from "./CodeEditor";
+import { TwoColumnLayout } from "./TwoColumnLayout";
 
 const AUTO_ADVANCE_MS = 1200;
-
-/**
- * Minimal interface for the Monaco editor instance — only the methods we
- * actually call. Avoids depending on monaco-editor's type exports.
- */
-type CodeEditorHandle = {
-  setPosition: (pos: { lineNumber: number; column: number }) => void;
-  revealPositionInCenter: (pos: { lineNumber: number; column: number }) => void;
-  focus: () => void;
-  setValue: (v: string) => void;
-};
 
 /**
  * Prepare the seed for a step: produce the editor's initial value plus a
@@ -225,12 +215,12 @@ function StepCounter({
             aria-label={`Go to step ${i + 1}`}
             aria-current={isCurrent ? "step" : undefined}
             className={
-              "h-7 w-7 rounded-full text-xs font-medium transition-colors " +
+              "h-9 w-9 sm:h-7 sm:w-7 rounded-full text-sm sm:text-xs font-medium transition-colors " +
               (isCurrent
                 ? "bg-amber-500 text-white dark:bg-indigo-300 dark:text-slate-900"
                 : isDone
-                ? "bg-emerald-400 text-white hover:bg-emerald-500 dark:bg-emerald-500/70 dark:text-emerald-50 dark:hover:bg-emerald-500/90"
-                : "bg-stone-200 text-stone-600 hover:bg-stone-300 dark:bg-white/20 dark:text-indigo-100 dark:hover:bg-white/30")
+                ? "bg-emerald-400 text-white hover:bg-emerald-500 active:bg-emerald-600 dark:bg-emerald-500/70 dark:text-emerald-50 dark:hover:bg-emerald-500/90"
+                : "bg-stone-200 text-stone-600 hover:bg-stone-300 active:bg-stone-400 dark:bg-white/20 dark:text-indigo-100 dark:hover:bg-white/30")
             }
           >
             {/* Done shows ✓ regardless of current — so the last step also flips
@@ -312,10 +302,6 @@ function WorkshopStepView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allPass]);
 
-  const isDark =
-    typeof document !== "undefined" &&
-    document.documentElement.classList.contains("dark");
-
   const check = () => {
     setResults(runWorkshopChecks(code, step.checks));
   };
@@ -334,16 +320,6 @@ function WorkshopStepView({
     }
   };
 
-  // Ctrl/Cmd+Enter keyboard shortcut while the editor is focused. Monaco's
-  // addCommand fires before the editor's default Ctrl+Enter (Insert Line Below),
-  // so this overrides cleanly. We hold the latest `check` in a ref because the
-  // command callback registered on first mount would otherwise close over a
-  // stale `code` value.
-  const checkRef = useRef(check);
-  useEffect(() => {
-    checkRef.current = check;
-  });
-
   const firstFailIdx = results ? results.findIndex((r) => !r.pass) : -1;
   const firstFail =
     firstFailIdx >= 0
@@ -352,151 +328,146 @@ function WorkshopStepView({
 
   const isLast = stepIdx === total - 1;
 
-  return (
-    <div className="h-full w-full flex flex-col md:flex-row gap-4">
-      {/* LEFT column: header row (step counter + Check/Restart) above the editor. */}
-      <div className="flex-1 flex flex-col min-h-0 gap-2">
-        <div className="flex flex-wrap items-center gap-3">
-          <StepCounter
-            total={total}
-            stepIdx={stepIdx}
-            completed={completed}
-            onJump={onJump}
-          />
-          <div className="ml-auto flex gap-2">
-            <button
-              onClick={check}
-              title={t(ui.workshopCheckShortcut, lang)}
-              className="px-3 py-1.5 rounded-lg text-white text-sm font-medium
-                         bg-amber-500 hover:bg-amber-600
-                         dark:bg-indigo-500 dark:hover:bg-indigo-400"
-            >
-              {t(ui.check, lang)}
-            </button>
-            <button
-              onClick={restartStep}
-              className="px-3 py-1.5 rounded-lg text-sm
-                         bg-stone-100 hover:bg-stone-200 text-stone-700
-                         dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white"
-            >
-              {t(ui.workshopRestartStep, lang)}
-            </button>
-          </div>
-        </div>
-        <div
-          className="flex-1 flex flex-col min-h-0 rounded-2xl overflow-hidden
-                     bg-white ring-1 ring-stone-200 shadow-sm
-                     dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none"
-        >
-          <div
-            className="px-4 py-2 text-xs uppercase tracking-wider border-b
-                       text-amber-600 border-stone-200
-                       dark:text-indigo-300/70 dark:border-white/10"
+  const editorPanel = (
+    <div className="flex-1 flex flex-col min-h-0 gap-2">
+      <div className="flex flex-wrap items-center gap-3">
+        <StepCounter
+          total={total}
+          stepIdx={stepIdx}
+          completed={completed}
+          onJump={onJump}
+        />
+        <div className="ml-auto flex gap-2">
+          <button
+            onClick={check}
+            title={t(ui.workshopCheckShortcut, lang)}
+            className="px-4 py-2 min-h-[44px] sm:min-h-0 sm:px-3 sm:py-1.5 rounded-lg text-white text-sm font-medium
+                       bg-amber-500 hover:bg-amber-600 active:bg-amber-700
+                       dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:active:bg-indigo-600"
           >
-            {t(ui.jsLabel, lang)}
-          </div>
-          <div className="flex-1 min-h-0">
-            <Editor
-              height="100%"
-              language="javascript"
-              theme={isDark ? "vs-dark" : "vs"}
-              value={code}
-              onChange={(v) => setCode(v ?? "")}
-              onMount={(editor, monacoNs) => {
-                editorRef.current = editor as unknown as CodeEditorHandle;
-                editor.addCommand(
-                  monacoNs.KeyMod.CtrlCmd | monacoNs.KeyCode.Enter,
-                  () => checkRef.current()
-                );
-                // Land cursor on the typing line and focus so the student
-                // can start typing immediately on first mount and after an
-                // auto-advance (the inner component remounts per step).
-                editor.setPosition(seed.cursor);
-                editor.revealPositionInCenter(seed.cursor);
-                editor.focus();
-              }}
-              options={{
-                minimap: { enabled: false },
-                fontSize: codePx,
-                scrollBeyondLastLine: false,
-                wordWrap: "on",
-                tabSize: 2,
-                automaticLayout: true,
-                lineNumbers: "on",
-                renderLineHighlight: "line",
-              }}
-            />
-          </div>
+            {t(ui.check, lang)}
+          </button>
+          <button
+            onClick={restartStep}
+            className="px-4 py-2 min-h-[44px] sm:min-h-0 sm:px-3 sm:py-1.5 rounded-lg text-sm
+                       bg-stone-100 hover:bg-stone-200 active:bg-stone-300 text-stone-700
+                       dark:bg-slate-700 dark:hover:bg-slate-600 dark:active:bg-slate-800 dark:text-white"
+          >
+            {t(ui.workshopRestartStep, lang)}
+          </button>
         </div>
       </div>
-
-      {/* RIGHT column: instructions + status */}
       <div
-        className="flex-1 min-h-0 overflow-y-auto rounded-2xl
+        className="flex-1 flex flex-col min-h-0 rounded-2xl overflow-hidden
                    bg-white ring-1 ring-stone-200 shadow-sm
                    dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none"
       >
-        <div className="px-5 pt-5 pb-4 border-b border-stone-200 dark:border-white/10">
-          <SlideTitleRow breadcrumb={breadcrumb}>
-            <h2 className="text-xl sm:text-2xl font-semibold text-stone-900 dark:text-indigo-50">
-              {t(slide.title, lang)}
-            </h2>
-            <SlideFontSizeControl />
-            <ThemeToggleInline />
-          </SlideTitleRow>
-          <div className="flex items-end justify-between gap-4 mt-2">
-            <p
-              className="text-stone-600 dark:text-indigo-200/80 whitespace-pre-line flex-1 min-w-0"
-              style={{ fontSize: `${prosePx}px` }}
-            >
-              {t(slide.prompt, lang)}
-            </p>
-            {slideJumpDots}
-          </div>
+        <div
+          className="px-4 py-2 text-xs uppercase tracking-wider border-b
+                     text-amber-600 border-stone-200
+                     dark:text-indigo-300/70 dark:border-white/10"
+        >
+          {t(ui.jsLabel, lang)}
         </div>
-
-        <div className="px-5 py-4 border-b border-stone-200 dark:border-white/10">
-          <div
-            className="text-xs uppercase tracking-wider mb-2
-                       text-amber-600 dark:text-indigo-300/70"
-          >
-            {t(ui.workshopStepLabel, lang)} {stepIdx + 1} / {total}
-          </div>
-          <p
-            className="text-stone-700 dark:text-indigo-100 whitespace-pre-line"
-            style={{ fontSize: `${prosePx}px` }}
-          >
-            {t(step.instruction, lang)}
-          </p>
-        </div>
-
-        <div className="p-5" style={{ fontSize: `${prosePx}px` }}>
-          {results === null && (
-            <div className="text-stone-500 dark:text-indigo-200/60 italic">
-              {t(ui.workshopCheckHint, lang)}
-            </div>
-          )}
-          {allPass && (
-            <div
-              className="rounded-xl px-4 py-3 font-medium
-                         bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200
-                         dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-400/30"
-            >
-              {isLast
-                ? t(ui.workshopAllStepsPass, lang)
-                : t(ui.workshopStepPassAdvancing, lang)}
-            </div>
-          )}
-          {!allPass && firstFail && (
-            <FailureMessage
-              check={firstFail.check}
-              result={firstFail.result}
-              lang={lang}
-            />
-          )}
+        <div className="flex-1 min-h-0">
+          <CodeEditor
+            language="javascript"
+            value={code}
+            onChange={setCode}
+            fontSize={codePx}
+            onSubmit={check}
+            onMount={(handle) => {
+              editorRef.current = handle;
+              // Land cursor on the typing line and focus so the student
+              // can start typing immediately on first mount and after an
+              // auto-advance (the inner component remounts per step).
+              handle.setPosition(seed.cursor);
+              handle.revealPositionInCenter(seed.cursor);
+              handle.focus();
+            }}
+          />
         </div>
       </div>
     </div>
+  );
+
+  const instructionsPanel = (
+    <div
+      className="flex-1 min-h-0 overflow-y-auto rounded-2xl
+                 bg-white ring-1 ring-stone-200 shadow-sm
+                 dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none"
+    >
+      <div className="px-5 pt-5 pb-4 border-b border-stone-200 dark:border-white/10">
+        <SlideTitleRow breadcrumb={breadcrumb}>
+          <h2 className="text-xl sm:text-2xl font-semibold text-stone-900 dark:text-indigo-50">
+            {t(slide.title, lang)}
+          </h2>
+          <SlideFontSizeControl />
+          <ThemeToggleInline />
+        </SlideTitleRow>
+        <div className="flex items-end justify-between gap-4 mt-2">
+          <p
+            className="text-stone-600 dark:text-indigo-200/80 whitespace-pre-line flex-1 min-w-0"
+            style={{ fontSize: `${prosePx}px` }}
+          >
+            {t(slide.prompt, lang)}
+          </p>
+          {slideJumpDots}
+        </div>
+      </div>
+
+      <div className="px-5 py-4 border-b border-stone-200 dark:border-white/10">
+        <div
+          className="text-xs uppercase tracking-wider mb-2
+                     text-amber-600 dark:text-indigo-300/70"
+        >
+          {t(ui.workshopStepLabel, lang)} {stepIdx + 1} / {total}
+        </div>
+        <p
+          className="text-stone-700 dark:text-indigo-100 whitespace-pre-line"
+          style={{ fontSize: `${prosePx}px` }}
+        >
+          {t(step.instruction, lang)}
+        </p>
+      </div>
+
+      <div className="p-5" style={{ fontSize: `${prosePx}px` }}>
+        {results === null && (
+          <div className="text-stone-500 dark:text-indigo-200/60 italic">
+            {t(ui.workshopCheckHint, lang)}
+          </div>
+        )}
+        {allPass && (
+          <div
+            className="rounded-xl px-4 py-3 font-medium
+                       bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200
+                       dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-400/30"
+          >
+            {isLast
+              ? t(ui.workshopAllStepsPass, lang)
+              : t(ui.workshopStepPassAdvancing, lang)}
+          </div>
+        )}
+        {!allPass && firstFail && (
+          <FailureMessage
+            check={firstFail.check}
+            result={firstFail.result}
+            lang={lang}
+          />
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <TwoColumnLayout
+      className="h-full w-full"
+      leftLabel={t(ui.tabCode, lang)}
+      rightLabel={t(ui.tabInstructions, lang)}
+      desktopGap="gap-4"
+      left={editorPanel}
+      right={instructionsPanel}
+    />
   );
 }
 

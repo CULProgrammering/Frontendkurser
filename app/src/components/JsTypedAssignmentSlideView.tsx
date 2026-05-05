@@ -16,6 +16,7 @@ import { sessionGet, sessionSet } from "../storage";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
 import { ThemeToggleInline } from "./ThemeToggle";
 import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
+import { TwoColumnLayout } from "./TwoColumnLayout";
 
 type Props = {
   slide: JsTypedAssignmentSlide;
@@ -124,6 +125,136 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
     return null;
   })();
 
+  // Code panel — used in both branches (with and without allegory). Extracted
+  // here so we don't duplicate the JSX in two sub-trees.
+  const codePanel = (
+    <div className="flex-1 flex flex-col rounded-2xl overflow-hidden min-h-0
+                    bg-white ring-1 ring-stone-200 shadow-sm
+                    dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
+      <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
+                      text-amber-600 border-stone-200
+                      dark:text-indigo-300/70 dark:border-white/10">
+        {t(ui.jsLabel, lang)}
+      </div>
+      {slide.varNames.length > 0 && (
+        <div
+          className="font-mono px-4 pt-3 pb-1 select-none border-b
+                     text-stone-500 bg-stone-100 border-stone-200
+                     dark:text-indigo-200/60 dark:bg-slate-900/40 dark:border-white/10"
+          aria-label="declared variables"
+          style={{ fontSize: `${codePx}px` }}
+        >
+          {slide.varNames.map((name) => {
+            const value = displayedVars[name];
+            return (
+              <div key={name}>{`let ${name} = ${formatPrimitive(value)};`}</div>
+            );
+          })}
+        </div>
+      )}
+      <div
+        className="flex-1 font-mono p-4 whitespace-pre-wrap break-words overflow-auto
+                   bg-slate-900 text-indigo-50 dark:bg-slate-950"
+        style={{ fontSize: `${codePx}px` }}
+      >
+        {segments.map((seg, i) =>
+          seg.kind === "text" ? (
+            <span key={i}>{seg.text}</span>
+          ) : (
+            <SlotInput
+              key={i}
+              value={values[seg.id] ?? ""}
+              onChange={(v) =>
+                setValues((prev) => ({ ...prev, [seg.id]: v }))
+              }
+            />
+          )
+        )}
+      </div>
+      <div className="flex flex-wrap gap-2 p-3 border-t border-stone-200 dark:border-white/10">
+        <button
+          onClick={runChecks}
+          className="px-4 py-2 min-h-[44px] sm:min-h-0 sm:px-3 sm:py-1.5 rounded-lg text-white text-sm font-medium
+                     bg-amber-500 hover:bg-amber-600 active:bg-amber-700
+                     dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:active:bg-indigo-600"
+        >
+          {t(ui.check, lang)}
+        </button>
+        <button
+          onClick={reset}
+          className="px-4 py-2 min-h-[44px] sm:min-h-0 sm:px-3 sm:py-1.5 rounded-lg text-sm
+                     bg-stone-100 hover:bg-stone-200 active:bg-stone-300 text-stone-700
+                     dark:bg-slate-700 dark:hover:bg-slate-600 dark:active:bg-slate-800 dark:text-white"
+        >
+          {t(ui.reset, lang)}
+        </button>
+        {hasLegend && (
+          <button
+            onClick={() => setShowLegend((v) => !v)}
+            className="ml-auto px-4 py-2 min-h-[44px] sm:min-h-0 sm:px-3 sm:py-1.5 rounded-lg text-sm ring-1
+                       bg-amber-100 hover:bg-amber-200 active:bg-amber-300 text-amber-800 ring-amber-300
+                       dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:active:bg-amber-500/40 dark:text-amber-200 dark:ring-amber-400/30"
+          >
+            {t(showLegend ? ui.hideHelp : ui.showHelp, lang)}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+
+  const scenePanel = slide.allegory ? (
+    <div className="flex-1 flex flex-col rounded-2xl overflow-hidden min-h-0
+                    bg-white ring-1 ring-stone-200 shadow-sm
+                    dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
+      <div className="flex-1 min-h-0">
+        <SceneMount
+          allegory={slide.allegory}
+          run={focusedRun}
+          replayKey={replayKey}
+          lang={lang}
+        />
+      </div>
+
+      {runs && allPass && (
+        <div
+          className="border-t border-stone-200 dark:border-white/10 px-4 py-3
+                        font-medium text-emerald-700 dark:text-emerald-300"
+          style={{ fontSize: `${prosePx}px` }}
+        >
+          {t({ en: "✓ Done", sv: "✓ Klart" }, lang)}
+        </div>
+      )}
+      {runs && !allPass && runtimeError && (
+        <div
+          className="border-t border-stone-200 dark:border-white/10 px-4 py-3
+                        bg-rose-50 text-rose-800
+                        dark:bg-rose-500/10 dark:text-rose-200"
+          style={{ fontSize: `${prosePx}px` }}
+        >
+          <div className="font-medium mb-1">
+            {t(
+              {
+                en: "The code couldn't run — check for typos:",
+                sv: "Koden kunde inte köras — kolla efter typo:",
+              },
+              lang
+            )}
+          </div>
+          <div className="font-mono text-xs">{runtimeError}</div>
+        </div>
+      )}
+      {runs && !allPass && !runtimeError && slide.goalHint && (
+        <div
+          className="border-t border-stone-200 dark:border-white/10 px-4 py-3
+                        text-stone-600 dark:text-indigo-200/80"
+          style={{ fontSize: `${prosePx}px` }}
+        >
+          {t(slide.goalHint, lang)}
+        </div>
+      )}
+    </div>
+  ) : null;
+
   return (
     <div className="h-full w-full max-w-7xl mx-auto flex flex-col">
       <div className="px-4 sm:px-10 pt-4 sm:pt-8">
@@ -142,135 +273,19 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
         </div>
       </div>
 
-      <div className={"flex-1 grid gap-6 px-4 sm:px-10 py-3 sm:py-6 min-h-0 " + (slide.allegory ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1")}>
-        {/* Code panel with embedded inputs */}
-        <div className="flex flex-col rounded-2xl overflow-hidden
-                        bg-white ring-1 ring-stone-200 shadow-sm
-                        dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
-          <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
-                          text-amber-600 border-stone-200
-                          dark:text-indigo-300/70 dark:border-white/10">
-            {t(ui.jsLabel, lang)}
-          </div>
-          {slide.varNames.length > 0 && (
-            <div
-              className="font-mono px-4 pt-3 pb-1 select-none border-b
-                         text-stone-500 bg-stone-100 border-stone-200
-                         dark:text-indigo-200/60 dark:bg-slate-900/40 dark:border-white/10"
-              aria-label="declared variables"
-              style={{ fontSize: `${codePx}px` }}
-            >
-              {slide.varNames.map((name) => {
-                const value = displayedVars[name];
-                return (
-                  <div key={name}>{`let ${name} = ${formatPrimitive(value)};`}</div>
-                );
-              })}
-            </div>
-          )}
-          <div
-            className="flex-1 font-mono p-4 whitespace-pre overflow-auto
-                       bg-slate-900 text-indigo-50 dark:bg-slate-950"
-            style={{ fontSize: `${codePx}px` }}
-          >
-            {segments.map((seg, i) =>
-              seg.kind === "text" ? (
-                <span key={i}>{seg.text}</span>
-              ) : (
-                <SlotInput
-                  key={i}
-                  value={values[seg.id] ?? ""}
-                  onChange={(v) =>
-                    setValues((prev) => ({ ...prev, [seg.id]: v }))
-                  }
-                />
-              )
-            )}
-          </div>
-          <div className="flex gap-2 p-3 border-t border-stone-200 dark:border-white/10">
-            <button
-              onClick={runChecks}
-              className="px-3 py-1.5 rounded-lg text-white text-sm font-medium
-                         bg-amber-500 hover:bg-amber-600
-                         dark:bg-indigo-500 dark:hover:bg-indigo-400"
-            >
-              {t(ui.check, lang)}
-            </button>
-            <button
-              onClick={reset}
-              className="px-3 py-1.5 rounded-lg text-sm
-                         bg-stone-100 hover:bg-stone-200 text-stone-700
-                         dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white"
-            >
-              {t(ui.reset, lang)}
-            </button>
-            {hasLegend && (
-              <button
-                onClick={() => setShowLegend((v) => !v)}
-                className="ml-auto px-3 py-1.5 rounded-lg text-sm ring-1
-                           bg-amber-100 hover:bg-amber-200 text-amber-800 ring-amber-300
-                           dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:text-amber-200 dark:ring-amber-400/30"
-              >
-                {t(showLegend ? ui.hideHelp : ui.showHelp, lang)}
-              </button>
-            )}
-          </div>
+      {scenePanel ? (
+        <TwoColumnLayout
+          className="flex-1 px-4 sm:px-10 py-3 sm:py-6"
+          leftLabel={t(ui.tabCode, lang)}
+          rightLabel={t(ui.tabVisual, lang)}
+          left={codePanel}
+          right={scenePanel}
+        />
+      ) : (
+        <div className="flex-1 px-4 sm:px-10 py-3 sm:py-6 min-h-0 flex flex-col">
+          {codePanel}
         </div>
-
-        {/* Scene + status (only if allegory) */}
-        {slide.allegory && (
-          <div className="flex flex-col rounded-2xl overflow-hidden min-h-0
-                          bg-white ring-1 ring-stone-200 shadow-sm
-                          dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
-            <div className="flex-1 min-h-0">
-              <SceneMount
-                allegory={slide.allegory}
-                run={focusedRun}
-                replayKey={replayKey}
-                lang={lang}
-              />
-            </div>
-
-            {runs && allPass && (
-              <div
-                className="border-t border-stone-200 dark:border-white/10 px-4 py-3
-                              font-medium text-emerald-700 dark:text-emerald-300"
-                style={{ fontSize: `${prosePx}px` }}
-              >
-                {t({ en: "✓ Done", sv: "✓ Klart" }, lang)}
-              </div>
-            )}
-            {runs && !allPass && runtimeError && (
-              <div
-                className="border-t border-stone-200 dark:border-white/10 px-4 py-3
-                              bg-rose-50 text-rose-800
-                              dark:bg-rose-500/10 dark:text-rose-200"
-                style={{ fontSize: `${prosePx}px` }}
-              >
-                <div className="font-medium mb-1">
-                  {t(
-                    {
-                      en: "The code couldn't run — check for typos:",
-                      sv: "Koden kunde inte köras — kolla efter typo:",
-                    },
-                    lang
-                  )}
-                </div>
-                <div className="font-mono text-xs">{runtimeError}</div>
-              </div>
-            )}
-            {runs && !allPass && !runtimeError && slide.goalHint && (
-              <div
-                className="border-t border-stone-200 dark:border-white/10 px-4 py-3
-                              text-stone-600 dark:text-indigo-200/80"
-                style={{ fontSize: `${prosePx}px` }}
-              >
-                {t(slide.goalHint, lang)}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+      )}
 
       {/* Status row when there's no allegory column */}
       {!slide.allegory && runs && (

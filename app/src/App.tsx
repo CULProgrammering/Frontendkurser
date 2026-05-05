@@ -297,8 +297,8 @@ function TopicGrid({
             key={topic.id}
             onClick={() => onPick(topic)}
             className="text-left rounded-2xl p-5 transition-all
-                       bg-white ring-1 ring-stone-200 hover:ring-amber-400 shadow-sm hover:shadow
-                       dark:bg-slate-900/60 dark:ring-white/10 dark:hover:ring-indigo-400/50 dark:shadow-none"
+                       bg-white ring-1 ring-stone-200 hover:ring-amber-400 active:ring-amber-500 shadow-sm hover:shadow active:scale-[0.99]
+                       dark:bg-slate-900/60 dark:ring-white/10 dark:hover:ring-indigo-400/50 dark:active:ring-indigo-400 dark:shadow-none"
           >
             <div className="text-lg font-semibold text-stone-900 dark:text-indigo-50">
               {t(topic.title, lang)}
@@ -344,8 +344,8 @@ function LessonGrid({
             key={lesson.id}
             onClick={() => onPick(lesson)}
             className="text-left rounded-2xl p-5 transition-all relative
-                       bg-white ring-1 ring-stone-200 hover:ring-amber-400 shadow-sm hover:shadow
-                       dark:bg-slate-900/60 dark:ring-white/10 dark:hover:ring-indigo-400/50 dark:shadow-none"
+                       bg-white ring-1 ring-stone-200 hover:ring-amber-400 active:ring-amber-500 shadow-sm hover:shadow active:scale-[0.99]
+                       dark:bg-slate-900/60 dark:ring-white/10 dark:hover:ring-indigo-400/50 dark:active:ring-indigo-400 dark:shadow-none"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="text-lg font-semibold text-stone-900 dark:text-indigo-50">

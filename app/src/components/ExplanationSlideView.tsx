@@ -8,6 +8,7 @@ import { ui } from "../i18n/strings";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
 import { ThemeToggleInline } from "./ThemeToggle";
 import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
+import { TwoColumnLayout } from "./TwoColumnLayout";
 import { CrosswalkScene } from "./scenes/CrosswalkScene";
 import { CrosswalkTraceScene } from "./scenes/CrosswalkTraceScene";
 import { ComparisonsTableScene } from "./scenes/ComparisonsTableScene";
@@ -255,56 +256,62 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots }: Props
       {isCodeTrace && <div className="px-4 sm:px-10 pt-4 sm:pt-8">{titleBlock}</div>}
 
       {isCodeTrace ? (
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 px-4 sm:px-10 py-4 sm:py-8 min-h-0">
-          <div className="flex items-center justify-center overflow-auto p-2">
-            <CustomScene id={slide.customScene!} step={step} />
-          </div>
-
-          <div className="rounded-2xl p-6 flex flex-col
-                          bg-white ring-1 ring-stone-200 shadow-sm
-                          dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
-            <div className="flex items-center justify-between mb-2">
-              <div className="text-xs uppercase tracking-wider text-amber-600 dark:text-indigo-300/70">
-                {t(ui.stepLabel, lang)} {step + 1} / {slide.steps.length}
+        <TwoColumnLayout
+          className="flex-1 px-4 sm:px-10 py-4 sm:py-8"
+          desktopGap="gap-6"
+          leftLabel={t(ui.tabCode, lang)}
+          rightLabel={t(ui.tabStory, lang)}
+          initialTab="right"
+          left={
+            <div className="flex-1 flex items-center justify-center overflow-auto p-2 min-h-0">
+              <CustomScene id={slide.customScene!} step={step} />
+            </div>
+          }
+          right={
+            <div className="flex-1 flex flex-col rounded-2xl p-6 min-h-0
+                            bg-white ring-1 ring-stone-200 shadow-sm
+                            dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-xs uppercase tracking-wider text-amber-600 dark:text-indigo-300/70">
+                  {t(ui.stepLabel, lang)} {step + 1} / {slide.steps.length}
+                </div>
+                {!atStart && (
+                  <button
+                    onClick={back}
+                    className="text-xs px-3 py-2 min-h-[44px] sm:min-h-0 sm:px-2 sm:py-1 rounded-md
+                               bg-stone-100 hover:bg-stone-200 active:bg-stone-300 text-stone-700 ring-1 ring-stone-200
+                               dark:bg-slate-700/70 dark:hover:bg-slate-600 dark:active:bg-slate-800 dark:text-indigo-100 dark:ring-white/10"
+                  >
+                    {t(ui.stepBack, lang)}
+                  </button>
+                )}
               </div>
-              {!atStart && (
-                <button
-                  onClick={back}
-                  className="text-xs px-2 py-1 rounded-md
-                             bg-stone-100 hover:bg-stone-200 text-stone-700 ring-1 ring-stone-200
-                             dark:bg-slate-700/70 dark:hover:bg-slate-600 dark:text-indigo-100 dark:ring-white/10"
-                >
-                  {t(ui.stepBack, lang)}
-                </button>
-              )}
-            </div>
-            <div
-              className="leading-relaxed min-h-[6rem] whitespace-pre-line text-stone-800 dark:text-indigo-50"
-              style={{ fontSize: `${prosePx}px` }}
-            >
-              {current?.narration ? (
-                <Typewriter text={collapseSoftBreaks(t(current.narration, lang))} />
-              ) : (
-                <span className="text-stone-400 dark:text-indigo-200/50 italic">…</span>
-              )}
-            </div>
+              <div
+                className="leading-relaxed min-h-[6rem] whitespace-pre-line text-stone-800 dark:text-indigo-50"
+                style={{ fontSize: `${prosePx}px` }}
+              >
+                {current?.narration ? (
+                  <Typewriter text={collapseSoftBreaks(t(current.narration, lang))} />
+                ) : (
+                  <span className="text-stone-400 dark:text-indigo-200/50 italic">…</span>
+                )}
+              </div>
 
-            <div className="flex-1" />
-            <div className="text-sm text-stone-500 dark:text-indigo-200/60">
-              {atEnd
-                ? t(ui.endOfExplanation, lang)
-                : t(ui.clickToContinue, lang)}
+              <div className="flex-1" />
+              <div className="text-sm text-stone-500 dark:text-indigo-200/60">
+                {atEnd
+                  ? t(ui.endOfExplanation, lang)
+                  : t(ui.clickToContinue, lang)}
+              </div>
             </div>
-          </div>
-        </div>
+          }
+        />
       ) : (
         <div className="flex-1 px-4 sm:px-10 pt-4 sm:pt-8 pb-4 sm:pb-8 min-h-0 flex flex-col">
           <div
-            className="mx-auto flex flex-col flex-1 min-h-0 gap-6"
+            className="mx-auto flex flex-col flex-1 min-h-0 gap-6 w-full"
             style={{
-              width: "max-content",
-              minWidth: "min(64rem, 100%)",
-              maxWidth: "100%",
+              maxWidth: "min(64rem, 100%)",
             }}
           >
             <div>{titleBlock}</div>
@@ -319,9 +326,9 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots }: Props
                 {!atStart && (
                   <button
                     onClick={back}
-                    className="text-xs px-2 py-1 rounded-md
-                               bg-stone-100 hover:bg-stone-200 text-stone-700 ring-1 ring-stone-200
-                               dark:bg-slate-700/70 dark:hover:bg-slate-600 dark:text-indigo-100 dark:ring-white/10"
+                    className="text-xs px-3 py-2 min-h-[44px] sm:min-h-0 sm:px-2 sm:py-1 rounded-md
+                               bg-stone-100 hover:bg-stone-200 active:bg-stone-300 text-stone-700 ring-1 ring-stone-200
+                               dark:bg-slate-700/70 dark:hover:bg-slate-600 dark:active:bg-slate-800 dark:text-indigo-100 dark:ring-white/10"
                   >
                     {t(ui.stepBack, lang)}
                   </button>
@@ -332,10 +339,10 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots }: Props
                     onClick={openHelp}
                     aria-label={t({ en: "Show tip", sv: "Visa tips" }, lang)}
                     title={t({ en: "Show tip", sv: "Visa tips" }, lang)}
-                    className="w-8 h-8 rounded-full flex items-center justify-center
-                               bg-amber-100 hover:bg-amber-200 text-amber-700
+                    className="w-11 h-11 sm:w-8 sm:h-8 rounded-full flex items-center justify-center
+                               bg-amber-100 hover:bg-amber-200 active:bg-amber-300 text-amber-700
                                ring-1 ring-amber-300 shadow-sm
-                               dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:text-amber-200 dark:ring-amber-400/30
+                               dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:active:bg-amber-500/40 dark:text-amber-200 dark:ring-amber-400/30
                                transition-colors"
                   >
                     <svg
@@ -440,8 +447,8 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots }: Props
                     type="button"
                     onClick={closeHelp}
                     aria-label={t({ en: "Close", sv: "Stäng" }, lang)}
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-lg leading-none
-                               text-stone-500 hover:bg-stone-200 dark:text-indigo-200/70 dark:hover:bg-slate-700"
+                    className="w-11 h-11 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xl sm:text-lg leading-none
+                               text-stone-500 hover:bg-stone-200 active:bg-stone-300 dark:text-indigo-200/70 dark:hover:bg-slate-700 dark:active:bg-slate-800"
                   >
                     ×
                   </button>
