@@ -24,6 +24,12 @@ type Props = {
   /** When provided, the deck shows only that tier's slides. */
   tier?: Tier;
   /**
+   * Optional starting slide index within the (tier-filtered) slides. Used by
+   * the tier menu when the student picks a specific row in a multi-slide tier
+   * card (workshop/exercise) instead of the card as a whole. Defaults to 0.
+   */
+  initialIdx?: number;
+  /**
    * Multi-segment breadcrumb forwarded to each slide view, which renders
    * it just above its title.
    */
@@ -37,8 +43,8 @@ const SWIPE_THRESHOLD = 50;
 // gesture as a scroll, not a swipe.
 const SWIPE_VERT_TOLERANCE = 60;
 
-export function SlideDeck({ courseId, lesson, tier, breadcrumb, onExit }: Props) {
-  const [idx, setIdx] = useState(0);
+export function SlideDeck({ courseId, lesson, tier, initialIdx, breadcrumb, onExit }: Props) {
+  const [idx, setIdx] = useState(initialIdx ?? 0);
   const { lang } = useLang();
 
   const slides = useMemo(
@@ -117,14 +123,14 @@ export function SlideDeck({ courseId, lesson, tier, breadcrumb, onExit }: Props)
   // Empty tier — show breadcrumb-as-fallback on its own.
   if (total === 0) {
     return (
-      <div className="h-full flex flex-col bg-[#faf7f2] dark:bg-slate-950">
+      <div className="h-full flex flex-col bg-[#f6f3ec] dark:bg-[#14161c]">
         {breadcrumb && (
           <div className="px-4 sm:px-10 pt-3">
             <Breadcrumb segments={breadcrumb} />
           </div>
         )}
         <div className="flex-1 min-h-0 flex items-center justify-center">
-          <p className="text-stone-500 dark:text-indigo-200/60 italic">
+          <p className="text-stone-500 dark:text-stone-400 italic">
             {t(ui.tierEmpty, lang)}
           </p>
         </div>
@@ -136,23 +142,45 @@ export function SlideDeck({ courseId, lesson, tier, breadcrumb, onExit }: Props)
   const isLastSlide = idx === total - 1;
   const passHandler = isLastSlide ? onTierPass : undefined;
 
+  // Workshop and exercise tiers historically rendered the slide-jump dots in
+  // the right-pane title row, where they looked like a per-step indicator but
+  // actually swapped the whole workshop/lab. We now lift the dots out for
+  // these two tiers and render them as a labelled, centered row above both
+  // panes ("Workshop X / N" / "Lab X / N") so the navigation is unmistakable.
+  // Other slide kinds keep the inline dots in their title row.
+  const isMultiPick =
+    total > 1 && (slide.kind === "js-workshop" || slide.kind === "exercise");
+  const tierLabel =
+    slide.kind === "js-workshop"
+      ? t(ui.tierLabelWorkshop, lang)
+      : t(ui.tierLabelLab, lang);
   const slideJumpDots =
-    total > 1 ? (
+    total > 1 && !isMultiPick ? (
       <SlideJumpDots total={total} idx={idx} onJump={setIdx} />
     ) : null;
 
   return (
     <div
-      className="h-full flex flex-col bg-[#faf7f2] dark:bg-slate-950"
+      className="h-full flex flex-col bg-[#f6f3ec] dark:bg-[#14161c]"
       onTouchStart={onTouchStart}
       onTouchEnd={onTouchEnd}
     >
+      {isMultiPick && (
+        <div className="px-4 pt-3 pb-1 flex items-center justify-center gap-3">
+          <div className="text-[11px] uppercase tracking-[0.18em] font-mono font-medium text-stone-500 dark:text-stone-400 tabular-nums">
+            {tierLabel} {idx + 1} / {total}
+          </div>
+          <SlideJumpDots total={total} idx={idx} onJump={setIdx} />
+        </div>
+      )}
       <div className="flex-1 min-h-0">
         {slide.kind === "explanation" && (
           <ExplanationSlideView
             slide={slide}
             breadcrumb={breadcrumb}
             slideJumpDots={slideJumpDots}
+            onNextSlide={isLastSlide ? undefined : () => setIdx(idx + 1)}
+            onExit={onExit}
             key={`e-${idx}`}
           />
         )}
@@ -184,6 +212,7 @@ export function SlideDeck({ courseId, lesson, tier, breadcrumb, onExit }: Props)
             slideJumpDots={slideJumpDots}
             key={`c-${idx}`}
             onPass={passHandler}
+            onExit={onExit}
           />
         )}
         {slide.kind === "js-typed-assignment" && (
@@ -204,6 +233,7 @@ export function SlideDeck({ courseId, lesson, tier, breadcrumb, onExit }: Props)
             slideJumpDots={slideJumpDots}
             key={`w-${idx}`}
             onPass={passHandler}
+            onExit={onExit}
           />
         )}
         {slide.kind === "exercise" && (
@@ -234,7 +264,7 @@ export function Breadcrumb({ segments }: { segments: BreadcrumbSegment[] }) {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-stone-500 dark:text-indigo-200/60 min-w-0 flex-wrap"
+      className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-stone-500 dark:text-stone-400 min-w-0 flex-wrap"
     >
       {segments.map((seg, i) => {
         const isLast = i === segments.length - 1;
@@ -254,13 +284,13 @@ export function Breadcrumb({ segments }: { segments: BreadcrumbSegment[] }) {
                   type="button"
                   onClick={() => setExpanded(true)}
                   aria-label="Show full breadcrumb"
-                  className="sm:hidden px-2 min-h-[28px] rounded hover:bg-stone-200 dark:hover:bg-slate-700/60 transition-colors"
+                  className="sm:hidden px-2 min-h-[28px] rounded hover:bg-stone-200 dark:hover:bg-[#252934] transition-colors"
                 >
                   …
                 </button>
                 <span
                   aria-hidden="true"
-                  className="sm:hidden text-stone-300 dark:text-indigo-200/30"
+                  className="sm:hidden text-stone-400 dark:text-stone-500"
                 >
                   ›
                 </span>
@@ -270,7 +300,7 @@ export function Breadcrumb({ segments }: { segments: BreadcrumbSegment[] }) {
               {clickable ? (
                 <button
                   onClick={seg.onNavigate}
-                  className="truncate max-w-[8rem] sm:max-w-[14rem] hover:text-stone-800 dark:hover:text-indigo-100 transition-colors"
+                  className="truncate max-w-[8rem] sm:max-w-[14rem] hover:text-stone-800 dark:hover:text-stone-100 transition-colors"
                 >
                   {seg.label}
                 </button>
@@ -278,7 +308,7 @@ export function Breadcrumb({ segments }: { segments: BreadcrumbSegment[] }) {
                 <span
                   className={
                     "truncate max-w-[10rem] sm:max-w-[18rem] " +
-                    (isLast ? "text-stone-800 dark:text-indigo-100 font-medium" : "")
+                    (isLast ? "text-stone-800 dark:text-stone-100 font-medium" : "")
                   }
                   aria-current={isLast ? "page" : undefined}
                 >
@@ -286,7 +316,7 @@ export function Breadcrumb({ segments }: { segments: BreadcrumbSegment[] }) {
                 </span>
               )}
               {!isLast && (
-                <span aria-hidden="true" className="text-stone-300 dark:text-indigo-200/30">
+                <span aria-hidden="true" className="text-stone-400 dark:text-stone-500">
                   ›
                 </span>
               )}
@@ -316,12 +346,12 @@ function SlideJumpDots({
   const useCompact = total > 6;
 
   const dotClass = (i: number) =>
-    "h-7 w-7 rounded-full text-xs font-medium transition-colors " +
+    "h-7 w-7 rounded-md text-xs font-mono font-medium tabular-nums transition-colors border " +
     (i === idx
-      ? "bg-amber-500 text-white dark:bg-indigo-300 dark:text-slate-900"
+      ? "bg-stone-900 dark:bg-[#F0B274] text-stone-50 dark:text-stone-900 border-transparent"
       : i < idx
-      ? "bg-amber-300 text-white hover:bg-amber-400 dark:bg-indigo-500/60 dark:text-indigo-50 dark:hover:bg-indigo-500/80"
-      : "bg-stone-200 text-stone-600 hover:bg-stone-300 dark:bg-white/20 dark:text-indigo-100 dark:hover:bg-white/30");
+        ? "bg-[#FBE8CF] dark:bg-[#3a2a18] text-[#C97A1F] dark:text-[#F0B274] border-transparent hover:opacity-80"
+        : "bg-transparent text-stone-500 dark:text-stone-400 border-stone-900/[0.12] dark:border-white/[0.10] hover:bg-stone-100 dark:hover:bg-[#252934]");
 
   return (
     <>
@@ -353,9 +383,9 @@ function SlideJumpDots({
             type="button"
             onClick={() => setOpen(true)}
             aria-label="Jump to slide"
-            className="sm:hidden inline-flex items-center gap-1 min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-medium
-                       bg-stone-200 hover:bg-stone-300 text-stone-700
-                       dark:bg-white/20 dark:hover:bg-white/30 dark:text-indigo-100"
+            className="sm:hidden inline-flex items-center gap-1 min-h-[36px] px-3 py-1.5 rounded-lg text-xs font-mono font-medium tabular-nums
+                       bg-white dark:bg-[#1f232c] border border-stone-900/[0.08] dark:border-white/[0.08] text-stone-700 dark:text-stone-200
+                       hover:bg-stone-50 dark:hover:bg-[#252934]"
           >
             {idx + 1} / {total} ▾
           </button>
@@ -369,9 +399,9 @@ function SlideJumpDots({
               }}
               className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:hidden"
             >
-              <div className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 shadow-xl ring-1 ring-stone-200 dark:ring-white/10 p-4 mb-4">
+              <div className="w-full max-w-md rounded-2xl bg-white dark:bg-[#1f232c] shadow-xl border border-stone-900/[0.08] dark:border-white/[0.08] p-4 mb-4">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="text-xs uppercase tracking-wider text-stone-500 dark:text-indigo-200/70">
+                  <div className="text-[10px] uppercase tracking-[0.18em] font-mono text-stone-500 dark:text-stone-400">
                     Slide {idx + 1} / {total}
                   </div>
                   <button
@@ -379,8 +409,8 @@ function SlideJumpDots({
                     onClick={() => setOpen(false)}
                     aria-label="Close"
                     className="w-11 h-11 rounded-full text-xl leading-none
-                               text-stone-500 hover:bg-stone-200
-                               dark:text-indigo-200/70 dark:hover:bg-slate-700"
+                               text-stone-500 hover:bg-stone-100
+                               dark:text-stone-400 dark:hover:bg-[#252934]"
                   >
                     ×
                   </button>
@@ -396,12 +426,12 @@ function SlideJumpDots({
                       aria-label={`Go to slide ${i + 1}`}
                       aria-current={i === idx ? "step" : undefined}
                       className={
-                        "h-11 rounded-lg text-sm font-medium transition-colors " +
+                        "h-11 rounded-lg text-sm font-mono font-medium tabular-nums transition-colors border " +
                         (i === idx
-                          ? "bg-amber-500 text-white dark:bg-indigo-300 dark:text-slate-900"
+                          ? "bg-stone-900 dark:bg-[#F0B274] text-stone-50 dark:text-stone-900 border-transparent"
                           : i < idx
-                          ? "bg-amber-300 text-white dark:bg-indigo-500/60 dark:text-indigo-50"
-                          : "bg-stone-200 text-stone-600 dark:bg-white/20 dark:text-indigo-100")
+                            ? "bg-[#FBE8CF] dark:bg-[#3a2a18] text-[#C97A1F] dark:text-[#F0B274] border-transparent"
+                            : "bg-transparent text-stone-600 dark:text-stone-300 border-stone-900/[0.12] dark:border-white/[0.10]")
                       }
                     >
                       {i + 1}
@@ -417,7 +447,16 @@ function SlideJumpDots({
   );
 }
 
-/** Convenience — breadcrumb + flex row of the title and inline controls. */
+/** Convenience — breadcrumb + flex row of the title and inline controls.
+ *
+ * Stops click propagation: ExplanationSlideView wraps its whole pane in
+ * `onClick={advance}` so clicking outside controls advances the slide.
+ * Without this guard, clicking the theme toggle / font-size pill /
+ * typewriter toggle / breadcrumb would also advance — that surprised
+ * the student the first time they reached for the toggle. Stopping
+ * propagation on the title row keeps "click anywhere to continue"
+ * intuitive while still letting controls do their thing.
+ */
 export function SlideTitleRow({
   breadcrumb,
   children,
@@ -426,7 +465,7 @@ export function SlideTitleRow({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1" onClick={(e) => e.stopPropagation()}>
       {breadcrumb && <Breadcrumb segments={breadcrumb} />}
       <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:gap-3 sm:flex-wrap">
         {children}

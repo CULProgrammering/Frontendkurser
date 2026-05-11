@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { JsWorkshopSlide, WorkshopCheck, WorkshopStep } from "../types";
 import {
-  runWorkshopChecks,
+  runWorkshopChecksWithConsole,
   type CheckResult,
+  type ConsoleEntry,
 } from "../runtime/workshopRunner";
 import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
@@ -11,11 +12,12 @@ import { ui } from "../i18n/strings";
 import { sessionGet, sessionSet } from "../storage";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
 import { ThemeToggleInline } from "./ThemeToggle";
+import { FlexibilityHelpButton } from "./FlexibilityHelpButton";
 import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
 import { CodeEditor, type CodeEditorHandle } from "./CodeEditor";
 import { TwoColumnLayout } from "./TwoColumnLayout";
-
-const AUTO_ADVANCE_MS = 1200;
+import { WindowedStepCounter } from "./WindowedStepCounter";
+import { tokens } from "../styles/tokens";
 
 /**
  * Prepare the seed for a step: produce the editor's initial value plus a
@@ -91,6 +93,19 @@ type Props = {
   breadcrumb?: BreadcrumbSegment[];
   slideJumpDots?: React.ReactNode;
   onPass?: () => void;
+  /**
+   * Called when the student finishes the final step and clicks the Back
+   * button (or fires Ctrl+Enter once already on the completed last step).
+   * Routes them back to the lesson's tier menu — better than hunting for
+   * the breadcrumb when you've just earned a green checkmark.
+   */
+  onExit?: () => void;
+  /**
+   * Starting step index. Defaults to 0. Set when the caller wants the
+   * student to land on a specific step — e.g. walkthrough step grid on
+   * the topic view picks step N and routes here with initialIdx=N.
+   */
+  initialIdx?: number;
 };
 
 /**
@@ -100,34 +115,28 @@ type Props = {
  * fully remounts).
  *
  * Outer (this) component owns: which step is active, which steps the student
- * has cleared in this session, the auto-advance timer, and the step counter.
- * The inner WorkshopStepView owns its own code/results state and renders the
- * Check / Restart-step buttons in a row above the editor (right-aligned over
- * the editor column).
+ * has cleared in this session, and the step counter. The inner
+ * WorkshopStepView owns its own code/results/console state and renders Check
+ * / Restart-step / Next-step buttons. There is no auto-advance — the student
+ * always clicks Next themselves, so they can review the console output before
+ * moving on.
  */
-export function JsWorkshopSlideView({ slide, storageKey, breadcrumb, slideJumpDots, onPass }: Props) {
+export function JsWorkshopSlideView({ slide, storageKey, breadcrumb, slideJumpDots, onPass, onExit, initialIdx }: Props) {
   const { lang } = useLang();
-  const [stepIdx, setStepIdx] = useState(0);
+  const [stepIdx, setStepIdx] = useState(() =>
+    typeof initialIdx === "number"
+      ? Math.max(0, Math.min(initialIdx, slide.steps.length - 1))
+      : 0,
+  );
   const [completed, setCompleted] = useState<Set<number>>(() => new Set());
-  const advanceTimer = useRef<number | null>(null);
 
   const total = slide.steps.length;
   const step: WorkshopStep | undefined = slide.steps[stepIdx];
 
-  // Cancel a pending auto-advance whenever the user navigates manually.
-  useEffect(() => {
-    return () => {
-      if (advanceTimer.current !== null) {
-        window.clearTimeout(advanceTimer.current);
-        advanceTimer.current = null;
-      }
-    };
-  }, [stepIdx]);
-
   if (!step) {
     return (
       <div className="h-full flex items-center justify-center px-6">
-        <p className="text-stone-500 dark:text-indigo-200/60 italic">
+        <p className="text-stone-500 dark:text-stone-400 italic">
           {t(ui.tierEmpty, lang)}
         </p>
       </div>
@@ -143,31 +152,17 @@ export function JsWorkshopSlideView({ slide, storageKey, breadcrumb, slideJumpDo
       next.add(stepIdx);
       return next;
     });
-
     if (isLast) {
       onPass?.();
-      return;
     }
-
-    if (advanceTimer.current !== null) {
-      window.clearTimeout(advanceTimer.current);
-    }
-    advanceTimer.current = window.setTimeout(() => {
-      advanceTimer.current = null;
-      setStepIdx((i) => Math.min(i + 1, total - 1));
-    }, AUTO_ADVANCE_MS);
   };
 
-  const goToStep = (i: number) => {
-    if (advanceTimer.current !== null) {
-      window.clearTimeout(advanceTimer.current);
-      advanceTimer.current = null;
-    }
-    setStepIdx(i);
+  const advanceToNext = () => {
+    setStepIdx((i) => Math.min(i + 1, total - 1));
   };
 
   return (
-    <div className="h-full w-full flex flex-col p-4 sm:p-5 max-w-7xl mx-auto">
+    <div className="h-full w-full flex flex-col p-4 sm:p-5 max-w-[min(1700px,92vw)] mx-auto">
       <div className="flex-1 min-h-0">
         <WorkshopStepView
           key={step.id}
@@ -176,62 +171,24 @@ export function JsWorkshopSlideView({ slide, storageKey, breadcrumb, slideJumpDo
           stepIdx={stepIdx}
           total={total}
           completed={completed}
-          onJump={goToStep}
+          onJump={setStepIdx}
           storageKey={`${storageKey}:step:${step.id}`}
           lang={lang}
           breadcrumb={breadcrumb}
           slideJumpDots={slideJumpDots}
           onPass={handleStepPass}
+          onAdvance={advanceToNext}
+          onExit={onExit}
         />
       </div>
     </div>
   );
 }
 
-function StepCounter({
-  total,
-  stepIdx,
-  completed,
-  onJump,
-}: {
-  total: number;
-  stepIdx: number;
-  completed: Set<number>;
-  onJump: (i: number) => void;
-}) {
-  if (total <= 1) return null;
-  return (
-    <div
-      className="flex flex-wrap items-center gap-1.5"
-      aria-label="Workshop step progress"
-    >
-      {Array.from({ length: total }).map((_, i) => {
-        const isCurrent = i === stepIdx;
-        const isDone = completed.has(i);
-        return (
-          <button
-            key={i}
-            onClick={() => onJump(i)}
-            aria-label={`Go to step ${i + 1}`}
-            aria-current={isCurrent ? "step" : undefined}
-            className={
-              "h-9 w-9 sm:h-7 sm:w-7 rounded-full text-sm sm:text-xs font-medium transition-colors " +
-              (isCurrent
-                ? "bg-amber-500 text-white dark:bg-indigo-300 dark:text-slate-900"
-                : isDone
-                ? "bg-emerald-400 text-white hover:bg-emerald-500 active:bg-emerald-600 dark:bg-emerald-500/70 dark:text-emerald-50 dark:hover:bg-emerald-500/90"
-                : "bg-stone-200 text-stone-600 hover:bg-stone-300 active:bg-stone-400 dark:bg-white/20 dark:text-indigo-100 dark:hover:bg-white/30")
-            }
-          >
-            {/* Done shows ✓ regardless of current — so the last step also flips
-                to ✓ when its onPass fires (instead of staying on its number). */}
-            {isDone ? "✓" : i + 1}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
+// Step counter is centralised in WindowedStepCounter — handles both the
+// 4-step lesson workshop case (flat dots, no windowing) and the 20+ step
+// walkthrough case (windowed with edge-aware suppression). See its file
+// for the threshold and algorithm.
 
 function WorkshopStepView({
   slide,
@@ -245,6 +202,8 @@ function WorkshopStepView({
   breadcrumb,
   slideJumpDots,
   onPass,
+  onAdvance,
+  onExit,
 }: {
   slide: JsWorkshopSlide;
   step: WorkshopStep;
@@ -257,8 +216,20 @@ function WorkshopStepView({
   breadcrumb?: BreadcrumbSegment[];
   slideJumpDots?: React.ReactNode;
   onPass: () => void;
+  onAdvance: () => void;
+  onExit?: () => void;
 }) {
+  // Sticky completion: once the student has passed this step in this session,
+  // the Next-step button stays available even if they later edit the code in
+  // a way that breaks the checks. Lets them play / experiment freely without
+  // losing their place.
+  const isCompleted = completed.has(stepIdx);
   const { codePx, prosePx } = useSlideFontSize();
+  // Hint is collapsed by default — students see only the directional
+  // instruction. Click "Hint" to reveal the literal answer or a fuller nudge
+  // (authored on the step). Per-step component remounts via `key={step.id}`,
+  // so the hint state resets when the student moves to the next step.
+  const [hintShown, setHintShown] = useState(false);
 
   // Prepare the seed: if the last `// ...` comment line is followed by a
   // closing brace (or otherwise non-empty line), insert a blank line just
@@ -275,11 +246,30 @@ function WorkshopStepView({
     () => sessionGet(storageKey) ?? seedCode
   );
   const [results, setResults] = useState<CheckResult[] | null>(null);
+  const [consoleLogs, setConsoleLogs] = useState<ConsoleEntry[]>([]);
   const editorRef = useRef<CodeEditorHandle | null>(null);
 
   useEffect(() => {
     sessionSet(storageKey, code);
   }, [storageKey, code]);
+
+  // On mount, auto-run the starter code purely to capture initial console
+  // output. We pass an empty checks array so no pass/fail results are
+  // produced — the student isn't told "wrong" before they've typed
+  // anything. Steps whose starterCode contains `console.log(...)` calls
+  // (e.g. demos that print a value) now show the output immediately
+  // instead of requiring a Check click first.
+  //
+  // The output goes stale once the student edits the code; that's
+  // acceptable — Check refreshes it, and re-running on every keystroke
+  // would be noisy and risk tripping the loop guard.
+  useEffect(() => {
+    const { logs } = runWorkshopChecksWithConsole(seedCode, []);
+    setConsoleLogs(logs);
+    // Keyed off the step (via parent's `key={step.id}`) so this fires
+    // exactly once per step mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const allPass = useMemo(
     () =>
@@ -290,7 +280,8 @@ function WorkshopStepView({
   );
 
   // Fire onPass once per step, when the result transitions to all-pass.
-  // The outer component decides whether to auto-advance or mark tier-complete.
+  // The outer component records completion + (for the last step) marks the
+  // tier complete. There's no auto-advance — the student clicks Next.
   const passFiredRef = useRef(false);
   useEffect(() => {
     if (allPass && !passFiredRef.current) {
@@ -302,13 +293,34 @@ function WorkshopStepView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allPass]);
 
+  const isLast = stepIdx === total - 1;
+
   const check = () => {
-    setResults(runWorkshopChecks(code, step.checks));
+    const { results: r, logs } = runWorkshopChecksWithConsole(code, step.checks);
+    setResults(r);
+    setConsoleLogs(logs);
+  };
+
+  // Ctrl+Enter inside the editor calls this. Once a step is completed the
+  // "primary action" shifts: we don't want students re-checking the same
+  // passing code — we want them to advance (or, on the final step, exit
+  // back to the workshop selection).
+  const handleEditorSubmit = () => {
+    if (isCompleted) {
+      if (!isLast) {
+        onAdvance();
+      } else if (onExit) {
+        onExit();
+      }
+      return;
+    }
+    check();
   };
 
   const restartStep = () => {
     setCode(seedCode);
     setResults(null);
+    setConsoleLogs([]);
     // Reset Monaco directly so cursor + focus apply this tick instead of
     // waiting for React to commit the controlled value.
     const ed = editorRef.current;
@@ -326,12 +338,10 @@ function WorkshopStepView({
       ? { check: step.checks[firstFailIdx], result: results![firstFailIdx] }
       : null;
 
-  const isLast = stepIdx === total - 1;
-
   const editorPanel = (
     <div className="flex-1 flex flex-col min-h-0 gap-2">
       <div className="flex flex-wrap items-center gap-3">
-        <StepCounter
+        <WindowedStepCounter
           total={total}
           stepIdx={stepIdx}
           completed={completed}
@@ -341,31 +351,23 @@ function WorkshopStepView({
           <button
             onClick={check}
             title={t(ui.workshopCheckShortcut, lang)}
-            className="px-4 py-2 min-h-[44px] sm:min-h-0 sm:px-3 sm:py-1.5 rounded-lg text-white text-sm font-medium
-                       bg-amber-500 hover:bg-amber-600 active:bg-amber-700
-                       dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:active:bg-indigo-600"
+            className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
           >
             {t(ui.check, lang)}
           </button>
           <button
             onClick={restartStep}
-            className="px-4 py-2 min-h-[44px] sm:min-h-0 sm:px-3 sm:py-1.5 rounded-lg text-sm
-                       bg-stone-100 hover:bg-stone-200 active:bg-stone-300 text-stone-700
-                       dark:bg-slate-700 dark:hover:bg-slate-600 dark:active:bg-slate-800 dark:text-white"
+            className={`${tokens.button.secondary} min-h-[44px] sm:min-h-0`}
           >
             {t(ui.workshopRestartStep, lang)}
           </button>
         </div>
       </div>
       <div
-        className="flex-1 flex flex-col min-h-0 rounded-2xl overflow-hidden
-                   bg-white ring-1 ring-stone-200 shadow-sm
-                   dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none"
+        className={`flex-1 flex flex-col min-h-0 ${tokens.card.surface} overflow-hidden`}
       >
         <div
-          className="px-4 py-2 text-xs uppercase tracking-wider border-b
-                     text-amber-600 border-stone-200
-                     dark:text-indigo-300/70 dark:border-white/10"
+          className={`${tokens.text.eyebrow} px-4 py-2 border-b border-stone-900/[0.05] dark:border-white/[0.05]`}
         >
           {t(ui.jsLabel, lang)}
         </div>
@@ -375,7 +377,7 @@ function WorkshopStepView({
             value={code}
             onChange={setCode}
             fontSize={codePx}
-            onSubmit={check}
+            onSubmit={handleEditorSubmit}
             onMount={(handle) => {
               editorRef.current = handle;
               // Land cursor on the typing line and focus so the student
@@ -393,21 +395,38 @@ function WorkshopStepView({
 
   const instructionsPanel = (
     <div
-      className="flex-1 min-h-0 overflow-y-auto rounded-2xl
-                 bg-white ring-1 ring-stone-200 shadow-sm
-                 dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none"
+      className={`flex-1 min-h-0 overflow-y-auto ${tokens.card.surface}`}
     >
-      <div className="px-5 pt-5 pb-4 border-b border-stone-200 dark:border-white/10">
+      <div className="px-5 pt-5 pb-4 border-b border-stone-900/[0.05] dark:border-white/[0.05]">
         <SlideTitleRow breadcrumb={breadcrumb}>
-          <h2 className="text-xl sm:text-2xl font-semibold text-stone-900 dark:text-indigo-50">
+          {/* flex-1 min-w-0 lets the h2 shrink instead of pushing the
+              control buttons (font / theme / help) onto a new row. */}
+          <h2 className={`${tokens.text.h2} flex-1 min-w-0`}>
             {t(slide.title, lang)}
           </h2>
           <SlideFontSizeControl />
           <ThemeToggleInline />
+          {step.hint && (
+            <button
+              type="button"
+              onClick={() => setHintShown((v) => !v)}
+              aria-pressed={hintShown}
+              title={hintShown ? t(ui.workshopHintHide, lang) : t(ui.workshopHintShow, lang)}
+              className={
+                "h-9 px-3 rounded-lg flex items-center justify-center font-medium text-sm transition-colors border " +
+                (hintShown
+                  ? "bg-[#FBE8CF] hover:bg-[#f6dab3] text-[#C97A1F] border-[#C97A1F]/30 dark:bg-[#3a2a18] dark:hover:bg-[#4a3520] dark:text-[#F0B274] dark:border-[#F0B274]/30"
+                  : "bg-white text-stone-700 border-stone-900/[0.08] hover:bg-stone-50 dark:bg-[#1f232c] dark:text-stone-200 dark:border-white/[0.08] dark:hover:bg-[#252934]")
+              }
+            >
+              {t(ui.workshopHintLabel, lang)}
+            </button>
+          )}
+          {step.flexibility && <FlexibilityHelpButton flex={step.flexibility} />}
         </SlideTitleRow>
         <div className="flex items-end justify-between gap-4 mt-2">
           <p
-            className="text-stone-600 dark:text-indigo-200/80 whitespace-pre-line flex-1 min-w-0"
+            className="text-stone-600 dark:text-stone-300 whitespace-pre-line flex-1 min-w-0 max-w-[68ch]"
             style={{ fontSize: `${prosePx}px` }}
           >
             {t(slide.prompt, lang)}
@@ -416,44 +435,85 @@ function WorkshopStepView({
         </div>
       </div>
 
-      <div className="px-5 py-4 border-b border-stone-200 dark:border-white/10">
-        <div
-          className="text-xs uppercase tracking-wider mb-2
-                     text-amber-600 dark:text-indigo-300/70"
-        >
-          {t(ui.workshopStepLabel, lang)} {stepIdx + 1} / {total}
+      <div className="px-5 py-4 border-b border-stone-900/[0.05] dark:border-white/[0.05]">
+        <div className={`${tokens.text.eyebrow} mb-2`}>
+          {t(ui.workshopStepLabel, lang)} <span className="tabular-nums">{stepIdx + 1} / {total}</span>
         </div>
         <p
-          className="text-stone-700 dark:text-indigo-100 whitespace-pre-line"
+          className="text-stone-800 dark:text-stone-100 whitespace-pre-line max-w-[68ch]"
           style={{ fontSize: `${prosePx}px` }}
         >
           {t(step.instruction, lang)}
         </p>
+        {step.hint && hintShown && (
+          <div
+            className="mt-3 max-w-[68ch] rounded-lg px-4 py-3 border-l-2
+                       border-[#C97A1F] bg-[#FBE8CF] text-stone-800
+                       dark:border-[#F0B274] dark:bg-[#3a2a18] dark:text-stone-100"
+            style={{ fontSize: `${prosePx}px` }}
+          >
+            <div className="text-[10px] uppercase tracking-[0.18em] font-mono font-medium text-[#C97A1F] dark:text-[#F0B274] mb-1">
+              {t(ui.workshopHintLabel, lang)}
+            </div>
+            <div className="whitespace-pre-line">{t(step.hint, lang)}</div>
+          </div>
+        )}
       </div>
 
-      <div className="p-5" style={{ fontSize: `${prosePx}px` }}>
-        {results === null && (
-          <div className="text-stone-500 dark:text-indigo-200/60 italic">
+      <div className="p-5 flex flex-col gap-3" style={{ fontSize: `${prosePx}px` }}>
+        {results === null && !isCompleted && (
+          <div className={tokens.feedback.idle}>
             {t(ui.workshopCheckHint, lang)}
           </div>
         )}
-        {allPass && (
-          <div
-            className="rounded-xl px-4 py-3 font-medium
-                       bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200
-                       dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-400/30"
-          >
-            {isLast
-              ? t(ui.workshopAllStepsPass, lang)
-              : t(ui.workshopStepPassAdvancing, lang)}
+        {/* Success banner is sticky — once the step is completed, it stays visible
+            even if the student edits the code while experimenting. */}
+        {(allPass || isCompleted) && (
+          <div className={`${tokens.feedback.success} flex flex-wrap items-center gap-3`}>
+            <span className="font-medium flex-1 min-w-0">
+              {isLast
+                ? t(ui.workshopAllStepsPass, lang)
+                : t(ui.workshopStepReady, lang)}
+            </span>
           </div>
         )}
-        {!allPass && firstFail && (
+        {/* Failure messages only show before the step is completed. After that,
+            the student is free to experiment without being alarmed by checks. */}
+        {!allPass && !isCompleted && firstFail && (
           <FailureMessage
             check={firstFail.check}
             result={firstFail.result}
             lang={lang}
           />
+        )}
+        {/* Console panel is always visible so students can see (or confirm
+            the absence of) console.log output without having to hunt for it.
+            Empty state has a muted placeholder line. */}
+        <ConsolePreview logs={consoleLogs} lang={lang} codePx={codePx} />
+        {isCompleted && !isLast && (
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={onAdvance}
+              className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
+            >
+              {t(ui.workshopNextStep, lang)}
+            </button>
+          </div>
+        )}
+        {/* On the final step, after completion, show a Back button instead.
+            Routing students directly back to the tier menu beats making them
+            re-find the lesson via breadcrumb. */}
+        {isCompleted && isLast && onExit && (
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={onExit}
+              className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
+            >
+              {t(ui.slideBack, lang)}
+            </button>
+          </div>
         )}
       </div>
     </div>
@@ -471,6 +531,44 @@ function WorkshopStepView({
   );
 }
 
+function ConsolePreview({ logs, lang, codePx }: { logs: ConsoleEntry[]; lang: Lang; codePx: number }) {
+  return (
+    <div className="rounded-lg overflow-hidden bg-stone-900 dark:bg-[#0f1117] text-stone-100 border border-white/[0.05]">
+      <div className="px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] font-mono font-medium text-stone-400 border-b border-white/[0.08]">
+        {t(ui.workshopConsoleLabel, lang)}
+      </div>
+      {logs.length === 0 ? (
+        <div
+          className="px-3 py-2 text-stone-500 italic"
+          style={{ fontSize: `${codePx}px` }}
+        >
+          {t(ui.workshopConsoleEmpty, lang)}
+        </div>
+      ) : (
+        <div
+          className="px-3 py-2 font-mono space-y-0.5 max-h-60 overflow-y-auto"
+          style={{ fontSize: `${codePx}px` }}
+        >
+          {logs.map((entry, i) => (
+            <div
+              key={i}
+              className={
+                entry.level === "error"
+                  ? "text-[#EE8AA1]"
+                  : entry.level === "warn"
+                  ? "text-[#F0B274]"
+                  : "text-stone-100"
+              }
+            >
+              {entry.text === "" ? " " : entry.text}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function FailureMessage({
   check,
   result,
@@ -481,13 +579,15 @@ function FailureMessage({
   lang: Lang;
 }) {
   const isError = result.pass === false && result.kind === "error";
+  // Errors → rose feedback band (semantic). Hint-style failures (regex
+  // mismatch, value off) → amber band — softer, since the student's code
+  // ran fine, it just doesn't match what the step asked for yet.
   return (
     <div
       className={
-        "rounded-xl px-4 py-3 " +
-        (isError
-          ? "bg-rose-50 text-rose-800 ring-1 ring-rose-200 dark:bg-rose-500/10 dark:text-rose-200 dark:ring-rose-400/30"
-          : "bg-amber-50 text-amber-800 ring-1 ring-amber-200 dark:bg-amber-500/10 dark:text-amber-200 dark:ring-amber-400/30")
+        isError
+          ? tokens.feedback.error
+          : "rounded-lg px-4 py-3 border-l-2 border-[#C97A1F] dark:border-[#F0B274] bg-[#FBE8CF] dark:bg-[#3a2a18] text-[#C97A1F] dark:text-[#F0B274]"
       }
     >
       <div className="font-medium mb-1">{t(check.message, lang)}</div>

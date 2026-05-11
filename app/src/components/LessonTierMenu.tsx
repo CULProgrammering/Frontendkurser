@@ -1,16 +1,25 @@
-import type { Lesson } from "../types";
+import type { ExerciseSlide, JsWorkshopSlide, Lesson } from "../types";
 import { TIER_ORDER, slidesForTier, type Tier } from "../tiers";
 import { isTierComplete } from "../progress";
 import { useLang } from "../i18n/LanguageContext";
-import { t } from "../i18n";
+import { t, type Lang } from "../i18n";
 import { ui } from "../i18n/strings";
 import { Breadcrumb, type BreadcrumbSegment } from "./SlideDeck";
+import { tokens } from "../styles/tokens";
+import { useAccent } from "./AccentContext";
+import { useTheme } from "./ThemeToggle";
+import { pickAccentHex } from "../topics";
 
 type Props = {
   courseId: string;
   lesson: Lesson;
   breadcrumb?: BreadcrumbSegment[];
-  onPick: (tier: Tier) => void;
+  /**
+   * Picked a tier card. When the tier has multiple slides surfaced as rows
+   * (workshop, exercise), `startIdx` is the slide index within that tier.
+   * Omitted when the student clicks a tier with a single slide (or no rows).
+   */
+  onPick: (tier: Tier, startIdx?: number) => void;
   onBack: () => void;
 };
 
@@ -28,73 +37,183 @@ const TIER_DESC = {
   exercise: ui.tierExerciseDesc,
 } as const;
 
+/**
+ * Strip the redundant tier prefix ("Workshop:", "Lab:", "Verkstad:", "Labb:")
+ * from slide titles when rendering them inside the corresponding tier card.
+ * The card's own header already says which tier it is, so the prefix just
+ * adds noise. Capitalises the first remaining letter so "declare ..." reads
+ * as "Declare ...".
+ */
+function stripTierPrefix(title: string): string {
+  const stripped = title.replace(/^(Workshop|Lab|Verkstad|Labb)\s*:\s*/i, "").trim();
+  if (stripped.length === 0) return title;
+  return stripped[0].toUpperCase() + stripped.slice(1);
+}
+
+/**
+ * One row per workshop slide in this lesson, in slide order. Each lesson is
+ * authored with up to 4 distinct workshops; we render their titles so the
+ * student can see the four scenarios up-front.
+ */
+function workshopRows(lesson: Lesson, lang: Lang): { key: string; preview: string }[] {
+  const slides = slidesForTier(lesson, "workshop") as JsWorkshopSlide[];
+  return slides.map((slide, i) => ({
+    key: `w-${i}`,
+    preview: stripTierPrefix(t(slide.title, lang)),
+  }));
+}
+
+/**
+ * One row per exercise lab slide in this lesson, in slide order.
+ */
+function exerciseRows(lesson: Lesson, lang: Lang): { key: string; preview: string }[] {
+  const slides = slidesForTier(lesson, "exercise") as ExerciseSlide[];
+  return slides.map((slide, i) => ({
+    key: `e-${i}`,
+    preview: stripTierPrefix(t(slide.title, lang)),
+  }));
+}
+
 export function LessonTierMenu({ courseId, lesson, breadcrumb, onPick, onBack }: Props) {
   const { lang } = useLang();
+  const { theme } = useTheme();
+  const accent = useAccent();
+  const fg = pickAccentHex(accent.fgHex, theme);
+  const dark = theme === "dark";
+  const tagBg = dark ? accent.bgHex.dark : accent.bgHex.light;
 
   return (
-    <div className="min-h-full p-4 sm:p-10">
-      <div className="max-w-4xl mx-auto">
-        {breadcrumb ? (
-          <div className="mb-4">
-            <Breadcrumb segments={breadcrumb} />
-          </div>
-        ) : (
-          <button
-            onClick={onBack}
-            className="text-sm mb-4
-                       text-stone-500 hover:text-stone-800
-                       dark:text-indigo-200/60 dark:hover:text-indigo-100"
-          >
-            ← {t(lesson.title, lang)}
-          </button>
-        )}
-        <h1 className="text-2xl sm:text-4xl font-semibold text-stone-900 dark:text-indigo-50">
-          {t(lesson.title, lang)}
-        </h1>
-        <p className="text-stone-500 dark:text-indigo-200/70 mt-1 mb-10">
-          {t(lesson.summary, lang)}
-        </p>
+    <div className="min-h-full">
+      {/* Lesson header band — same visual language as topic / home headers. */}
+      <header
+        className={`${tokens.page.surface} paper-texture px-4 sm:px-10 pt-6 pb-8`}
+      >
+        <div className="max-w-5xl mx-auto">
+          {breadcrumb ? (
+            <div className="mb-4">
+              <Breadcrumb segments={breadcrumb} />
+            </div>
+          ) : (
+            <button
+              onClick={onBack}
+              className="text-sm mb-4 text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-100"
+            >
+              ← {t(lesson.title, lang)}
+            </button>
+          )}
+          <h1 className={tokens.text.h1}>{t(lesson.title, lang)}</h1>
+          <p className="text-stone-600 dark:text-stone-400 text-base mt-1.5">
+            {t(lesson.summary, lang)}
+          </p>
+        </div>
+      </header>
 
-        <div className="grid sm:grid-cols-2 gap-4">
-          {TIER_ORDER.map((tier) => {
-            const count = slidesForTier(lesson, tier).length;
-            const done = isTierComplete(courseId, lesson.id, tier);
-            return (
-              <button
-                key={tier}
-                onClick={() => onPick(tier)}
-                className={
-                  "text-left rounded-2xl p-5 transition-all relative " +
-                  "bg-white shadow-sm hover:shadow active:scale-[0.99] " +
-                  "dark:bg-slate-900/60 dark:shadow-none " +
-                  (done
-                    ? "ring-2 ring-emerald-400 hover:ring-emerald-500 active:ring-emerald-600 dark:ring-emerald-400/60 dark:hover:ring-emerald-300/80 dark:active:ring-emerald-300"
-                    : "ring-1 ring-stone-200 hover:ring-amber-400 active:ring-amber-500 dark:ring-white/10 dark:hover:ring-indigo-400/50 dark:active:ring-indigo-400")
-                }
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="text-lg font-semibold text-stone-900 dark:text-indigo-50">
-                    {t(TIER_TITLE[tier], lang)}
+      <div className="px-4 sm:px-10 py-10">
+        <div className="max-w-5xl mx-auto">
+          {/* Single column < md to avoid awkward height mismatches; the
+              workshop/exercise cards are taller than explanation/chips. */}
+          <div className="grid md:grid-cols-2 gap-4">
+            {TIER_ORDER.map((tier) => {
+              const count = slidesForTier(lesson, tier).length;
+              const done = isTierComplete(courseId, lesson.id, tier);
+              const rows =
+                tier === "workshop"
+                  ? workshopRows(lesson, lang)
+                  : tier === "exercise"
+                    ? exerciseRows(lesson, lang)
+                    : null;
+
+              const header = (
+                <>
+                  <div className="flex items-start justify-between gap-3">
+                    <h2 className={tokens.text.h3}>
+                      {t(TIER_TITLE[tier], lang)}
+                    </h2>
+                    {done && (
+                      <span
+                        className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded shrink-0"
+                        style={{
+                          background: dark ? "#163029" : "#D6EFE6",
+                          color: dark ? "#5FCAA8" : "#1F8A6E",
+                        }}
+                      >
+                        {t(ui.doneBadge, lang)}
+                      </span>
+                    )}
                   </div>
-                  {done && (
-                    <span
-                      className="text-xs px-2 py-0.5 rounded-full shrink-0
-                                 bg-emerald-100 text-emerald-700
-                                 dark:bg-emerald-500/15 dark:text-emerald-300"
-                    >
-                      {t(ui.doneBadge, lang)}
-                    </span>
-                  )}
-                </div>
-                <div className="text-sm text-stone-600 dark:text-indigo-200/70 mt-1">
-                  {t(TIER_DESC[tier], lang)}
-                </div>
-                <div className="text-xs text-amber-600 dark:text-indigo-300/60 mt-3">
-                  {count} {t(ui.tierSlideCount, lang)}
-                </div>
-              </button>
-            );
-          })}
+                  <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
+                    {t(TIER_DESC[tier], lang)}
+                  </p>
+                </>
+              );
+
+              // Row-style card (workshop, exercise): each row is its own button
+              // navigating to that specific slide within the tier.
+              if (rows && rows.length > 0) {
+                return (
+                  <div
+                    key={tier}
+                    className={`${tokens.card.surface} p-5 transition-shadow`}
+                    style={
+                      done
+                        ? {
+                            borderColor: fg,
+                            boxShadow: `inset 3px 0 0 ${fg}`,
+                          }
+                        : undefined
+                    }
+                  >
+                    {header}
+                    <ol className="mt-4 space-y-1.5 text-sm">
+                      {rows.map((row, i) => (
+                        <li key={row.key}>
+                          <button
+                            onClick={() => onPick(tier, i)}
+                            className="w-full text-left flex items-start gap-2 rounded-lg px-2 py-1.5 transition-colors
+                                       bg-stone-50 dark:bg-[#222630] border border-stone-900/[0.05] dark:border-white/[0.05]
+                                       hover:bg-stone-100 dark:hover:bg-[#252934]"
+                          >
+                            <span
+                              className="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full text-[11px] font-mono font-medium tabular-nums"
+                              style={{ background: tagBg, color: fg }}
+                            >
+                              {i + 1}
+                            </span>
+                            <span className="text-stone-800 dark:text-stone-100 leading-snug">
+                              {row.preview}
+                            </span>
+                          </button>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                );
+              }
+
+              // Single-button card (explanation, chips): the whole card is the
+              // tap target.
+              return (
+                <button
+                  key={tier}
+                  onClick={() => onPick(tier)}
+                  className={`${tokens.card.surface} ${tokens.card.hover} text-left p-5`}
+                  style={
+                    done
+                      ? {
+                          borderColor: fg,
+                          boxShadow: `inset 3px 0 0 ${fg}`,
+                        }
+                      : undefined
+                  }
+                >
+                  {header}
+                  <div className="text-[11px] font-mono text-stone-500 dark:text-stone-400 mt-3 tabular-nums">
+                    {count} {t(ui.tierSlideCount, lang)}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

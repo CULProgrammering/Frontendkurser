@@ -3,15 +3,26 @@ import "./App.css";
 import { COURSES } from "./lessons";
 import { SlideDeck, Breadcrumb, type BreadcrumbSegment } from "./components/SlideDeck";
 import { LessonTierMenu } from "./components/LessonTierMenu";
-import { ThemeToggle } from "./components/ThemeToggle";
+import { JsWorkshopSlideView } from "./components/JsWorkshopSlideView";
+import { ExerciseSlideView } from "./components/ExerciseSlideView";
+import { ThemeToggle, useTheme } from "./components/ThemeToggle";
 import { LanguageToggle } from "./components/LanguageToggle";
-import { RoomScene } from "./components/RoomScene";
-import type { Course, Lesson, Topic } from "./types";
+import { ChapterCover } from "./components/ChapterCover";
+import { AccentProvider } from "./components/AccentContext";
+import type { Course, ExerciseSlide, JsWorkshopSlide, Lesson, Topic } from "./types";
 import { isComplete } from "./progress";
 import type { Tier } from "./tiers";
 import { useLang } from "./i18n/LanguageContext";
 import { t } from "./i18n";
 import { ui } from "./i18n/strings";
+import { tokens } from "./styles/tokens";
+import { accentFor, pickAccentHex, type TopicAccent } from "./topics";
+import {
+  findNextLesson,
+  lessonProgressTotal,
+  lessonStatuses,
+  type LessonRef,
+} from "./homeProgress";
 
 const TIER_LABEL: Record<Tier, typeof ui.tierExplanation> = {
   explanation: ui.tierExplanation,
@@ -30,8 +41,32 @@ type View =
       lesson: Lesson;
       tier: Tier;
       topic?: Topic;
+      /**
+       * Optional starting slide index within the tier. Set when the tier menu
+       * lists individual rows (e.g. one workshop or exercise per row) and the
+       * student picks a specific row instead of the card as a whole.
+       */
+      startIdx?: number;
     }
-  | { kind: "lesson"; course: Course; lesson: Lesson; topic?: Topic };
+  | { kind: "lesson"; course: Course; lesson: Lesson; topic?: Topic }
+  | {
+      kind: "walkthrough";
+      course: Course;
+      topic: Topic;
+      /** Index into `topic.walkthroughs[]` so storage keys are stable. */
+      idx: number;
+      slide: JsWorkshopSlide;
+      /** Step the student picked from the topic-view step grid. Defaults to 0. */
+      startIdx?: number;
+    }
+  | {
+      kind: "challenge";
+      course: Course;
+      topic: Topic;
+      /** Index into `topic.challenges[]` so storage keys are stable. */
+      idx: number;
+      slide: ExerciseSlide;
+    };
 
 function pickLesson(course: Course, lesson: Lesson, topic?: Topic): View {
   // JS course uses the four-tier menu; everything else stays linear.
@@ -65,7 +100,7 @@ function App() {
       { label: t(lessonView.lesson.title, lang) },
     ];
     return (
-      <>
+      <AccentProvider accent={accentFor(view.topic?.id, view.course.id)}>
         <LanguageToggle />
         <SlideDeck
           courseId={view.course.id}
@@ -80,7 +115,7 @@ function App() {
             setTick((tick) => tick + 1);
           }}
         />
-      </>
+      </AccentProvider>
     );
   }
 
@@ -114,12 +149,13 @@ function App() {
       { label: t(TIER_LABEL[tierDeckView.tier], lang) },
     ];
     return (
-      <>
+      <AccentProvider accent={accentFor(view.topic?.id, view.course.id)}>
         <LanguageToggle />
         <SlideDeck
           courseId={view.course.id}
           lesson={view.lesson}
           tier={view.tier}
+          initialIdx={view.startIdx}
           breadcrumb={breadcrumb}
           onExit={() => {
             setView({
@@ -131,7 +167,7 @@ function App() {
             setTick((tick) => tick + 1);
           }}
         />
-      </>
+      </AccentProvider>
     );
   }
 
@@ -155,20 +191,21 @@ function App() {
       { label: t(tierMenuView.lesson.title, lang) },
     ];
     return (
-      <>
+      <AccentProvider accent={accentFor(view.topic?.id, view.course.id)}>
         <ThemeToggle />
         <LanguageToggle />
         <LessonTierMenu
           courseId={view.course.id}
           lesson={view.lesson}
           breadcrumb={breadcrumb}
-          onPick={(tier) =>
+          onPick={(tier, startIdx) =>
             setView({
               kind: "tier-deck",
               course: view.course,
               lesson: view.lesson,
               tier,
               topic: view.topic,
+              startIdx,
             })
           }
           onBack={() => {
@@ -180,7 +217,71 @@ function App() {
             setTick((tick) => tick + 1);
           }}
         />
-      </>
+      </AccentProvider>
+    );
+  }
+
+  if (view.kind === "walkthrough") {
+    const wView = view;
+    const breadcrumb: BreadcrumbSegment[] = [
+      { label: t(ui.home, lang), onNavigate: () => setView({ kind: "home" }) },
+      {
+        label: t(wView.topic.title, lang),
+        onNavigate: () =>
+          setView({
+            kind: "topic",
+            course: wView.course,
+            topic: wView.topic,
+          }),
+      },
+      { label: t(wView.slide.title, lang) },
+    ];
+    return (
+      <AccentProvider accent={accentFor(wView.topic.id, wView.course.id)}>
+        <LanguageToggle />
+        <JsWorkshopSlideView
+          slide={wView.slide}
+          storageKey={`${wView.course.id}:${wView.topic.id}:walkthrough:${wView.idx}`}
+          breadcrumb={breadcrumb}
+          initialIdx={wView.startIdx}
+          onExit={() => {
+            setView({
+              kind: "topic",
+              course: wView.course,
+              topic: wView.topic,
+            });
+            setTick((tick) => tick + 1);
+          }}
+        />
+      </AccentProvider>
+    );
+  }
+
+  if (view.kind === "challenge") {
+    const cView = view;
+    const breadcrumb: BreadcrumbSegment[] = [
+      { label: t(ui.home, lang), onNavigate: () => setView({ kind: "home" }) },
+      {
+        label: t(cView.topic.title, lang),
+        onNavigate: () =>
+          setView({
+            kind: "topic",
+            course: cView.course,
+            topic: cView.topic,
+          }),
+      },
+      { label: t(cView.slide.title, lang) },
+    ];
+    return (
+      <AccentProvider accent={accentFor(cView.topic.id, cView.course.id)}>
+        <LanguageToggle />
+        <ExerciseSlideView
+          slide={cView.slide}
+          storageKey={`${cView.course.id}:${cView.topic.id}:challenge:${cView.idx}`}
+          breadcrumb={breadcrumb}
+          onPass={() => setTick((tick) => tick + 1)}
+        />
+      </AccentProvider>
     );
   }
 
@@ -193,31 +294,34 @@ function App() {
       <>
         <ThemeToggle />
         <LanguageToggle />
-        <div className="min-h-full p-4 sm:p-10">
-          <div className="max-w-4xl mx-auto">
-            <div className="mb-4">
-              <Breadcrumb segments={topicBreadcrumb} />
-            </div>
-            <h1 className="text-2xl sm:text-4xl font-semibold text-stone-900 dark:text-indigo-50">
-              {t(view.topic.title, lang)}
-            </h1>
-            {view.topic.summary && (
-              <p className="text-stone-500 dark:text-indigo-200/70 mt-1 mb-10">
-                {t(view.topic.summary, lang)}
-              </p>
-            )}
-
-            <LessonGrid
-              course={view.course}
-              topic={view.topic}
-              lessons={view.topic.lessons}
-              onPick={(lesson) =>
-                setView(pickLesson(view.course, lesson, view.topic))
-              }
-              lang={lang}
-            />
-          </div>
-        </div>
+        <TopicScreen
+          course={view.course}
+          topic={view.topic}
+          breadcrumb={topicBreadcrumb}
+          lang={lang}
+          onPickLesson={(lesson) =>
+            setView(pickLesson(view.course, lesson, view.topic))
+          }
+          onPickWalkthrough={(idx, slide, startIdx) =>
+            setView({
+              kind: "walkthrough",
+              course: view.course,
+              topic: view.topic,
+              idx,
+              slide,
+              startIdx,
+            })
+          }
+          onPickChallenge={(idx, slide) =>
+            setView({
+              kind: "challenge",
+              course: view.course,
+              topic: view.topic,
+              idx,
+              slide,
+            })
+          }
+        />
       </>
     );
   }
@@ -226,151 +330,651 @@ function App() {
     <>
       <ThemeToggle />
       <LanguageToggle />
-      <div className="min-h-full p-4 sm:p-10">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-8">
-            <RoomScene />
-          </div>
-          <h1 className="text-2xl sm:text-4xl font-semibold mb-1 text-stone-900 dark:text-indigo-50">
-            {t(ui.appTitle, lang)}
-          </h1>
-          <p className="text-stone-500 dark:text-indigo-200/70 mb-10">
-            {t(ui.pickerSubtitle, lang)}
-          </p>
+      <HomeScreen
+        lang={lang}
+        onPickTopic={(course, topic) =>
+          setView({ kind: "topic", course, topic })
+        }
+        onPickLesson={(course, lesson) =>
+          setView(pickLesson(course, lesson))
+        }
+      />
+    </>
+  );
+}
 
-          <div className="space-y-10">
-            {COURSES.map((course) => (
+/* ------------------------------------------------------------------ */
+/* Home — hero band + course list                                      */
+/* ------------------------------------------------------------------ */
+
+function HomeScreen({
+  lang,
+  onPickTopic,
+  onPickLesson,
+}: {
+  lang: import("./i18n").Lang;
+  onPickTopic: (course: Course, topic: Topic) => void;
+  onPickLesson: (course: Course, lesson: Lesson) => void;
+}) {
+  const next = findNextLesson();
+  const total = lessonProgressTotal();
+  const allDone = total.total > 0 && total.done === total.total;
+
+  function navigateTo(ref: LessonRef) {
+    if (ref.topic) onPickTopic(ref.course, ref.topic);
+    else onPickLesson(ref.course, ref.lesson);
+  }
+
+  // Continue → next incomplete lesson; falls back to the very first when
+  // everything is complete (so the CTA still does something).
+  const onContinue = () => {
+    const dest = next ?? lessonStatuses()[0];
+    if (dest) navigateTo(dest);
+  };
+
+  // Start over — always the very first lesson, regardless of progress.
+  const onStartOver = () => {
+    const first = lessonStatuses()[0];
+    if (first) navigateTo(first);
+  };
+
+  return (
+    <div className="min-h-full">
+      {/* Hero band */}
+      <header
+        className={`${tokens.page.surface} paper-texture px-4 sm:px-10 pt-10 pb-12`}
+      >
+        <div className="max-w-6xl mx-auto">
+          <div className={`mb-3 ${tokens.text.eyebrow}`}>
+            {t(ui.heroEyebrow, lang)}
+          </div>
+
+          <div className="flex flex-col md:flex-row md:items-end gap-8">
+            <div className="flex-1 max-w-xl">
+              <h1 className={`${tokens.text.h1} mb-4`}>
+                {t(ui.heroTitle, lang)}
+              </h1>
+              <p className="text-base text-stone-700 dark:text-stone-300 max-w-md mb-6 leading-relaxed">
+                {t(ui.heroSubtitle, lang)}
+              </p>
+              <HeroCtas
+                lang={lang}
+                next={next}
+                allDone={allDone}
+                onContinue={onContinue}
+                onStartOver={onStartOver}
+              />
+            </div>
+
+            {total.total > 0 && (
+              <ProgressBeads lang={lang} total={total.total} done={total.done} />
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Course sections */}
+      <div className="px-4 sm:px-10 py-10">
+        <div className="max-w-6xl mx-auto space-y-12">
+          {COURSES.map((course) => {
+            const courseAccent = accentFor(undefined, course.id);
+            return (
               <section key={course.id}>
-                <div className="flex items-baseline gap-3 mb-3">
-                  <h2 className="text-2xl font-semibold text-stone-900 dark:text-indigo-50">
-                    {t(course.title, lang)}
-                  </h2>
+                <div className="flex items-baseline gap-3 mb-5">
+                  <h2 className={tokens.text.h2}>{t(course.title, lang)}</h2>
                   {course.summary && (
-                    <span className="text-sm text-stone-500 dark:text-indigo-200/60">
+                    <span className="text-sm text-stone-500 dark:text-stone-400">
                       {t(course.summary, lang)}
                     </span>
                   )}
                 </div>
 
-                {course.topics ? (
+                {course.topics && course.topics.length > 0 ? (
                   <TopicGrid
+                    courseId={course.id}
                     topics={course.topics}
-                    onPick={(topic) =>
-                      setView({ kind: "topic", course, topic })
-                    }
+                    onPick={(topic) => onPickTopic(course, topic)}
                     lang={lang}
                   />
                 ) : course.lessons && course.lessons.length > 0 ? (
                   <LessonGrid
                     course={course}
                     lessons={course.lessons}
-                    onPick={(lesson) => setView(pickLesson(course, lesson))}
+                    accent={courseAccent}
+                    onPick={(lesson) => onPickLesson(course, lesson)}
                     lang={lang}
                   />
                 ) : (
                   <NoLessonsBox lang={lang} />
                 )}
               </section>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </div>
-    </>
+    </div>
+  );
+}
+
+function HeroCtas({
+  lang,
+  next,
+  allDone,
+  onContinue,
+  onStartOver,
+}: {
+  lang: import("./i18n").Lang;
+  next: LessonRef | null;
+  allDone: boolean;
+  onContinue: () => void;
+  onStartOver: () => void;
+}) {
+  if (allDone) {
+    return (
+      <div className="flex flex-col gap-3">
+        <div className="text-sm font-medium text-stone-700 dark:text-stone-300">
+          {t(ui.heroAllDone, lang)}
+        </div>
+        <button onClick={onStartOver} className={tokens.button.secondary}>
+          {t(ui.heroStart, lang)}
+        </button>
+      </div>
+    );
+  }
+
+  const continueLabel = next
+    ? `${t(ui.heroContinuePrefix, lang)} — ${t(next.lesson.title, lang)}`
+    : t(ui.heroContinuePrefix, lang);
+
+  // Hide the "Start over" CTA when no progress has been made — the
+  // primary "Continue" already takes you to the first lesson.
+  const showStartOver = !!next && next !== lessonStatuses()[0];
+
+  return (
+    <div className="flex flex-wrap items-center gap-3">
+      <button onClick={onContinue} className={tokens.button.primary}>
+        {continueLabel}
+      </button>
+      {showStartOver && (
+        <button onClick={onStartOver} className={tokens.button.secondary}>
+          {t(ui.heroStart, lang)}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function ProgressBeads({
+  lang,
+  total,
+  done,
+}: {
+  lang: import("./i18n").Lang;
+  total: number;
+  done: number;
+}) {
+  const { theme } = useTheme();
+  const dark = theme === "dark";
+  const all = lessonStatuses();
+  const filledColor = dark ? "#F0B274" : "#C97A1F";
+  const emptyColor = dark ? "#2c303a" : "#e8e2d3";
+
+  const suffix = t(ui.heroLessonsCompleteSuffix, lang).replace(
+    "{total}",
+    String(total),
+  );
+
+  return (
+    <div className="flex flex-col gap-3 md:w-[280px] md:pb-2">
+      <div className={tokens.text.eyebrow}>{t(ui.heroProgressLabel, lang)}</div>
+      <div className="flex flex-wrap gap-1.5">
+        {all.map((ref, i) => (
+          <span
+            key={i}
+            aria-label={`${t(ref.lesson.title, lang)}${ref.complete ? " — " + t(ui.doneBadge, lang) : ""}`}
+            className="w-3.5 h-3.5 rounded-sm"
+            style={{ background: ref.complete ? filledColor : emptyColor }}
+          />
+        ))}
+      </div>
+      <div className="text-xs text-stone-600 dark:text-stone-400 tabular-nums">
+        {done} {suffix}
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Topic — header band + lessons grid + Walkthroughs/Challenges        */
+/* ------------------------------------------------------------------ */
+
+function TopicScreen({
+  course,
+  topic,
+  breadcrumb,
+  lang,
+  onPickLesson,
+  onPickWalkthrough,
+  onPickChallenge,
+}: {
+  course: Course;
+  topic: Topic;
+  breadcrumb: BreadcrumbSegment[];
+  lang: import("./i18n").Lang;
+  onPickLesson: (lesson: Lesson) => void;
+  onPickWalkthrough: (
+    idx: number,
+    slide: JsWorkshopSlide,
+    startIdx: number,
+  ) => void;
+  onPickChallenge: (idx: number, slide: ExerciseSlide) => void;
+}) {
+  const { theme } = useTheme();
+  const dark = theme === "dark";
+  const accent = accentFor(topic.id, course.id);
+  const fg = pickAccentHex(accent.fgHex, theme);
+  const bg = dark ? accent.bgHex.dark : accent.bgHex.light;
+  const chapterIdx =
+    course.topics?.findIndex((t) => t.id === topic.id) ?? -1;
+  const chapterLabel =
+    chapterIdx >= 0 ? `${t(ui.chapterPrefix, lang)} ${String(chapterIdx + 1).padStart(2, "0")}` : null;
+
+  return (
+    <div className="min-h-full">
+      {/* Topic header band */}
+      <header
+        className={`${tokens.page.surface} paper-texture px-4 sm:px-10 pt-6 pb-8`}
+      >
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-4">
+            <Breadcrumb segments={breadcrumb} />
+          </div>
+          <div className="flex items-end gap-5 sm:gap-6">
+            <div className="hidden sm:block w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+              <ChapterCover topicId={topic.id} accent={accent} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-2 flex-wrap">
+                {chapterLabel && (
+                  <span
+                    className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded"
+                    style={{ background: bg, color: fg }}
+                  >
+                    {chapterLabel}
+                  </span>
+                )}
+                <span className={tokens.text.eyebrow}>
+                  {topicMetaLabel(topic, lang)}
+                </span>
+              </div>
+              <h1 className={tokens.text.h1}>{t(topic.title, lang)}</h1>
+              {topic.summary && (
+                <p className="text-stone-600 dark:text-stone-400 text-base mt-1.5">
+                  {t(topic.summary, lang)}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Body */}
+      <div className="px-4 sm:px-10 py-10">
+        <div className="max-w-6xl mx-auto space-y-10">
+          {/* Lessons */}
+          <section>
+            <div className="flex items-baseline justify-between mb-4">
+              <h2 className={tokens.text.h2}>{t(ui.lessonsHeading, lang)}</h2>
+              <span className={tokens.text.eyebrow}>
+                {topic.lessons.length} {t(ui.lessonsCount, lang).replace(" →", "")}
+              </span>
+            </div>
+            <TopicLessonGrid
+              course={course}
+              lessons={topic.lessons}
+              accent={accent}
+              onPick={onPickLesson}
+              lang={lang}
+            />
+          </section>
+
+          {/* Walkthroughs + Challenges paired side-by-side at lg */}
+          {(topic.walkthroughs?.length || topic.challenges?.length) ? (
+            <div className="grid lg:grid-cols-2 gap-6">
+              {topic.walkthroughs && topic.walkthroughs.length > 0 ? (
+                <WalkthroughsSection
+                  walkthroughs={topic.walkthroughs}
+                  accent={accent}
+                  onPick={onPickWalkthrough}
+                  lang={lang}
+                />
+              ) : (
+                <div />
+              )}
+              {topic.challenges && topic.challenges.length > 0 ? (
+                <ChallengesSection
+                  challenges={topic.challenges}
+                  onPick={onPickChallenge}
+                  lang={lang}
+                />
+              ) : (
+                <div />
+              )}
+            </div>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function topicMetaLabel(topic: Topic, lang: import("./i18n").Lang): string {
+  // "4 lessons · 1 walkthrough · 1 challenge" — adapts to authored content.
+  const parts: string[] = [];
+  parts.push(`${topic.lessons.length} ${t(ui.lessonsCount, lang).replace(" →", "")}`);
+  if (topic.walkthroughs?.length)
+    parts.push(
+      topic.walkthroughs.length === 1
+        ? t(ui.walkthroughBadge, lang).toLowerCase()
+        : `${topic.walkthroughs.length} ${t(ui.walkthroughsSection, lang).toLowerCase()}`,
+    );
+  if (topic.challenges?.length)
+    parts.push(
+      topic.challenges.length === 1
+        ? t(ui.challengeBadge, lang).toLowerCase()
+        : `${topic.challenges.length} ${t(ui.challengesSection, lang).toLowerCase()}`,
+    );
+  return parts.join(" · ");
+}
+
+/**
+ * Lesson grid for the topic view — wider cards with index numbers,
+ * description, and a topic-coloured progress bar.
+ */
+function TopicLessonGrid({
+  course,
+  lessons,
+  accent,
+  onPick,
+  lang,
+}: {
+  course: Course;
+  lessons: Lesson[];
+  accent: TopicAccent;
+  onPick: (l: Lesson) => void;
+  lang: import("./i18n").Lang;
+}) {
+  if (lessons.length === 0) return <NoLessonsBox lang={lang} />;
+  return (
+    <div className="grid sm:grid-cols-2 gap-3">
+      {lessons.map((lesson, i) => (
+        <TopicLessonCard
+          key={lesson.id}
+          courseId={course.id}
+          lesson={lesson}
+          accent={accent}
+          index={i + 1}
+          onPick={() => onPick(lesson)}
+          lang={lang}
+        />
+      ))}
+    </div>
+  );
+}
+
+function TopicLessonCard({
+  courseId,
+  lesson,
+  accent,
+  index,
+  onPick,
+  lang,
+}: {
+  courseId: string;
+  lesson: Lesson;
+  accent: TopicAccent;
+  index: number;
+  onPick: () => void;
+  lang: import("./i18n").Lang;
+}) {
+  const { theme } = useTheme();
+  const fg = pickAccentHex(accent.fgHex, theme);
+  const done = isComplete(courseId, lesson);
+  const total = lesson.slides.length;
+
+  return (
+    <button
+      onClick={onPick}
+      className={`group ${tokens.card.surface} ${tokens.card.hover} text-left p-5`}
+    >
+      <div className="flex items-baseline gap-3 mb-1">
+        <span
+          className="font-mono text-xs font-medium tabular-nums"
+          style={{ color: fg }}
+        >
+          {String(index).padStart(2, "0")}
+        </span>
+        <h3 className={`${tokens.text.h3} flex-1`}>{t(lesson.title, lang)}</h3>
+      </div>
+      <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed mb-4">
+        {t(lesson.summary, lang)}
+      </p>
+      <div className="flex items-center gap-3">
+        <div className="flex-1 h-1 rounded-full overflow-hidden bg-[#e8e2d3] dark:bg-[#2c303a]">
+          <div
+            className="h-full rounded-full transition-all"
+            style={{
+              width: done ? "100%" : "0%",
+              background: fg,
+            }}
+          />
+        </div>
+        <span className="text-[11px] font-mono text-stone-500 dark:text-stone-400 tabular-nums">
+          {done ? `${total}/${total}` : `0/${total}`}
+        </span>
+        <span className="text-xs font-medium text-stone-500 dark:text-stone-400 group-hover:translate-x-0.5 transition-transform">
+          →
+        </span>
+      </div>
+    </button>
   );
 }
 
 function TopicGrid({
+  courseId,
   topics,
   onPick,
   lang,
 }: {
+  courseId: string;
   topics: Topic[];
   onPick: (t: Topic) => void;
   lang: import("./i18n").Lang;
 }) {
   return (
-    <div className="grid sm:grid-cols-2 gap-4">
-      {topics.map((topic) => {
-        const total = topic.lessons.length;
-        return (
-          <button
-            key={topic.id}
-            onClick={() => onPick(topic)}
-            className="text-left rounded-2xl p-5 transition-all
-                       bg-white ring-1 ring-stone-200 hover:ring-amber-400 active:ring-amber-500 shadow-sm hover:shadow active:scale-[0.99]
-                       dark:bg-slate-900/60 dark:ring-white/10 dark:hover:ring-indigo-400/50 dark:active:ring-indigo-400 dark:shadow-none"
-          >
-            <div className="text-lg font-semibold text-stone-900 dark:text-indigo-50">
-              {t(topic.title, lang)}
-            </div>
-            {topic.summary && (
-              <div className="text-sm text-stone-600 dark:text-indigo-200/70 mt-1">
-                {t(topic.summary, lang)}
-              </div>
-            )}
-            <div className="text-xs text-amber-600 dark:text-indigo-300/60 mt-3">
-              {total === 0
-                ? t({ en: "Coming soon", sv: "Snart" }, lang)
-                : `${total} ${t({ en: "lessons →", sv: "lektioner →" }, lang)}`}
-            </div>
-          </button>
-        );
-      })}
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {topics.map((topic) => (
+        <TopicCard
+          key={topic.id}
+          courseId={courseId}
+          topic={topic}
+          onPick={() => onPick(topic)}
+          lang={lang}
+        />
+      ))}
     </div>
+  );
+}
+
+function TopicCard({
+  courseId,
+  topic,
+  onPick,
+  lang,
+}: {
+  courseId: string;
+  topic: Topic;
+  onPick: () => void;
+  lang: import("./i18n").Lang;
+}) {
+  const { theme } = useTheme();
+  const dark = theme === "dark";
+  const accent = accentFor(topic.id);
+  const fg = pickAccentHex(accent.fgHex, theme);
+  const total = topic.lessons.length;
+  const lessonsLabel =
+    total === 0
+      ? t(ui.comingSoon, lang)
+      : total === 1
+        ? t(ui.topicSingleLesson, lang)
+        : t(ui.topicLessonsCount, lang).replace("{n}", String(total));
+  const stepCount = topic.lessons.reduce((n, l) => n + l.slides.length, 0);
+  // Soft topic-level progress: 12 ticks scaled to the share of complete
+  // lessons. Doesn't claim per-step precision, just gives the eye a hint.
+  const completedLessons = topic.lessons.filter((l) =>
+    isComplete(courseId, l),
+  ).length;
+  const filled =
+    total > 0
+      ? Math.max(0, Math.min(12, Math.round((completedLessons / total) * 12)))
+      : 0;
+
+  return (
+    <button
+      onClick={onPick}
+      className={`group ${tokens.card.surface} ${tokens.card.hover} text-left p-4 transition-colors`}
+    >
+      <div className="mb-3">
+        <ChapterCover topicId={topic.id} accent={accent} />
+      </div>
+      <div className="flex items-center justify-between mb-1 gap-2">
+        <span className={tokens.text.h3}>{t(topic.title, lang)}</span>
+        <span
+          className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded shrink-0"
+          style={{
+            background: dark ? accent.bgHex.dark : accent.bgHex.light,
+            color: fg,
+          }}
+        >
+          {lessonsLabel}
+        </span>
+      </div>
+      {topic.summary && (
+        <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed mb-3">
+          {t(topic.summary, lang)}
+        </p>
+      )}
+      <div className="flex items-center justify-between">
+        <div className="flex gap-0.5">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <span
+              key={i}
+              className="h-1 w-2 rounded-sm"
+              style={{
+                background:
+                  i < filled ? fg : dark ? "#2c303a" : "#e8e2d3",
+              }}
+            />
+          ))}
+        </div>
+        <span className="text-[11px] font-mono text-stone-500 dark:text-stone-400 group-hover:translate-x-0.5 transition-transform">
+          {stepCount > 0
+            ? `${stepCount} ${t(ui.stepsCount, lang)}`
+            : t(ui.comingSoon, lang)}
+        </span>
+      </div>
+    </button>
   );
 }
 
 function LessonGrid({
   course,
   lessons,
+  accent,
   onPick,
   lang,
 }: {
   course: Course;
   topic?: Topic;
   lessons: Lesson[];
+  /** Accent applied to the progress bar; falls back to course accent. */
+  accent?: TopicAccent;
   onPick: (l: Lesson) => void;
   lang: import("./i18n").Lang;
 }) {
   if (lessons.length === 0) {
     return <NoLessonsBox lang={lang} />;
   }
+  const a = accent ?? accentFor(undefined, course.id);
   return (
-    <div className="grid sm:grid-cols-2 gap-4">
-      {lessons.map((lesson) => {
-        const done = isComplete(course.id, lesson);
-        return (
-          <button
-            key={lesson.id}
-            onClick={() => onPick(lesson)}
-            className="text-left rounded-2xl p-5 transition-all relative
-                       bg-white ring-1 ring-stone-200 hover:ring-amber-400 active:ring-amber-500 shadow-sm hover:shadow active:scale-[0.99]
-                       dark:bg-slate-900/60 dark:ring-white/10 dark:hover:ring-indigo-400/50 dark:active:ring-indigo-400 dark:shadow-none"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="text-lg font-semibold text-stone-900 dark:text-indigo-50">
-                {t(lesson.title, lang)}
-              </div>
-              {done && (
-                <span
-                  className="text-xs px-2 py-0.5 rounded-full shrink-0
-                             bg-emerald-100 text-emerald-700
-                             dark:bg-emerald-500/15 dark:text-emerald-300"
-                >
-                  {t(ui.doneBadge, lang)}
-                </span>
-              )}
-            </div>
-            <div className="text-sm text-stone-600 dark:text-indigo-200/70 mt-1">
-              {t(lesson.summary, lang)}
-            </div>
-            <div className="text-xs text-amber-600 dark:text-indigo-300/60 mt-3">
-              {lesson.slides.length} {t(ui.stepsCount, lang)}
-            </div>
-          </button>
-        );
-      })}
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {lessons.map((lesson) => (
+        <LessonCard
+          key={lesson.id}
+          course={course}
+          lesson={lesson}
+          accent={a}
+          onPick={() => onPick(lesson)}
+          lang={lang}
+        />
+      ))}
     </div>
+  );
+}
+
+function LessonCard({
+  course,
+  lesson,
+  accent,
+  onPick,
+  lang,
+}: {
+  course: Course;
+  lesson: Lesson;
+  accent: TopicAccent;
+  onPick: () => void;
+  lang: import("./i18n").Lang;
+}) {
+  const { theme } = useTheme();
+  const dark = theme === "dark";
+  const fg = pickAccentHex(accent.fgHex, theme);
+  const done = isComplete(course.id, lesson);
+  const total = lesson.slides.length;
+
+  return (
+    <button
+      onClick={onPick}
+      className={`group ${tokens.card.surface} ${tokens.card.hover} text-left p-5 relative`}
+    >
+      <div className="flex items-start justify-between gap-3 mb-1">
+        <h3 className={tokens.text.h3}>{t(lesson.title, lang)}</h3>
+        {done && (
+          <span
+            className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded shrink-0"
+            style={{
+              background: dark ? "#163029" : "#D6EFE6",
+              color: dark ? "#5FCAA8" : "#1F8A6E",
+            }}
+          >
+            {t(ui.doneBadge, lang)}
+          </span>
+        )}
+      </div>
+      <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed mb-4">
+        {t(lesson.summary, lang)}
+      </p>
+      <div className="flex items-center justify-between">
+        <div className="text-[11px] font-mono text-stone-500 dark:text-stone-400">
+          {total} {t(ui.stepsCount, lang)}
+        </div>
+        <span
+          className="text-xs ml-3 font-medium text-stone-500 dark:text-stone-400 group-hover:translate-x-0.5 transition-transform"
+          style={{ color: done ? fg : undefined }}
+        >
+          →
+        </span>
+      </div>
+    </button>
   );
 }
 
@@ -379,9 +983,219 @@ function NoLessonsBox({ lang }: { lang: import("./i18n").Lang }) {
     <div
       className="text-sm italic px-4 py-3 rounded-xl
                  bg-stone-100 text-stone-500
-                 dark:bg-slate-900/40 dark:text-indigo-200/50"
+                 dark:bg-[#222630] dark:text-stone-400"
     >
       {t(ui.noLessons, lang)}
+    </div>
+  );
+}
+
+/**
+ * Walkthroughs section on the topic view. Each walkthrough renders as a
+ * card with a milestone-style step grid — picking any cell jumps the
+ * student into the walkthrough at that step. Replaces the dashed-utility
+ * grid with a 5-column cell grid (done / current / upcoming have visual
+ * identity) so the section reads as a map of the walkthrough rather than
+ * a row of empty boxes.
+ */
+function WalkthroughsSection({
+  walkthroughs,
+  accent,
+  onPick,
+  lang,
+}: {
+  walkthroughs: JsWorkshopSlide[];
+  accent: TopicAccent;
+  onPick: (idx: number, slide: JsWorkshopSlide, startIdx: number) => void;
+  lang: import("./i18n").Lang;
+}) {
+  const { theme } = useTheme();
+  const dark = theme === "dark";
+  const fg = pickAccentHex(accent.fgHex, theme);
+  const bg = dark ? accent.bgHex.dark : accent.bgHex.light;
+  return (
+    <section>
+      <div className="flex items-baseline justify-between mb-3 flex-wrap gap-2">
+        <div className="flex items-baseline gap-2">
+          <h2 className={tokens.text.h2}>{t(ui.walkthroughsSection, lang)}</h2>
+          <span
+            className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded"
+            style={{ background: bg, color: fg }}
+          >
+            {t(ui.walkthroughsBadgeGuided, lang)}
+          </span>
+        </div>
+      </div>
+      <p className="text-xs text-stone-500 dark:text-stone-400 mb-3">
+        {t(ui.walkthroughsTagline, lang)}
+      </p>
+      <div className="space-y-3">
+        {walkthroughs.map((wt, idx) => (
+          <div
+            key={idx}
+            className={`${tokens.card.surface} p-4`}
+          >
+            <div className="flex items-baseline justify-between mb-3 gap-3 flex-wrap">
+              <button
+                onClick={() => onPick(idx, wt, 0)}
+                className={`${tokens.text.h3} text-left hover:opacity-80 transition-opacity`}
+              >
+                {t(wt.title, lang)}
+              </button>
+              <span className="text-[10px] font-mono text-stone-500 dark:text-stone-400">
+                {wt.steps.length} {t(ui.stepsLabel, lang)}
+              </span>
+            </div>
+            <WalkthroughStepGrid
+              total={wt.steps.length}
+              accent={accent}
+              onJump={(stepIdx) => onPick(idx, wt, stepIdx)}
+            />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Challenges section on the topic view. Single-shot exercises — no step
+ * grid, just a card per challenge with a tag and test count. The 12-segment
+ * gutter stays empty since challenges are pass/fail (no per-step progress).
+ */
+function ChallengesSection({
+  challenges,
+  onPick,
+  lang,
+}: {
+  challenges: ExerciseSlide[];
+  onPick: (idx: number, slide: ExerciseSlide) => void;
+  lang: import("./i18n").Lang;
+}) {
+  const { theme } = useTheme();
+  const dark = theme === "dark";
+  // Challenges borrow the rose ("functions") accent for their tag — semantic
+  // signal for "open-ended", paired with the amber/topic Walkthrough tag.
+  const tagBg = dark ? "#39202a" : "#F4DCE2";
+  const tagFg = dark ? "#EE8AA1" : "#C24A6B";
+  return (
+    <section>
+      <div className="flex items-baseline justify-between mb-3 flex-wrap gap-2">
+        <div className="flex items-baseline gap-2">
+          <h2 className={tokens.text.h2}>{t(ui.challengesSection, lang)}</h2>
+          <span
+            className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded"
+            style={{ background: tagBg, color: tagFg }}
+          >
+            {t(ui.challengesBadgeOpen, lang)}
+          </span>
+        </div>
+      </div>
+      <p className="text-xs text-stone-500 dark:text-stone-400 mb-3">
+        {t(ui.challengesTagline, lang)}
+      </p>
+      <div className="space-y-3">
+        {challenges.map((ch, idx) => {
+          const testsLabel = ch.tests.length === 1
+            ? `1 ${t(ui.singleTest, lang)}`
+            : `${ch.tests.length} ${t(ui.testsCount, lang)}`;
+          return (
+            <button
+              key={idx}
+              onClick={() => onPick(idx, ch)}
+              className={`group ${tokens.card.surface} ${tokens.card.hover} w-full text-left p-4`}
+            >
+              <div className="flex items-baseline justify-between mb-2 gap-3 flex-wrap">
+                <h3 className={tokens.text.h3}>{t(ch.title, lang)}</h3>
+                <span className="text-[10px] font-mono text-stone-500 dark:text-stone-400">
+                  {testsLabel}
+                </span>
+              </div>
+              <div
+                className="grid gap-1"
+                style={{
+                  gridTemplateColumns: `repeat(${ch.tests.length}, minmax(0, 1fr))`,
+                }}
+              >
+                {Array.from({ length: ch.tests.length }).map((_, i) => (
+                  <span
+                    key={i}
+                    className="h-2 rounded-sm bg-[#e8e2d3] dark:bg-[#2c303a]"
+                  />
+                ))}
+              </div>
+              <div className="text-[11px] font-mono text-stone-500 dark:text-stone-400 mt-3 tabular-nums">
+                0 / {ch.tests.length} {t(ui.exercisePassedCount, lang)}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Walkthrough step grid — the 5-column milestone map. Each cell is a button
+ * that jumps the student into the walkthrough at that step. `current` (when
+ * provided) draws an outlined accent ring; cells before it show as "done"
+ * (filled accent), cells after as "upcoming" (neutral border). When no
+ * `current` is passed all cells render as neutral upcoming, which is the
+ * topic-view default (no in-flight state to show).
+ *
+ * Used in two places:
+ * - Topic view: as part of `WalkthroughsSection`.
+ * - Mid-walkthrough chrome: drives `WindowedStepCounter` once we wire it up
+ *   in Slice 5 — same visual language top-to-bottom.
+ */
+export function WalkthroughStepGrid({
+  total,
+  current,
+  accent,
+  onJump,
+}: {
+  total: number;
+  /** 0-based current step index. Cells before are "done"; the cell at this
+   * index is "current". When omitted, all cells show as upcoming. */
+  current?: number;
+  accent: TopicAccent;
+  onJump: (stepIdx: number) => void;
+}) {
+  const { theme } = useTheme();
+  const dark = theme === "dark";
+  const fg = pickAccentHex(accent.fgHex, theme);
+
+  return (
+    <div>
+      <div className="grid grid-cols-5 sm:grid-cols-10 gap-1.5">
+        {Array.from({ length: total }).map((_, i) => {
+          const isCurrent = current === i;
+          const isDone = current !== undefined && i < current;
+          const cellStyle: React.CSSProperties = isDone
+            ? { background: fg, color: dark ? "#1c1a16" : "#fdfaf3", borderColor: "transparent" }
+            : isCurrent
+              ? { background: "transparent", color: fg, borderColor: fg, borderWidth: 2 }
+              : {
+                  background: "transparent",
+                  color: dark ? "#9ba0ab" : "#6b6557",
+                  borderColor: dark
+                    ? "rgba(255,255,255,0.10)"
+                    : "rgba(0,0,0,0.12)",
+                };
+          return (
+            <button
+              key={i}
+              onClick={() => onJump(i)}
+              aria-label={`Go to step ${i + 1}`}
+              aria-current={isCurrent ? "step" : undefined}
+              className={tokens.step.cell + " border bg-transparent"}
+              style={cellStyle}
+            >
+              {i + 1}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

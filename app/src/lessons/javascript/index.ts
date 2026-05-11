@@ -1,4 +1,10 @@
 import type { Course } from "../../types";
+import { letConstLesson } from "./variables-1-let-const";
+import { typesLesson } from "./variables-2-types";
+import { operatorsLesson } from "./variables-3-operators";
+import { specialValuesLesson } from "./variables-4-special-values";
+import { variablesWalkthrough } from "./variables-walkthrough";
+import { variablesChallenge } from "./variables-challenge";
 import { doorLesson } from "./level1-door";
 import { forkLesson } from "./level2-fork";
 import { conveyorLesson } from "./level3-conveyor";
@@ -13,6 +19,17 @@ export const javascriptCourse: Course = {
   title: "JavaScript",
   summary: "Logik och kontrollflöde.",
   topics: [
+    {
+      id: "variables",
+      title: { en: "Variables", sv: "Variabler" },
+      summary: {
+        en: "Names for values, types, operators, and special values.",
+        sv: "Namn för värden, typer, operatorer och specialvärden.",
+      },
+      lessons: [letConstLesson, typesLesson, operatorsLesson, specialValuesLesson],
+      walkthroughs: [variablesWalkthrough],
+      challenges: [variablesChallenge],
+    },
     {
       id: "conditionals",
       title: { en: "Conditionals", sv: "Villkor" },
