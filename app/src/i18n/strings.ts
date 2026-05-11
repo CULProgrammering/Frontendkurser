@@ -12,7 +12,48 @@ export const ui = {
   },
   noLessons: { en: "No lessons yet.", sv: "Inga lektioner än." },
   stepsCount: { en: "steps →", sv: "steg →" },
+  lessonsCount: { en: "lessons →", sv: "lektioner →" },
+  comingSoon: { en: "Coming soon", sv: "Snart" },
   doneBadge: { en: "done", sv: "klar" },
+
+  // Home hero
+  heroTitle: {
+    en: "Learn frontend, one puzzle piece at a time.",
+    sv: "Lär dig frontend, en pusselbit i taget.",
+  },
+  heroSubtitle: {
+    en:
+      "Short explanations, small puzzles, and labs you can run right away. No accounts, no time limit — you just need curiosity.",
+    sv:
+      "Korta förklaringar, små pussel, och labbar du kan köra direkt. Inga konton, ingen tidsgräns — du behöver bara nyfikenhet.",
+  },
+  heroEyebrow: {
+    en: "Frontendkurser · JavaScript & frontend",
+    sv: "Frontendkurser · JavaScript & frontend",
+  },
+  heroContinuePrefix: { en: "Continue", sv: "Fortsätt" },
+  heroStart: {
+    en: "Start from the beginning",
+    sv: "Börja från början",
+  },
+  heroProgressLabel: {
+    en: "Your progress so far",
+    sv: "Din väg så här långt",
+  },
+  heroLessonsCompleteSuffix: {
+    en: "of {total} lessons complete",
+    sv: "av {total} lektioner klara",
+  },
+  heroAllDone: {
+    en: "All lessons complete — nice work.",
+    sv: "Alla lektioner klara — bra jobbat.",
+  },
+  // Topic-card variants
+  topicLessonsCount: {
+    en: "{n} lessons",
+    sv: "{n} lektioner",
+  },
+  topicSingleLesson: { en: "1 lesson", sv: "1 lektion" },
 
   // SlideDeck
   backToLessons: { en: "← Lessons", sv: "← Lektioner" },
@@ -53,6 +94,7 @@ export const ui = {
     en: "Click anywhere to continue →",
     sv: "Klicka var som helst för att fortsätta →",
   },
+  nextSlide: { en: "Next →", sv: "Nästa →" },
 
   // AssignmentSlideView
   cssLabel: { en: "CSS", sv: "CSS" },
@@ -111,8 +153,17 @@ export const ui = {
     sv: "(ingen utskrift än — tryck Kör)",
   },
 
+  // SlideDeck — picker label above workshop/exercise tiers when there are
+  // multiple slides in the tier (so the dots aren't mistaken for a step
+  // indicator).
+  tierLabelWorkshop: { en: "Workshop", sv: "Verkstad" },
+  tierLabelLab: { en: "Lab", sv: "Labb" },
+
   // JsWorkshopSlideView
   workshopStepLabel: { en: "Step", sv: "Steg" },
+  workshopHintLabel: { en: "Hint", sv: "Tips" },
+  workshopHintShow: { en: "Show hint", sv: "Visa tips" },
+  workshopHintHide: { en: "Hide hint", sv: "Dölj tips" },
   workshopRestartStep: { en: "Restart step", sv: "Börja om steget" },
   workshopCheckHint: {
     en: "Press Check when you're ready.",
@@ -134,6 +185,88 @@ export const ui = {
     en: "✓ Workshop complete. Nice work.",
     sv: "✓ Verkstaden klar. Bra jobbat.",
   },
+  workshopStepReady: {
+    en: "✓ Step done. Review the output, then click Next when you're ready.",
+    sv: "✓ Steget klart. Granska resultatet och klicka Nästa när du vill gå vidare.",
+  },
+  workshopNextStep: { en: "Next step ▶", sv: "Nästa steg ▶" },
+  /**
+   * Used at the end of any slide deck to route the student back to where
+   * they came from. Generic on purpose — the breadcrumb already shows
+   * the destination, and "Back" works for explanation/chips/workshop
+   * (back to tier menu) and walkthrough/challenge (back to topic view).
+   */
+  slideBack: { en: "◀ Back", sv: "◀ Tillbaka" },
+  workshopConsoleLabel: { en: "Console output", sv: "Konsol­utskrift" },
+  workshopConsoleEmpty: {
+    en: "No console output for this step.",
+    sv: "Inget i konsolen för det här steget.",
+  },
+  /**
+   * Help popover shown via the "?" button in workshop and exercise chrome.
+   * Three variants — the renderer picks one based on the step's
+   * `flexibility` flags (see `FlexibilityFlags` in types.ts):
+   *   - both       → values + names are flexible
+   *   - valuesOnly → values are flexible, names are pinned
+   *   - namesOnly  → names are flexible, values are pinned
+   * The button is hidden entirely on steps with neither flag set, so
+   * students never see the "?" on a fully rigid step.
+   */
+  flexibilityHelpTitleBoth: {
+    en: "Values and names are flexible",
+    sv: "Värden och namn är flexibla",
+  },
+  flexibilityHelpTitleValues: {
+    en: "Any value works",
+    sv: "Vilket värde som helst fungerar",
+  },
+  flexibilityHelpTitleNames: {
+    en: "Any variable name works",
+    sv: "Vilket variabelnamn som helst fungerar",
+  },
+  flexibilityHelpBodyBoth: {
+    en:
+      "You don't have to use the proposed value or variable name from the instructions.\n\n• Any value of the same datatype works (use any string, any number, any boolean).\n• Any variable name works in this step.\n\nIf you'd rather not pick — use the proposed value and name. Both routes pass the check.",
+    sv:
+      "Du behöver inte använda det föreslagna värdet eller variabelnamnet från instruktionerna.\n\n• Vilket värde som helst av samma datatyp fungerar (vilken sträng, vilket tal, vilken boolean).\n• Vilket variabelnamn som helst fungerar i detta steg.\n\nVill du inte välja — använd det föreslagna värdet och namnet. Båda vägarna klarar testet.",
+  },
+  flexibilityHelpBodyValues: {
+    en:
+      "You don't have to use the proposed value from the instructions. Any value of the same datatype works — use any string, any number, or any boolean (whichever the step asks for).\n\nIf you'd rather not pick — use the proposed value. Both routes pass the check.",
+    sv:
+      "Du behöver inte använda det föreslagna värdet från instruktionerna. Vilket värde som helst av samma datatyp fungerar — vilken sträng, vilket tal eller vilken boolean (det som steget efterfrågar).\n\nVill du inte välja — använd det föreslagna värdet. Båda vägarna klarar testet.",
+  },
+  flexibilityHelpBodyNames: {
+    en:
+      "You don't have to use the proposed variable name from the instructions. Any name works in this step.\n\nIf you'd rather not pick — use the proposed name. Both routes pass the check.",
+    sv:
+      "Du behöver inte använda det föreslagna variabelnamnet från instruktionerna. Vilket namn som helst fungerar i detta steg.\n\nVill du inte välja — använd det föreslagna namnet. Båda vägarna klarar testet.",
+  },
+  flexibilityHelpButtonLabel: {
+    en: "About values and names",
+    sv: "Om värden och namn",
+  },
+
+  // Topic-level long-form sections (rendered in the topic view).
+  walkthroughsSection: { en: "Walkthroughs", sv: "Genomgångar" },
+  challengesSection: { en: "Challenges", sv: "Utmaningar" },
+  walkthroughBadge: { en: "Walkthrough", sv: "Genomgång" },
+  challengeBadge: { en: "Challenge", sv: "Utmaning" },
+  walkthroughsTagline: {
+    en: "Long-form, step-by-step. We type, you watch and try along.",
+    sv: "Långa genomgångar — steg för steg. Vi skriver, du följer med.",
+  },
+  challengesTagline: {
+    en: "No hand-holding. Read the spec, write the code, pass the tests.",
+    sv: "Ingen hjälp. Läs uppgiften, skriv koden, klara testerna.",
+  },
+  walkthroughsBadgeGuided: { en: "guided", sv: "vägledd" },
+  challengesBadgeOpen: { en: "open-ended", sv: "öppen" },
+  testsCount: { en: "tests", sv: "tester" },
+  singleTest: { en: "test", sv: "test" },
+  stepsLabel: { en: "steps", sv: "steg" },
+  chapterPrefix: { en: "Chapter", sv: "Kapitel" },
+  lessonsHeading: { en: "Lessons", sv: "Lektioner" },
 
   // ThemeToggle / LanguageToggle
   toLight: { en: "Light mode", sv: "Ljust läge" },

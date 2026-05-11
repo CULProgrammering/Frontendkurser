@@ -105,10 +105,10 @@ function TabButton({
         onClick();
       }}
       className={
-        "flex-1 px-3 py-3 min-h-[44px] text-xs uppercase tracking-wider font-medium border-b-2 transition-colors " +
+        "flex-1 px-3 py-3 min-h-[44px] text-[10px] uppercase tracking-[0.18em] font-mono font-medium border-b-2 transition-colors " +
         (active
-          ? "text-amber-700 border-amber-500 dark:text-indigo-200 dark:border-indigo-300"
-          : "text-stone-500 border-transparent hover:text-stone-700 dark:text-indigo-200/60 dark:hover:text-indigo-100")
+          ? "text-stone-900 dark:text-stone-100 border-stone-900 dark:border-[#F0B274]"
+          : "text-stone-500 dark:text-stone-400 border-transparent hover:text-stone-700 dark:hover:text-stone-200")
       }
     >
       {label}

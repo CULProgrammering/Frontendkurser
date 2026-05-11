@@ -59,9 +59,7 @@ export function SlideFontSizeControl() {
   ];
   return (
     <div
-      className="flex items-center gap-1 rounded-lg p-1 ring-1
-                 bg-white ring-stone-200
-                 dark:bg-slate-900/60 dark:ring-white/10"
+      className="flex items-center gap-1 rounded-lg p-1 border bg-white dark:bg-[#1f232c] border-stone-900/[0.08] dark:border-white/[0.08]"
       role="group"
       aria-label="Slide text size"
     >
@@ -75,10 +73,10 @@ export function SlideFontSizeControl() {
             aria-pressed={active}
             title={`${it.id.toUpperCase()} (${it.px}px)`}
             className={
-              "px-2 py-0.5 rounded-md font-serif leading-none transition-colors " +
+              "px-2 py-0.5 rounded-md font-display leading-none transition-colors " +
               (active
-                ? "bg-amber-500 text-white dark:bg-indigo-500"
-                : "text-stone-600 hover:bg-stone-100 dark:text-indigo-100 dark:hover:bg-slate-700")
+                ? "bg-stone-900 dark:bg-[#F0B274] text-stone-50 dark:text-stone-900"
+                : "text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-[#252934]")
             }
             style={{ fontSize: `${it.px}px` }}
           >

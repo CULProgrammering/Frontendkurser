@@ -15,6 +15,11 @@
  */
 
 import vm from "node:vm";
+import { javascriptCourse } from "../src/lessons/javascript";
+import { letConstLesson } from "../src/lessons/javascript/variables-1-let-const";
+import { typesLesson } from "../src/lessons/javascript/variables-2-types";
+import { operatorsLesson } from "../src/lessons/javascript/variables-3-operators";
+import { specialValuesLesson } from "../src/lessons/javascript/variables-4-special-values";
 import { doorLesson } from "../src/lessons/javascript/level1-door";
 import { forkLesson } from "../src/lessons/javascript/level2-fork";
 import { conveyorLesson } from "../src/lessons/javascript/level3-conveyor";
@@ -36,11 +41,228 @@ import type {
 
 type LabCase = {
   lessonId: string;
+  /**
+   * English title of the specific exercise slide inside the lesson. Required
+   * when a lesson has more than one exercise slide; if omitted, the harness
+   * picks the lesson's first exercise slide. Match the `slide.title.en` exactly.
+   */
+  exerciseTitle?: string;
   solution: string;
 };
 
 // Known-good student solutions for each lab. Each must pass every test.
 const SOLUTIONS: LabCase[] = [
+  // Variables — Lesson 1 (let vs const) — 4 exercises
+  {
+    lessonId: "variables-let-const",
+    exerciseTitle: "Lab: introduce yourself",
+    solution: `
+let age = 25;
+age = 26;
+const name = "Alice";
+console.log(\`\${name} is \${age} years old\`);
+`,
+  },
+  {
+    lessonId: "variables-let-const",
+    exerciseTitle: "Lab: step counter",
+    solution: `
+let stepsWalked = 0;
+stepsWalked = 1500;
+console.log(stepsWalked);
+stepsWalked = 4500;
+console.log(stepsWalked);
+stepsWalked = 8500;
+console.log(stepsWalked);
+`,
+  },
+  {
+    lessonId: "variables-let-const",
+    exerciseTitle: "Lab: battery monitor",
+    solution: `
+let batteryPercent = 100;
+batteryPercent -= 27;
+console.log(batteryPercent);
+batteryPercent -= 18;
+console.log(batteryPercent);
+`,
+  },
+  {
+    lessonId: "variables-let-const",
+    exerciseTitle: "Lab: quiz scoreboard",
+    solution: `
+const totalQuestions = 10;
+let correctAnswers = 0;
+let wrongAnswers = 0;
+correctAnswers += 7;
+wrongAnswers += 3;
+console.log(\`\${correctAnswers} correct, \${wrongAnswers} wrong, out of \${totalQuestions}\`);
+`,
+  },
+  // Variables — Lesson 2 (Types) — 4 exercises
+  {
+    lessonId: "variables-types",
+    exerciseTitle: "Lab: type detective",
+    solution: `
+let title = "Hello";
+let score = 42;
+let ready = true;
+console.log(typeof title);
+console.log(typeof score);
+console.log(typeof ready);
+console.log(typeof ("5" + 3));
+`,
+  },
+  {
+    lessonId: "variables-types",
+    exerciseTitle: "Lab: bug hunt",
+    solution: `
+let subtotal = 200;
+let shipping = 5;
+let total = subtotal + shipping;
+console.log(total);
+console.log(typeof total);
+`,
+  },
+  {
+    lessonId: "variables-types",
+    exerciseTitle: "Lab: predict the result",
+    solution: `
+console.log(5 + "3");
+console.log("5" - 3);
+console.log(true + 1);
+console.log("5" * 2);
+`,
+  },
+  {
+    lessonId: "variables-types",
+    exerciseTitle: "Lab: strict vs loose equality",
+    solution: `
+console.log(5 === "5");
+console.log(5 == "5");
+console.log(0 === false);
+console.log(0 == false);
+`,
+  },
+  // Variables — Lesson 3 (Operators) — 4 exercises
+  {
+    lessonId: "variables-operators",
+    exerciseTitle: "Lab: math and answers",
+    solution: `
+console.log(10 % 3);
+console.log(7 * 8);
+console.log(10 > 5);
+console.log(10 === "10");
+`,
+  },
+  {
+    lessonId: "variables-operators",
+    exerciseTitle: "Lab: discount sale",
+    solution: `
+console.log(250 * 0.20);
+console.log(250 - (250 * 0.20));
+console.log((250 - (250 * 0.20)) < 250);
+console.log((250 - (250 * 0.20)) === 200);
+`,
+  },
+  {
+    lessonId: "variables-operators",
+    exerciseTitle: "Lab: multiple of three",
+    solution: `
+console.log(12);
+console.log(12 % 3);
+console.log(12 % 3 === 0);
+console.log(12 % 3 !== 0);
+`,
+  },
+  {
+    lessonId: "variables-operators",
+    exerciseTitle: "Lab: voting age check",
+    solution: `
+console.log(18 >= 18);
+console.log(18 < 100);
+console.log(18 === 18);
+console.log(18 === "18");
+`,
+  },
+  // Variables — Lesson 4 (Special values) — 4 exercises
+  {
+    lessonId: "variables-special-values",
+    exerciseTitle: "Lab: special-values tour",
+    solution: `
+let nothing;
+console.log(nothing);
+let answer = null;
+console.log(answer);
+let oops = 0 / 0;
+console.log(oops);
+console.log(Number.isNaN(oops));
+`,
+  },
+  {
+    lessonId: "variables-special-values",
+    exerciseTitle: "Lab: chat session",
+    solution: `
+let currentMessage;
+console.log(currentMessage);
+let attachmentId = null;
+console.log(attachmentId);
+currentMessage = "hello";
+console.log(currentMessage);
+attachmentId = true;
+console.log(attachmentId);
+`,
+  },
+  {
+    lessonId: "variables-special-values",
+    exerciseTitle: "Lab: validate guest count",
+    solution: `
+console.log(Number("4"));
+console.log(Number("many"));
+console.log(Number.isNaN(Number("many")));
+console.log(Number.isNaN(Number("4")));
+`,
+  },
+  {
+    lessonId: "variables-special-values",
+    exerciseTitle: "Lab: null vs undefined",
+    solution: `
+console.log(null === null);
+console.log(null === undefined);
+console.log(typeof null);
+console.log(typeof undefined);
+`,
+  },
+  // Variables — topic-level challenge (lives on Topic.challenges, not in any
+  // lesson). The harness's challenge loop below resolves this by ID against
+  // every topic's `challenges[]` array.
+  {
+    lessonId: "variables-budget-tracker",
+    exerciseTitle: "Challenge: budget tracker",
+    solution: `
+const currency = "kr";
+let income = 30000;
+let fixedExpenses = 12000;
+let variableExpenses = 8000;
+let totalExpenses = fixedExpenses + variableExpenses;
+let remainder = income - totalExpenses;
+if (Number.isNaN(remainder)) {
+  remainder = 0;
+}
+let category = "breaking even";
+if (remainder > 0) {
+  category = "saver";
+} else if (remainder < 0) {
+  category = "deficit";
+}
+console.log(\`Income: \${income} \${currency}\`);
+console.log(\`Fixed: \${fixedExpenses} \${currency}\`);
+console.log(\`Variable: \${variableExpenses} \${currency}\`);
+console.log(\`Total expenses: \${totalExpenses} \${currency}\`);
+console.log(\`Remainder: \${remainder} \${currency}\`);
+console.log(\`Category: \${category}\`);
+`,
+  },
   {
     lessonId: "conditionals-crosswalk", // L1
     solution: `
@@ -187,6 +409,10 @@ console.log(cup);
 ];
 
 const LESSONS: Lesson[] = [
+  letConstLesson,
+  typesLesson,
+  operatorsLesson,
+  specialValuesLesson,
   doorLesson,
   forkLesson,
   conveyorLesson,
@@ -197,9 +423,33 @@ const LESSONS: Lesson[] = [
   tastingLesson,
 ];
 
-function findExerciseSlide(lesson: Lesson): ExerciseSlide | null {
-  for (const slide of lesson.slides) {
-    if (slide.kind === "exercise") return slide;
+function findExerciseSlide(lesson: Lesson, title?: string): ExerciseSlide | null {
+  const exerciseSlides = lesson.slides.filter(
+    (s): s is ExerciseSlide => s.kind === "exercise"
+  );
+  if (exerciseSlides.length === 0) return null;
+  if (!title) return exerciseSlides[0];
+  return (
+    exerciseSlides.find((s) => {
+      const t = typeof s.title === "string" ? s.title : s.title.en;
+      return t === title;
+    }) ?? null
+  );
+}
+
+/**
+ * Resolve a challenge slide from any topic in `javascriptCourse.topics` by
+ * matching its English title. Topic-level challenges aren't part of any lesson —
+ * they live directly on `Topic.challenges[]` — so we look them up separately
+ * from the per-lesson exercise iteration.
+ */
+function findTopicChallenge(title: string): ExerciseSlide | null {
+  for (const topic of javascriptCourse.topics ?? []) {
+    for (const challenge of topic.challenges ?? []) {
+      const t =
+        typeof challenge.title === "string" ? challenge.title : challenge.title.en;
+      if (t === title) return challenge;
+    }
   }
   return null;
 }
@@ -258,6 +508,11 @@ function runLab(lab: LabCase, slide: ExerciseSlide): RunResult[] {
     const text = args
       .map((a) => {
         if (typeof a === "string") return a;
+        if (a === undefined) return "undefined";
+        if (a === null) return "null";
+        if (typeof a === "number" && Number.isNaN(a)) return "NaN";
+        if (a === Infinity) return "Infinity";
+        if (a === -Infinity) return "-Infinity";
         try {
           return JSON.stringify(a);
         } catch {
@@ -305,20 +560,39 @@ let totalPass = 0;
 let labFailures = 0;
 
 for (const lab of SOLUTIONS) {
+  // Lessons are looked up first. If no lesson matches, try resolving the title
+  // against any topic's `challenges[]` — that's where topic-level challenges
+  // (e.g. "Challenge: budget tracker") live.
   const lesson = LESSONS.find((l) => l.id === lab.lessonId);
-  if (!lesson) {
+  let slide: ExerciseSlide | null = null;
+  let displayId: string;
+
+  if (lesson) {
+    slide = findExerciseSlide(lesson, lab.exerciseTitle);
+    displayId = lesson.id;
+    if (!slide) {
+      const which = lab.exerciseTitle ? ` (title: ${lab.exerciseTitle})` : "";
+      console.error(`✗ No exercise slide in: ${lab.lessonId}${which}`);
+      labFailures++;
+      continue;
+    }
+  } else if (lab.exerciseTitle) {
+    slide = findTopicChallenge(lab.exerciseTitle);
+    displayId = lab.lessonId;
+    if (!slide) {
+      console.error(
+        `✗ No lesson or topic-challenge found: ${lab.lessonId} (title: ${lab.exerciseTitle})`
+      );
+      labFailures++;
+      continue;
+    }
+  } else {
     console.error(`✗ Lesson not found: ${lab.lessonId}`);
     labFailures++;
     continue;
   }
-  const slide = findExerciseSlide(lesson);
-  if (!slide) {
-    console.error(`✗ No exercise slide in: ${lab.lessonId}`);
-    labFailures++;
-    continue;
-  }
 
-  console.log(`\n━━━ ${lesson.id} — ${typeof slide.title === "string" ? slide.title : slide.title.en} ━━━`);
+  console.log(`\n━━━ ${displayId} — ${typeof slide.title === "string" ? slide.title : slide.title.en} ━━━`);
 
   const results = runLab(lab, slide);
   let labPass = 0;
@@ -364,45 +638,60 @@ let workshopChecksPass = 0;
 let workshopStepFailures = 0;
 let workshopSlideCount = 0;
 
+function runWorkshop(
+  workshop: JsWorkshopSlide,
+  scopeLabel: string
+): void {
+  workshopSlideCount++;
+  const title =
+    typeof workshop.title === "string" ? workshop.title : workshop.title.en;
+  console.log(`\n━━━ ${scopeLabel} — ${title} (workshop) ━━━`);
+
+  for (const step of workshop.steps) {
+    if (!step.reveal) {
+      console.log(`  ⚠ ${step.id} — no reveal authored (skipping)`);
+      continue;
+    }
+    const code =
+      typeof step.reveal === "string" ? step.reveal : step.reveal.en;
+    const results = runWorkshopChecks(code, step.checks);
+    workshopChecksTotal += results.length;
+    workshopChecksPass += results.filter((r) => r.pass).length;
+
+    if (results.every((r) => r.pass)) {
+      console.log(`  ✓ ${step.id} (${results.length} checks)`);
+    } else {
+      console.log(`  ✗ ${step.id}`);
+      results.forEach((r, i) => {
+        if (r.pass) return;
+        const check = step.checks[i];
+        const msg =
+          typeof check.message === "string"
+            ? check.message
+            : check.message.en;
+        const kind = "kind" in r ? r.kind : "?";
+        const err = "error" in r ? ` (${r.error})` : "";
+        console.log(`     ${i}: [${kind}] ${msg}${err}`);
+      });
+      workshopStepFailures++;
+    }
+  }
+}
+
+// Lesson-level workshops.
 for (const lesson of LESSONS) {
   const workshops = lesson.slides.filter(
     (s): s is JsWorkshopSlide => s.kind === "js-workshop"
   );
   for (const workshop of workshops) {
-    workshopSlideCount++;
-    const title =
-      typeof workshop.title === "string" ? workshop.title : workshop.title.en;
-    console.log(`\n━━━ ${lesson.id} — ${title} (workshop) ━━━`);
+    runWorkshop(workshop, lesson.id);
+  }
+}
 
-    for (const step of workshop.steps) {
-      if (!step.reveal) {
-        console.log(`  ⚠ ${step.id} — no reveal authored (skipping)`);
-        continue;
-      }
-      const code =
-        typeof step.reveal === "string" ? step.reveal : step.reveal.en;
-      const results = runWorkshopChecks(code, step.checks);
-      workshopChecksTotal += results.length;
-      workshopChecksPass += results.filter((r) => r.pass).length;
-
-      if (results.every((r) => r.pass)) {
-        console.log(`  ✓ ${step.id} (${results.length} checks)`);
-      } else {
-        console.log(`  ✗ ${step.id}`);
-        results.forEach((r, i) => {
-          if (r.pass) return;
-          const check = step.checks[i];
-          const msg =
-            typeof check.message === "string"
-              ? check.message
-              : check.message.en;
-          const kind = "kind" in r ? r.kind : "?";
-          const err = "error" in r ? ` (${r.error})` : "";
-          console.log(`     ${i}: [${kind}] ${msg}${err}`);
-        });
-        workshopStepFailures++;
-      }
-    }
+// Topic-level walkthroughs (same shape as JsWorkshopSlide; one per topic).
+for (const topic of javascriptCourse.topics ?? []) {
+  for (const walkthrough of topic.walkthroughs ?? []) {
+    runWorkshop(walkthrough, `${topic.id} (walkthrough)`);
   }
 }
 

@@ -6,6 +6,7 @@ import { ui } from "../i18n/strings";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
 import { ThemeToggleInline } from "./ThemeToggle";
 import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
+import { tokens } from "../styles/tokens";
 
 const SETTLE_MS = 400;
 
@@ -15,6 +16,13 @@ type Props = {
   breadcrumb?: BreadcrumbSegment[];
   slideJumpDots?: React.ReactNode;
   onPass?: () => void;
+  /**
+   * Called when the student finishes the LAST puzzle and clicks the
+   * "Back to lesson" button — routes them back to the tier menu so they
+   * don't have to navigate via breadcrumb. Marking the slide done
+   * (`onPass`) and exiting are bundled into the same click.
+   */
+  onExit?: () => void;
 };
 
 type CheckState = "pending" | "right" | "wrong";
@@ -24,7 +32,7 @@ type CheckState = "pending" | "right" | "wrong";
  * sub-puzzles in order; each is independent state-wise. We persist only
  * the highest puzzle reached, not chip positions (state resets per visit).
  */
-export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, breadcrumb, slideJumpDots, onPass }: Props) {
+export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, breadcrumb, slideJumpDots, onPass, onExit }: Props) {
   const { lang } = useLang();
   const { codePx, prosePx } = useSlideFontSize();
   const [puzzleIdx, setPuzzleIdx] = useState(0);
@@ -43,7 +51,7 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
       <div className="px-4 sm:px-10 pt-4 sm:pt-8">
         <div className="max-w-3xl mx-auto">
           <SlideTitleRow breadcrumb={breadcrumb}>
-            <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-indigo-50">
+            <h2 className={`${tokens.text.h2} flex-1 min-w-0`}>
               {t(slide.title, lang)}
             </h2>
             <SlideFontSizeControl />
@@ -51,16 +59,16 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
           </SlideTitleRow>
           <div className="flex items-end justify-between gap-4 mt-2">
             <p
-              className="text-stone-600 dark:text-indigo-200/80 whitespace-pre-line flex-1 min-w-0"
+              className="text-stone-600 dark:text-stone-300 whitespace-pre-line flex-1 min-w-0"
               style={{ fontSize: `${prosePx}px` }}
             >
               {t(puzzle.intro ?? slide.prompt, lang)}
             </p>
             {slideJumpDots}
           </div>
-          <div className="mt-3 flex items-center gap-2 text-xs text-stone-500 dark:text-indigo-200/60">
-            <span className="uppercase tracking-wider">
-              {lang === "sv" ? "Pussel" : "Puzzle"} {puzzleIdx + 1} / {total}
+          <div className="mt-3 flex items-center gap-2">
+            <span className={tokens.text.eyebrow}>
+              {lang === "sv" ? "Pussel" : "Puzzle"} <span className="tabular-nums">{puzzleIdx + 1} / {total}</span>
             </span>
             <div className="flex gap-1">
               {slide.puzzles.map((_, i) => (
@@ -69,10 +77,10 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
                   className={
                     "h-1.5 w-6 rounded-full transition-colors " +
                     (i === puzzleIdx
-                      ? "bg-amber-500 dark:bg-indigo-300"
+                      ? "bg-stone-900 dark:bg-[#F0B274]"
                       : i < puzzleIdx
-                      ? "bg-amber-300 dark:bg-indigo-500/60"
-                      : "bg-stone-300 dark:bg-white/20")
+                        ? "bg-[#C97A1F] dark:bg-[#F0B274]/60"
+                        : "bg-[#e8e2d3] dark:bg-[#2c303a]")
                   }
                 />
               ))}
@@ -89,10 +97,16 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
             isLast={isLast}
             onAdvance={() => {
               if (isLast) {
+                // Last puzzle correct: mark the slide done, then route
+                // back to the lesson tier menu in the same click. The
+                // parent SlideDeck wires `onExit` for that. Falling back
+                // to "stay put" if onExit isn't supplied keeps the
+                // legacy behaviour for any caller that hasn't wired it.
                 if (!allDoneRef.current) {
                   allDoneRef.current = true;
                   onPass?.();
                 }
+                onExit?.();
               } else {
                 setPuzzleIdx((i) => i + 1);
               }
@@ -109,9 +123,9 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
           {hasLegend && (
             <button
               onClick={() => setShowLegend((v) => !v)}
-              className="px-4 py-2 min-h-[44px] sm:min-h-0 sm:px-3 sm:py-1.5 rounded-lg text-sm ring-1
-                         bg-amber-100 hover:bg-amber-200 active:bg-amber-300 text-amber-800 ring-amber-300
-                         dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:active:bg-amber-500/40 dark:text-amber-200 dark:ring-amber-400/30"
+              className="px-4 py-2 min-h-[44px] sm:min-h-0 sm:px-3 sm:py-1.5 rounded-lg text-sm font-medium transition-colors
+                         bg-[#FBE8CF] hover:bg-[#f6dab3] text-[#C97A1F] border border-[#C97A1F]/30
+                         dark:bg-[#3a2a18] dark:hover:bg-[#4a3520] dark:text-[#F0B274] dark:border-[#F0B274]/30"
             >
               {t(showLegend ? ui.hideHelp : ui.showHelp, lang)}
             </button>
@@ -119,9 +133,7 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
           {puzzleIdx > 0 && (
             <button
               onClick={() => setPuzzleIdx((i) => Math.max(0, i - 1))}
-              className="ml-auto px-4 py-2 min-h-[44px] sm:min-h-0 sm:px-3 sm:py-1.5 rounded-lg text-sm
-                         bg-stone-100 hover:bg-stone-200 active:bg-stone-300 text-stone-700
-                         dark:bg-slate-700 dark:hover:bg-slate-600 dark:active:bg-slate-800 dark:text-white"
+              className={`ml-auto ${tokens.button.secondary} min-h-[44px] sm:min-h-0`}
             >
               ◀ {lang === "sv" ? "Föregående pussel" : "Previous puzzle"}
             </button>
@@ -130,32 +142,31 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
       </div>
 
       {showLegend && hasLegend && (
-        <div className="mx-4 sm:mx-10 mb-4 sm:mb-6 rounded-2xl p-4 ring-1
-                        bg-amber-50 ring-amber-200
-                        dark:bg-amber-500/10 dark:ring-amber-400/30">
-          <div className="text-xs uppercase tracking-wider mb-2
-                          text-amber-700 dark:text-amber-200">
+        <div
+          className="mx-4 sm:mx-10 mb-4 sm:mb-6 rounded-xl p-4 border-2
+                     bg-[#FBE8CF] border-[#C97A1F]/30
+                     dark:bg-[#3a2a18] dark:border-[#F0B274]/30"
+        >
+          <div className={`${tokens.text.eyebrow} text-[#C97A1F] dark:text-[#F0B274] mb-2`}>
             {t(ui.legendLabel, lang)}
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {slide.legend!.map((e, i) => (
               <div
                 key={i}
-                className="rounded-lg p-3 ring-1
-                           bg-white ring-stone-200
-                           dark:bg-slate-900/60 dark:ring-white/10"
+                className={`${tokens.card.surface} p-3`}
               >
-                <div className="font-semibold text-amber-800 dark:text-amber-100">
+                <div className="font-display font-medium text-stone-900 dark:text-stone-100">
                   {t(e.name, lang)}
                 </div>
-                <div className="font-mono text-xs text-stone-600 dark:text-indigo-200/80">
+                <div className="font-mono text-xs text-stone-600 dark:text-stone-400">
                   {e.syntax}
                 </div>
-                <div className="font-mono text-xs mt-1 text-emerald-700 dark:text-emerald-200/90">
+                <div className="font-mono text-xs mt-1 text-[#1F8A6E] dark:text-[#5FCAA8]">
                   {e.example}
                 </div>
                 {e.note && (
-                  <div className="text-xs mt-1 text-stone-500 dark:text-indigo-200/60">
+                  <div className="text-xs mt-1 text-stone-500 dark:text-stone-400">
                     {t(e.note, lang)}
                   </div>
                 )}
@@ -211,14 +222,79 @@ function PuzzleView({
 
   // chip-index is placed if it appears in any slot.
   const placedIds = new Set(slots.filter((s): s is number => s !== null));
-  const allSlotsFilled = slots.every((s) => s !== null);
+
+  // For `unordered: true` puzzles, the placed chips just have to match
+  // `solution` as a multiset — slot order is ignored. Used by both the
+  // per-slot correctness check (which slots to fade out on a wrong attempt)
+  // and the all-slots-full final check.
+  const multisetMatches = (placedTexts: string[], candidate: string[]): boolean => {
+    if (placedTexts.length !== candidate.length) return false;
+    const remaining = [...candidate];
+    for (const txt of placedTexts) {
+      const i = remaining.indexOf(txt);
+      if (i === -1) return false;
+      remaining.splice(i, 1);
+    }
+    return true;
+  };
 
   const isSlotCorrect = (slotIdx: number, slotsArr: (number | null)[]): boolean => {
     const placed = slotsArr[slotIdx];
     if (placed === null) return false;
     const txt = puzzle.chips[placed];
+    if (puzzle.unordered) {
+      // In unordered mode, a slot is "correct" iff its chip text appears in
+      // the solution multiset and isn't already accounted for by other slots
+      // earlier in the array. Walk left-to-right consuming solution entries
+      // — same chip text in a duplicate-allowed solution stays valid.
+      const remaining = [...puzzle.solution];
+      for (let i = 0; i < slotsArr.length; i++) {
+        const cur = slotsArr[i];
+        if (cur === null) continue;
+        const curTxt = puzzle.chips[cur];
+        const at = remaining.indexOf(curTxt);
+        if (at === -1) {
+          // This earlier (or current) slot is the one that breaks the multiset.
+          if (i === slotIdx) return false;
+          continue;
+        }
+        remaining.splice(at, 1);
+        if (i === slotIdx) return true;
+      }
+      return false;
+    }
     if (puzzle.solution[slotIdx] === txt) return true;
     return (puzzle.alternatives ?? []).some((alt) => alt[slotIdx] === txt);
+  };
+
+  // Run the check against an arbitrary slots arrangement. Used from chip
+  // placement so we react the moment all slots fill — no explicit "Check"
+  // button. Wrong placements fade back; correct ones surface "Next" right away.
+  const runCheckOn = (next: (number | null)[]) => {
+    if (next.some((s) => s === null)) return;
+    const placedTexts = next.map((s) => puzzle.chips[s as number]);
+    const matches = (candidate: string[]) =>
+      placedTexts.every((txt, i) => txt === candidate[i]);
+    const ok = puzzle.unordered
+      ? multisetMatches(placedTexts, puzzle.solution)
+      : matches(puzzle.solution) ||
+        (puzzle.alternatives ?? []).some(matches);
+    if (ok) {
+      setCheck("right");
+      return;
+    }
+    setCheck("wrong");
+    const wrong = new Set<number>();
+    for (let i = 0; i < next.length; i++) {
+      if (next[i] !== null && !isSlotCorrect(i, next)) wrong.add(i);
+    }
+    setSettling(wrong);
+    if (settleTimer.current !== null) window.clearTimeout(settleTimer.current);
+    settleTimer.current = window.setTimeout(() => {
+      setSlots((prev) => prev.map((s, i) => (wrong.has(i) ? null : s)));
+      setSettling(new Set());
+      settleTimer.current = null;
+    }, SETTLE_MS);
   };
 
   const handleChipClick = (chipIdx: number) => {
@@ -239,6 +315,10 @@ function PuzzleView({
     next[empty] = chipIdx;
     setSlots(next);
     setCheck("pending");
+    // If that placement filled the last slot, auto-check.
+    if (next.every((s) => s !== null)) {
+      runCheckOn(next);
+    }
   };
 
   const handleSlotClick = (slotIdx: number) => {
@@ -251,35 +331,6 @@ function PuzzleView({
     setCheck("pending");
   };
 
-  const runCheck = () => {
-    if (!allSlotsFilled) return;
-    const placedTexts = slots.map((s) => puzzle.chips[s as number]);
-    const matches = (candidate: string[]) =>
-      placedTexts.every((txt, i) => txt === candidate[i]);
-    const ok =
-      matches(puzzle.solution) ||
-      (puzzle.alternatives ?? []).some(matches);
-    if (ok) {
-      setCheck("right");
-      return;
-    }
-    setCheck("wrong");
-    // Identify which slots hold a chip that doesn't match at this position
-    // (under the canonical solution OR any accepted alternative). Mark them
-    // as settling, then after the fade duration clear them back to the pool.
-    const wrong = new Set<number>();
-    for (let i = 0; i < slots.length; i++) {
-      if (slots[i] !== null && !isSlotCorrect(i, slots)) wrong.add(i);
-    }
-    setSettling(wrong);
-    if (settleTimer.current !== null) window.clearTimeout(settleTimer.current);
-    settleTimer.current = window.setTimeout(() => {
-      setSlots((prev) => prev.map((s, i) => (wrong.has(i) ? null : s)));
-      setSettling(new Set());
-      settleTimer.current = null;
-    }, SETTLE_MS);
-  };
-
   // Split template into text parts on [[]] markers.
   const parts = template.split("[[]]");
 
@@ -287,7 +338,7 @@ function PuzzleView({
     <div className="flex-1 flex flex-col gap-4 min-h-0">
       {puzzle.prompt && (
         <p
-          className="text-stone-700 dark:text-indigo-100 whitespace-pre-line"
+          className="text-stone-700 dark:text-stone-200 whitespace-pre-line"
           style={{ fontSize: `${prosePx}px` }}
         >
           {t(puzzle.prompt, lang)}
@@ -296,10 +347,7 @@ function PuzzleView({
 
       {/* Code panel with embedded slots */}
       <div
-        className={
-          "rounded-xl p-5 font-mono whitespace-pre overflow-x-auto " +
-          "bg-slate-900 text-indigo-50 ring-1 ring-white/10"
-        }
+        className="rounded-lg p-5 font-mono whitespace-pre overflow-x-auto bg-stone-900 dark:bg-[#0f1117] text-stone-100 leading-relaxed"
         style={{ fontSize: `${codePx}px` }}
       >
         {parts.map((segment, i) => (
@@ -325,8 +373,10 @@ function PuzzleView({
         ))}
       </div>
 
-      {/* Chip pool — rendered in shuffled order; click identity stays original. */}
-      <div className="flex flex-wrap gap-2">
+      {/* Chips sit right under the code; verdict/advance flow inline beside
+          them — no big gap, no right-alignment. Click identity stays
+          original; chips render in shuffled order. */}
+      <div className="flex flex-wrap items-center gap-2">
         {displayOrder.map((idx) => {
           const text = puzzle.chips[idx];
           const placed = placedIds.has(idx);
@@ -336,10 +386,10 @@ function PuzzleView({
               onClick={() => handleChipClick(idx)}
               disabled={check === "right"}
               className={
-                "px-3 py-3 sm:py-2 min-h-[44px] sm:min-h-0 rounded-lg font-mono transition-all ring-1 " +
+                "px-3 py-3 sm:py-2 min-h-[44px] sm:min-h-0 rounded-md font-mono border-2 transition-all " +
                 (placed
-                  ? "bg-stone-100 text-stone-300 ring-stone-200 cursor-not-allowed dark:bg-slate-800/40 dark:text-slate-600 dark:ring-white/5"
-                  : "bg-amber-100 hover:bg-amber-200 active:bg-amber-300 text-amber-900 ring-amber-300 active:scale-95 dark:bg-indigo-500/20 dark:hover:bg-indigo-500/30 dark:active:bg-indigo-500/40 dark:text-indigo-100 dark:ring-indigo-400/30")
+                  ? "bg-stone-100 text-stone-300 border-transparent cursor-not-allowed dark:bg-[#222630] dark:text-stone-600"
+                  : "bg-amber-50 hover:bg-amber-100 active:bg-amber-200 text-stone-800 border-transparent active:scale-95 dark:bg-stone-800 dark:hover:bg-stone-700 dark:text-stone-100")
               }
               style={{ fontSize: `${codePx}px` }}
             >
@@ -347,51 +397,27 @@ function PuzzleView({
             </button>
           );
         })}
-      </div>
-
-      {/* Action row */}
-      <div className="flex items-center gap-3 mt-auto">
-        {check !== "right" && (
-          <button
-            onClick={runCheck}
-            disabled={!allSlotsFilled}
-            className="px-4 py-2 min-h-[44px] sm:min-h-0 rounded-lg text-white text-sm font-medium disabled:opacity-40 disabled:cursor-not-allowed
-                       bg-amber-500 hover:bg-amber-600 active:bg-amber-700
-                       dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:active:bg-indigo-600"
-          >
-            {t(ui.check, lang)}
-          </button>
-        )}
         {check === "wrong" && (
-          <div className="text-sm text-stone-600 dark:text-indigo-200/70 space-y-0.5">
-            <div>{lang === "sv" ? "Inte den här." : "Not this one."}</div>
+          <div className={`${tokens.feedback.error} ml-2 text-sm`}>
+            <div className="font-medium">{lang === "sv" ? "Inte den här." : "Not this one."}</div>
             {puzzle.wrongHint && (
-              <div className="text-xs text-stone-500 dark:text-indigo-200/55 italic">
+              <div className="text-xs italic mt-0.5 opacity-80">
                 {t(puzzle.wrongHint, lang)}
               </div>
             )}
           </div>
         )}
         {check === "right" && (
-          <>
-            <span className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
-              {lang === "sv" ? "✓ Rätt!" : "✓ Correct!"}
-            </span>
-            <button
-              onClick={onAdvance}
-              className="ml-auto px-4 py-2 min-h-[44px] sm:min-h-0 rounded-lg text-white text-sm font-medium
-                         bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700
-                         dark:bg-emerald-500 dark:hover:bg-emerald-400 dark:active:bg-emerald-600"
-            >
-              {isLast
-                ? lang === "sv"
-                  ? "Slutför ✓"
-                  : "Finish ✓"
-                : lang === "sv"
+          <button
+            onClick={onAdvance}
+            className={`ml-2 ${tokens.button.primary} min-h-[44px] sm:min-h-0`}
+          >
+            {isLast
+              ? t(ui.slideBack, lang)
+              : lang === "sv"
                 ? "Nästa pussel ▶"
                 : "Next puzzle ▶"}
-            </button>
-          </>
+          </button>
         )}
       </div>
 
@@ -440,15 +466,18 @@ function Slot({
         fontSize: "inherit",
       }}
       className={
-        "inline-block align-baseline mx-0.5 px-2 py-0.5 rounded font-mono ring-1 transition-colors " +
+        "inline-block align-baseline mx-0.5 px-2 py-0.5 rounded font-mono border-2 transition-colors " +
         (empty
-          ? "bg-slate-800 ring-dashed ring-indigo-300/40 text-indigo-300/40 min-w-[3em]"
+          ? // Empty slot — dashed border on the dark code panel.
+            "bg-transparent border-dashed border-stone-500/50 text-stone-500/60 min-w-[3em]"
           : showRight
-          ? "bg-emerald-500/20 ring-emerald-400/60 text-emerald-100"
-          : showWrong
-          ? // Muted amber/stone — visible as "this one isn't right" without alarm.
-            "bg-amber-500/10 ring-amber-300/40 text-amber-100/80"
-          : "bg-amber-500/20 ring-amber-400/60 text-amber-100 hover:bg-amber-500/30")
+            ? // Correct: teal (semantic success — same hue as Conditionals).
+              "bg-[#163029] border-[#5FCAA8] text-[#5FCAA8]"
+            : showWrong
+              ? // Wrong: rose (semantic error — same hue as Functions).
+                "bg-[#39202a] border-[#EE8AA1]/60 text-[#EE8AA1]/90"
+              : // Filled, awaiting check: warm amber.
+                "bg-[#3a2a18] border-[#F0B274]/60 text-[#F0B274] hover:bg-[#4a3520]")
       }
     >
       {empty ? "▢" : chipText}

@@ -267,6 +267,15 @@ export type JsChipPuzzle = {
    */
   alternatives?: string[][];
   /**
+   * When `true`, slot order doesn't matter — the placed multiset just has to
+   * match `solution` as a multiset. Use for puzzles where the chips are
+   * semantically interchangeable (e.g. "use `let` and `const`" — either order
+   * is correct). Defaults to `false`; explicit per-puzzle opt-in keeps order
+   * meaningful where the lesson actually depends on it (declaration vs
+   * assignment, etc.).
+   */
+  unordered?: boolean;
+  /**
    * Optional sense-making sentence shown when the student's assembly is
    * wrong. Describes what the wrong code would actually do (e.g. "this
    * would always return 'walk', even on red"). Authored per puzzle —
@@ -342,6 +351,22 @@ export type WorkshopCheck = {
   assert?: string;
 };
 
+/**
+ * Per-step / per-exercise hint about which dimensions of the student's code
+ * are flexible. Drives the "?" button in the workshop / exercise chrome:
+ * when set, the button surfaces tailored copy explaining what the student
+ * can swap for their own taste. When absent, the button is hidden — leave it
+ * undefined for steps where the value AND the name are pinned by the lesson.
+ *
+ * Author both flags independently:
+ *   - `values: true`  → any value of the same datatype works.
+ *   - `names: true`   → any variable name works (no specific name pinned).
+ */
+export type FlexibilityFlags = {
+  values?: boolean;
+  names?: boolean;
+};
+
 export type WorkshopStep = {
   /** Stable id for keying React state and progress tracking. */
   id: string;
@@ -353,6 +378,16 @@ export type WorkshopStep = {
   checks: WorkshopCheck[];
   /** Canonical solution after this step. Should equal next step's starterCode. */
   reveal?: Loc;
+  /** Optional per-step flexibility hint. See `FlexibilityFlags`. */
+  flexibility?: FlexibilityFlags;
+  /**
+   * Optional progressive hint, shown only when the student clicks the "Hint"
+   * button in the title row. Lets the instruction stay directional ("Increase
+   * `balance` by a deposit. Log the new value.") while the literal answer
+   * (`balance = balance + 250;`) lives behind a click. Authoring rule: never
+   * leak the answer into the instruction; put it here.
+   */
+  hint?: Loc;
 };
 
 export type JsWorkshopSlide = {
@@ -398,6 +433,8 @@ export type ExerciseSlide = {
   starterCss?: Loc;
   starterJs?: Loc;
   tests: ExerciseTest[];
+  /** Optional flexibility hint for the help button in the title row. */
+  flexibility?: FlexibilityFlags;
 };
 
 export type Slide =
@@ -426,6 +463,20 @@ export type Topic = {
   title: Loc;
   summary?: Loc;
   lessons: Lesson[];
+  /**
+   * Topic-level long-form workshops. Same shape as `JsWorkshopSlide` —
+   * the only difference is length (20+ steps) and audience (one per
+   * topic, integrating concepts from all the topic's lessons). Rendered
+   * on the topic view as cards with a clickable step grid (any step
+   * jumps directly into the walkthrough at that step).
+   */
+  walkthroughs?: JsWorkshopSlide[];
+  /**
+   * Topic-level long-form exercises. Same shape as `ExerciseSlide` —
+   * single-shot freeform challenge with 10+ user stories instead of
+   * the 2–4 typical of lesson-level Labs. One per topic.
+   */
+  challenges?: ExerciseSlide[];
 };
 
 export type Course = {

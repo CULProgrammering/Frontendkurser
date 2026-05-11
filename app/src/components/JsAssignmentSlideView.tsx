@@ -129,14 +129,14 @@ export function JsAssignmentSlideView({ slide, storageKey, breadcrumb, slideJump
     <div className="h-full w-full max-w-7xl mx-auto flex flex-col">
       <div className="px-4 sm:px-10 pt-4 sm:pt-8">
         <SlideTitleRow breadcrumb={breadcrumb}>
-          <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-indigo-50">
+          <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-stone-100">
             {t(slide.title, lang)}
           </h2>
           <SlideFontSizeControl />
           <ThemeToggleInline />
         </SlideTitleRow>
         <div className="flex items-end justify-between gap-4 mt-2">
-          <p className="text-stone-600 dark:text-indigo-200/80 whitespace-pre-line flex-1 min-w-0">
+          <p className="text-stone-600 dark:text-stone-400 whitespace-pre-line flex-1 min-w-0">
             {t(slide.prompt, lang)}
           </p>
           {slideJumpDots}
@@ -150,17 +150,17 @@ export function JsAssignmentSlideView({ slide, storageKey, breadcrumb, slideJump
         left={
           <div className="flex-1 flex flex-col rounded-2xl overflow-hidden min-h-0
                         bg-white ring-1 ring-stone-200 shadow-sm
-                        dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
+                        dark:bg-[#1f232c] dark:border-white/[0.08] dark:shadow-none">
           <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
                           text-amber-600 border-stone-200
-                          dark:text-indigo-300/70 dark:border-white/10">
+                          dark:text-stone-400 dark:border-white/[0.08]">
             {t(ui.jsLabel, lang)}
           </div>
           {slide.varNames.length > 0 && (
             <div
               className="font-mono px-4 pt-3 pb-1 select-none border-b
                          text-stone-500 bg-stone-100 border-stone-200
-                         dark:text-indigo-200/60 dark:bg-slate-900/40 dark:border-white/10"
+                         dark:text-stone-400 dark:bg-[#222630] dark:border-white/[0.08]"
               aria-label="declared variables"
               style={{ fontSize: `${codePx}px` }}
             >
@@ -180,11 +180,11 @@ export function JsAssignmentSlideView({ slide, storageKey, breadcrumb, slideJump
             spellCheck={false}
             className={
               "flex-1 font-mono outline-none resize-none p-4 " +
-              "bg-stone-50 text-stone-900 dark:bg-transparent dark:text-indigo-50"
+              "bg-stone-50 text-stone-900 dark:bg-transparent dark:text-stone-100"
             }
             style={{ fontSize: `${codePx}px` }}
           />
-          <div className="flex gap-2 p-3 border-t border-stone-200 dark:border-white/10">
+          <div className="flex gap-2 p-3 border-t border-stone-200 dark:border-white/[0.08]">
             <button
               onClick={runChecks}
               className="px-3 py-1.5 rounded-lg text-white text-sm font-medium
@@ -197,7 +197,7 @@ export function JsAssignmentSlideView({ slide, storageKey, breadcrumb, slideJump
               onClick={reset}
               className="px-3 py-1.5 rounded-lg text-sm
                          bg-stone-100 hover:bg-stone-200 text-stone-700
-                         dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white"
+                         dark:bg-[#2c303a] dark:hover:bg-[#252934] dark:text-white"
             >
               {t(ui.reset, lang)}
             </button>
@@ -217,10 +217,10 @@ export function JsAssignmentSlideView({ slide, storageKey, breadcrumb, slideJump
         right={
           <div className="flex-1 flex flex-col rounded-2xl overflow-hidden min-h-0
                         bg-white ring-1 ring-stone-200 shadow-sm
-                        dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
+                        dark:bg-[#1f232c] dark:border-white/[0.08] dark:shadow-none">
             <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
                             text-amber-600 border-stone-200
-                            dark:text-indigo-300/70 dark:border-white/10">
+                            dark:text-stone-400 dark:border-white/[0.08]">
               {focusedRun
                 ? `${t(ui.testLabel, lang)} ${focusedIdx + 1}: ${t(focusedRun.test.label, lang)}`
                 : t(ui.testCases, lang)}
@@ -239,7 +239,7 @@ export function JsAssignmentSlideView({ slide, storageKey, breadcrumb, slideJump
                 showSuccess → "✓ Done"; otherwise → placeholder hint or goalHint. */}
             {runs && showSuccess && (
               <div
-                className="border-t border-stone-200 dark:border-white/10 px-4 py-3
+                className="border-t border-stone-200 dark:border-white/[0.08] px-4 py-3
                               font-medium text-emerald-700 dark:text-emerald-300"
                 style={{ fontSize: `${prosePx}px` }}
               >
@@ -248,7 +248,7 @@ export function JsAssignmentSlideView({ slide, storageKey, breadcrumb, slideJump
             )}
             {runs && !showSuccess && runtimeError && (
               <div
-                className="border-t border-stone-200 dark:border-white/10 px-4 py-3
+                className="border-t border-stone-200 dark:border-white/[0.08] px-4 py-3
                               bg-rose-50 text-rose-800
                               dark:bg-rose-500/10 dark:text-rose-200"
                 style={{ fontSize: `${prosePx}px` }}
@@ -267,8 +267,8 @@ export function JsAssignmentSlideView({ slide, storageKey, breadcrumb, slideJump
             )}
             {runs && !showSuccess && !runtimeError && (placeholderHint || slide.goalHint) && (
               <div
-                className="border-t border-stone-200 dark:border-white/10 px-4 py-3
-                              text-stone-600 dark:text-indigo-200/80"
+                className="border-t border-stone-200 dark:border-white/[0.08] px-4 py-3
+                              text-stone-600 dark:text-stone-400"
                 style={{ fontSize: `${prosePx}px` }}
               >
                 {placeholderHint
@@ -294,19 +294,19 @@ export function JsAssignmentSlideView({ slide, storageKey, breadcrumb, slideJump
                 key={i}
                 className="rounded-lg p-3 ring-1
                            bg-white ring-stone-200
-                           dark:bg-slate-900/60 dark:ring-white/10"
+                           dark:bg-[#1f232c] dark:border-white/[0.08]"
               >
                 <div className="font-semibold text-amber-800 dark:text-amber-100">
                   {t(e.name, lang)}
                 </div>
-                <div className="font-mono text-xs text-stone-600 dark:text-indigo-200/80">
+                <div className="font-mono text-xs text-stone-600 dark:text-stone-400">
                   {e.syntax}
                 </div>
                 <div className="font-mono text-xs mt-1 text-emerald-700 dark:text-emerald-200/90">
                   {e.example}
                 </div>
                 {e.note && (
-                  <div className="text-xs mt-1 text-stone-500 dark:text-indigo-200/60">
+                  <div className="text-xs mt-1 text-stone-500 dark:text-stone-400">
                     {t(e.note, lang)}
                   </div>
                 )}

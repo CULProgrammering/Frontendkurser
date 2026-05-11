@@ -83,14 +83,14 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
     <div className="h-full w-full max-w-7xl mx-auto flex flex-col">
       <div className="px-4 sm:px-10 pt-4 sm:pt-8">
         <SlideTitleRow breadcrumb={breadcrumb}>
-          <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-indigo-50">
+          <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-stone-100">
             {t(slide.title, lang)}
           </h2>
           <SlideFontSizeControl />
           <ThemeToggleInline />
         </SlideTitleRow>
         <div className="flex items-end justify-between gap-4 mt-2">
-          <p className="text-stone-600 dark:text-indigo-200/80 whitespace-pre-line flex-1 min-w-0">
+          <p className="text-stone-600 dark:text-stone-400 whitespace-pre-line flex-1 min-w-0">
             {t(slide.prompt, lang)}
           </p>
           {slideJumpDots}
@@ -104,10 +104,10 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
         left={
           <div className="flex-1 flex flex-col rounded-2xl overflow-hidden min-h-0
                         bg-white ring-1 ring-stone-200 shadow-sm
-                        dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
+                        dark:bg-[#1f232c] dark:border-white/[0.08] dark:shadow-none">
           <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
                           text-amber-600 border-stone-200
-                          dark:text-indigo-300/70 dark:border-white/10">
+                          dark:text-stone-400 dark:border-white/[0.08]">
             {t(ui.cssLabel, lang)}
           </div>
           <textarea
@@ -116,10 +116,10 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
             spellCheck={false}
             className="flex-1 font-mono p-4 outline-none resize-none
                        bg-stone-50 text-stone-900
-                       dark:bg-transparent dark:text-indigo-50"
+                       dark:bg-transparent dark:text-stone-100"
             style={{ fontSize: `${codePx}px` }}
           />
-          <div className="flex gap-2 p-3 border-t border-stone-200 dark:border-white/10">
+          <div className="flex gap-2 p-3 border-t border-stone-200 dark:border-white/[0.08]">
             <button
               onClick={runChecks}
               className="px-3 py-1.5 rounded-lg text-white text-sm font-medium
@@ -132,7 +132,7 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
               onClick={reset}
               className="px-3 py-1.5 rounded-lg text-sm
                          bg-stone-100 hover:bg-stone-200 text-stone-700
-                         dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-white"
+                         dark:bg-[#2c303a] dark:hover:bg-[#252934] dark:text-white"
             >
               {t(ui.reset, lang)}
             </button>
@@ -152,10 +152,10 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
         right={
           <div className="flex-1 flex flex-col rounded-2xl overflow-hidden min-h-0
                         bg-white ring-1 ring-stone-200 shadow-sm
-                        dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
+                        dark:bg-[#1f232c] dark:border-white/[0.08] dark:shadow-none">
             <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
                             text-amber-600 border-stone-200
-                            dark:text-indigo-300/70 dark:border-white/10">
+                            dark:text-stone-400 dark:border-white/[0.08]">
               {t(hasTarget ? ui.yourVersion : ui.preview, lang)}
             </div>
             <iframe
@@ -169,7 +169,7 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
               <>
                 <div className="px-4 py-2 text-xs uppercase tracking-wider border-y
                                 text-emerald-700 border-stone-200
-                                dark:text-emerald-300/80 dark:border-white/10">
+                                dark:text-emerald-300/80 dark:border-white/[0.08]">
                   {t(ui.goal, lang)}
                 </div>
                 <iframe
@@ -183,7 +183,7 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
             {results && (
               <div
                 className="border-t p-3 space-y-1 max-h-48 overflow-auto
-                              border-stone-200 dark:border-white/10"
+                              border-stone-200 dark:border-white/[0.08]"
                 style={{ fontSize: `${prosePx}px` }}
               >
                 {allPass ? (
@@ -193,7 +193,7 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
                 ) : (
                   <>
                     {results.filter((r) => !r.pass).length === 0 ? null : (
-                      <div className="text-stone-600 dark:text-indigo-200/70 mb-1">
+                      <div className="text-stone-600 dark:text-stone-400 mb-1">
                         {t(ui.needsAdjusting, lang)}
                       </div>
                     )}
@@ -206,7 +206,7 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
                         >
                           • {friendlyLabel(r.check)}
                           {r.check.hint && (
-                            <span className="text-stone-500 dark:text-indigo-200/60">
+                            <span className="text-stone-500 dark:text-stone-400">
                               {" "}
                               — {t(r.check.hint, lang)}
                             </span>
@@ -241,19 +241,19 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
                 key={i}
                 className="rounded-lg p-3 ring-1
                            bg-white ring-stone-200
-                           dark:bg-slate-900/60 dark:ring-white/10"
+                           dark:bg-[#1f232c] dark:border-white/[0.08]"
               >
                 <div className="font-semibold text-amber-800 dark:text-amber-100">
                   {t(e.name, lang)}
                 </div>
-                <div className="font-mono text-xs text-stone-600 dark:text-indigo-200/80">
+                <div className="font-mono text-xs text-stone-600 dark:text-stone-400">
                   {e.syntax}
                 </div>
                 <div className="font-mono text-xs mt-1 text-emerald-700 dark:text-emerald-200/90">
                   {e.example}
                 </div>
                 {e.note && (
-                  <div className="text-xs mt-1 text-stone-500 dark:text-indigo-200/60">
+                  <div className="text-xs mt-1 text-stone-500 dark:text-stone-400">
                     {t(e.note, lang)}
                   </div>
                 )}

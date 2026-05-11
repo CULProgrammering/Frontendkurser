@@ -7,8 +7,10 @@ import { t } from "../i18n";
 import { ui } from "../i18n/strings";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
 import { ThemeToggleInline } from "./ThemeToggle";
+import { TypewriterToggleInline, useTypewriter } from "./TypewriterToggle";
 import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
 import { TwoColumnLayout } from "./TwoColumnLayout";
+import { tokens } from "../styles/tokens";
 import { CrosswalkScene } from "./scenes/CrosswalkScene";
 import { CrosswalkTraceScene } from "./scenes/CrosswalkTraceScene";
 import { ComparisonsTableScene } from "./scenes/ComparisonsTableScene";
@@ -30,16 +32,36 @@ type Props = {
   slide: ExplanationSlide;
   breadcrumb?: BreadcrumbSegment[];
   slideJumpDots?: React.ReactNode;
+  /**
+   * When provided, a "Next →" button appears in the bottom-right of the slide
+   * area on the final narration step as an alternative to clicking the
+   * numbered slide-jump dots. Omitted when this is the last slide in the deck.
+   */
+  onNextSlide?: () => void;
+  /**
+   * Called when the student finishes the very last step of the very last
+   * slide (i.e. has read all the narration in this tier) and clicks the
+   * "Back to lesson" button. Routes back to the lesson tier menu so they
+   * don't have to hunt for the breadcrumb. Only surfaced when both
+   * `atEnd` and `!onNextSlide` (last slide) AND the typewriter has
+   * finished printing the last step.
+   */
+  onExit?: () => void;
 };
 
 // Narration text is hand-authored with `\n` for visual line breaks. The right
 // pane is now wide enough that those mid-sentence breaks look awkward, so we
 // collapse single newlines to a space and treat blank lines (\n\n) as
 // paragraph breaks — `whitespace-pre-line` then renders the paragraph gap.
+//
+// Exception: a `\n` that is immediately followed by a bullet marker `•` is
+// preserved, so authored bullet lists stay on their own lines. See the
+// "Slide UI Conventions" rule in CLAUDE.md — bullets always go on their
+// own line and the bullet marker is `•`.
 function collapseSoftBreaks(text: string): string {
   return text
     .split(/\n\s*\n+/)
-    .map((p) => p.replace(/\s*\n\s*/g, " ").trim())
+    .map((p) => p.replace(/\s*\n\s*(?!•)/g, " ").trim())
     .join("\n\n");
 }
 
@@ -85,9 +107,11 @@ function renderWithTokenHighlights(
     i % 2 === 1 ? (
       <mark
         key={i}
-        className="rounded px-0.5
-                   bg-amber-200 text-stone-900
-                   dark:bg-amber-300/40 dark:text-amber-50"
+        // The inner RenderBox panels carry their own `baseStyle` from the
+        // lesson author — usually light/cream regardless of theme. Use a
+        // saturated amber in BOTH themes with dark text so the highlight
+        // pops on whatever panel surface the lesson chose.
+        className="rounded px-0.5 bg-amber-200 text-stone-900 dark:bg-amber-300 dark:text-stone-900"
       >
         {part}
       </mark>
@@ -138,13 +162,20 @@ function RenderBox({
   );
 }
 
-export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots }: Props) {
+export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextSlide, onExit }: Props) {
   const [step, setStep] = useState(0);
   const [helpOpen, setHelpOpen] = useState(false);
+  // `typingDone` flips when the Typewriter finishes (onDone). Used to
+  // gate the "Back to lesson" button on the final step so it doesn't pop
+  // in mid-animation. Resets per step. The earlier click-to-skip flow
+  // was retired once the global Typewriter toggle landed — students who
+  // want instant text turn the animation off; clicks now always advance.
+  const [typingDone, setTypingDone] = useState(false);
   const atEnd = step >= slide.steps.length - 1;
   const atStart = step === 0;
   const { lang } = useLang();
   const { codePx, prosePx } = useSlideFontSize();
+  const typewriter = useTypewriter();
 
   // "-trace" customScenes show actual code with highlighted lines as the
   // narration walks through execution — they need the wide left pane so the
@@ -189,6 +220,12 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots }: Props
 
   const advance = () => {
     if (helpOpen) return;
+    // Wait for the typewriter to finish before letting a click advance —
+    // otherwise students fly past text they haven't read yet. When the
+    // typewriter pref is OFF the Typewriter sets `n = text.length`
+    // immediately and `onDone` fires the same tick, so `typingDone` is
+    // true essentially right away and clicks advance straight through.
+    if (!typingDone) return;
     if (!atEnd) setStep((s) => s + 1);
   };
   const back = (e: React.MouseEvent) => {
@@ -217,10 +254,12 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots }: Props
     return () => window.removeEventListener("keydown", onKey, true);
   }, [helpOpen]);
 
-  // Reset the dialog when navigating between steps so a stale tip doesn't
-  // linger over the next step's content.
+  // Reset the dialog and the typing-done flag whenever we move to a new
+  // step so any lingering tip closes and the next step's animation gets
+  // a fresh `typingDone = false` gate.
   useEffect(() => {
     setHelpOpen(false);
+    setTypingDone(false);
   }, [step]);
 
   const resolveLabel = (b: DemoBox) =>
@@ -229,15 +268,16 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots }: Props
   const titleBlock = (
     <>
       <SlideTitleRow breadcrumb={breadcrumb}>
-        <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-indigo-50">
+        <h2 className={`${tokens.text.h2} flex-1 min-w-0`}>
           {t(slide.title, lang)}
         </h2>
         <SlideFontSizeControl />
+        <TypewriterToggleInline />
         <ThemeToggleInline />
       </SlideTitleRow>
       <div className="flex items-end justify-between gap-4 mt-2">
         {slide.intro ? (
-          <p className="text-stone-500 dark:text-indigo-200/70 flex-1 min-w-0">
+          <p className="text-stone-600 dark:text-stone-400 flex-1 min-w-0">
             {t(slide.intro, lang)}
           </p>
         ) : (
@@ -268,40 +308,76 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots }: Props
             </div>
           }
           right={
-            <div className="flex-1 flex flex-col rounded-2xl p-6 min-h-0
-                            bg-white ring-1 ring-stone-200 shadow-sm
-                            dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
+            <div className={`flex-1 flex flex-col p-6 min-h-0 ${tokens.card.surface}`}>
               <div className="flex items-center justify-between mb-2">
-                <div className="text-xs uppercase tracking-wider text-amber-600 dark:text-indigo-300/70">
-                  {t(ui.stepLabel, lang)} {step + 1} / {slide.steps.length}
+                <div className={tokens.text.eyebrow}>
+                  {t(ui.stepLabel, lang)} <span className="tabular-nums">{step + 1} / {slide.steps.length}</span>
                 </div>
                 {!atStart && (
                   <button
                     onClick={back}
-                    className="text-xs px-3 py-2 min-h-[44px] sm:min-h-0 sm:px-2 sm:py-1 rounded-md
-                               bg-stone-100 hover:bg-stone-200 active:bg-stone-300 text-stone-700 ring-1 ring-stone-200
-                               dark:bg-slate-700/70 dark:hover:bg-slate-600 dark:active:bg-slate-800 dark:text-indigo-100 dark:ring-white/10"
+                    className="text-xs px-3 py-2 min-h-[44px] sm:min-h-0 sm:px-2 sm:py-1 rounded-md transition-colors
+                               bg-white hover:bg-stone-50 text-stone-700 border border-stone-900/[0.08]
+                               dark:bg-[#1f232c] dark:hover:bg-[#252934] dark:text-stone-200 dark:border-white/[0.08]"
                   >
                     {t(ui.stepBack, lang)}
                   </button>
                 )}
               </div>
               <div
-                className="leading-relaxed min-h-[6rem] whitespace-pre-line text-stone-800 dark:text-indigo-50"
+                className="leading-relaxed min-h-[6rem] whitespace-pre-line text-stone-800 dark:text-stone-100"
                 style={{ fontSize: `${prosePx}px` }}
               >
                 {current?.narration ? (
-                  <Typewriter text={collapseSoftBreaks(t(current.narration, lang))} />
+                  <Typewriter
+                    text={collapseSoftBreaks(t(current.narration, lang))}
+                    skip={!typewriter.enabled}
+                    onDone={() => setTypingDone(true)}
+                  />
                 ) : (
-                  <span className="text-stone-400 dark:text-indigo-200/50 italic">…</span>
+                  <span className="text-stone-400 dark:text-stone-500 italic">…</span>
                 )}
               </div>
 
               <div className="flex-1" />
-              <div className="text-sm text-stone-500 dark:text-indigo-200/60">
-                {atEnd
-                  ? t(ui.endOfExplanation, lang)
-                  : t(ui.clickToContinue, lang)}
+              <div className="flex items-center justify-between gap-3">
+                <div
+                  className="text-sm italic text-stone-500 dark:text-stone-400 transition-opacity"
+                  // Dim the "Click anywhere to continue →" hint while the
+                  // typewriter is still running — the click would be a
+                  // no-op anyway, so showing the affordance at full
+                  // strength would be misleading. As soon as `typingDone`
+                  // flips, the hint brightens up to invite the next click.
+                  style={{ opacity: typingDone ? 1 : 0.4 }}
+                >
+                  {atEnd
+                    ? t(ui.endOfExplanation, lang)
+                    : t(ui.clickToContinue, lang)}
+                </div>
+                {atEnd && onNextSlide && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onNextSlide();
+                    }}
+                    className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
+                  >
+                    {t(ui.nextSlide, lang)}
+                  </button>
+                )}
+                {atEnd && !onNextSlide && typingDone && onExit && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onExit();
+                    }}
+                    className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
+                  >
+                    {t(ui.slideBack, lang)}
+                  </button>
+                )}
               </div>
             </div>
           }
@@ -315,20 +391,18 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots }: Props
             }}
           >
             <div>{titleBlock}</div>
-            <div className="flex-1 rounded-2xl p-6 flex flex-col gap-5
-                            bg-white ring-1 ring-stone-200 shadow-sm
-                            dark:bg-slate-900/60 dark:ring-white/10 dark:shadow-none">
+            <div className={`flex-1 p-6 flex flex-col gap-5 ${tokens.card.surface}`}>
             <div className="flex items-center justify-between">
-              <div className="text-xs uppercase tracking-wider text-amber-600 dark:text-indigo-300/70">
-                {t(ui.stepLabel, lang)} {step + 1} / {slide.steps.length}
+              <div className={tokens.text.eyebrow}>
+                {t(ui.stepLabel, lang)} <span className="tabular-nums">{step + 1} / {slide.steps.length}</span>
               </div>
               <div className="flex items-center gap-2">
                 {!atStart && (
                   <button
                     onClick={back}
-                    className="text-xs px-3 py-2 min-h-[44px] sm:min-h-0 sm:px-2 sm:py-1 rounded-md
-                               bg-stone-100 hover:bg-stone-200 active:bg-stone-300 text-stone-700 ring-1 ring-stone-200
-                               dark:bg-slate-700/70 dark:hover:bg-slate-600 dark:active:bg-slate-800 dark:text-indigo-100 dark:ring-white/10"
+                    className="text-xs px-3 py-2 min-h-[44px] sm:min-h-0 sm:px-2 sm:py-1 rounded-md transition-colors
+                               bg-white hover:bg-stone-50 text-stone-700 border border-stone-900/[0.08]
+                               dark:bg-[#1f232c] dark:hover:bg-[#252934] dark:text-stone-200 dark:border-white/[0.08]"
                   >
                     {t(ui.stepBack, lang)}
                   </button>
@@ -339,11 +413,10 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots }: Props
                     onClick={openHelp}
                     aria-label={t({ en: "Show tip", sv: "Visa tips" }, lang)}
                     title={t({ en: "Show tip", sv: "Visa tips" }, lang)}
-                    className="w-11 h-11 sm:w-8 sm:h-8 rounded-full flex items-center justify-center
-                               bg-amber-100 hover:bg-amber-200 active:bg-amber-300 text-amber-700
-                               ring-1 ring-amber-300 shadow-sm
-                               dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:active:bg-amber-500/40 dark:text-amber-200 dark:ring-amber-400/30
-                               transition-colors"
+                    className="w-11 h-11 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors
+                               bg-[#FBE8CF] hover:bg-[#f6dab3] active:bg-[#e6c890] text-[#C97A1F]
+                               border border-[#C97A1F]/30
+                               dark:bg-[#3a2a18] dark:hover:bg-[#4a3520] dark:active:bg-[#5a4028] dark:text-[#F0B274] dark:border-[#F0B274]/30"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -366,13 +439,22 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots }: Props
             </div>
 
             <div
-              className="leading-relaxed min-h-[6rem] whitespace-pre-line text-stone-800 dark:text-indigo-50 max-w-3xl mx-auto w-full"
+              className="leading-relaxed min-h-[6rem] whitespace-pre-line text-stone-800 dark:text-stone-100 max-w-3xl mx-auto w-full"
               style={{ fontSize: `${prosePx}px` }}
             >
               {current?.narration ? (
-                <Typewriter text={collapseSoftBreaks(t(current.narration, lang))} />
+                // `skip` is driven by the global typewriter pref only —
+                // students who want instant text flip the title-row
+                // toggle. `typingDone` (set via onDone) gates whether
+                // a click on the slide can advance, see the `advance()`
+                // handler near the top of the component.
+                <Typewriter
+                  text={collapseSoftBreaks(t(current.narration, lang))}
+                  skip={!typewriter.enabled}
+                  onDone={() => setTypingDone(true)}
+                />
               ) : (
-                <span className="text-stone-400 dark:text-indigo-200/50 italic">…</span>
+                <span className="text-stone-400 dark:text-stone-500 italic">…</span>
               )}
             </div>
 
@@ -399,10 +481,36 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots }: Props
             ) : null}
 
             <div className="flex-1" />
-            <div className="text-sm text-stone-500 dark:text-indigo-200/60">
-              {atEnd
-                ? t(ui.endOfExplanation, lang)
-                : t(ui.clickToContinue, lang)}
+            <div className="flex items-center justify-between gap-3">
+              <div className="text-sm italic text-stone-500 dark:text-stone-400">
+                {atEnd
+                  ? t(ui.endOfExplanation, lang)
+                  : t(ui.clickToContinue, lang)}
+              </div>
+              {atEnd && onNextSlide && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onNextSlide();
+                  }}
+                  className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
+                >
+                  {t(ui.nextSlide, lang)}
+                </button>
+              )}
+              {atEnd && !onNextSlide && typingDone && onExit && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onExit();
+                  }}
+                  className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
+                >
+                  {t(ui.slideBack, lang)}
+                </button>
+              )}
             </div>
           </div>
           </div>
@@ -419,13 +527,13 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots }: Props
               className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/50 cursor-default"
             >
               <div
-                className="max-w-lg w-full rounded-2xl p-6 cursor-default
-                           bg-amber-50 ring-1 ring-amber-200 shadow-xl
-                           dark:bg-slate-900 dark:ring-amber-400/30"
+                className="max-w-lg w-full rounded-xl p-6 cursor-default border-2 shadow-xl
+                           bg-[#FBE8CF] border-[#C97A1F]/30
+                           dark:bg-[#3a2a18] dark:border-[#F0B274]/30"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-amber-700 dark:text-amber-200">
+                  <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] font-mono font-medium text-[#C97A1F] dark:text-[#F0B274]">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -447,14 +555,15 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots }: Props
                     type="button"
                     onClick={closeHelp}
                     aria-label={t({ en: "Close", sv: "Stäng" }, lang)}
-                    className="w-11 h-11 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xl sm:text-lg leading-none
-                               text-stone-500 hover:bg-stone-200 active:bg-stone-300 dark:text-indigo-200/70 dark:hover:bg-slate-700 dark:active:bg-slate-800"
+                    className="w-11 h-11 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xl sm:text-lg leading-none transition-colors
+                               text-[#C97A1F]/70 hover:bg-[#C97A1F]/10
+                               dark:text-[#F0B274]/70 dark:hover:bg-[#F0B274]/10"
                   >
                     ×
                   </button>
                 </div>
                 <div
-                  className="whitespace-pre-line leading-relaxed text-stone-800 dark:text-amber-100/90"
+                  className="whitespace-pre-line leading-relaxed text-stone-800 dark:text-stone-100"
                   style={{ fontSize: `${prosePx}px` }}
                 >
                   {noteBox.label ? t(noteBox.label, lang) : ""}

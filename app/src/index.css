@@ -2,10 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    "Roboto", "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Use the dynamic viewport height so the layout shrinks gracefully when the
@@ -17,16 +21,64 @@ html, body {
   margin: 0;
 }
 
-/* Light (default) */
+/* Workbook canvas — warm in light, cool slate in dark. */
 html {
-  --body-bg: #faf7f2;
+  --body-bg: #f6f3ec;
+  --surface-bg: #fdfaf3;
+  --surface-raised: #ffffff;
+  --border: #e8e2d3;
+  --text: #1c1a16;
+  --text-muted: #6b6557;
   background: var(--body-bg);
-  color: #292524; /* stone-800 */
+  color: var(--text);
 }
 
-/* Dark override */
 html.dark {
-  --body-bg: #0b1020;
+  --body-bg: #14161c;
+  --surface-bg: #1b1e26;
+  --surface-raised: #222630;
+  --border: #2c303a;
+  --text: #e9e6df;
+  --text-muted: #9ba0ab;
   background: var(--body-bg);
-  color: #e7ecff;
+  color: var(--text);
+}
+
+/* Subtle paper texture for the hero / surface bands. Enhances the
+   workbook feel without fighting the content. Only applied where opted
+   in via the `.paper-texture` class. */
+.paper-texture {
+  background-image:
+    radial-gradient(rgba(120, 90, 50, 0.035) 1px, transparent 1px),
+    radial-gradient(rgba(120, 90, 50, 0.025) 1px, transparent 1px);
+  background-size: 24px 24px, 8px 8px;
+  background-position: 0 0, 12px 12px;
+}
+
+html.dark .paper-texture {
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+}
+
+/* Fraunces optical sizing — the display face's `opsz` axis adjusts contrast
+   automatically when allowed to. */
+.font-display {
+  font-optical-sizing: auto;
+}
+
+/* Calmer scrollbars. Webkit only; Firefox keeps its native style. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 140, 0.25);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 120, 140, 0.4);
 }

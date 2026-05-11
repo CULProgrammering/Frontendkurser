@@ -46,9 +46,10 @@ function ThemeButton({ className }: { className: string }) {
 export function ThemeToggle() {
   return (
     <ThemeButton
-      className="fixed top-3 right-3 z-50 w-9 h-9 rounded-full flex items-center justify-center
-                 bg-white/90 hover:bg-white text-stone-700 shadow-sm ring-1 ring-stone-200
-                 dark:bg-slate-800/90 dark:hover:bg-slate-700 dark:text-indigo-100 dark:ring-white/10"
+      className="fixed top-3 right-3 z-50 w-9 h-9 rounded-full flex items-center justify-center transition-colors
+                 bg-white/90 hover:bg-white text-stone-700 backdrop-blur-md
+                 border border-stone-900/[0.08]
+                 dark:bg-[#1f232c]/90 dark:hover:bg-[#252934] dark:text-stone-200 dark:border-white/[0.08]"
     />
   );
 }
@@ -57,8 +58,8 @@ export function ThemeToggleInline() {
   return (
     <ThemeButton
       className="w-9 h-9 rounded-lg flex items-center justify-center transition-colors
-                 bg-white text-stone-700 ring-1 ring-stone-200 hover:bg-stone-100
-                 dark:bg-slate-900/60 dark:text-indigo-100 dark:ring-white/10 dark:hover:bg-slate-800"
+                 bg-white text-stone-700 border border-stone-900/[0.08] hover:bg-stone-50
+                 dark:bg-[#1f232c] dark:text-stone-200 dark:border-white/[0.08] dark:hover:bg-[#252934]"
     />
   );
 }

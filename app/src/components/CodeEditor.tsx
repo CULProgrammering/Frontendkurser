@@ -22,6 +22,13 @@ type Props = {
   onMount?: (handle: CodeEditorHandle) => void;
   /** Triggered when the user presses Ctrl/Cmd+Enter while the editor has focus. */
   onSubmit?: () => void;
+  /**
+   * When true, Monaco renders the editor in read-only mode (no edits, no
+   * cursor blink, dimmed selection). The textarea fallback uses the
+   * `readOnly` HTML attribute. Used by the project view's sandwich layout
+   * to display scaffold-before / scaffold-after sections.
+   */
+  readOnly?: boolean;
 };
 
 const MOBILE_BREAKPOINT_PX = 640; // Tailwind sm
@@ -56,6 +63,7 @@ export function CodeEditor({
   fontSize,
   onMount,
   onSubmit,
+  readOnly = false,
 }: Props) {
   const isMobile = useIsMobile();
   const onSubmitRef = useRef(onSubmit);
@@ -71,6 +79,7 @@ export function CodeEditor({
         fontSize={fontSize}
         onMount={onMount}
         onSubmit={onSubmit}
+        readOnly={readOnly}
       />
     );
   }
@@ -104,11 +113,25 @@ export function CodeEditor({
         minimap: { enabled: false },
         fontSize,
         scrollBeyondLastLine: false,
-        wordWrap: "on",
+        // Word-wrap fights line numbers and produces ugly indented
+        // continuations — disable it on read-only static panes (project
+        // sandwich scaffolds) and let them scroll horizontally instead.
+        wordWrap: readOnly ? "off" : "on",
         tabSize: 2,
         automaticLayout: true,
-        lineNumbers: "on",
-        renderLineHighlight: "line",
+        // Read-only panes are reference material, not editors. Strip the
+        // chrome that says "you can type here" — line numbers, gutter,
+        // cursor blink, line highlight — and dim the text so the
+        // contrast with the editable pane reads at a glance.
+        lineNumbers: readOnly ? "off" : "on",
+        glyphMargin: !readOnly,
+        lineDecorationsWidth: readOnly ? 0 : undefined,
+        folding: !readOnly,
+        renderLineHighlight: readOnly ? "none" : "line",
+        contextmenu: !readOnly,
+        cursorStyle: readOnly ? "line-thin" : "line",
+        readOnly,
+        domReadOnly: readOnly,
       }}
     />
   );
@@ -134,12 +157,14 @@ function TextareaEditor({
   fontSize,
   onMount,
   onSubmit,
+  readOnly = false,
 }: {
   value: string;
   onChange: (v: string) => void;
   fontSize: number;
   onMount?: (handle: CodeEditorHandle) => void;
   onSubmit?: () => void;
+  readOnly?: boolean;
 }) {
   const taRef = useRef<HTMLTextAreaElement | null>(null);
   // valueRef keeps the latest value visible to the imperative handle without
@@ -202,9 +227,13 @@ function TextareaEditor({
       spellCheck={false}
       autoCapitalize="off"
       autoCorrect="off"
-      className="w-full h-full font-mono outline-none resize-none p-3
-                 bg-stone-50 text-stone-900
-                 dark:bg-slate-900 dark:text-indigo-50"
+      readOnly={readOnly}
+      className={
+        "w-full h-full font-mono outline-none resize-none p-3 " +
+        (readOnly
+          ? "bg-stone-100 text-stone-700 dark:bg-slate-900/40 dark:text-indigo-200/80"
+          : "bg-stone-50 text-stone-900 dark:bg-slate-900 dark:text-indigo-50")
+      }
       style={{ fontSize: `${fontSize}px` }}
     />
   );
