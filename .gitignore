@@ -7,14 +7,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Docs
-BRAINSTORM.md
-INTENT.md
-VISION.md
-app/README.md
+# Docs / authoring (not for student downloads — students get the app, not the playbook)
+*.md
 
-# Claude tooling (not for student downloads)
-CLAUDE.md
+# Claude tooling
 .claude/
 Claude-Sessions/
 memory/
