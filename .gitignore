@@ -10,6 +10,7 @@ yarn-error.log*
 # Docs / authoring (not for student downloads — students get the app, not the playbook)
 *.md
 research/
+course-review-*.html
 
 # Claude tooling
 .claude/
