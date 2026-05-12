@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { JsChipAssignmentSlide, JsChipPuzzle } from "../types";
-import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
@@ -33,7 +32,6 @@ type CheckState = "pending" | "right" | "wrong";
  * the highest puzzle reached, not chip positions (state resets per visit).
  */
 export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, breadcrumb, slideJumpDots, onPass, onExit }: Props) {
-  const { lang } = useLang();
   const { codePx, prosePx } = useSlideFontSize();
   const [puzzleIdx, setPuzzleIdx] = useState(0);
   const puzzle = slide.puzzles[puzzleIdx];
@@ -52,7 +50,7 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
         <div className="max-w-3xl mx-auto">
           <SlideTitleRow breadcrumb={breadcrumb}>
             <h2 className={`${tokens.text.h2} flex-1 min-w-0`}>
-              {t(slide.title, lang)}
+              {t(slide.title)}
             </h2>
             <SlideFontSizeControl />
             <ThemeToggleInline />
@@ -62,13 +60,13 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
               className="text-stone-600 dark:text-stone-300 whitespace-pre-line flex-1 min-w-0"
               style={{ fontSize: `${prosePx}px` }}
             >
-              {t(puzzle.intro ?? slide.prompt, lang)}
+              {t(puzzle.intro ?? slide.prompt)}
             </p>
             {slideJumpDots}
           </div>
           <div className="mt-3 flex items-center gap-2">
             <span className={tokens.text.eyebrow}>
-              {lang === "sv" ? "Pussel" : "Puzzle"} <span className="tabular-nums">{puzzleIdx + 1} / {total}</span>
+              Puzzle <span className="tabular-nums">{puzzleIdx + 1} / {total}</span>
             </span>
             <div className="flex gap-1">
               {slide.puzzles.map((_, i) => (
@@ -111,7 +109,6 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
                 setPuzzleIdx((i) => i + 1);
               }
             }}
-            lang={lang}
             codePx={codePx}
             prosePx={prosePx}
           />
@@ -127,7 +124,7 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
                          bg-[#FBE8CF] hover:bg-[#f6dab3] text-[#C97A1F] border border-[#C97A1F]/30
                          dark:bg-[#3a2a18] dark:hover:bg-[#4a3520] dark:text-[#F0B274] dark:border-[#F0B274]/30"
             >
-              {t(showLegend ? ui.hideHelp : ui.showHelp, lang)}
+              {t(showLegend ? ui.hideHelp : ui.showHelp)}
             </button>
           )}
           {puzzleIdx > 0 && (
@@ -135,7 +132,7 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
               onClick={() => setPuzzleIdx((i) => Math.max(0, i - 1))}
               className={`ml-auto ${tokens.button.secondary} min-h-[44px] sm:min-h-0`}
             >
-              ◀ {lang === "sv" ? "Föregående pussel" : "Previous puzzle"}
+              ◀ Previous puzzle
             </button>
           )}
         </div>
@@ -148,7 +145,7 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
                      dark:bg-[#3a2a18] dark:border-[#F0B274]/30"
         >
           <div className={`${tokens.text.eyebrow} text-[#C97A1F] dark:text-[#F0B274] mb-2`}>
-            {t(ui.legendLabel, lang)}
+            {t(ui.legendLabel)}
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {slide.legend!.map((e, i) => (
@@ -157,7 +154,7 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
                 className={`${tokens.card.surface} p-3`}
               >
                 <div className="font-display font-medium text-stone-900 dark:text-stone-100">
-                  {t(e.name, lang)}
+                  {t(e.name)}
                 </div>
                 <div className="font-mono text-xs text-stone-600 dark:text-stone-400">
                   {e.syntax}
@@ -167,7 +164,7 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
                 </div>
                 {e.note && (
                   <div className="text-xs mt-1 text-stone-500 dark:text-stone-400">
-                    {t(e.note, lang)}
+                    {t(e.note)}
                   </div>
                 )}
               </div>
@@ -183,18 +180,16 @@ function PuzzleView({
   puzzle,
   isLast,
   onAdvance,
-  lang,
   codePx,
   prosePx,
 }: {
   puzzle: JsChipPuzzle;
   isLast: boolean;
   onAdvance: () => void;
-  lang: import("../i18n").Lang;
   codePx: number;
   prosePx: number;
 }) {
-  const template = t(puzzle.template, lang);
+  const template = t(puzzle.template);
   const numSlots = useMemo(
     () => (template.match(/\[\[\]\]/g) || []).length,
     [template]
@@ -341,7 +336,7 @@ function PuzzleView({
           className="text-stone-700 dark:text-stone-200 whitespace-pre-line"
           style={{ fontSize: `${prosePx}px` }}
         >
-          {t(puzzle.prompt, lang)}
+          {t(puzzle.prompt)}
         </p>
       )}
 
@@ -399,10 +394,10 @@ function PuzzleView({
         })}
         {check === "wrong" && (
           <div className={`${tokens.feedback.error} ml-2 text-sm`}>
-            <div className="font-medium">{lang === "sv" ? "Inte den här." : "Not this one."}</div>
+            <div className="font-medium">Not this one.</div>
             {puzzle.wrongHint && (
               <div className="text-xs italic mt-0.5 opacity-80">
-                {t(puzzle.wrongHint, lang)}
+                {t(puzzle.wrongHint)}
               </div>
             )}
           </div>
@@ -412,11 +407,7 @@ function PuzzleView({
             onClick={onAdvance}
             className={`ml-2 ${tokens.button.primary} min-h-[44px] sm:min-h-0`}
           >
-            {isLast
-              ? t(ui.slideBack, lang)
-              : lang === "sv"
-                ? "Nästa pussel ▶"
-                : "Next puzzle ▶"}
+            {isLast ? t(ui.slideBack) : "Next puzzle ▶"}
           </button>
         )}
       </div>

@@ -1,5 +1,4 @@
 import { StickFigure } from "./StickFigure";
-import { useLang } from "../../i18n/LanguageContext";
 import { t } from "../../i18n";
 import { useSlideFontSize } from "../SlideFontSize";
 
@@ -27,7 +26,6 @@ type Props = { step: number };
  * item that falls through to default).
  */
 export function RecyclingTraceScene({ step }: Props) {
-  const { lang } = useLang();
   const s = stateAtStep(step);
 
   return (
@@ -35,7 +33,7 @@ export function RecyclingTraceScene({ step }: Props) {
       <CodePanel
         itemValue={s.itemValue}
         highlight={s.highlight}
-        evalNote={s.evalNote ? t(s.evalNote, lang) : undefined}
+        evalNote={s.evalNote ? t(s.evalNote) : undefined}
       />
 
       <div className="relative flex-1 rounded-2xl overflow-hidden
@@ -79,7 +77,7 @@ export function RecyclingTraceScene({ step }: Props) {
               outcomeBadgeClass(s.outcome)
             }
           >
-            {t(outcomeLabel(s.outcome), lang)}
+            {t(outcomeLabel(s.outcome))}
           </div>
         )}
       </div>
@@ -107,7 +105,7 @@ type BinKey = "paper" | "glass" | "plastic" | "rest";
 type State = {
   itemValue: string | null;
   highlight?: LineKey;
-  evalNote?: { en: string; sv: string };
+  evalNote?: string;
   /** When set, the item flies into this bin. */
   targetBin?: BinKey;
   outcome?: BinKey;
@@ -127,7 +125,7 @@ function stateAtStep(step: number): State {
       return {
         itemValue: "paper",
         highlight: "case-paper",
-        evalNote: { en: '"paper" === "paper"  →  match', sv: '"paper" === "paper"  →  match' },
+        evalNote: '"paper" === "paper"  →  match',
       };
     case 4:
       return {
@@ -146,13 +144,13 @@ function stateAtStep(step: number): State {
       return {
         itemValue: "glass",
         highlight: "case-paper",
-        evalNote: { en: '"glass" === "paper"  →  no', sv: '"glass" === "paper"  →  nej' },
+        evalNote: '"glass" === "paper"  →  no',
       };
     case 8:
       return {
         itemValue: "glass",
         highlight: "case-glass",
-        evalNote: { en: '"glass" === "glass"  →  match', sv: '"glass" === "glass"  →  match' },
+        evalNote: '"glass" === "glass"  →  match',
       };
     case 9:
       return {
@@ -171,25 +169,25 @@ function stateAtStep(step: number): State {
       return {
         itemValue: "banana",
         highlight: "case-paper",
-        evalNote: { en: '"banana" === "paper"  →  no', sv: '"banana" === "paper"  →  nej' },
+        evalNote: '"banana" === "paper"  →  no',
       };
     case 13:
       return {
         itemValue: "banana",
         highlight: "case-glass",
-        evalNote: { en: '"banana" === "glass"  →  no', sv: '"banana" === "glass"  →  nej' },
+        evalNote: '"banana" === "glass"  →  no',
       };
     case 14:
       return {
         itemValue: "banana",
         highlight: "case-plastic",
-        evalNote: { en: '"banana" === "plastic"  →  no', sv: '"banana" === "plastic"  →  nej' },
+        evalNote: '"banana" === "plastic"  →  no',
       };
     case 15:
       return {
         itemValue: "banana",
         highlight: "default",
-        evalNote: { en: "no case matched — default runs", sv: "ingen case matchade — default körs" },
+        evalNote: "no case matched — default runs",
       };
     case 16:
       return {
@@ -233,13 +231,13 @@ function itemColor(value: string): string {
 function outcomeLabel(o: BinKey) {
   switch (o) {
     case "paper":
-      return { en: 'Returned "paper-bin"', sv: 'Returnerade "paper-bin"' };
+      return 'Returned "paper-bin"';
     case "glass":
-      return { en: 'Returned "glass-bin"', sv: 'Returnerade "glass-bin"' };
+      return 'Returned "glass-bin"';
     case "plastic":
-      return { en: 'Returned "plastic-bin"', sv: 'Returnerade "plastic-bin"' };
+      return 'Returned "plastic-bin"';
     case "rest":
-      return { en: 'default → returned "rest-bin"', sv: 'default → returnerade "rest-bin"' };
+      return 'default → returned "rest-bin"';
   }
 }
 

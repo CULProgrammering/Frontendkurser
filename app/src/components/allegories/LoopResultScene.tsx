@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import type { LoopResultConfig } from "../../types";
 import type { SceneRun } from "./types";
-import { t, type Lang } from "../../i18n";
+import { t } from "../../i18n";
 import { describeValue } from "../../runtime/jsRunner";
 
 type Props = {
   config: LoopResultConfig;
   run: SceneRun | null;
   replayKey: number;
-  lang: Lang;
 };
 
 type Phase = "idle" | "looping" | "settled";
@@ -19,7 +18,7 @@ type Phase = "idle" | "looping" | "settled";
  * (stairs / letters / countdown / tasting) provides visual flavour but
  * the focus is on input → result.
  */
-export function LoopResultScene({ config, run, replayKey, lang }: Props) {
+export function LoopResultScene({ config, run, replayKey}: Props) {
   const [phase, setPhase] = useState<Phase>("idle");
 
   useEffect(() => {
@@ -43,7 +42,7 @@ export function LoopResultScene({ config, run, replayKey, lang }: Props) {
                       dark:bg-slate-800/60 dark:text-indigo-100">
         {config.inputKeys.join(", ")}{" "}
         <span className="text-stone-400 dark:text-indigo-200/50">→</span>{" "}
-        {t(config.resultLabel ?? { en: "result", sv: "resultat" }, lang)}
+        {t(config.resultLabel ?? "result")}
       </div>
 
       <div
@@ -71,7 +70,7 @@ export function LoopResultScene({ config, run, replayKey, lang }: Props) {
             <Spinner active={phase === "looping"} />
             <span className="font-mono text-xs">
               {phase === "looping"
-                ? t({ en: "looping…", sv: "loopar…" }, lang)
+                ? t("looping…")
                 : "↓"}
             </span>
           </div>
@@ -79,7 +78,7 @@ export function LoopResultScene({ config, run, replayKey, lang }: Props) {
           {/* Result chip */}
           <div className="flex flex-col items-center">
             <div className="text-xs text-stone-500 dark:text-indigo-200/60 mb-1 font-mono">
-              {t(config.resultLabel ?? { en: "result", sv: "resultat" }, lang)}
+              {t(config.resultLabel ?? "result")}
             </div>
             <div
               className={
@@ -94,7 +93,7 @@ export function LoopResultScene({ config, run, replayKey, lang }: Props) {
               {phase !== "settled"
                 ? "?"
                 : errored
-                ? t({ en: "error", sv: "fel" }, lang)
+                ? t("error")
                 : describeValue(returned)}
             </div>
           </div>

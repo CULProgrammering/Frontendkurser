@@ -9,7 +9,6 @@ import { JsWorkshopSlideView } from "./JsWorkshopSlideView";
 import { ExerciseSlideView } from "./ExerciseSlideView";
 import { markTierComplete } from "../progress";
 import { slidesForTier, type Tier } from "../tiers";
-import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
 
@@ -45,7 +44,6 @@ const SWIPE_VERT_TOLERANCE = 60;
 
 export function SlideDeck({ courseId, lesson, tier, initialIdx, breadcrumb, onExit }: Props) {
   const [idx, setIdx] = useState(initialIdx ?? 0);
-  const { lang } = useLang();
 
   const slides = useMemo(
     () => (tier ? slidesForTier(lesson, tier) : lesson.slides),
@@ -131,7 +129,7 @@ export function SlideDeck({ courseId, lesson, tier, initialIdx, breadcrumb, onEx
         )}
         <div className="flex-1 min-h-0 flex items-center justify-center">
           <p className="text-stone-500 dark:text-stone-400 italic">
-            {t(ui.tierEmpty, lang)}
+            {t(ui.tierEmpty)}
           </p>
         </div>
       </div>
@@ -152,8 +150,8 @@ export function SlideDeck({ courseId, lesson, tier, initialIdx, breadcrumb, onEx
     total > 1 && (slide.kind === "js-workshop" || slide.kind === "exercise");
   const tierLabel =
     slide.kind === "js-workshop"
-      ? t(ui.tierLabelWorkshop, lang)
-      : t(ui.tierLabelLab, lang);
+      ? t(ui.tierLabelWorkshop)
+      : t(ui.tierLabelLab);
   const slideJumpDots =
     total > 1 && !isMultiPick ? (
       <SlideJumpDots total={total} idx={idx} onJump={setIdx} />

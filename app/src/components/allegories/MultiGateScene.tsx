@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
 import type { MultiGateConfig, MultiGateOperand } from "../../types";
 import type { SceneRun } from "./types";
-import { t, type Lang } from "../../i18n";
+import { t } from "../../i18n";
 import { deepEqual } from "../../runtime/jsRunner";
 
 type Props = {
   config: MultiGateConfig;
   run: SceneRun | null;
   replayKey: number;
-  lang: Lang;
 };
 
 type Phase = "idle" | "checking" | "settled";
 
-export function MultiGateScene({ config, run, replayKey, lang }: Props) {
+export function MultiGateScene({ config, run, replayKey}: Props) {
   const [phase, setPhase] = useState<Phase>("idle");
 
   useEffect(() => {
@@ -45,7 +44,7 @@ export function MultiGateScene({ config, run, replayKey, lang }: Props) {
       <div className="rounded-lg px-3 py-2 mb-4 font-mono text-sm
                       bg-stone-100 text-stone-700
                       dark:bg-slate-800/60 dark:text-indigo-100">
-        {operatorDescription(config.mode, lang)}
+        {operatorDescription(config.mode)}
       </div>
 
       <div className="relative flex-1 rounded-2xl overflow-hidden p-6
@@ -73,8 +72,8 @@ export function MultiGateScene({ config, run, replayKey, lang }: Props) {
             {phase !== "settled"
               ? "?"
               : accepted
-              ? t(config.passLabel ?? { en: "true", sv: "true" }, lang)
-              : t(config.failLabel ?? { en: "false", sv: "false" }, lang)}
+              ? t(config.passLabel ?? "true")
+              : t(config.failLabel ?? "false")}
           </div>
         </div>
       </div>
@@ -210,13 +209,13 @@ function formatVal(v: unknown): string {
   return String(v);
 }
 
-function operatorDescription(mode: MultiGateConfig["mode"], lang: Lang): string {
+function operatorDescription(mode: MultiGateConfig["mode"]): string {
   switch (mode) {
     case "and":
-      return t({ en: "&& — both must be true", sv: "&& — båda måste vara sanna" }, lang);
+      return t("&& — both must be true");
     case "or":
-      return t({ en: "|| — at least one must be true", sv: "|| — minst en måste vara sann" }, lang);
+      return t("|| — at least one must be true");
     case "not":
-      return t({ en: "! — flips true to false", sv: "! — vänder sant till falskt" }, lang);
+      return t("! — flips true to false");
   }
 }

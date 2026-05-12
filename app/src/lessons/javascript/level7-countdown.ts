@@ -3,70 +3,37 @@ import { codePanelStyle, noteBoxStyle } from "./_shared";
 
 export const countdownLesson: Lesson = {
   id: "loops-countdown",
-  title: { en: "3. Countdown — while", sv: "3. Nedräkningen — while" },
-  summary: {
-    en: "Repeat as long as a condition holds.",
-    sv: "Upprepa så länge ett villkor stämmer.",
-  },
+  title: "3. Countdown — while",
+  summary: "Repeat as long as a condition holds.",
   slides: [
     // 1. Intro — rocket countdown
     {
       kind: "explanation",
-      title: { en: "Repeat until something happens", sv: "Upprepa tills något händer" },
-      intro: {
-        en:
-          "Sometimes you don't know how many laps you'll need —\nyou just keep going UNTIL a condition flips.",
-        sv:
-          "Ibland vet du inte hur många varv du behöver —\ndu bara fortsätter TILLS ett villkor vänder.",
-      },
+      title: "Repeat until something happens",
+      intro: "Sometimes you don't know how many laps you'll need —\nyou just keep going UNTIL a condition flips.",
       customScene: "countdown",
       demo: [],
       steps: [
         {
-          narration: {
-            en:
-              "A rocket sits on the launchpad.\nThe count is 5. We're going to count down to zero.",
-            sv:
-              "En raket står på rampen.\nNedräkningen är 5. Vi ska räkna ner till noll.",
-          },
+          narration: "A rocket sits on the launchpad.\nThe count is 5. We're going to count down to zero.",
         },
         {
-          narration: {
-            en: "5. Still above zero — keep counting down.",
-            sv: "5. Fortfarande över noll — fortsätt räkna ner.",
-          },
+          narration: "5. Still above zero — keep counting down.",
         },
         {
-          narration: {
-            en: "4. Still going.",
-            sv: "4. Fortsätter.",
-          },
+          narration: "4. Still going.",
         },
         {
-          narration: {
-            en: "3. Same step every time — subtract one.",
-            sv: "3. Samma steg varje gång — minska med ett.",
-          },
+          narration: "3. Same step every time — subtract one.",
         },
         {
-          narration: {
-            en: "2.",
-            sv: "2.",
-          },
+          narration: "2.",
         },
         {
-          narration: {
-            en: "1.",
-            sv: "1.",
-          },
+          narration: "1.",
         },
         {
-          narration: {
-            en:
-              "Zero! The condition is no longer 'above zero' — STOP.\nThat's a while loop: keep going WHILE the condition is true.",
-            sv:
-              "Noll! Villkoret är inte längre 'över noll' — STOPP.\nDet är en while-loop: kör SÅ LÄNGE villkoret är sant.",
-          },
+          narration: "Zero! The condition is no longer 'above zero' — STOP.\nThat's a while loop: keep going WHILE the condition is true.",
         },
       ],
     },
@@ -74,13 +41,8 @@ export const countdownLesson: Lesson = {
     // 2. for vs while — when to use which
     {
       kind: "explanation",
-      title: { en: "for vs while", sv: "for mot while" },
-      intro: {
-        en:
-          "Both are loops. The difference is what you know up front.",
-        sv:
-          "Båda är loopar. Skillnaden är vad du vet på förhand.",
-      },
+      title: "for vs while",
+      intro: "Both are loops. The difference is what you know up front.",
       demo: [
         {
           id: "for",
@@ -97,41 +59,21 @@ export const countdownLesson: Lesson = {
         {
           id: "note",
           kind: "note",
-          label: {
-            en:
-              "for is best when you KNOW the count up front.\nwhile is best when you only know the STOPPING CONDITION.\n\nA while loop has no init or update built in —\nyou prepare the variable BEFORE,\nand change it INSIDE the body.",
-            sv:
-              "for passar när du VET antalet i förväg.\nwhile passar när du bara vet STOPPVILLKORET.\n\nEn while-loop har inget init eller update inbyggt —\ndu förbereder variabeln INNAN,\noch ändrar den I kroppen.",
-          },
+          label: "for is best when you KNOW the count up front.\nwhile is best when you only know the STOPPING CONDITION.\n\nA while loop has no init or update built in —\nyou prepare the variable BEFORE,\nand change it INSIDE the body.",
           baseStyle: { ...noteBoxStyle, marginTop: 16 },
         },
       ],
       steps: [
         {
-          narration: {
-            en:
-              "Left: a for loop. It runs exactly 5 times.\nThe count is hard-coded into the loop itself.",
-            sv:
-              "Vänster: en for-loop. Den kör exakt 5 varv.\nAntalet är inbyggt i loopen själv.",
-          },
+          narration: "Left: a for loop. It runs exactly 5 times.\nThe count is hard-coded into the loop itself.",
           tokenHighlight: ["for"],
         },
         {
-          narration: {
-            en:
-              "Right: a while loop. It runs until n hits 0.\nIf n started as 5 it runs 5 times. If n started as 100 it runs 100.\nThe count is decided by the data, not the code.",
-            sv:
-              "Höger: en while-loop. Den kör tills n blir 0.\nÄr n från början 5 — 5 varv. Är n från början 100 — 100 varv.\nAntalet bestäms av datan, inte koden.",
-          },
+          narration: "Right: a while loop. It runs until n hits 0.\nIf n started as 5 it runs 5 times. If n started as 100 it runs 100.\nThe count is decided by the data, not the code.",
           tokenHighlight: ["while"],
         },
         {
-          narration: {
-            en:
-              "Notice: while doesn't have an init or an update slot.\nYou set up the variable BEFORE the loop,\nand you must change it INSIDE the body.\nForget to change it and the loop runs forever.",
-            sv:
-              "Lägg märke till: while har ingen init eller update.\nDu sätter upp variabeln INNAN loopen,\noch du måste ändra den INNE i kroppen.\nGlömmer du så kör loopen för evigt.",
-          },
+          narration: "Notice: while doesn't have an init or an update slot.\nYou set up the variable BEFORE the loop,\nand you must change it INSIDE the body.\nForget to change it and the loop runs forever.",
           tokenHighlight: ["let n = 5;", "n = n - 1;"],
         },
       ],
@@ -140,7 +82,7 @@ export const countdownLesson: Lesson = {
     // 3. Anatomy
     {
       kind: "explanation",
-      title: { en: "while, piece by piece", sv: "while, del för del" },
+      title: "while, piece by piece",
       demo: [
         {
           id: "code",
@@ -151,47 +93,22 @@ export const countdownLesson: Lesson = {
       ],
       steps: [
         {
-          narration: {
-            en:
-              "Three parts:\nwhile  ( condition )  { body }",
-            sv:
-              "Tre delar:\nwhile  ( villkor )  { kropp }",
-          },
+          narration: "Three parts:\nwhile  ( condition )  { body }",
         },
         {
-          narration: {
-            en:
-              "1.  while  is the keyword.\nLike for, it tells JavaScript 'I'm about to repeat'.",
-            sv:
-              "1.  while  är nyckelordet.\nLiksom for säger det 'jag ska upprepa'.",
-          },
+          narration: "1.  while  is the keyword.\nLike for, it tells JavaScript 'I'm about to repeat'.",
           tokenHighlight: ["while"],
         },
         {
-          narration: {
-            en:
-              "2.  ( condition )  is checked BEFORE each lap.\nIt must end up true or false (a boolean).\nSame kind of expression as in an if.",
-            sv:
-              "2.  ( villkor )  kollas INNAN varje varv.\nDet måste landa i true eller false (en boolean).\nSamma slags uttryck som i ett if.",
-          },
+          narration: "2.  ( condition )  is checked BEFORE each lap.\nIt must end up true or false (a boolean).\nSame kind of expression as in an if.",
           tokenHighlight: ["(n > 0)"],
         },
         {
-          narration: {
-            en:
-              "3.  { body }  runs when the condition is true.\nWhen the body finishes, JavaScript JUMPS BACK\nto check the condition again.",
-            sv:
-              "3.  { kropp }  körs när villkoret är true.\nNär kroppen slutar HOPPAR JavaScript TILLBAKA\noch kollar villkoret igen.",
-          },
+          narration: "3.  { body }  runs when the condition is true.\nWhen the body finishes, JavaScript JUMPS BACK\nto check the condition again.",
           tokenHighlight: ["{", "}"],
         },
         {
-          narration: {
-            en:
-              "If the condition is false the FIRST time,\nthe body never runs at all.\nA while loop can run zero times.",
-            sv:
-              "Om villkoret är false FÖRSTA gången\nkörs kroppen aldrig.\nEn while-loop kan köra noll varv.",
-          },
+          narration: "If the condition is false the FIRST time,\nthe body never runs at all.\nA while loop can run zero times.",
         },
       ],
     },
@@ -199,87 +116,37 @@ export const countdownLesson: Lesson = {
     // 4. Trace walkthrough — countdown from 3
     {
       kind: "explanation",
-      title: { en: "Watching while run", sv: "Vi ser while köras" },
-      intro: {
-        en:
-          "Trace example: count down from n = 3 to 0.\nClick to step.",
-        sv:
-          "Trace-exempel: räkna ner från n = 3 till 0.\nKlicka för att stega.",
-      },
+      title: "Watching while run",
+      intro: "Trace example: count down from n = 3 to 0.\nClick to step.",
       customScene: "countdown-trace",
       demo: [],
       steps: [
         {
-          narration: {
-            en:
-              "We start. n is set to 3.",
-            sv:
-              "Vi startar. n sätts till 3.",
-          },
+          narration: "We start. n is set to 3.",
         },
         {
-          narration: {
-            en:
-              "Reach the while.\nCondition: 3 > 0 → true. Body runs.",
-            sv:
-              "Vi kommer till while.\nVillkor: 3 > 0 → true. Kroppen körs.",
-          },
+          narration: "Reach the while.\nCondition: 3 > 0 → true. Body runs.",
         },
         {
-          narration: {
-            en:
-              "Body: n = n - 1 → n becomes 2.\nJump back to the condition.",
-            sv:
-              "Kropp: n = n - 1 → n blir 2.\nHoppa tillbaka till villkoret.",
-          },
+          narration: "Body: n = n - 1 → n becomes 2.\nJump back to the condition.",
         },
         {
-          narration: {
-            en:
-              "2 > 0? True. Body runs.",
-            sv:
-              "2 > 0? True. Kroppen körs.",
-          },
+          narration: "2 > 0? True. Body runs.",
         },
         {
-          narration: {
-            en:
-              "n becomes 1. Back to condition.",
-            sv:
-              "n blir 1. Tillbaka till villkoret.",
-          },
+          narration: "n becomes 1. Back to condition.",
         },
         {
-          narration: {
-            en:
-              "1 > 0? True. Body runs.",
-            sv:
-              "1 > 0? True. Kroppen körs.",
-          },
+          narration: "1 > 0? True. Body runs.",
         },
         {
-          narration: {
-            en:
-              "n becomes 0. Back to condition.",
-            sv:
-              "n blir 0. Tillbaka till villkoret.",
-          },
+          narration: "n becomes 0. Back to condition.",
         },
         {
-          narration: {
-            en:
-              "0 > 0? FALSE.\nThe loop ends — we leave it.",
-            sv:
-              "0 > 0? FALSE.\nLoopen slutar — vi lämnar den.",
-          },
+          narration: "0 > 0? FALSE.\nThe loop ends — we leave it.",
         },
         {
-          narration: {
-            en:
-              "return n → 0.\n\nThe body ran 3 times, exactly the starting value of n.",
-            sv:
-              "return n → 0.\n\nKroppen körde 3 varv, precis n:s startvärde.",
-          },
+          narration: "return n → 0.\n\nThe body ran 3 times, exactly the starting value of n.",
         },
       ],
     },
@@ -287,13 +154,8 @@ export const countdownLesson: Lesson = {
     // 5. The infinite-loop trap
     {
       kind: "explanation",
-      title: { en: "The infinite loop trap", sv: "Oändlig-loop-fällan" },
-      intro: {
-        en:
-          "If the variable in the condition NEVER changes,\nthe loop runs forever and freezes the program.",
-        sv:
-          "Om variabeln i villkoret ALDRIG ändras\nkör loopen för evigt och fryser programmet.",
-      },
+      title: "The infinite loop trap",
+      intro: "If the variable in the condition NEVER changes,\nthe loop runs forever and freezes the program.",
       demo: [
         {
           id: "bad",
@@ -310,42 +172,22 @@ export const countdownLesson: Lesson = {
         {
           id: "note",
           kind: "note",
-          label: {
-            en:
-              "Rule: every while loop should change the\nvariable used in its condition,\nin a way that EVENTUALLY makes the condition false.\n\nIf you write while (true) on purpose, you need\na break inside (we don't use that yet).",
-            sv:
-              "Regel: varje while-loop bör ändra variabeln\nsom används i villkoret\npå ett sätt som TILL SLUT gör villkoret false.\n\nOm du skriver while (true) med flit\nbehövs ett break inuti (det använder vi inte än).",
-          },
+          label: "Rule: every while loop should change the\nvariable used in its condition,\nin a way that EVENTUALLY makes the condition false.\n\nIf you write while (true) on purpose, you need\na break inside (we don't use that yet).",
           baseStyle: { ...noteBoxStyle, marginTop: 16 },
         },
       ],
       steps: [
         {
-          narration: {
-            en:
-              "Left: a broken loop. n stays 5 forever.\n5 > 0 is always true. The loop never ends.\nYour browser tab would freeze.",
-            sv:
-              "Vänster: trasig loop. n stannar på 5 för evigt.\n5 > 0 är alltid true. Loopen slutar aldrig.\nWebbläsaren skulle frysa.",
-          },
+          narration: "Left: a broken loop. n stays 5 forever.\n5 > 0 is always true. The loop never ends.\nYour browser tab would freeze.",
           highlight: ["bad"],
         },
         {
-          narration: {
-            en:
-              "Right: the fix. Inside the body we change n.\nEach lap n drops by 1, so eventually it hits 0\nand the condition becomes false.",
-            sv:
-              "Höger: lösningen. I kroppen ändrar vi n.\nVarje varv minskar n med 1, så till slut blir det 0\noch villkoret blir false.",
-          },
+          narration: "Right: the fix. Inside the body we change n.\nEach lap n drops by 1, so eventually it hits 0\nand the condition becomes false.",
           highlight: ["good"],
           tokenHighlight: ["n = n - 1;"],
         },
         {
-          narration: {
-            en:
-              "Tip: when you write a while loop,\nask yourself 'what makes this STOP?'\nIf you can't answer, you have an infinite loop.",
-            sv:
-              "Tips: när du skriver en while-loop,\nfråga dig 'vad gör att den STOPPAR?'\nKan du inte svara har du en oändlig loop.",
-          },
+          narration: "Tip: when you write a while loop,\nask yourself 'what makes this STOP?'\nIf you can't answer, you have an infinite loop.",
         },
       ],
     },
@@ -353,20 +195,12 @@ export const countdownLesson: Lesson = {
     // 6. Practice — count UP to n (n hardcoded to 10) — chip-style, no distractors (first chip in L7)
     {
       kind: "js-chip-assignment",
-      title: { en: "Practice: count up to n", sv: "Övning: räkna upp till n" },
-      prompt: {
-        en:
-          "n is set to 10. Build a while loop that counts up to it.",
-        sv:
-          "n är satt till 10. Bygg en while-loop som räknar upp till det.",
-      },
+      title: "Practice: count up to n",
+      prompt: "n is set to 10. Build a while loop that counts up to it.",
       puzzles: [
         // p1: while keyword (vs for/do/if)
         {
-          prompt: {
-            en: "Which keyword runs a loop while a condition holds?",
-            sv: "Vilket nyckelord kör en loop så länge ett villkor stämmer?",
-          },
+          prompt: "Which keyword runs a loop while a condition holds?",
           template:
             "let count = 0;\nlet n = 10;\n[[]] (count < n) {\n  count = count + 1;\n}\nreturn count;",
           chips: ["while", "for", "do", "if"],
@@ -374,10 +208,7 @@ export const countdownLesson: Lesson = {
         },
         // p2: ( ) around the condition
         {
-          prompt: {
-            en: "What wraps the while condition?",
-            sv: "Vad omger while-villkoret?",
-          },
+          prompt: "What wraps the while condition?",
           template:
             "let count = 0;\nlet n = 10;\nwhile [[]]count < n[[]] {\n  count = count + 1;\n}\nreturn count;",
           chips: ["(", ")", "{", "}"],
@@ -385,10 +216,7 @@ export const countdownLesson: Lesson = {
         },
         // p3: { } around the loop body
         {
-          prompt: {
-            en: "What wraps the loop body?",
-            sv: "Vad omger loop-kroppen?",
-          },
+          prompt: "What wraps the loop body?",
           template:
             "let count = 0;\nlet n = 10;\nwhile (count < n) [[]]\n  count = count + 1;\n[[]]\nreturn count;",
           chips: ["{", "}", "(", ")"],
@@ -396,14 +224,8 @@ export const countdownLesson: Lesson = {
         },
         // p4: < condition operator (coins/goal scenario)
         {
-          intro: {
-            en: "Same shape — count coins up to a goal.",
-            sv: "Samma form — räkna mynt upp till ett mål.",
-          },
-          prompt: {
-            en: "Which operator keeps the loop running while coins hasn't reached the goal?",
-            sv: "Vilken operator håller loopen igång medan mynt inte nått målet?",
-          },
+          intro: "Same shape — count coins up to a goal.",
+          prompt: "Which operator keeps the loop running while coins hasn't reached the goal?",
           template:
             "let coins = 0;\nlet goal = 5;\nwhile (coins [[]] goal) {\n  coins = coins + 1;\n}\nreturn coins;",
           chips: ["<", "<=", ">", ">="],
@@ -411,10 +233,7 @@ export const countdownLesson: Lesson = {
         },
         // p5: synthesis — all syntax pieces together
         {
-          prompt: {
-            en: "Now place all the syntax pieces you've practised.",
-            sv: "Placera nu alla syntaxdelar du övat på.",
-          },
+          prompt: "Now place all the syntax pieces you've practised.",
           template:
             "let count = 0;\nlet n = 10;\n[[]] [[]]count [[]] n[[]] [[]]\n  count = count + 1;\n[[]]\nreturn count;",
           chips: ["while", "(", "<", ")", "{", "}", "for", ">"],
@@ -423,22 +242,16 @@ export const countdownLesson: Lesson = {
       ],
       legend: [
         {
-          name: { en: "while", sv: "while" },
+          name: "while",
           syntax: "while (condition) { ... }",
           example: "while (count < n) { ... }",
-          note: {
-            en: "Repeats the body while the condition is true.",
-            sv: "Upprepar kroppen så länge villkoret är true.",
-          },
+          note: "Repeats the body while the condition is true.",
         },
         {
-          name: { en: "<", sv: "<" },
+          name: "<",
           syntax: "a < b",
           example: "count < n",
-          note: {
-            en: "True when a is less than b.",
-            sv: "Sant när a är mindre än b.",
-          },
+          note: "True when a is less than b.",
         },
       ],
     },
@@ -446,23 +259,12 @@ export const countdownLesson: Lesson = {
     // 7. Practice — halve until below 1 — chip-style with distractors
     {
       kind: "js-chip-assignment",
-      title: {
-        en: "Practice: halving",
-        sv: "Övning: halvera",
-      },
-      prompt: {
-        en:
-          "Halve n until it's below 1. Count the halvings.",
-        sv:
-          "Halvera n tills den är under 1. Räkna halveringarna.",
-      },
+      title: "Practice: halving",
+      prompt: "Halve n until it's below 1. Count the halvings.",
       puzzles: [
         // p1: n / 2 halving expression (vs n * 2, n - 2, n + 2)
         {
-          prompt: {
-            en: "Which expression halves n each lap?",
-            sv: "Vilket uttryck halverar n varje varv?",
-          },
+          prompt: "Which expression halves n each lap?",
           template:
             "let count = 0;\nwhile (n >= 1) {\n  n = [[]];\n  count = count + 1;\n}\nreturn count;",
           chips: ["n / 2", "n * 2", "n - 2", "n + 2"],
@@ -470,10 +272,7 @@ export const countdownLesson: Lesson = {
         },
         // p2: >= condition (vs >, <=, <)
         {
-          prompt: {
-            en: "Which condition keeps looping while n is at least 1?",
-            sv: "Vilket villkor håller loopen igång så länge n är minst 1?",
-          },
+          prompt: "Which condition keeps looping while n is at least 1?",
           template:
             "let count = 0;\nwhile ([[]] 1) {\n  n = n / 2;\n  count = count + 1;\n}\nreturn count;",
           chips: ["n >=", "n >", "n <=", "n <"],
@@ -481,10 +280,7 @@ export const countdownLesson: Lesson = {
         },
         // p3: { } around the body
         {
-          prompt: {
-            en: "What wraps the loop body?",
-            sv: "Vad omger loop-kroppen?",
-          },
+          prompt: "What wraps the loop body?",
           template:
             "let count = 0;\nwhile (n >= 1) [[]]\n  n = n / 2;\n  count = count + 1;\n[[]]\nreturn count;",
           chips: ["{", "}", "(", ")"],
@@ -492,14 +288,8 @@ export const countdownLesson: Lesson = {
         },
         // p4: n - 5 subtraction expression (subtract 5 scenario)
         {
-          intro: {
-            en: "Same shape — subtract 5 until n is no longer positive.",
-            sv: "Samma form — dra 5 tills n inte längre är positiv.",
-          },
-          prompt: {
-            en: "Which expression subtracts 5 from n each lap?",
-            sv: "Vilket uttryck drar 5 från n varje varv?",
-          },
+          intro: "Same shape — subtract 5 until n is no longer positive.",
+          prompt: "Which expression subtracts 5 from n each lap?",
           template:
             "let count = 0;\nwhile (n > 0) {\n  n = [[]];\n  count = count + 1;\n}\nreturn count;",
           chips: ["n - 5", "n + 5", "n * 5", "n / 5"],
@@ -507,10 +297,7 @@ export const countdownLesson: Lesson = {
         },
         // p5: synthesis — all syntax pieces together
         {
-          prompt: {
-            en: "Now place all the syntax pieces you've practised.",
-            sv: "Placera nu alla syntaxdelar du övat på.",
-          },
+          prompt: "Now place all the syntax pieces you've practised.",
           template:
             "let count = 0;\nwhile ([[]] 1) [[]]\n  n = [[]];\n  count = count + 1;\n[[]]\nreturn count;",
           chips: ["n >=", "{", "n / 2", "}", "n >", "n * 2"],
@@ -519,22 +306,16 @@ export const countdownLesson: Lesson = {
       ],
       legend: [
         {
-          name: { en: "/", sv: "/" },
+          name: "/",
           syntax: "a / b",
           example: "n / 2",
-          note: {
-            en: "Divides a by b. Same as ÷ in maths.",
-            sv: "Dividerar a med b. Samma som ÷ i matten.",
-          },
+          note: "Divides a by b. Same as ÷ in maths.",
         },
         {
-          name: { en: ">=", sv: ">=" },
+          name: ">=",
           syntax: "a >= b",
           example: "n >= 1",
-          note: {
-            en: "True when a is greater than or equal to b.",
-            sv: "Sant när a är större än eller lika med b.",
-          },
+          note: "True when a is greater than or equal to b.",
         },
       ],
     },
@@ -542,56 +323,40 @@ export const countdownLesson: Lesson = {
     // 8. Final — keep doubling past a limit (typed-input)
     {
       kind: "js-typed-assignment",
-      title: { en: "Final: keep doubling", sv: "Slutövning: fördubbla" },
-      prompt: {
-        en:
-          "Start at n = 1. Keep doubling n while it is still less than `limit`.\nReturn the final value of n (the first one that REACHED OR PASSED limit).\n\nFor limit = 10:  1 → 2 → 4 → 8 → 16. Answer: 16.\nFor limit = 100: 1 → 2 → 4 → 8 → 16 → 32 → 64 → 128. Answer: 128.",
-        sv:
-          "Börja vid n = 1. Fördubbla n så länge den är mindre än `limit`.\nReturnera n:s slutvärde (det första som nått eller passerat limit).\n\nFör limit = 10:  1 → 2 → 4 → 8 → 16. Svar: 16.\nFör limit = 100: 1 → 2 → 4 → 8 → 16 → 32 → 64 → 128. Svar: 128.",
-      },
+      title: "Final: keep doubling",
+      prompt: "Start at n = 1. Keep doubling n while it is still less than `limit`.\nReturn the final value of n (the first one that REACHED OR PASSED limit).\n\nFor limit = 10:  1 → 2 → 4 → 8 → 16. Answer: 16.\nFor limit = 100: 1 → 2 → 4 → 8 → 16 → 32 → 64 → 128. Answer: 128.",
       varNames: ["limit"],
       template:
         "let n = 1;\nwhile ([[input:cond]]) {\n  n = [[input:body]];\n}\nreturn n;\n",
       tests: [
-        { label: { en: "limit = 10", sv: "limit = 10" }, vars: { limit: 10 }, expected: 16 },
-        { label: { en: "limit = 100", sv: "limit = 100" }, vars: { limit: 100 }, expected: 128 },
-        { label: { en: "limit = 1", sv: "limit = 1" }, vars: { limit: 1 }, expected: 1 },
-        { label: { en: "limit = 2", sv: "limit = 2" }, vars: { limit: 2 }, expected: 2 },
-        { label: { en: "limit = 50", sv: "limit = 50" }, vars: { limit: 50 }, expected: 64 },
-        { label: { en: "limit = 1000", sv: "limit = 1000" }, vars: { limit: 1000 }, expected: 1024 },
+        { label: "limit = 10", vars: { limit: 10 }, expected: 16 },
+        { label: "limit = 100", vars: { limit: 100 }, expected: 128 },
+        { label: "limit = 1", vars: { limit: 1 }, expected: 1 },
+        { label: "limit = 2", vars: { limit: 2 }, expected: 2 },
+        { label: "limit = 50", vars: { limit: 50 }, expected: 64 },
+        { label: "limit = 1000", vars: { limit: 1000 }, expected: 1024 },
       ],
-      goalHint: {
-        en:
-          "Keep going while n is still BELOW limit. The condition is  n < limit. The body is  n * 2.",
-        sv:
-          "Fortsätt så länge n fortfarande är UNDER limit. Villkoret är  n < limit. Kroppen är  n * 2.",
-      },
+      goalHint: "Keep going while n is still BELOW limit. The condition is  n < limit. The body is  n * 2.",
       allegory: {
         kind: "loop-result",
         config: {
           inputKeys: ["limit"],
-          resultLabel: { en: "n", sv: "n" },
+          resultLabel: "n",
           theme: "countdown",
         },
       },
       legend: [
         {
-          name: { en: "*  (multiply)", sv: "*  (multiplicera)" },
+          name: "*  (multiply)",
           syntax: "a * b",
           example: "n * 2",
-          note: {
-            en: "Multiplies two numbers. n * 2 doubles n.",
-            sv: "Multiplicerar två tal. n * 2 fördubblar n.",
-          },
+          note: "Multiplies two numbers. n * 2 doubles n.",
         },
         {
-          name: { en: "<", sv: "<" },
+          name: "<",
           syntax: "a < b",
           example: "n < limit",
-          note: {
-            en: "True when a is strictly less than b.",
-            sv: "Sant när a är strikt mindre än b.",
-          },
+          note: "True when a is strictly less than b.",
         },
       ],
     },
@@ -601,184 +366,92 @@ export const countdownLesson: Lesson = {
     // Distinct from chips (limit / countdown) and exercise (goal/weekly/saved/weeks).
     {
       kind: "js-workshop",
-      title: { en: "Workshop: halving balance", sv: "Verkstad: halvera balans" },
-      prompt: {
-        en:
-          "Use a `while` loop to halve a number until it drops below 1, counting the halvings.",
-        sv:
-          "Använd en `while`-loop för att halvera ett tal tills det är under 1, och räkna halveringarna.",
-      },
+      title: "Workshop: halving balance",
+      prompt: "Use a `while` loop to halve a number until it drops below 1, counting the halvings.",
       designNote:
         "L7 while-loop workshop. Surface: balance → halvings (count operations until balance < 1). Distinct from chips (limit) and exercise (goal/weekly/saved/weeks). The student writes a while header that reads from a state and a body that mutates that state — the heart of the while pattern.",
       steps: [
         {
           id: "halve-declare-balance",
-          instruction: {
-            en:
-              "Use `let` to declare `balance` and assign it any positive number greater than 1.",
-            sv:
-              "Använd `let` för att deklarera `balance` och tilldela ett positivt tal större än 1.",
-          },
-          starterCode: {
-            en: "// Declare balance below.\n",
-            sv: "// Deklarera balance nedan.\n",
-          },
+          instruction: "Use `let` to declare `balance` and assign it any positive number greater than 1.",
+          starterCode: "// Declare balance below.\n",
           checks: [
             {
-              message: {
-                en: "Use `let` to declare a variable named `balance`.",
-                sv: "Använd `let` för att deklarera en variabel som heter `balance`.",
-              },
+              message: "Use `let` to declare a variable named `balance`.",
               requirePattern: /\blet\s+balance\b/,
             },
             {
-              message: {
-                en: "`balance` should hold a number greater than 1.",
-                sv: "`balance` ska vara ett tal större än 1.",
-              },
+              message: "`balance` should hold a number greater than 1.",
               assert: "return typeof balance === 'number' && balance > 1;",
             },
           ],
-          reveal: {
-            en: "let balance = 100;\n",
-            sv: "let balance = 100;\n",
-          },
+          reveal: "let balance = 100;\n",
         },
         {
           id: "halve-declare-halvings",
-          instruction: {
-            en:
-              "Below `balance`, use `let` to declare `halvings` and start it at 0 — the loop will count up.",
-            sv:
-              "Under `balance`, använd `let` för att deklarera `halvings` och börja på 0 — loopen räknar upp.",
-          },
-          starterCode: {
-            en: "let balance = 100;\n// Declare halvings = 0 below.\n",
-            sv: "let balance = 100;\n// Deklarera halvings = 0 nedan.\n",
-          },
+          instruction: "Below `balance`, use `let` to declare `halvings` and start it at 0 — the loop will count up.",
+          starterCode: "let balance = 100;\n// Declare halvings = 0 below.\n",
           checks: [
             {
-              message: {
-                en: "Use `let` to declare a variable named `halvings`.",
-                sv: "Använd `let` för att deklarera en variabel som heter `halvings`.",
-              },
+              message: "Use `let` to declare a variable named `halvings`.",
               requirePattern: /\blet\s+halvings\b/,
             },
             {
-              message: {
-                en: "`halvings` should start at 0.",
-                sv: "`halvings` ska börja på 0.",
-              },
+              message: "`halvings` should start at 0.",
               assert: "return halvings === 0;",
             },
           ],
-          reveal: {
-            en: "let balance = 100;\nlet halvings = 0;\n",
-            sv: "let balance = 100;\nlet halvings = 0;\n",
-          },
+          reveal: "let balance = 100;\nlet halvings = 0;\n",
         },
         {
           id: "halve-while-header",
-          instruction: {
-            en:
-              "Write a `while` loop that keeps running as long as `balance` is still 1 or more. Leave the body empty for now.",
-            sv:
-              "Skriv en `while`-loop som fortsätter så länge `balance` fortfarande är 1 eller mer. Lämna kroppen tom tills vidare.",
-          },
-          starterCode: {
-            en:
-              "let balance = 100;\nlet halvings = 0;\n// Add the while header. Empty body for now.\n",
-            sv:
-              "let balance = 100;\nlet halvings = 0;\n// Lägg till while-rubriken. Tom kropp tills vidare.\n",
-          },
+          instruction: "Write a `while` loop that keeps running as long as `balance` is still 1 or more. Leave the body empty for now.",
+          starterCode: "let balance = 100;\nlet halvings = 0;\n// Add the while header. Empty body for now.\n",
           checks: [
             {
-              message: {
-                en: "Use `while` to start the loop.",
-                sv: "Använd `while` för att börja loopen.",
-              },
+              message: "Use `while` to start the loop.",
               requirePattern: /\bwhile\s*\(/,
             },
             {
-              message: {
-                en: "Compare `balance` to `1` with `>=`.",
-                sv: "Jämför `balance` med `1` med hjälp av `>=`.",
-              },
+              message: "Compare `balance` to `1` with `>=`.",
               requirePattern: /\bbalance\s*>=\s*1\b/,
             },
           ],
-          reveal: {
-            en:
-              "let balance = 100;\nlet halvings = 0;\nwhile (balance >= 1) {\n}\n",
-            sv:
-              "let balance = 100;\nlet halvings = 0;\nwhile (balance >= 1) {\n}\n",
-          },
+          reveal: "let balance = 100;\nlet halvings = 0;\nwhile (balance >= 1) {\n}\n",
         },
         {
           id: "halve-loop-body",
-          instruction: {
-            en:
-              "Inside the loop, halve `balance` and increment `halvings` by 1. After the loop, `balance` should be less than 1 — and `halvings` should record how many rounds it took to get there.",
-            sv:
-              "Inne i loopen, halvera `balance` och räkna upp `halvings` med 1. Efter loopen ska `balance` vara mindre än 1 — och `halvings` ska visa hur många varv det tog att komma dit.",
-          },
-          starterCode: {
-            en:
-              "let balance = 100;\nlet halvings = 0;\nwhile (balance >= 1) {\n  // Halve balance, then increment halvings.\n}\n",
-            sv:
-              "let balance = 100;\nlet halvings = 0;\nwhile (balance >= 1) {\n  // Halvera balance, räkna sedan upp halvings.\n}\n",
-          },
+          instruction: "Inside the loop, halve `balance` and increment `halvings` by 1. After the loop, `balance` should be less than 1 — and `halvings` should record how many rounds it took to get there.",
+          starterCode: "let balance = 100;\nlet halvings = 0;\nwhile (balance >= 1) {\n  // Halve balance, then increment halvings.\n}\n",
           checks: [
             {
-              message: {
-                en: "Halve `balance` (e.g. `balance = balance / 2` or `balance /= 2`).",
-                sv: "Halvera `balance` (t.ex. `balance = balance / 2` eller `balance /= 2`).",
-              },
+              message: "Halve `balance` (e.g. `balance = balance / 2` or `balance /= 2`).",
               requirePattern: /\bbalance\s*=\s*balance\s*\/\s*2\b|\bbalance\s*\/=\s*2\b/,
             },
             {
-              message: {
-                en: "Increment `halvings` (e.g. `halvings++`).",
-                sv: "Räkna upp `halvings` (t.ex. `halvings++`).",
-              },
+              message: "Increment `halvings` (e.g. `halvings++`).",
               requirePattern: /\bhalvings\s*\+\+|\bhalvings\s*\+=\s*1\b|\bhalvings\s*=\s*halvings\s*\+\s*1\b/,
             },
             {
-              message: {
-                en:
-                  "After the loop, `balance` should be less than 1 and `halvings` should be a positive number.",
-                sv:
-                  "Efter loopen ska `balance` vara mindre än 1 och `halvings` vara ett positivt tal.",
-              },
+              message: "After the loop, `balance` should be less than 1 and `halvings` should be a positive number.",
               assert: "return balance < 1 && halvings > 0;",
             },
           ],
-          reveal: {
-            en:
-              "let balance = 100;\nlet halvings = 0;\nwhile (balance >= 1) {\n  balance = balance / 2;\n  halvings++;\n}\n",
-            sv:
-              "let balance = 100;\nlet halvings = 0;\nwhile (balance >= 1) {\n  balance = balance / 2;\n  halvings++;\n}\n",
-          },
+          reveal: "let balance = 100;\nlet halvings = 0;\nwhile (balance >= 1) {\n  balance = balance / 2;\n  halvings++;\n}\n",
         },
       ],
       legend: [
         {
-          name: { en: "while", sv: "while" },
+          name: "while",
           syntax: "while (condition) { ... }",
           example: "while (balance >= 1) { ... }",
-          note: {
-            en: "Repeats the body as long as the condition is true. Make sure something inside changes the condition.",
-            sv: "Upprepar kroppen så länge villkoret är true. Se till att något inne ändrar villkoret.",
-          },
+          note: "Repeats the body as long as the condition is true. Make sure something inside changes the condition.",
         },
         {
-          name: { en: "/=", sv: "/=" },
+          name: "/=",
           syntax: "x /= y",
           example: "balance /= 2",
-          note: {
-            en: "Shorthand for `x = x / y`.",
-            sv: "Kort form för `x = x / y`.",
-          },
+          note: "Shorthand for `x = x / y`.",
         },
       ],
     },
@@ -788,10 +461,8 @@ export const countdownLesson: Lesson = {
     // count-up-to-n and keep-doubling exercises (linear addition until cross).
     {
       kind: "exercise",
-      title: { en: "Lab: Save Up Money", sv: "Labb: Spara ihop" },
-      prompt: {
-        en:
-          "Count how many weeks of fixed savings are needed to reach a goal.\n\n" +
+      title: "Lab: Save Up Money",
+      prompt: "Count how many weeks of fixed savings are needed to reach a goal.\n\n" +
           "User stories (variable names are suggestions):\n" +
           "1. Declare a number variable (e.g. goal) — the amount you want to save (e.g. 1000).\n" +
           "2. Declare a number variable (e.g. weekly) — how much you save each week (e.g. 75).\n" +
@@ -802,19 +473,6 @@ export const countdownLesson: Lesson = {
           "   - increment weeks by 1\n" +
           "6. Print weeks.\n" +
           "7. Print saved (the final amount, after the loop ends).",
-        sv:
-          "Räkna hur många veckors fast sparande som krävs för att nå ett mål.\n\n" +
-          "Användarberättelser (variabelnamnen är förslag):\n" +
-          "1. Deklarera en talvariabel (t.ex. goal) — beloppet du vill spara (t.ex. 1000).\n" +
-          "2. Deklarera en talvariabel (t.ex. weekly) — hur mycket du sparar per vecka (t.ex. 75).\n" +
-          "3. Deklarera en talvariabel (t.ex. saved) och sätt den till 0.\n" +
-          "4. Deklarera en talvariabel (t.ex. weeks) och sätt den till 0.\n" +
-          "5. Använd en while-loop som körs så länge saved < goal:\n" +
-          "   - lägg weekly till saved\n" +
-          "   - öka weeks med 1\n" +
-          "6. Skriv ut weeks.\n" +
-          "7. Skriv ut saved (det slutgiltiga beloppet efter loopen).",
-      },
       starterJs:
         "// Follow the user stories shown to the left.\n\n" +
         "// 1-4. Declare goal, weekly, saved, weeks:\n\n\n\n\n\n" +
@@ -822,22 +480,13 @@ export const countdownLesson: Lesson = {
         "// 6-7. Print weeks, then saved:\n\n",
       tests: [
         {
-          label: {
-            en: "Console shows exactly two lines",
-            sv: "Konsolen visar exakt två rader",
-          },
+          label: "Console shows exactly two lines",
           assert:
             "var c = window.__console || []; return c.length === 2;",
-          hint: {
-            en: "One console.log for weeks (after the loop), one for saved.",
-            sv: "En console.log för weeks (efter loopen), en för saved.",
-          },
+          hint: "One console.log for weeks (after the loop), one for saved.",
         },
         {
-          label: {
-            en: "Each variable you print is one you declared",
-            sv: "Varje variabel du skriver ut är en du deklarerat",
-          },
+          label: "Each variable you print is one you declared",
           assert:
             "var src = window.__userSrc || '';" +
             "var logs = []; var re = /console\\.log\\s*\\(\\s*([A-Za-z_$][A-Za-z0-9_$]*)\\s*\\)/g;" +
@@ -849,48 +498,28 @@ export const countdownLesson: Lesson = {
             "  if (!d.test(src)) return false;" +
             "}" +
             "return true;",
-          hint: {
-            en:
-              "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
-            sv:
-              "Om en console.log-rad är tom eller fel, dubbelkolla variabelnamnet — det måste matcha det du deklarerade med let.",
-          },
+          hint: "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
         },
         {
-          label: {
-            en: "Line 1 (weeks) is a positive whole number",
-            sv: "Rad 1 (weeks) är ett positivt heltal",
-          },
+          label: "Line 1 (weeks) is a positive whole number",
           assert:
             "var c = window.__console || [];" +
             "if (c.length < 1) return false;" +
             "var w = Number(c[0].text);" +
             "return Number.isInteger(w) && w > 0;",
-          hint: {
-            en: "weeks should be incremented inside the loop and printed at the end.",
-            sv: "weeks ska ökas i loopen och skrivas ut efter loopen.",
-          },
+          hint: "weeks should be incremented inside the loop and printed at the end.",
         },
         {
-          label: {
-            en: "Line 2 (saved) is a positive number",
-            sv: "Rad 2 (saved) är ett positivt tal",
-          },
+          label: "Line 2 (saved) is a positive number",
           assert:
             "var c = window.__console || [];" +
             "if (c.length < 2) return false;" +
             "var s = Number(c[1].text);" +
             "return Number.isFinite(s) && s > 0;",
-          hint: {
-            en: "saved should hold the running total at the end of the loop.",
-            sv: "saved ska innehålla totalsumman när loopen är klar.",
-          },
+          hint: "saved should hold the running total at the end of the loop.",
         },
         {
-          label: {
-            en: "saved equals weekly × weeks (the loop accumulated correctly)",
-            sv: "saved är lika med weekly × weeks (loopen ackumulerade rätt)",
-          },
+          label: "saved equals weekly × weeks (the loop accumulated correctly)",
           assert:
             "var c = window.__console || [];" +
             "if (c.length < 2) return false;" +
@@ -901,25 +530,14 @@ export const countdownLesson: Lesson = {
             "var weekly = saved / weeks;" +
             "if (!Number.isFinite(weekly) || weekly <= 0) return false;" +
             "return Math.abs(weekly * weeks - saved) < 0.0001;",
-          hint: {
-            en:
-              "Inside the loop: saved = saved + weekly; weeks = weeks + 1. The loop runs until saved >= goal.",
-            sv:
-              "I loopen: saved = saved + weekly; weeks = weeks + 1. Loopen kör tills saved >= goal.",
-          },
+          hint: "Inside the loop: saved = saved + weekly; weeks = weeks + 1. The loop runs until saved >= goal.",
         },
         {
-          label: {
-            en: "Code uses a while loop",
-            sv: "Koden använder en while-loop",
-          },
+          label: "Code uses a while loop",
           assert:
             "var src = window.__userSrc || '';" +
             "return /\\bwhile\\s*\\(/.test(src);",
-          hint: {
-            en: "Use the form: while (saved < goal) { ... }",
-            sv: "Använd formen: while (saved < goal) { ... }",
-          },
+          hint: "Use the form: while (saved < goal) { ... }",
         },
       ],
     },

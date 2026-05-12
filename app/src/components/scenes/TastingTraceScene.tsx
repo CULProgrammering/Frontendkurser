@@ -1,4 +1,3 @@
-import { useLang } from "../../i18n/LanguageContext";
 import { t } from "../../i18n";
 import { useSlideFontSize } from "../SlideFontSize";
 
@@ -22,14 +21,13 @@ type Props = { step: number };
  * The key beat: the BODY runs first, the condition is checked AFTER.
  */
 export function TastingTraceScene({ step }: Props) {
-  const { lang } = useLang();
   const s = stateAtStep(step);
 
   return (
     <div className="w-full h-full flex flex-col gap-3">
       <CodePanel
         highlight={s.highlight}
-        evalNote={s.evalNote ? t(s.evalNote, lang) : undefined}
+        evalNote={s.evalNote ? t(s.evalNote) : undefined}
       />
 
       <div className="relative flex-1 rounded-2xl overflow-hidden
@@ -46,7 +44,7 @@ export function TastingTraceScene({ step }: Props) {
           <div className="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-medium
                           bg-emerald-100 text-emerald-700
                           dark:bg-emerald-500/20 dark:text-emerald-200">
-            {t({ en: "Returned", sv: "Returnerade" }, lang)} {s.outcome}
+            {t("Returned")} {s.outcome}
           </div>
         )}
       </div>
@@ -63,7 +61,7 @@ type State = {
   nValue: number | null;
   countValue: number | null;
   highlight?: LineKey;
-  evalNote?: { en: string; sv: string };
+  evalNote?: string;
   /** Number of "tastes" — increments each time the body runs. */
   tastes: number;
   outcome?: number;
@@ -88,7 +86,7 @@ function stateAtStep(step: number): State {
         countValue: 0,
         tastes: 0,
         highlight: "do",
-        evalNote: { en: "do — body runs at least once", sv: "do — kroppen körs minst en gång" },
+        evalNote: "do — body runs at least once",
       };
     case 3:
       // body lap 1: count=1, n=1
@@ -97,7 +95,7 @@ function stateAtStep(step: number): State {
         countValue: 1,
         tastes: 1,
         highlight: "body",
-        evalNote: { en: "count → 1, n → 1", sv: "count → 1, n → 1" },
+        evalNote: "count → 1, n → 1",
       };
     case 4:
       // condition: 1 > 0 → true → loop
@@ -106,7 +104,7 @@ function stateAtStep(step: number): State {
         countValue: 1,
         tastes: 1,
         highlight: "while",
-        evalNote: { en: "1 > 0  →  true  (loop)", sv: "1 > 0  →  true  (loopa)" },
+        evalNote: "1 > 0  →  true  (loop)",
       };
     case 5:
       // body lap 2: count=2, n=0
@@ -115,7 +113,7 @@ function stateAtStep(step: number): State {
         countValue: 2,
         tastes: 2,
         highlight: "body",
-        evalNote: { en: "count → 2, n → 0", sv: "count → 2, n → 0" },
+        evalNote: "count → 2, n → 0",
       };
     case 6:
       // condition: 0 > 0 → false → exit
@@ -124,7 +122,7 @@ function stateAtStep(step: number): State {
         countValue: 2,
         tastes: 2,
         highlight: "while",
-        evalNote: { en: "0 > 0  →  false  (exit)", sv: "0 > 0  →  false  (lämna)" },
+        evalNote: "0 > 0  →  false  (exit)",
       };
     case 7:
       return {

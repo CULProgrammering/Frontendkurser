@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { CrosswalkConfig } from "../../types";
 import type { SceneRun } from "./types";
-import { t, type Lang } from "../../i18n";
+import { t } from "../../i18n";
 import { StickFigure } from "../scenes/StickFigure";
 import { deepEqual } from "../../runtime/jsRunner";
 
@@ -9,7 +9,6 @@ type Props = {
   config: CrosswalkConfig;
   run: SceneRun | null;
   replayKey: number;
-  lang: Lang;
   hideConditionLabel?: boolean;
 };
 
@@ -37,7 +36,7 @@ function classifyLamp(signal: string): "red" | "yellow" | "green" | null {
   return null;
 }
 
-export function CrosswalkAllegory({ config, run, replayKey, lang, hideConditionLabel }: Props) {
+export function CrosswalkAllegory({ config, run, replayKey, hideConditionLabel }: Props) {
   const [phase, setPhase] = useState<Phase>("idle");
 
   useEffect(() => {
@@ -70,7 +69,7 @@ export function CrosswalkAllegory({ config, run, replayKey, lang, hideConditionL
         <div className="rounded-lg px-3 py-2 mb-3 font-mono text-sm
                         bg-stone-100 text-stone-700
                         dark:bg-slate-800/60 dark:text-indigo-100">
-          {t(config.conditionLabel, lang)}
+          {t(config.conditionLabel)}
         </div>
       )}
 
@@ -178,10 +177,10 @@ export function CrosswalkAllegory({ config, run, replayKey, lang, hideConditionL
             }
           >
             {figureWalks
-              ? t(config.walkLabel ?? { en: "Walks", sv: "Går" }, lang)
+              ? t(config.walkLabel ?? "Walks")
               : isNothing
-              ? t(config.nothingLabel!, lang)
-              : t(config.waitLabel ?? { en: "Waits", sv: "Väntar" }, lang)}
+              ? t(config.nothingLabel!)
+              : t(config.waitLabel ?? "Waits")}
           </div>
         )}
       </div>

@@ -48,6 +48,33 @@ Skipping the harness ships assertions with regex typos, off-by-one bugs, or
 impossible requirements — bugs invisible at the TypeScript build level
 because assertions and `requirePattern`s are strings/regexes.
 
+## Authoring compliance review (skill auto-fires)
+
+The project ships a skill at
+[`.claude/skills/lesson-authoring-review/`](.claude/skills/lesson-authoring-review/SKILL.md)
+that auto-fires whenever you edit content in `app/src/lessons/**/*.ts`.
+After each lesson edit and **before** reporting the task as done, the
+skill spawns an independent reviewer subagent that audits the change
+against [AUTHORING.md](AUTHORING.md) — hint-leaks, `anyValues`/assert
+contradictions, missing tier prefixes, bullet format, variety
+violations, regex sanity, etc.
+
+This is complementary to the harness above. The harness catches
+*runtime* failures (regex doesn't match the reveal, assert throws);
+the skill catches *authoring* violations (rule drift in prose,
+flag/check mismatch, sibling pattern duplication). Both must pass.
+
+If the reviewer flags BLOCKING, fix before reporting done. If you
+genuinely want to skip the review (rare — only for trivial edits the
+user explicitly waived), say so in your response.
+
+A baseline of how the skill behaves on 15 violation / pressure
+scenarios lives in
+[`evals/results.json`](.claude/skills/lesson-authoring-review/evals/results.json) —
+all 15 pass at the time of writing. Re-run the suite (via
+[`evals/runner.mjs`](.claude/skills/lesson-authoring-review/evals/runner.mjs))
+if AUTHORING.md or the skill body changes substantially.
+
 ## Design tokens (workbook palette)
 
 The project ships a workbook-style palette and type scale (Fraunces /
@@ -74,16 +101,17 @@ Inter / JetBrains Mono) wired through
   palette so the system stays calm. Use `tokens.feedback.success` /
   `.error` / `.idle`.
 
-## i18n status (English-only for now)
+## Language (English-only)
 
-The i18n infrastructure (`Loc`, `t(loc, lang)`, `LanguageContext`) is
-intact and existing strings keep their `{ en, sv }` shape. New strings
-should ship **English-only** — author them as plain strings. The
-`LanguageToggle` is hidden from the UI; Swedish translation will be
-revisited once the curriculum is feature-complete.
+The project is English-only. The Swedish option has been retired:
+all `{ en, sv }` `Loc` literals have been collapsed to plain strings,
+the `LanguageToggle` component is gone, and `t()` is now an identity
+function. `Lang` / `useLang` / `LanguageContext` remain as no-op stubs
+for backward compatibility with code that still passes a `lang` value
+around — new code should ignore them and treat `Loc` as `string`.
 
-When that day comes, we'll do a single back-fill pass over the strings
-authored in the meantime; until then, double-authoring is wasted effort.
+Just author plain strings. No `{ en, sv }`, no `t(value, lang)`, no
+double-authoring.
 
 ## Companion docs
 

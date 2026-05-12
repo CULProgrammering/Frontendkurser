@@ -1,5 +1,4 @@
 import { StickFigure } from "./StickFigure";
-import { useLang } from "../../i18n/LanguageContext";
 import { t } from "../../i18n";
 import { useSlideFontSize } from "../SlideFontSize";
 
@@ -24,7 +23,6 @@ type Props = { step: number };
  * the chain decide between all three outcomes.
  */
 export function WardrobeTraceScene({ step }: Props) {
-  const { lang } = useLang();
   const s = stateAtStep(step);
 
   return (
@@ -32,7 +30,7 @@ export function WardrobeTraceScene({ step }: Props) {
       <CodePanel
         tempValue={s.tempValue}
         highlight={s.highlight}
-        evalNote={s.evalNote ? t(s.evalNote, lang) : undefined}
+        evalNote={s.evalNote ? t(s.evalNote) : undefined}
       />
 
       <div className="relative flex-1 rounded-2xl overflow-hidden
@@ -70,7 +68,7 @@ export function WardrobeTraceScene({ step }: Props) {
               outcomeBadgeClass(s.outcome)
             }
           >
-            {t(outcomeLabel(s.outcome), lang)}
+            {t(outcomeLabel(s.outcome))}
           </div>
         )}
       </div>
@@ -88,7 +86,7 @@ type State = {
   /** The current value of `temp` in the trace, or null before declaration. */
   tempValue: number | null;
   highlight?: LineKey;
-  evalNote?: { en: string; sv: string };
+  evalNote?: string;
   outcome?: Outcome;
 };
 
@@ -108,7 +106,7 @@ function stateAtStep(step: number): State {
       return {
         tempValue: -5,
         highlight: "if",
-        evalNote: { en: "-5 <= 0  →  true", sv: "-5 <= 0  →  true" },
+        evalNote: "-5 <= 0  →  true",
       };
     case 4:
       return {
@@ -126,7 +124,7 @@ function stateAtStep(step: number): State {
       return {
         tempValue: 10,
         highlight: "if",
-        evalNote: { en: "10 <= 0  →  false", sv: "10 <= 0  →  false" },
+        evalNote: "10 <= 0  →  false",
       };
     case 8:
       return { tempValue: 10, highlight: "elseif" };
@@ -134,7 +132,7 @@ function stateAtStep(step: number): State {
       return {
         tempValue: 10,
         highlight: "elseif",
-        evalNote: { en: "10 <= 15  →  true", sv: "10 <= 15  →  true" },
+        evalNote: "10 <= 15  →  true",
       };
     case 10:
       return {
@@ -152,7 +150,7 @@ function stateAtStep(step: number): State {
       return {
         tempValue: 25,
         highlight: "if",
-        evalNote: { en: "25 <= 0  →  false", sv: "25 <= 0  →  false" },
+        evalNote: "25 <= 0  →  false",
       };
     case 14:
       return { tempValue: 25, highlight: "elseif" };
@@ -160,7 +158,7 @@ function stateAtStep(step: number): State {
       return {
         tempValue: 25,
         highlight: "elseif",
-        evalNote: { en: "25 <= 15  →  false", sv: "25 <= 15  →  false" },
+        evalNote: "25 <= 15  →  false",
       };
     case 16:
       return { tempValue: 25, highlight: "else" };
@@ -179,11 +177,11 @@ function stateAtStep(step: number): State {
 function outcomeLabel(o: Outcome) {
   switch (o) {
     case "coat":
-      return { en: 'Returned "coat"', sv: 'Returnerade "coat"' };
+      return 'Returned "coat"';
     case "jacket":
-      return { en: 'Returned "jacket"', sv: 'Returnerade "jacket"' };
+      return 'Returned "jacket"';
     case "shirt":
-      return { en: 'Returned "shirt"', sv: 'Returnerade "shirt"' };
+      return 'Returned "shirt"';
   }
 }
 

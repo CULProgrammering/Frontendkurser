@@ -1,19 +1,18 @@
 import { useEffect, useState } from "react";
 import type { ForkConfig } from "../../types";
 import type { SceneRun } from "./types";
-import { t, type Lang } from "../../i18n";
+import { t } from "../../i18n";
 
 type Props = {
   config: ForkConfig;
   run: SceneRun | null;
   replayKey: number;
-  lang: Lang;
   hideConditionLabel?: boolean;
 };
 
 type Phase = "idle" | "approach" | "branched";
 
-export function ForkScene({ config, run, replayKey, lang, hideConditionLabel }: Props) {
+export function ForkScene({ config, run, replayKey, hideConditionLabel }: Props) {
   const [phase, setPhase] = useState<Phase>("idle");
 
   useEffect(() => {
@@ -36,7 +35,7 @@ export function ForkScene({ config, run, replayKey, lang, hideConditionLabel }: 
         <div className="rounded-lg px-3 py-2 mb-4 font-mono text-sm
                         bg-stone-100 text-stone-700
                         dark:bg-slate-800/60 dark:text-indigo-100">
-          {t(config.conditionLabel, lang)}
+          {t(config.conditionLabel)}
         </div>
       )}
 
@@ -75,7 +74,7 @@ export function ForkScene({ config, run, replayKey, lang, hideConditionLabel }: 
                     : "border-stone-300 dark:border-white/10 text-stone-500 dark:text-indigo-200/60")
                 }
               >
-                {t(b.label, lang)}
+                {t(b.label)}
               </div>
             );
           })}

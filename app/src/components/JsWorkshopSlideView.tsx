@@ -5,14 +5,12 @@ import {
   type CheckResult,
   type ConsoleEntry,
 } from "../runtime/workshopRunner";
-import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
-import type { Lang } from "../i18n";
 import { ui } from "../i18n/strings";
 import { sessionGet, sessionSet } from "../storage";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
 import { ThemeToggleInline } from "./ThemeToggle";
-import { FlexibilityHelpButton } from "./FlexibilityHelpButton";
+import { ValuesPill } from "./ValuesPill";
 import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
 import { CodeEditor, type CodeEditorHandle } from "./CodeEditor";
 import { TwoColumnLayout } from "./TwoColumnLayout";
@@ -122,7 +120,6 @@ type Props = {
  * moving on.
  */
 export function JsWorkshopSlideView({ slide, storageKey, breadcrumb, slideJumpDots, onPass, onExit, initialIdx }: Props) {
-  const { lang } = useLang();
   const [stepIdx, setStepIdx] = useState(() =>
     typeof initialIdx === "number"
       ? Math.max(0, Math.min(initialIdx, slide.steps.length - 1))
@@ -137,7 +134,7 @@ export function JsWorkshopSlideView({ slide, storageKey, breadcrumb, slideJumpDo
     return (
       <div className="h-full flex items-center justify-center px-6">
         <p className="text-stone-500 dark:text-stone-400 italic">
-          {t(ui.tierEmpty, lang)}
+          {t(ui.tierEmpty)}
         </p>
       </div>
     );
@@ -173,7 +170,6 @@ export function JsWorkshopSlideView({ slide, storageKey, breadcrumb, slideJumpDo
           completed={completed}
           onJump={setStepIdx}
           storageKey={`${storageKey}:step:${step.id}`}
-          lang={lang}
           breadcrumb={breadcrumb}
           slideJumpDots={slideJumpDots}
           onPass={handleStepPass}
@@ -198,7 +194,6 @@ function WorkshopStepView({
   completed,
   onJump,
   storageKey,
-  lang,
   breadcrumb,
   slideJumpDots,
   onPass,
@@ -212,7 +207,6 @@ function WorkshopStepView({
   completed: Set<number>;
   onJump: (i: number) => void;
   storageKey: string;
-  lang: Lang;
   breadcrumb?: BreadcrumbSegment[];
   slideJumpDots?: React.ReactNode;
   onPass: () => void;
@@ -237,8 +231,8 @@ function WorkshopStepView({
   // INSIDE the surrounding block. Also computes where to land the cursor on
   // mount so the student can start typing immediately.
   const seed = useMemo(
-    () => prepareSeed(t(step.starterCode, lang)),
-    [step, lang]
+    () => prepareSeed(t(step.starterCode)),
+    [step]
   );
   const seedCode = seed.code;
 
@@ -350,16 +344,16 @@ function WorkshopStepView({
         <div className="ml-auto flex gap-2">
           <button
             onClick={check}
-            title={t(ui.workshopCheckShortcut, lang)}
+            title={t(ui.workshopCheckShortcut)}
             className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
           >
-            {t(ui.check, lang)}
+            {t(ui.check)}
           </button>
           <button
             onClick={restartStep}
             className={`${tokens.button.secondary} min-h-[44px] sm:min-h-0`}
           >
-            {t(ui.workshopRestartStep, lang)}
+            {t(ui.workshopRestartStep)}
           </button>
         </div>
       </div>
@@ -369,7 +363,7 @@ function WorkshopStepView({
         <div
           className={`${tokens.text.eyebrow} px-4 py-2 border-b border-stone-900/[0.05] dark:border-white/[0.05]`}
         >
-          {t(ui.jsLabel, lang)}
+          {t(ui.jsLabel)}
         </div>
         <div className="flex-1 min-h-0">
           <CodeEditor
@@ -402,7 +396,7 @@ function WorkshopStepView({
           {/* flex-1 min-w-0 lets the h2 shrink instead of pushing the
               control buttons (font / theme / help) onto a new row. */}
           <h2 className={`${tokens.text.h2} flex-1 min-w-0`}>
-            {t(slide.title, lang)}
+            {t(slide.title)}
           </h2>
           <SlideFontSizeControl />
           <ThemeToggleInline />
@@ -411,7 +405,7 @@ function WorkshopStepView({
               type="button"
               onClick={() => setHintShown((v) => !v)}
               aria-pressed={hintShown}
-              title={hintShown ? t(ui.workshopHintHide, lang) : t(ui.workshopHintShow, lang)}
+              title={hintShown ? t(ui.workshopHintHide) : t(ui.workshopHintShow)}
               className={
                 "h-9 px-3 rounded-lg flex items-center justify-center font-medium text-sm transition-colors border " +
                 (hintShown
@@ -419,31 +413,33 @@ function WorkshopStepView({
                   : "bg-white text-stone-700 border-stone-900/[0.08] hover:bg-stone-50 dark:bg-[#1f232c] dark:text-stone-200 dark:border-white/[0.08] dark:hover:bg-[#252934]")
               }
             >
-              {t(ui.workshopHintLabel, lang)}
+              {t(ui.workshopHintLabel)}
             </button>
           )}
-          {step.flexibility && <FlexibilityHelpButton flex={step.flexibility} />}
         </SlideTitleRow>
         <div className="flex items-end justify-between gap-4 mt-2">
           <p
             className="text-stone-600 dark:text-stone-300 whitespace-pre-line flex-1 min-w-0 max-w-[68ch]"
             style={{ fontSize: `${prosePx}px` }}
           >
-            {t(slide.prompt, lang)}
+            {t(slide.prompt)}
           </p>
           {slideJumpDots}
         </div>
       </div>
 
       <div className="px-5 py-4 border-b border-stone-900/[0.05] dark:border-white/[0.05]">
-        <div className={`${tokens.text.eyebrow} mb-2`}>
-          {t(ui.workshopStepLabel, lang)} <span className="tabular-nums">{stepIdx + 1} / {total}</span>
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <div className={tokens.text.eyebrow}>
+            {t(ui.workshopStepLabel)} <span className="tabular-nums">{stepIdx + 1} / {total}</span>
+          </div>
+          <ValuesPill anyValues={!!step.anyValues} />
         </div>
         <p
           className="text-stone-800 dark:text-stone-100 whitespace-pre-line max-w-[68ch]"
           style={{ fontSize: `${prosePx}px` }}
         >
-          {t(step.instruction, lang)}
+          {t(step.instruction)}
         </p>
         {step.hint && hintShown && (
           <div
@@ -453,9 +449,9 @@ function WorkshopStepView({
             style={{ fontSize: `${prosePx}px` }}
           >
             <div className="text-[10px] uppercase tracking-[0.18em] font-mono font-medium text-[#C97A1F] dark:text-[#F0B274] mb-1">
-              {t(ui.workshopHintLabel, lang)}
+              {t(ui.workshopHintLabel)}
             </div>
-            <div className="whitespace-pre-line">{t(step.hint, lang)}</div>
+            <div className="whitespace-pre-line">{t(step.hint)}</div>
           </div>
         )}
       </div>
@@ -463,7 +459,7 @@ function WorkshopStepView({
       <div className="p-5 flex flex-col gap-3" style={{ fontSize: `${prosePx}px` }}>
         {results === null && !isCompleted && (
           <div className={tokens.feedback.idle}>
-            {t(ui.workshopCheckHint, lang)}
+            {t(ui.workshopCheckHint)}
           </div>
         )}
         {/* Success banner is sticky — once the step is completed, it stays visible
@@ -472,8 +468,8 @@ function WorkshopStepView({
           <div className={`${tokens.feedback.success} flex flex-wrap items-center gap-3`}>
             <span className="font-medium flex-1 min-w-0">
               {isLast
-                ? t(ui.workshopAllStepsPass, lang)
-                : t(ui.workshopStepReady, lang)}
+                ? t(ui.workshopAllStepsPass)
+                : t(ui.workshopStepReady)}
             </span>
           </div>
         )}
@@ -483,13 +479,12 @@ function WorkshopStepView({
           <FailureMessage
             check={firstFail.check}
             result={firstFail.result}
-            lang={lang}
           />
         )}
         {/* Console panel is always visible so students can see (or confirm
             the absence of) console.log output without having to hunt for it.
             Empty state has a muted placeholder line. */}
-        <ConsolePreview logs={consoleLogs} lang={lang} codePx={codePx} />
+        <ConsolePreview logs={consoleLogs} codePx={codePx} />
         {isCompleted && !isLast && (
           <div className="flex justify-end">
             <button
@@ -497,7 +492,7 @@ function WorkshopStepView({
               onClick={onAdvance}
               className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
             >
-              {t(ui.workshopNextStep, lang)}
+              {t(ui.workshopNextStep)}
             </button>
           </div>
         )}
@@ -511,7 +506,7 @@ function WorkshopStepView({
               onClick={onExit}
               className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
             >
-              {t(ui.slideBack, lang)}
+              {t(ui.slideBack)}
             </button>
           </div>
         )}
@@ -522,8 +517,8 @@ function WorkshopStepView({
   return (
     <TwoColumnLayout
       className="h-full w-full"
-      leftLabel={t(ui.tabCode, lang)}
-      rightLabel={t(ui.tabInstructions, lang)}
+      leftLabel={t(ui.tabCode)}
+      rightLabel={t(ui.tabInstructions)}
       desktopGap="gap-4"
       left={editorPanel}
       right={instructionsPanel}
@@ -531,18 +526,18 @@ function WorkshopStepView({
   );
 }
 
-function ConsolePreview({ logs, lang, codePx }: { logs: ConsoleEntry[]; lang: Lang; codePx: number }) {
+function ConsolePreview({ logs, codePx }: { logs: ConsoleEntry[]; codePx: number }) {
   return (
     <div className="rounded-lg overflow-hidden bg-stone-900 dark:bg-[#0f1117] text-stone-100 border border-white/[0.05]">
       <div className="px-3 py-1.5 text-[10px] uppercase tracking-[0.18em] font-mono font-medium text-stone-400 border-b border-white/[0.08]">
-        {t(ui.workshopConsoleLabel, lang)}
+        {t(ui.workshopConsoleLabel)}
       </div>
       {logs.length === 0 ? (
         <div
           className="px-3 py-2 text-stone-500 italic"
           style={{ fontSize: `${codePx}px` }}
         >
-          {t(ui.workshopConsoleEmpty, lang)}
+          {t(ui.workshopConsoleEmpty)}
         </div>
       ) : (
         <div
@@ -572,11 +567,9 @@ function ConsolePreview({ logs, lang, codePx }: { logs: ConsoleEntry[]; lang: La
 function FailureMessage({
   check,
   result,
-  lang,
 }: {
   check: WorkshopCheck;
   result: CheckResult;
-  lang: Lang;
 }) {
   const isError = result.pass === false && result.kind === "error";
   // Errors → rose feedback band (semantic). Hint-style failures (regex
@@ -590,7 +583,7 @@ function FailureMessage({
           : "rounded-lg px-4 py-3 border-l-2 border-[#C97A1F] dark:border-[#F0B274] bg-[#FBE8CF] dark:bg-[#3a2a18] text-[#C97A1F] dark:text-[#F0B274]"
       }
     >
-      <div className="font-medium mb-1">{t(check.message, lang)}</div>
+      <div className="font-medium mb-1">{t(check.message)}</div>
       {isError && result.kind === "error" && (
         <div className="font-mono text-xs mt-1 opacity-80">{result.error}</div>
       )}

@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import type { DemoBox, ExplanationSlide } from "../types";
 import { Typewriter } from "./Typewriter";
-import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
@@ -173,7 +172,6 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
   const [typingDone, setTypingDone] = useState(false);
   const atEnd = step >= slide.steps.length - 1;
   const atStart = step === 0;
-  const { lang } = useLang();
   const { codePx, prosePx } = useSlideFontSize();
   const typewriter = useTypewriter();
 
@@ -263,13 +261,13 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
   }, [step]);
 
   const resolveLabel = (b: DemoBox) =>
-    b.label ? t(b.label, lang) : b.id;
+    b.label ? t(b.label) : b.id;
 
   const titleBlock = (
     <>
       <SlideTitleRow breadcrumb={breadcrumb}>
         <h2 className={`${tokens.text.h2} flex-1 min-w-0`}>
-          {t(slide.title, lang)}
+          {t(slide.title)}
         </h2>
         <SlideFontSizeControl />
         <TypewriterToggleInline />
@@ -278,7 +276,7 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
       <div className="flex items-end justify-between gap-4 mt-2">
         {slide.intro ? (
           <p className="text-stone-600 dark:text-stone-400 flex-1 min-w-0">
-            {t(slide.intro, lang)}
+            {t(slide.intro)}
           </p>
         ) : (
           <span className="flex-1" />
@@ -299,8 +297,8 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
         <TwoColumnLayout
           className="flex-1 px-4 sm:px-10 py-4 sm:py-8"
           desktopGap="gap-6"
-          leftLabel={t(ui.tabCode, lang)}
-          rightLabel={t(ui.tabStory, lang)}
+          leftLabel={t(ui.tabCode)}
+          rightLabel={t(ui.tabStory)}
           initialTab="right"
           left={
             <div className="flex-1 flex items-center justify-center overflow-auto p-2 min-h-0">
@@ -311,7 +309,7 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
             <div className={`flex-1 flex flex-col p-6 min-h-0 ${tokens.card.surface}`}>
               <div className="flex items-center justify-between mb-2">
                 <div className={tokens.text.eyebrow}>
-                  {t(ui.stepLabel, lang)} <span className="tabular-nums">{step + 1} / {slide.steps.length}</span>
+                  {t(ui.stepLabel)} <span className="tabular-nums">{step + 1} / {slide.steps.length}</span>
                 </div>
                 {!atStart && (
                   <button
@@ -320,7 +318,7 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
                                bg-white hover:bg-stone-50 text-stone-700 border border-stone-900/[0.08]
                                dark:bg-[#1f232c] dark:hover:bg-[#252934] dark:text-stone-200 dark:border-white/[0.08]"
                   >
-                    {t(ui.stepBack, lang)}
+                    {t(ui.stepBack)}
                   </button>
                 )}
               </div>
@@ -330,7 +328,7 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
               >
                 {current?.narration ? (
                   <Typewriter
-                    text={collapseSoftBreaks(t(current.narration, lang))}
+                    text={collapseSoftBreaks(t(current.narration))}
                     skip={!typewriter.enabled}
                     onDone={() => setTypingDone(true)}
                   />
@@ -351,8 +349,8 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
                   style={{ opacity: typingDone ? 1 : 0.4 }}
                 >
                   {atEnd
-                    ? t(ui.endOfExplanation, lang)
-                    : t(ui.clickToContinue, lang)}
+                    ? t(ui.endOfExplanation)
+                    : t(ui.clickToContinue)}
                 </div>
                 {atEnd && onNextSlide && (
                   <button
@@ -363,7 +361,7 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
                     }}
                     className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
                   >
-                    {t(ui.nextSlide, lang)}
+                    {t(ui.nextSlide)}
                   </button>
                 )}
                 {atEnd && !onNextSlide && typingDone && onExit && (
@@ -375,7 +373,7 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
                     }}
                     className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
                   >
-                    {t(ui.slideBack, lang)}
+                    {t(ui.slideBack)}
                   </button>
                 )}
               </div>
@@ -394,7 +392,7 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
             <div className={`flex-1 p-6 flex flex-col gap-5 ${tokens.card.surface}`}>
             <div className="flex items-center justify-between">
               <div className={tokens.text.eyebrow}>
-                {t(ui.stepLabel, lang)} <span className="tabular-nums">{step + 1} / {slide.steps.length}</span>
+                {t(ui.stepLabel)} <span className="tabular-nums">{step + 1} / {slide.steps.length}</span>
               </div>
               <div className="flex items-center gap-2">
                 {!atStart && (
@@ -404,15 +402,15 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
                                bg-white hover:bg-stone-50 text-stone-700 border border-stone-900/[0.08]
                                dark:bg-[#1f232c] dark:hover:bg-[#252934] dark:text-stone-200 dark:border-white/[0.08]"
                   >
-                    {t(ui.stepBack, lang)}
+                    {t(ui.stepBack)}
                   </button>
                 )}
                 {noteBox && (
                   <button
                     type="button"
                     onClick={openHelp}
-                    aria-label={t({ en: "Show tip", sv: "Visa tips" }, lang)}
-                    title={t({ en: "Show tip", sv: "Visa tips" }, lang)}
+                    aria-label={t("Show tip")}
+                    title={t("Show tip")}
                     className="w-11 h-11 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-colors
                                bg-[#FBE8CF] hover:bg-[#f6dab3] active:bg-[#e6c890] text-[#C97A1F]
                                border border-[#C97A1F]/30
@@ -449,7 +447,7 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
                 // a click on the slide can advance, see the `advance()`
                 // handler near the top of the component.
                 <Typewriter
-                  text={collapseSoftBreaks(t(current.narration, lang))}
+                  text={collapseSoftBreaks(t(current.narration))}
                   skip={!typewriter.enabled}
                   onDone={() => setTypingDone(true)}
                 />
@@ -484,8 +482,8 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
             <div className="flex items-center justify-between gap-3">
               <div className="text-sm italic text-stone-500 dark:text-stone-400">
                 {atEnd
-                  ? t(ui.endOfExplanation, lang)
-                  : t(ui.clickToContinue, lang)}
+                  ? t(ui.endOfExplanation)
+                  : t(ui.clickToContinue)}
               </div>
               {atEnd && onNextSlide && (
                 <button
@@ -496,7 +494,7 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
                   }}
                   className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
                 >
-                  {t(ui.nextSlide, lang)}
+                  {t(ui.nextSlide)}
                 </button>
               )}
               {atEnd && !onNextSlide && typingDone && onExit && (
@@ -508,7 +506,7 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
                   }}
                   className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
                 >
-                  {t(ui.slideBack, lang)}
+                  {t(ui.slideBack)}
                 </button>
               )}
             </div>
@@ -519,7 +517,7 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
             <div
               role="dialog"
               aria-modal="true"
-              aria-label={t({ en: "Tip", sv: "Tips" }, lang)}
+              aria-label={t("Tip")}
               onClick={(e) => {
                 e.stopPropagation();
                 if (e.target === e.currentTarget) setHelpOpen(false);
@@ -549,12 +547,12 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
                         d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
                       />
                     </svg>
-                    {t({ en: "Tip", sv: "Tips" }, lang)}
+                    {t("Tip")}
                   </div>
                   <button
                     type="button"
                     onClick={closeHelp}
-                    aria-label={t({ en: "Close", sv: "Stäng" }, lang)}
+                    aria-label={t("Close")}
                     className="w-11 h-11 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xl sm:text-lg leading-none transition-colors
                                text-[#C97A1F]/70 hover:bg-[#C97A1F]/10
                                dark:text-[#F0B274]/70 dark:hover:bg-[#F0B274]/10"
@@ -566,7 +564,7 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
                   className="whitespace-pre-line leading-relaxed text-stone-800 dark:text-stone-100"
                   style={{ fontSize: `${prosePx}px` }}
                 >
-                  {noteBox.label ? t(noteBox.label, lang) : ""}
+                  {noteBox.label ? t(noteBox.label) : ""}
                 </div>
               </div>
             </div>

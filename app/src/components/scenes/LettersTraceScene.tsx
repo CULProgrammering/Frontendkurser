@@ -1,4 +1,3 @@
-import { useLang } from "../../i18n/LanguageContext";
 import { t } from "../../i18n";
 import { useSlideFontSize } from "../SlideFontSize";
 
@@ -21,7 +20,6 @@ type Props = { step: number };
  * whether to bump count.
  */
 export function LettersTraceScene({ step }: Props) {
-  const { lang } = useLang();
   const s = stateAtStep(step);
 
   return (
@@ -30,7 +28,7 @@ export function LettersTraceScene({ step }: Props) {
         chValue={s.chValue}
         countValue={s.countValue}
         highlight={s.highlight}
-        evalNote={s.evalNote ? t(s.evalNote, lang) : undefined}
+        evalNote={s.evalNote ? t(s.evalNote) : undefined}
       />
 
       <div className="relative flex-1 rounded-2xl overflow-hidden
@@ -47,7 +45,7 @@ export function LettersTraceScene({ step }: Props) {
           <div className="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-medium
                           bg-emerald-100 text-emerald-700
                           dark:bg-emerald-500/20 dark:text-emerald-200">
-            {t({ en: "Returned", sv: "Returnerade" }, lang)} {s.outcome}
+            {t("Returned")} {s.outcome}
           </div>
         )}
       </div>
@@ -69,7 +67,7 @@ type State = {
   chValue: string | null;
   countValue: number;
   highlight?: LineKey;
-  evalNote?: { en: string; sv: string };
+  evalNote?: string;
   outcome?: number;
 };
 
@@ -92,7 +90,7 @@ function stateAtStep(step: number): State {
         chValue: "A",
         countValue: 0,
         highlight: "for",
-        evalNote: { en: 'first letter → ch = "A"', sv: 'första bokstaven → ch = "A"' },
+        evalNote: 'first letter → ch = "A"',
       };
     case 3:
       return {
@@ -100,7 +98,7 @@ function stateAtStep(step: number): State {
         chValue: "A",
         countValue: 0,
         highlight: "if",
-        evalNote: { en: '"A" === "A"  →  true', sv: '"A" === "A"  →  true' },
+        evalNote: '"A" === "A"  →  true',
       };
     case 4:
       return {
@@ -108,7 +106,7 @@ function stateAtStep(step: number): State {
         chValue: "A",
         countValue: 1,
         highlight: "body",
-        evalNote: { en: "count = 0 + 1  →  1", sv: "count = 0 + 1  →  1" },
+        evalNote: "count = 0 + 1  →  1",
       };
     // Lap 2: ch = "B"
     case 5:
@@ -117,7 +115,7 @@ function stateAtStep(step: number): State {
         chValue: "B",
         countValue: 1,
         highlight: "for",
-        evalNote: { en: 'next letter → ch = "B"', sv: 'nästa bokstav → ch = "B"' },
+        evalNote: 'next letter → ch = "B"',
       };
     case 6:
       return {
@@ -125,7 +123,7 @@ function stateAtStep(step: number): State {
         chValue: "B",
         countValue: 1,
         highlight: "if",
-        evalNote: { en: '"B" === "A"  →  false  (skip body)', sv: '"B" === "A"  →  false  (hoppa över)' },
+        evalNote: '"B" === "A"  →  false  (skip body)',
       };
     // Lap 3: ch = "A"
     case 7:
@@ -134,7 +132,7 @@ function stateAtStep(step: number): State {
         chValue: "A",
         countValue: 1,
         highlight: "for",
-        evalNote: { en: 'next letter → ch = "A"', sv: 'nästa bokstav → ch = "A"' },
+        evalNote: 'next letter → ch = "A"',
       };
     case 8:
       return {
@@ -142,7 +140,7 @@ function stateAtStep(step: number): State {
         chValue: "A",
         countValue: 1,
         highlight: "if",
-        evalNote: { en: '"A" === "A"  →  true', sv: '"A" === "A"  →  true' },
+        evalNote: '"A" === "A"  →  true',
       };
     case 9:
       return {
@@ -150,7 +148,7 @@ function stateAtStep(step: number): State {
         chValue: "A",
         countValue: 2,
         highlight: "body",
-        evalNote: { en: "count = 1 + 1  →  2", sv: "count = 1 + 1  →  2" },
+        evalNote: "count = 1 + 1  →  2",
       };
     // No more letters → exit loop, return
     case 10:
@@ -159,7 +157,7 @@ function stateAtStep(step: number): State {
         chValue: "A",
         countValue: 2,
         highlight: "ret",
-        evalNote: { en: "no more letters — exit loop", sv: "inga fler bokstäver — lämna loopen" },
+        evalNote: "no more letters — exit loop",
       };
     case 11:
       return {

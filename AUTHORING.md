@@ -1,8 +1,8 @@
 # Lesson, Workshop & Exercise Authoring
 
 Rules for writing or editing content in `app/src/lessons/**/*.ts`. The
-top-level harness requirement lives in [CLAUDE.md](CLAUDE.md). New
-strings are English-only (see the "i18n status" section in CLAUDE.md).
+top-level harness requirement lives in [CLAUDE.md](CLAUDE.md). The
+project is English-only — author plain strings, never `{ en, sv }`.
 Everything else is here.
 
 ## Exercise tier (`kind: "exercise"`)
@@ -29,6 +29,53 @@ Authoring rule: **every step's `reveal` must pass that step's own
 runner itself (`app/src/runtime/workshopRunner.ts`), the runner-invariants
 smoke test at the end of `test-labs.ts` should also be updated to cover
 the new behavior.
+
+## Values pill — exact vs any (`anyValues?: boolean`)
+
+Every `JsWorkshopSlide` step and every `ExerciseSlide` renders a small
+pill that tells the student up-front whether the values shown in the
+spec are mandatory or just examples:
+
+- **EXACT VALUES — keep the numbers as shown** (amber, the default).
+  The checks pin specific numbers/strings/booleans from the spec. Don't
+  set `anyValues` — the default is exact.
+- **ANY VALUES — pick your own (same type)** (teal). The checks accept
+  any value of the matching datatype. Set `anyValues: true` on the step
+  or slide.
+
+Author the flag based on **what the checks actually accept**, not what
+the instruction text says. Per the workshop value-flexibility rule
+(below), instructions always propose one concrete value as if required.
+The pill is the student-facing signal of which mode the lab is in —
+it replaces the old `FlexibilityHelpButton` "?" affordance so students
+don't need to click anything to know.
+
+The two are mutually exclusive: a lab is *either* exact-values *or*
+any-values, never both. There is no third state. When in doubt, default
+to exact — pinned-value tests are stricter and surface authoring
+mistakes earlier.
+
+## Design notes (author-only)
+
+Both `JsWorkshopSlide` and `ExerciseSlide` accept an optional
+`designNote?: string` — the Exercism `design.md` equivalent. The field is
+**never rendered in the app**. It lives in source for the author's own
+reference and for tooling (e.g. the course-review HTML) that surfaces it.
+
+Write a design note when the slide's *intent* isn't obvious from the
+checks alone. Useful things to capture:
+
+- The lesson scope or angle the slide is meant to test ("L1 reassignment
+  with numeric values — bank deposit").
+- How this slide differs from its siblings (see the variety rule below).
+- Surface choice and why ("bank account, not the chips' score/pi or the
+  lab's custom names").
+- Trade-offs between what's pinned and what's flexible.
+
+A note is plain prose, authored on the slide itself. One short paragraph
+is enough; longer if a topic-level walkthrough/challenge needs more
+context. Author it inline on the slide rather than as a JSDoc block
+above the export — the field is the canonical home.
 
 ## Variety rule (workshops and labs)
 
@@ -69,18 +116,13 @@ reassignment) — not pin a specific value the student must type. Use
 `typeof` asserts and structural `requirePattern` regexes; let the
 student pick strings and numbers freely at the **check** level.
 
-**Names are different.** When the instruction proposes a variable name
-("Declare a `let` called `balance`..."), the check **pins** that name.
-The student is using Monaco with autocomplete — typing `balance`
+**Names are always pinned.** When the instruction proposes a variable
+name ("Declare a `let` called `balance`..."), the check **pins** that
+name. The student is using Monaco with autocomplete — typing `balance`
 exactly costs nothing, and the consistency between instruction and
 check keeps the lab debuggable. Name-flexibility was the freeCodeCamp
-spelling-pain remedy; we don't have that pain. So we don't advertise
-name flexibility and don't set `names: true` on workshops/labs.
-
-The `FlexibilityFlags.names` field is kept in the type for hypothetical
-future use (e.g. an advanced lab where "pick any function name" is part
-of the exercise), but in the JS basics curriculum it should stay
-unset.
+spelling-pain remedy; we don't have that pain. There is no flag for
+name-flexibility — names are not configurable.
 
 **Instruction style: write a direct directive, never a hedge.**
 Even when the check accepts any value, the instruction text should
@@ -89,18 +131,19 @@ propose one concrete value as if it were required:
 - Good: *"Declare a `let` called `city` and set it to `\"Stockholm\"`."*
 - Bad:  *"Declare a `let` called `city` — set it to any string (e.g. `\"Stockholm\"`, but anything works)."*
 
-The hedge belongs in the "?" help popover, not the instruction. Two
-groups of students get served by this split: those who want a
-preassigned value follow the instruction directly; those who want their
-own open the popover and substitute. The popover is auto-rendered from
-the per-step `flexibility` flag — see the next subsection.
+The hedge belongs in the **ANY VALUES** pill, not the instruction. The
+pill is always visible above each step / slide, so the student sees
+which mode the lab is in without clicking anything. Two groups of
+students get served by this split: those who want a preassigned value
+follow the instruction directly; those who want their own read the
+pill and substitute.
 
 If a step *does* require a specific value because the value itself is
 the teaching point (e.g., `100 - 25 === 75` to teach subtraction,
 `8 % 2 === 0` to teach modulo, `Number.isNaN(0 / 0)` to teach NaN), the
-instruction is the same direct style — but the check pins the value AND
-the step has no `flexibility` flag. The popover stays hidden so students
-aren't told they have freedom they don't have.
+instruction is the same direct style — and the check pins the value AND
+the step is left as default (`anyValues` unset). The student sees the
+**EXACT VALUES** pill and knows the numbers matter.
 
 The forbidden combination is **vague instruction + value-pinning check**.
 Don't write "use any number" then assert `=== 75`.
@@ -126,35 +169,8 @@ that code to `hint` and rephrase the instruction to describe the
 *intent* instead.
 
 Naming a value (`balance = 1000`) inline is still fine when the value is
-arbitrary — students with `flexibility.values` can substitute. But a
-formula or an exact line of code never belongs in the instruction.
-
-### Per-step / per-exercise flexibility flag
-
-Each `WorkshopStep` and each `ExerciseSlide` accepts an optional
-`flexibility?: { values?: boolean; names?: boolean }` (`FlexibilityFlags`
-in [types.ts](app/src/types.ts)). It drives the "?" help button in the
-slide chrome — the button is hidden unless the flag is set, and its
-popover copy is auto-selected from one of three variants based on the
-combination.
-
-- `values: true` — any value of the same datatype works (the checks
-  validate type/shape, not a specific value).
-- `names: true` — any variable name works. **Currently unused in the
-  JS basics curriculum** (see the rule above): autocomplete means the
-  spelling pain is gone, so we keep names consistent with the
-  instruction.
-
-Set the flag based on what the checks **actually accept**, not what the
-instruction text says. If a check pins the value or name, leave that
-dimension off. If neither is flexible (e.g. L3 modulo / arithmetic where
-the value IS the teaching point), **omit the field entirely** — the
-button stays hidden and students aren't told they have freedom they
-don't have.
-
-Don't author per-step popover copy. The three variants ("both", "values
-only", "names only") in [`i18n/strings.ts`](app/src/i18n/strings.ts)
-cover every combination.
+arbitrary — students seeing the **ANY VALUES** pill can substitute. But
+a formula or an exact line of code never belongs in the instruction.
 
 ### Soft-introducing not-yet-taught concepts
 
@@ -226,8 +242,8 @@ cumulative `reveal` chain). What changes is the audience and length:
 - **Feedback**: console output via `console.log`. No UI, no DOM, no
   iframe — walkthroughs run through the same in-page workshop runner
   as lesson workshops.
-- **Title**: prefix with `"Walkthrough: "` / `"Genomgång: "` so
-  `LessonTierMenu`'s prefix-strip stays consistent.
+- **Title**: prefix with `"Walkthrough: "` so `LessonTierMenu`'s
+  prefix-strip stays consistent.
 
 ### Challenge — long-form exercise (`Topic.challenges[]`)
 
@@ -240,7 +256,7 @@ freeform shape as lesson-level Labs. What changes:
 - **Scenario**: integrating, applied. Real enough to feel like a build
   but small enough to fit in one editor (50–80 lines of student code is
   typical).
-- **Title**: prefix with `"Challenge: "` / `"Utmaning: "`.
+- **Title**: prefix with `"Challenge: "`.
 - **Harness**: requires a known-good entry in
   `app/scripts/test-labs.ts`'s `SOLUTIONS` array, same as lesson Labs.
   The `lessonId` for challenges follows a `topic-id` + `-` +
@@ -259,10 +275,9 @@ Challenges follow the same SOLUTIONS pattern as lesson Labs.
 
 ## Tier prefix in slide titles
 
-Workshop slide titles are authored with a leading `"Workshop: "` /
-`"Verkstad: "` prefix; exercise titles use `"Lab: "` / `"Labb: "`.
-Topic-level long-form versions use `"Walkthrough: "` / `"Genomgång: "`
-and `"Challenge: "` / `"Utmaning: "` respectively. The tier menu strips
+Workshop slide titles are authored with a leading `"Workshop: "` prefix;
+exercise titles use `"Lab: "`. Topic-level long-form versions use
+`"Walkthrough: "` and `"Challenge: "` respectively. The tier menu strips
 these prefixes when rendering rows (`stripTierPrefix` in
 [LessonTierMenu.tsx](app/src/components/LessonTierMenu.tsx)) so the card
 header isn't doubly redundant. **Keep the prefix on the slide title** —

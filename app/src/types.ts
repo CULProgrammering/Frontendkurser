@@ -351,22 +351,6 @@ export type WorkshopCheck = {
   assert?: string;
 };
 
-/**
- * Per-step / per-exercise hint about which dimensions of the student's code
- * are flexible. Drives the "?" button in the workshop / exercise chrome:
- * when set, the button surfaces tailored copy explaining what the student
- * can swap for their own taste. When absent, the button is hidden — leave it
- * undefined for steps where the value AND the name are pinned by the lesson.
- *
- * Author both flags independently:
- *   - `values: true`  → any value of the same datatype works.
- *   - `names: true`   → any variable name works (no specific name pinned).
- */
-export type FlexibilityFlags = {
-  values?: boolean;
-  names?: boolean;
-};
-
 export type WorkshopStep = {
   /** Stable id for keying React state and progress tracking. */
   id: string;
@@ -378,8 +362,15 @@ export type WorkshopStep = {
   checks: WorkshopCheck[];
   /** Canonical solution after this step. Should equal next step's starterCode. */
   reveal?: Loc;
-  /** Optional per-step flexibility hint. See `FlexibilityFlags`. */
-  flexibility?: FlexibilityFlags;
+  /**
+   * When true, this step's checks accept any value of the matching datatype
+   * (the student can substitute their own number/string/boolean). When unset
+   * (the default), the value is pinned by the check and the student must
+   * follow the instruction's example. Drives the title-row pill:
+   *   `ANY VALUES — pick your own (same type)` when true,
+   *   `EXACT VALUES — keep the numbers as shown` when unset.
+   */
+  anyValues?: boolean;
   /**
    * Optional progressive hint, shown only when the student clicks the "Hint"
    * button in the title row. Lets the instruction stay directional ("Increase
@@ -433,8 +424,18 @@ export type ExerciseSlide = {
   starterCss?: Loc;
   starterJs?: Loc;
   tests: ExerciseTest[];
-  /** Optional flexibility hint for the help button in the title row. */
-  flexibility?: FlexibilityFlags;
+  /**
+   * When true, the lab's tests accept any value of the matching datatype —
+   * the student can substitute their own numbers/strings. When unset (the
+   * default), the values listed in the user stories are part of the spec
+   * (e.g. "10 % 3", "20% discount on 250 kr") and the tests pin them.
+   * Drives the title-row pill:
+   *   `ANY VALUES — pick your own (same type)` when true,
+   *   `EXACT VALUES — keep the numbers as shown` when unset.
+   */
+  anyValues?: boolean;
+  /** Author-only design note (Exercism design.md equivalent). Not rendered. */
+  designNote?: string;
 };
 
 export type Slide =

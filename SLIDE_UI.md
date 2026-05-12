@@ -17,9 +17,14 @@ pattern so navigation looks consistent across tiers.
   pushing controls onto a second row, then `<SlideFontSizeControl />`,
   then (explanation only) `<TypewriterToggleInline />`, then
   `<ThemeToggleInline />`, then (workshop only, when `step.hint` is
-  set) the **Hint** button, then (workshop and exercise only)
-  `{step.flexibility && <FlexibilityHelpButton flex={step.flexibility} />}`
-  — in that order, on the same flex row.
+  set) the **Hint** button — in that order, on the same flex row.
+- **Values pill** (workshop + exercise only): rendered immediately
+  below the title row via `<ValuesPill anyValues={...} />`. On
+  workshops it lives next to the per-step counter ("Step 2 / 4 ·
+  ANY VALUES"); on exercises it sits between the title row and the
+  prompt. Always visible — the pill is the student-facing signal of
+  whether the values shown are mandatory or examples. Replaces the
+  prior `FlexibilityHelpButton` "?" affordance.
 - **Click propagation**: `SlideTitleRow` stops click propagation so
   controls inside it (font size, theme, typewriter, breadcrumb,
   flexibility help) never bubble up to a slide-level click handler.
@@ -64,9 +69,10 @@ pattern so navigation looks consistent across tiers.
   process-wide pub/sub (every consumer re-renders when any one toggles)
   backed by localStorage `cul:typewriter`; default honours
   `prefers-reduced-motion`.
-- [`FlexibilityHelpButton`](app/src/components/FlexibilityHelpButton.tsx)
-  — workshop and exercise views only; gated by `step.flexibility` /
-  `slide.flexibility`.
+- [`ValuesPill`](app/src/components/ValuesPill.tsx) — workshop step
+  + exercise pill; renders **EXACT VALUES** by default and **ANY
+  VALUES** when `anyValues: true` is set on the step / slide.
+  Replaced the prior `FlexibilityHelpButton`.
 - **Hint button** — inline button in the workshop title row, gated by
   `step.hint` (workshops only). Toggles a soft amber band underneath
   the instruction that prints the literal answer / formula. Local to

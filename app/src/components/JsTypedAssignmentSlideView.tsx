@@ -8,9 +8,7 @@ import { MultiGateScene } from "./allegories/MultiGateScene";
 import { CrosswalkAllegory } from "./allegories/CrosswalkAllegory";
 import { LoopResultScene } from "./allegories/LoopResultScene";
 import type { SceneRun } from "./allegories/types";
-import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
-import type { Lang } from "../i18n";
 import { ui } from "../i18n/strings";
 import { sessionGet, sessionSet } from "../storage";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
@@ -34,9 +32,8 @@ type TestRun = { test: JsTest; result: RunResult; pass: boolean };
  * the assembled code through the standard test runner.
  */
 export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDots, onPass }: Props) {
-  const { lang } = useLang();
   const { codePx, prosePx } = useSlideFontSize();
-  const template = t(slide.template, lang);
+  const template = t(slide.template);
 
   // Parse the template into segments and slot ids.
   // /\[\[input:(\w+)\]\]/g splits and captures slot ids.
@@ -134,7 +131,7 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
       <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
                       text-amber-600 border-stone-200
                       dark:text-stone-400 dark:border-white/[0.08]">
-        {t(ui.jsLabel, lang)}
+        {t(ui.jsLabel)}
       </div>
       {slide.varNames.length > 0 && (
         <div
@@ -178,7 +175,7 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
                      bg-amber-500 hover:bg-amber-600 active:bg-amber-700
                      dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:active:bg-indigo-600"
         >
-          {t(ui.check, lang)}
+          {t(ui.check)}
         </button>
         <button
           onClick={reset}
@@ -186,7 +183,7 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
                      bg-stone-100 hover:bg-stone-200 active:bg-stone-300 text-stone-700
                      dark:bg-[#2c303a] dark:hover:bg-[#252934] dark:active:bg-[#1b1e26] dark:text-white"
         >
-          {t(ui.reset, lang)}
+          {t(ui.reset)}
         </button>
         {hasLegend && (
           <button
@@ -195,7 +192,7 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
                        bg-amber-100 hover:bg-amber-200 active:bg-amber-300 text-amber-800 ring-amber-300
                        dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:active:bg-amber-500/40 dark:text-amber-200 dark:ring-amber-400/30"
           >
-            {t(showLegend ? ui.hideHelp : ui.showHelp, lang)}
+            {t(showLegend ? ui.hideHelp : ui.showHelp)}
           </button>
         )}
       </div>
@@ -211,7 +208,6 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
           allegory={slide.allegory}
           run={focusedRun}
           replayKey={replayKey}
-          lang={lang}
         />
       </div>
 
@@ -221,7 +217,7 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
                         font-medium text-emerald-700 dark:text-emerald-300"
           style={{ fontSize: `${prosePx}px` }}
         >
-          {t({ en: "✓ Done", sv: "✓ Klart" }, lang)}
+          {t("✓ Done")}
         </div>
       )}
       {runs && !allPass && runtimeError && (
@@ -232,13 +228,7 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
           style={{ fontSize: `${prosePx}px` }}
         >
           <div className="font-medium mb-1">
-            {t(
-              {
-                en: "The code couldn't run — check for typos:",
-                sv: "Koden kunde inte köras — kolla efter typo:",
-              },
-              lang
-            )}
+            {t("The code couldn't run — check for typos:")}
           </div>
           <div className="font-mono text-xs">{runtimeError}</div>
         </div>
@@ -249,7 +239,7 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
                         text-stone-600 dark:text-stone-400"
           style={{ fontSize: `${prosePx}px` }}
         >
-          {t(slide.goalHint, lang)}
+          {t(slide.goalHint)}
         </div>
       )}
     </div>
@@ -260,14 +250,14 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
       <div className="px-4 sm:px-10 pt-4 sm:pt-8">
         <SlideTitleRow breadcrumb={breadcrumb}>
           <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-stone-100">
-            {t(slide.title, lang)}
+            {t(slide.title)}
           </h2>
           <SlideFontSizeControl />
           <ThemeToggleInline />
         </SlideTitleRow>
         <div className="flex items-end justify-between gap-4 mt-2">
           <p className="text-stone-600 dark:text-stone-400 whitespace-pre-line flex-1 min-w-0">
-            {t(slide.prompt, lang)}
+            {t(slide.prompt)}
           </p>
           {slideJumpDots}
         </div>
@@ -276,8 +266,8 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
       {scenePanel ? (
         <TwoColumnLayout
           className="flex-1 px-4 sm:px-10 py-3 sm:py-6"
-          leftLabel={t(ui.tabCode, lang)}
-          rightLabel={t(ui.tabVisual, lang)}
+          leftLabel={t(ui.tabCode)}
+          rightLabel={t(ui.tabVisual)}
           left={codePanel}
           right={scenePanel}
         />
@@ -294,14 +284,14 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
             <div className="rounded-xl px-4 py-3 font-medium
                             bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200
                             dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-400/30">
-              {t({ en: "✓ Done — all tests pass.", sv: "✓ Klart — alla testfall stämmer." }, lang)}
+              {t("✓ Done — all tests pass.")}
             </div>
           ) : runtimeError ? (
             <div className="rounded-xl px-4 py-3
                             bg-rose-50 text-rose-800 ring-1 ring-rose-200
                             dark:bg-rose-500/10 dark:text-rose-200 dark:ring-rose-400/30">
               <div className="font-medium mb-1">
-                {t({ en: "The code couldn't run — check for typos:", sv: "Koden kunde inte köras — kolla efter typo:" }, lang)}
+                {t("The code couldn't run — check for typos:")}
               </div>
               <div className="font-mono text-xs">{runtimeError}</div>
             </div>
@@ -309,7 +299,7 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
             <div className="rounded-xl px-4 py-3
                             bg-stone-50 text-stone-700 ring-1 ring-stone-200
                             dark:bg-[#1f232c] dark:text-indigo-200 dark:border-white/[0.08]">
-              {t(slide.goalHint, lang)}
+              {t(slide.goalHint)}
             </div>
           ) : null}
         </div>
@@ -321,7 +311,7 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
                         dark:bg-amber-500/10 dark:ring-amber-400/30">
           <div className="text-xs uppercase tracking-wider mb-2
                           text-amber-700 dark:text-amber-200">
-            {t(ui.legendLabel, lang)}
+            {t(ui.legendLabel)}
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {slide.legend!.map((e, i) => (
@@ -332,7 +322,7 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
                            dark:bg-[#1f232c] dark:border-white/[0.08]"
               >
                 <div className="font-semibold text-amber-800 dark:text-amber-100">
-                  {t(e.name, lang)}
+                  {t(e.name)}
                 </div>
                 <div className="font-mono text-xs text-stone-600 dark:text-stone-400">
                   {e.syntax}
@@ -342,7 +332,7 @@ export function JsTypedAssignmentSlideView({ slide, storageKey, breadcrumb, slid
                 </div>
                 {e.note && (
                   <div className="text-xs mt-1 text-stone-500 dark:text-stone-400">
-                    {t(e.note, lang)}
+                    {t(e.note)}
                   </div>
                 )}
               </div>
@@ -427,27 +417,25 @@ function SceneMount({
   allegory,
   run,
   replayKey,
-  lang,
 }: {
   allegory: Allegory;
   run: SceneRun | null;
   replayKey: number;
-  lang: Lang;
 }) {
   // Typed-assignment slides ask the student to type the condition itself —
   // showing the conditionLabel above the scene would spoil the answer.
   switch (allegory.kind) {
     case "door":
-      return <DoorScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} hideConditionLabel />;
+      return <DoorScene config={allegory.config} run={run} replayKey={replayKey} hideConditionLabel />;
     case "fork":
-      return <ForkScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} hideConditionLabel />;
+      return <ForkScene config={allegory.config} run={run} replayKey={replayKey} hideConditionLabel />;
     case "conveyor":
-      return <ConveyorScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
+      return <ConveyorScene config={allegory.config} run={run} replayKey={replayKey} />;
     case "multi-gate":
-      return <MultiGateScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
+      return <MultiGateScene config={allegory.config} run={run} replayKey={replayKey} />;
     case "crosswalk":
-      return <CrosswalkAllegory config={allegory.config} run={run} replayKey={replayKey} lang={lang} hideConditionLabel />;
+      return <CrosswalkAllegory config={allegory.config} run={run} replayKey={replayKey} hideConditionLabel />;
     case "loop-result":
-      return <LoopResultScene config={allegory.config} run={run} replayKey={replayKey} lang={lang} />;
+      return <LoopResultScene config={allegory.config} run={run} replayKey={replayKey} />;
   }
 }

@@ -21,31 +21,22 @@ export const javascriptCourse: Course = {
   topics: [
     {
       id: "variables",
-      title: { en: "Variables", sv: "Variabler" },
-      summary: {
-        en: "Names for values, types, operators, and special values.",
-        sv: "Namn för värden, typer, operatorer och specialvärden.",
-      },
+      title: "Variables",
+      summary: "Names for values, types, operators, and special values.",
       lessons: [letConstLesson, typesLesson, operatorsLesson, specialValuesLesson],
       walkthroughs: [variablesWalkthrough],
       challenges: [variablesChallenge],
     },
     {
       id: "conditionals",
-      title: { en: "Conditionals", sv: "Villkor" },
-      summary: {
-        en: "if, else, switch, and combining checks.",
-        sv: "if, else, switch, och att kombinera kontroller.",
-      },
+      title: "Conditionals",
+      summary: "if, else, switch, and combining checks.",
       lessons: [doorLesson, forkLesson, conveyorLesson, multiGateLesson],
     },
     {
       id: "loops",
-      title: { en: "Loops", sv: "Loopar" },
-      summary: {
-        en: "for, for…of, while, do…while.",
-        sv: "for, for…of, while, do…while.",
-      },
+      title: "Loops",
+      summary: "for, for…of, while, do…while.",
       lessons: [stairsLesson, lettersLesson, countdownLesson, tastingLesson],
     },
   ],

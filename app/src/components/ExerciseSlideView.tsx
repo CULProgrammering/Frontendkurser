@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ExerciseSlide } from "../types";
-import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
 import { sessionGet, sessionSet } from "../storage";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
 import { ThemeToggleInline } from "./ThemeToggle";
-import { FlexibilityHelpButton } from "./FlexibilityHelpButton";
+import { ValuesPill } from "./ValuesPill";
 import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
 import { CodeEditor } from "./CodeEditor";
 import { TwoColumnLayout } from "./TwoColumnLayout";
@@ -185,12 +184,11 @@ ${html}
 }
 
 export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots, onPass }: Props) {
-  const { lang } = useLang();
   const { codePx, prosePx } = useSlideFontSize();
 
-  const startHtml = slide.starterHtml ? t(slide.starterHtml, lang) : "";
-  const startCss = slide.starterCss ? t(slide.starterCss, lang) : "";
-  const startJs = slide.starterJs ? t(slide.starterJs, lang) : "";
+  const startHtml = slide.starterHtml ? t(slide.starterHtml) : "";
+  const startCss = slide.starterCss ? t(slide.starterCss) : "";
+  const startJs = slide.starterJs ? t(slide.starterJs) : "";
 
   const [html, setHtml] = useState<string>(
     () => sessionGet(`${storageKey}:html`) ?? startHtml
@@ -309,10 +307,10 @@ export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots
 
   const tabLabel = (k: Tab) =>
     k === "html"
-      ? t(ui.htmlLabel, lang)
+      ? t(ui.htmlLabel)
       : k === "css"
-      ? t(ui.cssLabel, lang)
-      : t(ui.jsLabel, lang);
+      ? t(ui.cssLabel)
+      : t(ui.jsLabel);
 
   const hasVisualPreview =
     slide.starterHtml !== undefined || slide.starterCss !== undefined;
@@ -351,13 +349,13 @@ export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots
           onClick={run}
           className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
         >
-          {t(ui.exerciseRun, lang)}
+          {t(ui.exerciseRun)}
         </button>
         <button
           onClick={reset}
           className={`${tokens.button.secondary} min-h-[44px] sm:min-h-0`}
         >
-          {t(ui.reset, lang)}
+          {t(ui.reset)}
         </button>
       </div>
     </div>
@@ -373,18 +371,18 @@ export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots
             {/* flex-1 min-w-0 lets the h2 shrink instead of pushing the
                 control buttons (font / theme / help) onto a new row. */}
             <h2 className={`${tokens.text.h2} flex-1 min-w-0`}>
-              {t(slide.title, lang)}
+              {t(slide.title)}
             </h2>
             <SlideFontSizeControl />
             <ThemeToggleInline />
-            {slide.flexibility && <FlexibilityHelpButton flex={slide.flexibility} />}
           </SlideTitleRow>
+          <ValuesPill anyValues={!!slide.anyValues} className="mt-2" />
           <div className="flex items-end justify-between gap-4 mt-2">
             <p
               className="text-stone-600 dark:text-stone-300 whitespace-pre-line flex-1 min-w-0 max-w-[68ch]"
               style={{ fontSize: `${prosePx}px` }}
             >
-              {t(slide.prompt, lang)}
+              {t(slide.prompt)}
             </p>
             {slideJumpDots}
           </div>
@@ -396,7 +394,7 @@ export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots
             <div
               className={`${tokens.text.eyebrow} px-4 py-2 border-b border-stone-900/[0.05] dark:border-white/[0.05]`}
             >
-              {t(ui.preview, lang)}
+              {t(ui.preview)}
             </div>
             <iframe
               ref={iframeRef}
@@ -425,7 +423,7 @@ export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots
         <div
           className={`${tokens.text.eyebrow} px-4 py-2 border-b border-stone-900/[0.05] dark:border-white/[0.05]`}
         >
-          {t(ui.consoleLabel, lang)}
+          {t(ui.consoleLabel)}
         </div>
         <div
           className="font-mono overflow-auto bg-stone-900 dark:bg-[#0f1117] text-stone-100 min-h-[3rem] max-h-60"
@@ -433,7 +431,7 @@ export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots
         >
           {consoleEntries.length === 0 ? (
             <div className="p-3 text-stone-500 italic">
-              {t(ui.consoleEmpty, lang)}
+              {t(ui.consoleEmpty)}
             </div>
           ) : (
             consoleEntries.map((c, i) => (
@@ -459,7 +457,7 @@ export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots
         <div
           className={`${tokens.text.eyebrow} px-4 py-2 border-y border-stone-900/[0.05] dark:border-white/[0.05]`}
         >
-          {t(ui.exerciseTests, lang)}
+          {t(ui.exerciseTests)}
         </div>
         <div
           className="p-3 space-y-1"
@@ -467,11 +465,11 @@ export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots
         >
           {results === null ? (
             <div className="text-stone-500 dark:text-stone-400 italic">
-              {t(ui.exerciseRunHint, lang)}
+              {t(ui.exerciseRunHint)}
             </div>
           ) : allPass ? (
             <div className={`${tokens.feedback.success} font-medium`}>
-              {t(ui.exerciseAllPass, lang)}
+              {t(ui.exerciseAllPass)}
             </div>
           ) : (
             <>
@@ -487,11 +485,11 @@ export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots
                         : "text-[#C97A1F] dark:text-[#F0B274]"
                     }
                   >
-                    {passed ? "✓" : "•"} {t(tt.label, lang)}
+                    {passed ? "✓" : "•"} {t(tt.label)}
                     {!passed && tt.hint && (
                       <span className="text-stone-500 dark:text-stone-400">
                         {" "}
-                        — {t(tt.hint, lang)}
+                        — {t(tt.hint)}
                       </span>
                     )}
                     {!passed && r?.error && (
@@ -508,7 +506,7 @@ export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots
               })}
               <div className="text-stone-500 dark:text-stone-400 pt-1 tabular-nums text-xs">
                 {results.filter((r) => r.pass).length} / {slide.tests.length}{" "}
-                {t(ui.exercisePassedCount, lang)}
+                {t(ui.exercisePassedCount)}
               </div>
             </>
           )}
@@ -519,8 +517,8 @@ export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots
   return (
     <TwoColumnLayout
       className="h-full w-full max-w-[min(1700px,92vw)] mx-auto p-4 sm:p-5"
-      leftLabel={t(ui.tabCode, lang)}
-      rightLabel={t(ui.tabResult, lang)}
+      leftLabel={t(ui.tabCode)}
+      rightLabel={t(ui.tabResult)}
       desktopGap="gap-4"
       left={editorPanel}
       right={instructionsPanel}

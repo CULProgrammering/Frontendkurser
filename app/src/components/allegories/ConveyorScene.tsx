@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import type { ConveyorConfig } from "../../types";
 import type { SceneRun } from "./types";
-import { t, type Lang } from "../../i18n";
+import { t } from "../../i18n";
 
 type Props = {
   config: ConveyorConfig;
   run: SceneRun | null;
   replayKey: number;
-  lang: Lang;
 };
 
 type Phase = "idle" | "rolling" | "settled";
 
-export function ConveyorScene({ config, run, replayKey, lang }: Props) {
+export function ConveyorScene({ config, run, replayKey}: Props) {
   const [phase, setPhase] = useState<Phase>("idle");
 
   useEffect(() => {
@@ -43,7 +42,7 @@ export function ConveyorScene({ config, run, replayKey, lang }: Props) {
       <div className="rounded-lg px-3 py-2 mb-4 font-mono text-sm
                       bg-stone-100 text-stone-700
                       dark:bg-slate-800/60 dark:text-indigo-100">
-        {t(config.inputLabel, lang)}
+        {t(config.inputLabel)}
       </div>
 
       <div className="relative flex-1 rounded-2xl overflow-hidden
@@ -78,7 +77,7 @@ export function ConveyorScene({ config, run, replayKey, lang }: Props) {
                     : "border-stone-300 dark:border-white/10 text-stone-500 dark:text-indigo-200/60")
                 }
               >
-                {t(b.label, lang)}
+                {t(b.label)}
               </div>
             );
           })}

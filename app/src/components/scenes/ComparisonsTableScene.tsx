@@ -1,4 +1,3 @@
-import { useLang } from "../../i18n/LanguageContext";
 import { t } from "../../i18n";
 import type { LocalizedString } from "../../i18n";
 
@@ -15,50 +14,49 @@ type Row = {
 const rows: Row[] = [
   {
     op: ">",
-    reads: { en: "greater than", sv: "större än" },
+    reads: "greater than",
     example: "7 > 5",
-    question: { en: "Is 7 greater than 5?", sv: "Är 7 större än 5?" },
+    question: "Is 7 greater than 5?",
     answer: true,
   },
   {
     op: "<",
-    reads: { en: "less than", sv: "mindre än" },
+    reads: "less than",
     example: "2 < 8",
-    question: { en: "Is 2 less than 8?", sv: "Är 2 mindre än 8?" },
+    question: "Is 2 less than 8?",
     answer: true,
   },
   {
     op: ">=",
-    reads: { en: "greater than or equal", sv: "större än eller lika med" },
+    reads: "greater than or equal",
     example: "4 >= 4",
-    question: { en: "Is 4 greater than or equal to 4?", sv: "Är 4 större än eller lika med 4?" },
+    question: "Is 4 greater than or equal to 4?",
     answer: true,
   },
   {
     op: "<=",
-    reads: { en: "less than or equal", sv: "mindre än eller lika med" },
+    reads: "less than or equal",
     example: "9 <= 3",
-    question: { en: "Is 9 less than or equal to 3?", sv: "Är 9 mindre än eller lika med 3?" },
+    question: "Is 9 less than or equal to 3?",
     answer: false,
   },
   {
     op: "===",
-    reads: { en: "equal (strict)", sv: "lika med (strikt)" },
+    reads: "equal (strict)",
     example: '"yes" === "yes"',
-    question: { en: 'Is "yes" the same as "yes"?', sv: 'Är "yes" samma som "yes"?' },
+    question: 'Is "yes" the same as "yes"?',
     answer: true,
   },
   {
     op: "!==",
-    reads: { en: "not equal", sv: "ej lika med" },
+    reads: "not equal",
     example: '"no" !== "yes"',
-    question: { en: 'Is "no" different from "yes"?', sv: 'Är "no" skilt från "yes"?' },
+    question: 'Is "no" different from "yes"?',
     answer: true,
   },
 ];
 
 export function ComparisonsTableScene({ step: _step }: Props) {
-  const { lang } = useLang();
 
   return (
     <div className="w-full h-full overflow-auto p-2">
@@ -70,11 +68,11 @@ export function ComparisonsTableScene({ step: _step }: Props) {
             <tr className="text-left text-xs uppercase tracking-wider
                            bg-stone-100 text-stone-600
                            dark:bg-slate-800/60 dark:text-indigo-200/70">
-              <Th>{t({ en: "Operator", sv: "Operator" }, lang)}</Th>
-              <Th>{t({ en: "Reads as", sv: "Läses som" }, lang)}</Th>
-              <Th>{t({ en: "Example", sv: "Exempel" }, lang)}</Th>
-              <Th>{t({ en: "In words", sv: "Med ord" }, lang)}</Th>
-              <Th>{t({ en: "Answer", sv: "Svar" }, lang)}</Th>
+              <Th>{t("Operator")}</Th>
+              <Th>{t("Reads as")}</Th>
+              <Th>{t("Example")}</Th>
+              <Th>{t("In words")}</Th>
+              <Th>{t("Answer")}</Th>
             </tr>
           </thead>
           <tbody>
@@ -93,9 +91,9 @@ export function ComparisonsTableScene({ step: _step }: Props) {
                     {row.op}
                   </span>
                 </Td>
-                <Td>{t(row.reads, lang)}</Td>
+                <Td>{t(row.reads)}</Td>
                 <Td mono>{row.example}</Td>
-                <Td>{t(row.question, lang)}</Td>
+                <Td>{t(row.question)}</Td>
                 <Td>
                   <span
                     className={

@@ -1,5 +1,4 @@
 import { StickFigure } from "./StickFigure";
-import { useLang } from "../../i18n/LanguageContext";
 import { t } from "../../i18n";
 import { useSlideFontSize } from "../SlideFontSize";
 
@@ -16,7 +15,6 @@ type Props = { step: number; mode: Mode };
  *   both cases return something and the figure either walks or waits.
  */
 export function CrosswalkTraceScene({ step, mode }: Props) {
-  const { lang } = useLang();
   const s = stateAtStep(step, mode);
 
   const figureX = s.figurePhase === "walks" ? 320 : 60;
@@ -27,7 +25,7 @@ export function CrosswalkTraceScene({ step, mode }: Props) {
         mode={mode}
         lightValue={s.lightValue}
         highlight={s.highlight}
-        evalNote={s.evalNote ? t(s.evalNote, lang) : undefined}
+        evalNote={s.evalNote ? t(s.evalNote) : undefined}
         op={s.op}
       />
 
@@ -98,10 +96,10 @@ export function CrosswalkTraceScene({ step, mode }: Props) {
             }
           >
             {s.outcome === "walk"
-              ? t({ en: "Walks", sv: "Går" }, lang)
+              ? t("Walks")
               : s.outcome === "wait"
-              ? t({ en: "Waits", sv: "Väntar" }, lang)
-              : t({ en: "Function ends — nothing happens", sv: "Funktionen tar slut — inget händer" }, lang)}
+              ? t("Waits")
+              : t("Function ends — nothing happens")}
           </div>
         )}
       </div>
@@ -119,7 +117,7 @@ type State = {
   /** Optional lamp colour override; defaults to deriving from lightValue. */
   lampColor?: "red" | "green" | "off";
   highlight?: LineKey;
-  evalNote?: { en: string; sv: string };
+  evalNote?: string;
   figurePhase: "idle" | "looking" | "walks";
   outcome?: "walk" | "wait" | "nothing";
   /** Operator rendered between `light` and "green" in the if line. Defaults to "===". */
@@ -151,7 +149,7 @@ function ifOnlyAt(step: number): State {
         lightValue: "red",
         highlight: "if",
         figurePhase: "looking",
-        evalNote: { en: '"red" === "green"  →  false', sv: '"red" === "green"  →  false' },
+        evalNote: '"red" === "green"  →  false',
       };
     case 4:
       return {
@@ -168,7 +166,7 @@ function ifOnlyAt(step: number): State {
         lightValue: "green",
         highlight: "if",
         figurePhase: "looking",
-        evalNote: { en: '"green" === "green"  →  true', sv: '"green" === "green"  →  true' },
+        evalNote: '"green" === "green"  →  true',
       };
     case 8:
       return {
@@ -206,10 +204,7 @@ function strictEqAt(step: number): State {
         highlight: "if",
         figurePhase: "looking",
         op: "=",
-        evalNote: {
-          en: '= ASSIGNS — light is now "green"; expression is "green" (truthy)',
-          sv: '= TILLDELAR — light är nu "green"; uttrycket är "green" (truthy)',
-        },
+        evalNote: '= ASSIGNS — light is now "green"; expression is "green" (truthy)',
       };
     case 3:
       // Body runs because the expression was truthy.
@@ -237,7 +232,7 @@ function strictEqAt(step: number): State {
         highlight: "if",
         figurePhase: "looking",
         op: "===",
-        evalNote: { en: '"GREEN" === "green"  →  false', sv: '"GREEN" === "green"  →  false' },
+        evalNote: '"GREEN" === "green"  →  false',
       };
     case 6:
       return {
@@ -263,7 +258,7 @@ function strictEqAt(step: number): State {
         highlight: "if",
         figurePhase: "looking",
         op: "===",
-        evalNote: { en: '"green" === "green"  →  true', sv: '"green" === "green"  →  true' },
+        evalNote: '"green" === "green"  →  true',
       };
     case 9:
       return {
@@ -298,7 +293,7 @@ function ifElseAt(step: number): State {
         lightValue: "red",
         highlight: "if",
         figurePhase: "looking",
-        evalNote: { en: '"red" === "green"  →  false', sv: '"red" === "green"  →  false' },
+        evalNote: '"red" === "green"  →  false',
       };
     case 4:
       return { lightValue: "red", highlight: "else", figurePhase: "looking" };
@@ -318,7 +313,7 @@ function ifElseAt(step: number): State {
         lightValue: "green",
         highlight: "if",
         figurePhase: "looking",
-        evalNote: { en: '"green" === "green"  →  true', sv: '"green" === "green"  →  true' },
+        evalNote: '"green" === "green"  →  true',
       };
     case 9:
       return {

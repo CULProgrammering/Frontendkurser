@@ -1,8 +1,7 @@
 import type { ExerciseSlide, JsWorkshopSlide, Lesson } from "../types";
 import { TIER_ORDER, slidesForTier, type Tier } from "../tiers";
 import { isTierComplete } from "../progress";
-import { useLang } from "../i18n/LanguageContext";
-import { t, type Lang } from "../i18n";
+import { t } from "../i18n";
 import { ui } from "../i18n/strings";
 import { Breadcrumb, type BreadcrumbSegment } from "./SlideDeck";
 import { tokens } from "../styles/tokens";
@@ -55,27 +54,26 @@ function stripTierPrefix(title: string): string {
  * authored with up to 4 distinct workshops; we render their titles so the
  * student can see the four scenarios up-front.
  */
-function workshopRows(lesson: Lesson, lang: Lang): { key: string; preview: string }[] {
+function workshopRows(lesson: Lesson): { key: string; preview: string }[] {
   const slides = slidesForTier(lesson, "workshop") as JsWorkshopSlide[];
   return slides.map((slide, i) => ({
     key: `w-${i}`,
-    preview: stripTierPrefix(t(slide.title, lang)),
+    preview: stripTierPrefix(t(slide.title)),
   }));
 }
 
 /**
  * One row per exercise lab slide in this lesson, in slide order.
  */
-function exerciseRows(lesson: Lesson, lang: Lang): { key: string; preview: string }[] {
+function exerciseRows(lesson: Lesson): { key: string; preview: string }[] {
   const slides = slidesForTier(lesson, "exercise") as ExerciseSlide[];
   return slides.map((slide, i) => ({
     key: `e-${i}`,
-    preview: stripTierPrefix(t(slide.title, lang)),
+    preview: stripTierPrefix(t(slide.title)),
   }));
 }
 
 export function LessonTierMenu({ courseId, lesson, breadcrumb, onPick, onBack }: Props) {
-  const { lang } = useLang();
   const { theme } = useTheme();
   const accent = useAccent();
   const fg = pickAccentHex(accent.fgHex, theme);
@@ -98,12 +96,12 @@ export function LessonTierMenu({ courseId, lesson, breadcrumb, onPick, onBack }:
               onClick={onBack}
               className="text-sm mb-4 text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-100"
             >
-              ← {t(lesson.title, lang)}
+              ← {t(lesson.title)}
             </button>
           )}
-          <h1 className={tokens.text.h1}>{t(lesson.title, lang)}</h1>
+          <h1 className={tokens.text.h1}>{t(lesson.title)}</h1>
           <p className="text-stone-600 dark:text-stone-400 text-base mt-1.5">
-            {t(lesson.summary, lang)}
+            {t(lesson.summary)}
           </p>
         </div>
       </header>
@@ -118,16 +116,16 @@ export function LessonTierMenu({ courseId, lesson, breadcrumb, onPick, onBack }:
               const done = isTierComplete(courseId, lesson.id, tier);
               const rows =
                 tier === "workshop"
-                  ? workshopRows(lesson, lang)
+                  ? workshopRows(lesson)
                   : tier === "exercise"
-                    ? exerciseRows(lesson, lang)
+                    ? exerciseRows(lesson)
                     : null;
 
               const header = (
                 <>
                   <div className="flex items-start justify-between gap-3">
                     <h2 className={tokens.text.h3}>
-                      {t(TIER_TITLE[tier], lang)}
+                      {t(TIER_TITLE[tier])}
                     </h2>
                     {done && (
                       <span
@@ -137,12 +135,12 @@ export function LessonTierMenu({ courseId, lesson, breadcrumb, onPick, onBack }:
                           color: dark ? "#5FCAA8" : "#1F8A6E",
                         }}
                       >
-                        {t(ui.doneBadge, lang)}
+                        {t(ui.doneBadge)}
                       </span>
                     )}
                   </div>
                   <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
-                    {t(TIER_DESC[tier], lang)}
+                    {t(TIER_DESC[tier])}
                   </p>
                 </>
               );
@@ -208,7 +206,7 @@ export function LessonTierMenu({ courseId, lesson, breadcrumb, onPick, onBack }:
                 >
                   {header}
                   <div className="text-[11px] font-mono text-stone-500 dark:text-stone-400 mt-3 tabular-nums">
-                    {count} {t(ui.tierSlideCount, lang)}
+                    {count} {t(ui.tierSlideCount)}
                   </div>
                 </button>
               );

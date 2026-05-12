@@ -3,55 +3,28 @@ import { codePanelStyle, noteBoxStyle } from "./_shared";
 
 export const conveyorLesson: Lesson = {
   id: "conditionals-recycling",
-  title: { en: "3. Recycling — switch", sv: "3. Återvinningen — switch" },
-  summary: {
-    en: "Sort each item into the right bin.",
-    sv: "Sortera varje sak i rätt fack.",
-  },
+  title: "3. Recycling — switch",
+  summary: "Sort each item into the right bin.",
   slides: [
     // 1. Intro — recycling stick-figure scene
     {
       kind: "explanation",
-      title: {
-        en: "One value, several bins",
-        sv: "Ett värde, flera fack",
-      },
-      intro: {
-        en:
-          "When you compare ONE thing against several possible values,\nswitch can make the code clearer than a long if-chain.",
-        sv:
-          "När du jämför EN sak mot flera möjliga värden\nkan switch göra koden tydligare än en lång if-kedja.",
-      },
+      title: "One value, several bins",
+      intro: "When you compare ONE thing against several possible values,\nswitch can make the code clearer than a long if-chain.",
       customScene: "recycling",
       demo: [],
       steps: [
         {
-          narration: {
-            en:
-              "You hold an item.\nIn front of you are the recycling bins.",
-            sv:
-              "Du håller en sak.\nFramför dig står återvinningskärlen.",
-          },
+          narration: "You hold an item.\nIn front of you are the recycling bins.",
         },
         {
-          narration: {
-            en: "Paper goes in the paper bin.",
-            sv: "Papper hamnar i pappersfacket.",
-          },
+          narration: "Paper goes in the paper bin.",
         },
         {
-          narration: {
-            en: "Glass goes in the glass bin.",
-            sv: "Glas hamnar i glasfacket.",
-          },
+          narration: "Glass goes in the glass bin.",
         },
         {
-          narration: {
-            en:
-              "If you don't know what something is,\nit goes in the rest bin.\nThat's the default.",
-            sv:
-              "Om du inte vet vad något är\nläggs det i restfacket.\nDet är default.",
-          },
+          narration: "If you don't know what something is,\nit goes in the rest bin.\nThat's the default.",
         },
       ],
     },
@@ -59,16 +32,8 @@ export const conveyorLesson: Lesson = {
     // 2. From else-if to switch — motivation
     {
       kind: "explanation",
-      title: {
-        en: "When else-if gets repetitive",
-        sv: "När else-if blir tjatigt",
-      },
-      intro: {
-        en:
-          "Look how the same variable repeats in every condition.\nswitch is a shorter way to write this.",
-        sv:
-          "Titta hur samma variabel upprepas i varje villkor.\nswitch är ett kortare sätt att skriva detta.",
-      },
+      title: "When else-if gets repetitive",
+      intro: "Look how the same variable repeats in every condition.\nswitch is a shorter way to write this.",
       demo: [
         {
           id: "elseif",
@@ -85,30 +50,15 @@ export const conveyorLesson: Lesson = {
       ],
       steps: [
         {
-          narration: {
-            en:
-              "Left: the else-if chain we already know.\nSee how `item ===` repeats three times?",
-            sv:
-              "Vänster: else-if-kedjan vi redan kan.\nSe hur `item ===` upprepas tre gånger?",
-          },
+          narration: "Left: the else-if chain we already know.\nSee how `item ===` repeats three times?",
           tokenHighlight: ["item ==="],
         },
         {
-          narration: {
-            en:
-              "Right: the same logic, written as a switch.\nThe variable name appears ONCE at the top.\nEach case lists just the value to compare against.",
-            sv:
-              "Höger: samma logik, skriven som switch.\nVariabelnamnet skrivs EN gång överst.\nVarje case listar bara värdet att jämföra mot.",
-          },
+          narration: "Right: the same logic, written as a switch.\nThe variable name appears ONCE at the top.\nEach case lists just the value to compare against.",
           tokenHighlight: ["switch (item)", "case"],
         },
         {
-          narration: {
-            en:
-              "switch only fits one shape: comparing one variable\nagainst CONCRETE VALUES (no ranges, no other variables).\nFor temperatures, stick with else-if.",
-            sv:
-              "switch passar bara en form: jämför en variabel\nmot KONKRETA VÄRDEN (inga intervall, inga andra variabler).\nFör temperaturer — håll dig till else-if.",
-          },
+          narration: "switch only fits one shape: comparing one variable\nagainst CONCRETE VALUES (no ranges, no other variables).\nFor temperatures, stick with else-if.",
           tokenHighlight: ["switch"],
         },
       ],
@@ -117,7 +67,7 @@ export const conveyorLesson: Lesson = {
     // 3. Anatomy of switch — piece by piece
     {
       kind: "explanation",
-      title: { en: "switch, piece by piece", sv: "switch, del för del" },
+      title: "switch, piece by piece",
       demo: [
         {
           id: "code",
@@ -128,74 +78,34 @@ export const conveyorLesson: Lesson = {
       ],
       steps: [
         {
-          narration: {
-            en:
-              "Six parts to learn:\nswitch  ( )  { }  case  :  default.",
-            sv:
-              "Sex delar att lära sig:\nswitch  ( )  { }  case  :  default.",
-          },
+          narration: "Six parts to learn:\nswitch  ( )  { }  case  :  default.",
         },
         {
-          narration: {
-            en:
-              "1.  switch  is the keyword.\nIt says: I'm going to look at one value\nand pick a branch based on it.",
-            sv:
-              "1.  switch  är nyckelordet.\nDet säger: jag ska titta på ETT värde\noch välja gren baserat på det.",
-          },
+          narration: "1.  switch  is the keyword.\nIt says: I'm going to look at one value\nand pick a branch based on it.",
           tokenHighlight: ["switch"],
         },
         {
-          narration: {
-            en:
-              "2.  ( )  parentheses hold the value\nyou want to test. Here: item.",
-            sv:
-              "2.  ( )  parenteser innehåller värdet\ndu vill testa. Här: item.",
-          },
+          narration: "2.  ( )  parentheses hold the value\nyou want to test. Here: item.",
           tokenHighlight: ["(", ")"],
         },
         {
-          narration: {
-            en:
-              "3.  { }  curly braces hold ALL the cases.\nEverything between them belongs to this switch.",
-            sv:
-              "3.  { }  klammerparenteser håller ALLA case.\nAllt mellan dem hör till denna switch.",
-          },
+          narration: "3.  { }  curly braces hold ALL the cases.\nEverything between them belongs to this switch.",
           tokenHighlight: ["{", "}"],
         },
         {
-          narration: {
-            en:
-              "4.  case  is another keyword.\nIt's like asking 'is item equal to THIS value?'\ncase 'paper': means 'when item is \"paper\"...'",
-            sv:
-              "4.  case  är ett annat nyckelord.\nDet är som att fråga 'är item lika med DETTA värde?'\ncase 'paper': betyder 'när item är \"paper\"...'",
-          },
+          narration: "4.  case  is another keyword.\nIt's like asking 'is item equal to THIS value?'\ncase 'paper': means 'when item is \"paper\"...'",
           tokenHighlight: ["case"],
         },
         {
-          narration: {
-            en:
-              "5.  :  the colon ends the case label.\nThen the code that should run on that match\nfollows on the next line(s).",
-            sv:
-              "5.  :  kolonet avslutar case-etiketten.\nSen följer koden som ska köras vid match\npå nästa rad/rader.",
-          },
+          narration: "5.  :  the colon ends the case label.\nThen the code that should run on that match\nfollows on the next line(s).",
           tokenHighlight: [":"],
         },
         {
-          narration: {
-            en:
-              "6.  default  is the fallback.\nIt runs when NO case matched.\nLike else at the end of an else-if chain.",
-            sv:
-              "6.  default  är reservutgången.\nDen körs när INGEN case matchade.\nSom else i slutet av en else-if-kedja.",
-          },
+          narration: "6.  default  is the fallback.\nIt runs when NO case matched.\nLike else at the end of an else-if chain.",
           tokenHighlight: ["default"],
         },
         {
-          narration: {
-            en:
-              "Important: switch compares STRICTLY (===).\nSo case 1: matches the number 1, NOT the string \"1\".\nCase matters too — \"Paper\" doesn't match case \"paper\".",
-            sv:
-              "Viktigt: switch jämför STRIKT (===).\nSå case 1: matchar talet 1, INTE strängen \"1\".\nVersaler räknas — \"Paper\" matchar inte case \"paper\".",
-          },
+          narration: "Important: switch compares STRICTLY (===).\nSo case 1: matches the number 1, NOT the string \"1\".\nCase matters too — \"Paper\" doesn't match case \"paper\".",
         },
       ],
     },
@@ -203,133 +113,61 @@ export const conveyorLesson: Lesson = {
     // 4. Trace walkthrough — read the switch line by line
     {
       kind: "explanation",
-      title: { en: "Watching switch run", sv: "Vi ser switch köras" },
-      intro: {
-        en:
-          "Same idea as before — read the code line by line.\nWe'll try three items: \"paper\", \"glass\", and a banana peel.",
-        sv:
-          "Samma tanke som förut — läs koden rad för rad.\nVi testar tre saker: \"paper\", \"glass\", och ett bananskal.",
-      },
+      title: "Watching switch run",
+      intro: "Same idea as before — read the code line by line.\nWe'll try three items: \"paper\", \"glass\", and a banana peel.",
       customScene: "recycling-trace",
       demo: [],
       steps: [
         {
-          narration: {
-            en: "Click to step forward.",
-            sv: "Klicka för att stega framåt.",
-          },
+          narration: "Click to step forward.",
         },
         {
-          narration: {
-            en: "First we set item to \"paper\".",
-            sv: "Först sätter vi item till \"paper\".",
-          },
+          narration: "First we set item to \"paper\".",
         },
         {
-          narration: {
-            en:
-              "We reach the switch.\nIt looks at item and starts checking cases\nfrom top to bottom.",
-            sv:
-              "Vi kommer till switch.\nDen tittar på item och börjar kolla case\nuppifrån och ner.",
-          },
+          narration: "We reach the switch.\nIt looks at item and starts checking cases\nfrom top to bottom.",
         },
         {
-          narration: {
-            en:
-              'First case: \"paper\". Does item equal "paper"? Yes.\nSwitch runs the code under this case.',
-            sv:
-              'Första case: \"paper\". Är item "paper"? Ja.\nSwitch kör koden under detta case.',
-          },
+          narration: 'First case: \"paper\". Does item equal "paper"? Yes.\nSwitch runs the code under this case.',
         },
         {
-          narration: {
-            en:
-              'return "paper-bin".\nThe other cases below are skipped entirely.',
-            sv:
-              'return "paper-bin".\nDe andra case nedanför hoppas över helt.',
-          },
+          narration: 'return "paper-bin".\nThe other cases below are skipped entirely.',
         },
         {
-          narration: {
-            en: 'Now change item to "glass" and run again.',
-            sv: 'Nu ändrar vi item till "glass" och kör igen.',
-          },
+          narration: 'Now change item to "glass" and run again.',
         },
         {
-          narration: {
-            en: "Reach the switch. Start at the first case.",
-            sv: "Vi kommer till switch. Börja vid första case.",
-          },
+          narration: "Reach the switch. Start at the first case.",
         },
         {
-          narration: {
-            en:
-              '"glass" === "paper"? No.\nMove to the next case.',
-            sv:
-              '"glass" === "paper"? Nej.\nGå vidare till nästa case.',
-          },
+          narration: '"glass" === "paper"? No.\nMove to the next case.',
         },
         {
-          narration: {
-            en:
-              '"glass" === "glass"? Yes!\nThis case matches.',
-            sv:
-              '"glass" === "glass"? Ja!\nDet här case matchar.',
-          },
+          narration: '"glass" === "glass"? Yes!\nThis case matches.',
         },
         {
-          narration: {
-            en: 'return "glass-bin". Done.',
-            sv: 'return "glass-bin". Klart.',
-          },
+          narration: 'return "glass-bin". Done.',
         },
         {
-          narration: {
-            en:
-              'Last try. item = "banana" — something the switch doesn\'t know.',
-            sv:
-              'Sista försöket. item = "banana" — något switch inte känner till.',
-          },
+          narration: 'Last try. item = "banana" — something the switch doesn\'t know.',
         },
         {
-          narration: {
-            en: "Reach the switch.",
-            sv: "Vi kommer till switch.",
-          },
+          narration: "Reach the switch.",
         },
         {
-          narration: {
-            en: '"banana" === "paper"? No.',
-            sv: '"banana" === "paper"? Nej.',
-          },
+          narration: '"banana" === "paper"? No.',
         },
         {
-          narration: {
-            en: '"banana" === "glass"? No.',
-            sv: '"banana" === "glass"? Nej.',
-          },
+          narration: '"banana" === "glass"? No.',
         },
         {
-          narration: {
-            en: '"banana" === "plastic"? No.',
-            sv: '"banana" === "plastic"? Nej.',
-          },
+          narration: '"banana" === "plastic"? No.',
         },
         {
-          narration: {
-            en:
-              "No case matched.\nSwitch falls through to default.",
-            sv:
-              "Ingen case matchade.\nSwitch faller ned till default.",
-          },
+          narration: "No case matched.\nSwitch falls through to default.",
         },
         {
-          narration: {
-            en:
-              'return "rest-bin".\n\nThree items, three different bins — same switch.',
-            sv:
-              'return "rest-bin".\n\nTre saker, tre olika fack — samma switch.',
-          },
+          narration: 'return "rest-bin".\n\nThree items, three different bins — same switch.',
         },
       ],
     },
@@ -337,13 +175,8 @@ export const conveyorLesson: Lesson = {
     // 5. break vs return — the fall-through warning
     {
       kind: "explanation",
-      title: { en: "Don't forget break", sv: "Glöm inte break" },
-      intro: {
-        en:
-          "Inside a case, the code keeps running into the NEXT case\nunless you tell it to stop.",
-        sv:
-          "Inuti en case fortsätter koden in i NÄSTA case\nom du inte säger stopp.",
-      },
+      title: "Don't forget break",
+      intro: "Inside a case, the code keeps running into the NEXT case\nunless you tell it to stop.",
       demo: [
         {
           id: "buggy",
@@ -360,60 +193,30 @@ export const conveyorLesson: Lesson = {
         {
           id: "note",
           kind: "note",
-          label: {
-            en:
-              "Two ways to stop:\n• return — exits the function entirely.\n• break; — exits just the switch.\n\nIn our lessons we always return,\nso fall-through can't bite us.",
-            sv:
-              "Två sätt att stoppa:\n• return — avslutar hela funktionen.\n• break; — avslutar bara switch.\n\nI våra lektioner använder vi alltid return,\nså fall-through kan inte bitas oss.",
-          },
+          label: "Two ways to stop:\n• return — exits the function entirely.\n• break; — exits just the switch.\n\nIn our lessons we always return,\nso fall-through can't bite us.",
           baseStyle: { ...noteBoxStyle, marginTop: 16 },
         },
       ],
       steps: [
         {
-          narration: {
-            en:
-              "Once switch finds a matching case,\nit starts running the code there.",
-            sv:
-              "När switch hittar en matchande case\nbörjar den köra koden där.",
-          },
+          narration: "Once switch finds a matching case,\nit starts running the code there.",
           highlight: ["buggy"],
         },
         {
-          narration: {
-            en:
-              'Look at the left code. With item = "paper",\nthe first case matches and prints "Paper!".\n\nBut then JavaScript keeps going DOWN —\nit also runs the "glass" case and prints "Glass!".\n\nThat\'s called fall-through. Almost always a bug.',
-            sv:
-              'Titta på koden till vänster. Med item = "paper"\nmatchar första case och skriver "Paper!".\n\nMen sen FORTSÄTTER JavaScript nedåt —\nden kör också "glass"-case och skriver "Glass!".\n\nDet kallas fall-through. Nästan alltid en bugg.',
-          },
+          narration: 'Look at the left code. With item = "paper",\nthe first case matches and prints "Paper!".\n\nBut then JavaScript keeps going DOWN —\nit also runs the "glass" case and prints "Glass!".\n\nThat\'s called fall-through. Almost always a bug.',
           highlight: ["buggy"],
         },
         {
-          narration: {
-            en:
-              "The right code is the fix.\nbreak; at the end of each case STOPS the switch.\n\nNow item = \"paper\" prints just \"Paper!\" and exits.",
-            sv:
-              "Den högra koden är lösningen.\nbreak; sist i varje case STOPPAR switch.\n\nNu skriver item = \"paper\" bara \"Paper!\" och slutar.",
-          },
+          narration: "The right code is the fix.\nbreak; at the end of each case STOPS the switch.\n\nNow item = \"paper\" prints just \"Paper!\" and exits.",
           highlight: ["fixed"],
           tokenHighlight: ["break;"],
         },
         {
-          narration: {
-            en:
-              "return also stops fall-through —\nand it ends the whole function at the same time.\n\nThat's why our other examples didn't need break:\nthey returned right away.",
-            sv:
-              "return stoppar också fall-through —\noch avslutar hela funktionen samtidigt.\n\nDärför behövde våra andra exempel inte break:\nde returnerade direkt.",
-          },
+          narration: "return also stops fall-through —\nand it ends the whole function at the same time.\n\nThat's why our other examples didn't need break:\nthey returned right away.",
           tokenHighlight: ["break;"],
         },
         {
-          narration: {
-            en:
-              "Rule of thumb: if a case doesn't return,\nit MUST end with break;.\nForget both and the code rolls into the next case.",
-            sv:
-              "Tumregel: om en case inte returnerar\nMÅSTE den sluta med break;.\nGlömmer du båda så rinner koden in i nästa case.",
-          },
+          narration: "Rule of thumb: if a case doesn't return,\nit MUST end with break;.\nForget both and the code rolls into the next case.",
           tokenHighlight: ["break;"],
         },
       ],
@@ -422,23 +225,12 @@ export const conveyorLesson: Lesson = {
     // 6. Practice — sort recycling — chip-style, no distractors (first chip in L3)
     {
       kind: "js-chip-assignment",
-      title: {
-        en: "Practice: sort the items",
-        sv: "Övning: sortera sakerna",
-      },
-      prompt: {
-        en:
-          "Fill in the case values so each item lands in the right bin.",
-        sv:
-          "Fyll i case-värdena så att varje sak hamnar i rätt fack.",
-      },
+      title: "Practice: sort the items",
+      prompt: "Fill in the case values so each item lands in the right bin.",
       puzzles: [
         // p1: switch keyword (vs if/for/while)
         {
-          prompt: {
-            en: "Which keyword starts this kind of multi-branch?",
-            sv: "Vilket nyckelord startar den här typen av flergren?",
-          },
+          prompt: "Which keyword starts this kind of multi-branch?",
           template:
             '[[]] (item) {\n  case "paper": return "paper-bin";\n  case "glass": return "glass-bin";\n  default: return "rest-bin";\n}',
           chips: ["switch", "if", "for", "while"],
@@ -446,10 +238,7 @@ export const conveyorLesson: Lesson = {
         },
         // p2: ( ) around the switch expression
         {
-          prompt: {
-            en: "What wraps the value being tested?",
-            sv: "Vad omger värdet som testas?",
-          },
+          prompt: "What wraps the value being tested?",
           template:
             'switch [[]]item[[]] {\n  case "paper": return "paper-bin";\n  default: return "rest-bin";\n}',
           chips: ["(", ")", "{", "}"],
@@ -457,10 +246,7 @@ export const conveyorLesson: Lesson = {
         },
         // p3: case keyword (vs if/when/else)
         {
-          prompt: {
-            en: "Which keyword introduces each branch value?",
-            sv: "Vilket nyckelord inleder varje grenings-värde?",
-          },
+          prompt: "Which keyword introduces each branch value?",
           template:
             'switch (item) {\n  [[]] "paper": return "paper-bin";\n  case "glass": return "glass-bin";\n  default: return "rest-bin";\n}',
           chips: ["case", "if", "when", "else"],
@@ -468,14 +254,8 @@ export const conveyorLesson: Lesson = {
         },
         // p4: default keyword + : colon (color scenario)
         {
-          intro: {
-            en: "Same shape — traffic-light colors.",
-            sv: "Samma form — trafikljusfärger.",
-          },
-          prompt: {
-            en: "Place the fallback keyword and the colon after it.",
-            sv: "Placera reservordet och kolonet efter det.",
-          },
+          intro: "Same shape — traffic-light colors.",
+          prompt: "Place the fallback keyword and the colon after it.",
           template:
             'switch (color) {\n  case "red": return "stop";\n  case "yellow": return "slow";\n  [[]][[]]\n    return "off";\n}',
           chips: ["default", ":", ";", "case"],
@@ -483,10 +263,7 @@ export const conveyorLesson: Lesson = {
         },
         // p5: synthesis — all syntax pieces together
         {
-          prompt: {
-            en: "Now place all the syntax pieces you've practised.",
-            sv: "Placera nu alla syntaxdelar du övat på.",
-          },
+          prompt: "Now place all the syntax pieces you've practised.",
           template:
             '[[]] [[]]item[[]] {\n  [[]] "paper": return "paper-bin";\n  [[]][[]]\n    return "rest-bin";\n}',
           chips: ["switch", "(", ")", "case", "default", ":", "if", ";"],
@@ -495,31 +272,22 @@ export const conveyorLesson: Lesson = {
       ],
       legend: [
         {
-          name: { en: "switch", sv: "switch" },
+          name: "switch",
           syntax: "switch (expr) { case ... }",
           example: 'switch (item) { case "paper": ... }',
-          note: {
-            en: "The value is compared strictly against each case.",
-            sv: "Värdet jämförs strikt mot varje case.",
-          },
+          note: "The value is compared strictly against each case.",
         },
         {
-          name: { en: "case ... return", sv: "case ... return" },
+          name: "case ... return",
           syntax: 'case "value":\n  return ...;',
           example: 'case "paper": return "paper-bin";',
-          note: {
-            en: "return ends both the switch and the function.",
-            sv: "return avslutar både switch och funktionen.",
-          },
+          note: "return ends both the switch and the function.",
         },
         {
-          name: { en: "default", sv: "default" },
+          name: "default",
           syntax: "default:\n  return ...;",
           example: 'default: return "rest-bin";',
-          note: {
-            en: "Runs when no case matched.",
-            sv: "Körs om ingen case matchade.",
-          },
+          note: "Runs when no case matched.",
         },
       ],
     },
@@ -527,39 +295,29 @@ export const conveyorLesson: Lesson = {
     // 7. Final — animal sounds (typed-input)
     {
       kind: "js-typed-assignment",
-      title: { en: "Final: animal sounds", sv: "Slutövning: djurens läten" },
-      prompt: {
-        en:
-          "Type the case values and return values for each animal:\n• \"dog\" → \"woof\"\n• \"cat\" → \"meow\"\n• \"cow\" → \"moo\"\n• anything else → \"silence\"",
-        sv:
-          "Skriv case-värden och returvärden för varje djur:\n• \"dog\" → \"woof\"\n• \"cat\" → \"meow\"\n• \"cow\" → \"moo\"\n• allt annat → \"silence\"",
-      },
+      title: "Final: animal sounds",
+      prompt: "Type the case values and return values for each animal:\n• \"dog\" → \"woof\"\n• \"cat\" → \"meow\"\n• \"cow\" → \"moo\"\n• anything else → \"silence\"",
       varNames: ["animal"],
       template:
         'switch (animal) {\n  case [[input:c1]]:\n    return [[input:r1]];\n  case [[input:c2]]:\n    return [[input:r2]];\n  case [[input:c3]]:\n    return [[input:r3]];\n  default:\n    return [[input:rd]];\n}\n',
       tests: [
-        { label: { en: "dog", sv: "hund" }, vars: { animal: "dog" }, expected: "woof" },
-        { label: { en: "cat", sv: "katt" }, vars: { animal: "cat" }, expected: "meow" },
-        { label: { en: "cow", sv: "ko" }, vars: { animal: "cow" }, expected: "moo" },
-        { label: { en: "fish", sv: "fisk" }, vars: { animal: "fish" }, expected: "silence" },
-        { label: { en: "DOG (caps)", sv: "DOG (versaler)" }, vars: { animal: "DOG" }, expected: "silence" },
+        { label: "dog", vars: { animal: "dog" }, expected: "woof" },
+        { label: "cat", vars: { animal: "cat" }, expected: "meow" },
+        { label: "cow", vars: { animal: "cow" }, expected: "moo" },
+        { label: "fish", vars: { animal: "fish" }, expected: "silence" },
+        { label: "DOG (caps)", vars: { animal: "DOG" }, expected: "silence" },
       ],
-      goalHint: {
-        en:
-          "Each value is a string in quotes. The default returns \"silence\".",
-        sv:
-          "Varje värde är en sträng inom citattecken. Default returnerar \"silence\".",
-      },
+      goalHint: "Each value is a string in quotes. The default returns \"silence\".",
       allegory: {
         kind: "conveyor",
         config: {
-          inputLabel: { en: "sound for animal", sv: "läte för animal" },
+          inputLabel: "sound for animal",
           inputKey: "animal",
           bins: [
             { key: "woof", label: "woof" },
             { key: "meow", label: "meow" },
             { key: "moo", label: "moo" },
-            { key: "silence", label: { en: "silence", sv: "tystnad" } },
+            { key: "silence", label: "silence" },
           ],
           defaultBinKey: "silence",
         },
@@ -571,274 +329,134 @@ export const conveyorLesson: Lesson = {
     // bin / animal sounds) and exercise (music player button).
     {
       kind: "js-workshop",
-      title: { en: "Workshop: HTTP status", sv: "Verkstad: HTTP-status" },
-      prompt: {
-        en:
-          "Build a switch that turns an HTTP status number into a message.\nOne case at a time.",
-        sv:
-          "Bygg en switch som översätter ett HTTP-statusnummer till ett meddelande.\nEtt case i taget.",
-      },
+      title: "Workshop: HTTP status",
+      prompt: "Build a switch that turns an HTTP status number into a message.\nOne case at a time.",
       designNote:
         "L3 switch workshop. Surface: HTTP status code (200/404/500) → message. Distinct from chips (animal) and exercise (button/action). Variable named `statusCode` (rather than `status`) to avoid IDE strikethrough on the deprecated DOM `status` property. The threshold numbers ARE the lesson (they encode the cases) so they stay strict; message strings are free.",
       steps: [
         {
           id: "http-declare-statusCode",
-          instruction: {
-            en:
-              "Use `let` to declare a variable called `statusCode` and assign it any number (an HTTP status code).",
-            sv:
-              "Använd `let` för att deklarera en variabel som heter `statusCode` och tilldela den ett tal (en HTTP-statuskod).",
-          },
-          starterCode: {
-            en: "// Declare statusCode below.\n",
-            sv: "// Deklarera statusCode nedan.\n",
-          },
+          instruction: "Use `let` to declare a variable called `statusCode` and assign it any number (an HTTP status code).",
+          starterCode: "// Declare statusCode below.\n",
           checks: [
             {
-              message: {
-                en: "Use `let` to declare a variable named `statusCode`.",
-                sv: "Använd `let` för att deklarera en variabel som heter `statusCode`.",
-              },
+              message: "Use `let` to declare a variable named `statusCode`.",
               requirePattern: /\blet\s+statusCode\b/,
             },
             {
-              message: {
-                en: "`statusCode` should hold a number.",
-                sv: "`statusCode` ska innehålla ett tal.",
-              },
+              message: "`statusCode` should hold a number.",
               assert: "return typeof statusCode === 'number';",
             },
           ],
-          reveal: {
-            en: "let statusCode = 200;\n",
-            sv: "let statusCode = 200;\n",
-          },
+          reveal: "let statusCode = 200;\n",
         },
         {
           id: "http-declare-message",
-          instruction: {
-            en:
-              "Below `statusCode`, use `let` to declare `message` with no value yet — the switch's cases will set it.",
-            sv:
-              "Under `statusCode`, använd `let` för att deklarera `message` utan något värde — switchens case-grenar sätter värdet.",
-          },
-          starterCode: {
-            en: "let statusCode = 200;\n// Declare message below (no value).\n",
-            sv: "let statusCode = 200;\n// Deklarera message nedan (inget värde).\n",
-          },
+          instruction: "Below `statusCode`, use `let` to declare `message` with no value yet — the switch's cases will set it.",
+          starterCode: "let statusCode = 200;\n// Declare message below (no value).\n",
           checks: [
             {
-              message: {
-                en: "Use `let` to declare a variable named `message`.",
-                sv: "Använd `let` för att deklarera en variabel som heter `message`.",
-              },
+              message: "Use `let` to declare a variable named `message`.",
               requirePattern: /\blet\s+message\b/,
             },
             {
-              message: {
-                en: "Don't assign `message` yet — the cases will set its value.",
-                sv: "Tilldela inte `message` än — case-grenarna sätter värdet.",
-              },
+              message: "Don't assign `message` yet — the cases will set its value.",
               assert: "return typeof message === 'undefined';",
             },
           ],
-          reveal: {
-            en: "let statusCode = 200;\nlet message;\n",
-            sv: "let statusCode = 200;\nlet message;\n",
-          },
+          reveal: "let statusCode = 200;\nlet message;\n",
         },
         {
           id: "http-switch-case-200",
-          instruction: {
-            en:
-              "Open a `switch` on `statusCode` and add the first `case` for `200`. Inside, set `message` to a string (the lesson uses `\"OK\"`). Don't forget to end the case so it doesn't fall through.",
-            sv:
-              "Öppna en `switch` på `statusCode` och lägg till första `case` för `200`. Sätt `message` till en sträng inne i grenen (lektionen använder `\"OK\"`). Glöm inte att avsluta grenen så den inte faller igenom.",
-          },
-          starterCode: {
-            en:
-              "let statusCode = 200;\nlet message;\n// Open a switch (statusCode) and add case 200.\n",
-            sv:
-              "let statusCode = 200;\nlet message;\n// Öppna en switch (statusCode) och lägg till case 200.\n",
-          },
+          instruction: "Open a `switch` on `statusCode` and add the first `case` for `200`. Inside, set `message` to a string (the lesson uses `\"OK\"`). Don't forget to end the case so it doesn't fall through.",
+          starterCode: "let statusCode = 200;\nlet message;\n// Open a switch (statusCode) and add case 200.\n",
           checks: [
             {
-              message: {
-                en: "Open a `switch (statusCode) { ... }` block.",
-                sv: "Öppna ett `switch (statusCode) { ... }`-block.",
-              },
+              message: "Open a `switch (statusCode) { ... }` block.",
               requirePattern: /\bswitch\s*\(\s*statusCode\s*\)/,
             },
             {
-              message: {
-                en: "Add `case 200:` inside the switch.",
-                sv: "Lägg till `case 200:` inuti switchen.",
-              },
+              message: "Add `case 200:` inside the switch.",
               requirePattern: /\bcase\s+200\s*:/,
             },
             {
-              message: {
-                en: "End the case with `break;`.",
-                sv: "Avsluta grenen med `break;`.",
-              },
+              message: "End the case with `break;`.",
               requirePattern: /\bbreak\s*;/,
             },
             {
-              message: {
-                en: "When `statusCode` is 200, `message` should end up as a string.",
-                sv: "När `statusCode` är 200 ska `message` bli en sträng.",
-              },
+              message: "When `statusCode` is 200, `message` should end up as a string.",
               assert: "return typeof message === 'string';",
             },
           ],
-          reveal: {
-            en:
-              'let statusCode = 200;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n}\n',
-            sv:
-              'let statusCode = 200;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n}\n',
-          },
+          reveal: 'let statusCode = 200;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n}\n',
         },
         {
           id: "http-add-case-404",
-          instruction: {
-            en:
-              "Add another `case` for `404`. Set `message` to a string (the lesson uses `\"Not Found\"`). End the case so it doesn't fall through.",
-            sv:
-              "Lägg till en `case` för `404`. Sätt `message` till en sträng (lektionen använder `\"Not Found\"`). Avsluta grenen så den inte faller igenom.",
-          },
-          starterCode: {
-            en:
-              'let statusCode = 404;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  // Add a case for 404.\n}\n',
-            sv:
-              'let statusCode = 404;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  // Lägg till en case för 404.\n}\n',
-          },
+          instruction: "Add another `case` for `404`. Set `message` to a string (the lesson uses `\"Not Found\"`). End the case so it doesn't fall through.",
+          starterCode: 'let statusCode = 404;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  // Add a case for 404.\n}\n',
           checks: [
             {
-              message: {
-                en: "Add `case 404:` inside the switch.",
-                sv: "Lägg till `case 404:` inuti switchen.",
-              },
+              message: "Add `case 404:` inside the switch.",
               requirePattern: /\bcase\s+404\s*:/,
             },
             {
-              message: {
-                en: "When `statusCode` is 404, `message` should end up as a string.",
-                sv: "När `statusCode` är 404 ska `message` bli en sträng.",
-              },
+              message: "When `statusCode` is 404, `message` should end up as a string.",
               assert: "return typeof message === 'string';",
             },
           ],
-          reveal: {
-            en:
-              'let statusCode = 404;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n}\n',
-            sv:
-              'let statusCode = 404;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n}\n',
-          },
+          reveal: 'let statusCode = 404;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n}\n',
         },
         {
           id: "http-add-case-500",
-          instruction: {
-            en:
-              "Add another `case` for `500`. Set `message` to a string (the lesson uses `\"Server Error\"`).",
-            sv:
-              "Lägg till en `case` för `500`. Sätt `message` till en sträng (lektionen använder `\"Server Error\"`).",
-          },
-          starterCode: {
-            en:
-              'let statusCode = 500;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  // Add a case for 500.\n}\n',
-            sv:
-              'let statusCode = 500;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  // Lägg till en case för 500.\n}\n',
-          },
+          instruction: "Add another `case` for `500`. Set `message` to a string (the lesson uses `\"Server Error\"`).",
+          starterCode: 'let statusCode = 500;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  // Add a case for 500.\n}\n',
           checks: [
             {
-              message: {
-                en: "Add `case 500:` inside the switch.",
-                sv: "Lägg till `case 500:` inuti switchen.",
-              },
+              message: "Add `case 500:` inside the switch.",
               requirePattern: /\bcase\s+500\s*:/,
             },
             {
-              message: {
-                en: "When `statusCode` is 500, `message` should end up as a string.",
-                sv: "När `statusCode` är 500 ska `message` bli en sträng.",
-              },
+              message: "When `statusCode` is 500, `message` should end up as a string.",
               assert: "return typeof message === 'string';",
             },
           ],
-          reveal: {
-            en:
-              'let statusCode = 500;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  case 500:\n    message = "Server Error";\n    break;\n}\n',
-            sv:
-              'let statusCode = 500;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  case 500:\n    message = "Server Error";\n    break;\n}\n',
-          },
+          reveal: 'let statusCode = 500;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  case 500:\n    message = "Server Error";\n    break;\n}\n',
         },
         {
           id: "http-add-default",
-          instruction: {
-            en:
-              "Add a `default:` clause that sets `message` to a string for unknown statusCode codes (the lesson uses `\"Unknown\"`). The default runs when no case matches.",
-            sv:
-              "Lägg till en `default:`-klausul som sätter `message` till en sträng för okända statuskoder (lektionen använder `\"Unknown\"`). default körs när inget case matchar.",
-          },
-          starterCode: {
-            en:
-              'let statusCode = 418;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  case 500:\n    message = "Server Error";\n    break;\n  // Add a default clause.\n}\n',
-            sv:
-              'let statusCode = 418;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  case 500:\n    message = "Server Error";\n    break;\n  // Lägg till en default-klausul.\n}\n',
-          },
+          instruction: "Add a `default:` clause that sets `message` to a string for unknown statusCode codes (the lesson uses `\"Unknown\"`). The default runs when no case matches.",
+          starterCode: 'let statusCode = 418;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  case 500:\n    message = "Server Error";\n    break;\n  // Add a default clause.\n}\n',
           checks: [
             {
-              message: {
-                en: "Add `default:` inside the switch.",
-                sv: "Lägg till `default:` inuti switchen.",
-              },
+              message: "Add `default:` inside the switch.",
               requirePattern: /\bdefault\s*:/,
             },
             {
-              message: {
-                en:
-                  "When `statusCode` is 418 (no case matches), `message` should end up as a string from the default.",
-                sv:
-                  "När `statusCode` är 418 (inget case matchar) ska `message` bli en sträng från default.",
-              },
+              message: "When `statusCode` is 418 (no case matches), `message` should end up as a string from the default.",
               assert: "return typeof message === 'string';",
             },
           ],
-          reveal: {
-            en:
-              'let statusCode = 418;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  case 500:\n    message = "Server Error";\n    break;\n  default:\n    message = "Unknown";\n}\n',
-            sv:
-              'let statusCode = 418;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  case 500:\n    message = "Server Error";\n    break;\n  default:\n    message = "Unknown";\n}\n',
-          },
+          reveal: 'let statusCode = 418;\nlet message;\nswitch (statusCode) {\n  case 200:\n    message = "OK";\n    break;\n  case 404:\n    message = "Not Found";\n    break;\n  case 500:\n    message = "Server Error";\n    break;\n  default:\n    message = "Unknown";\n}\n',
         },
       ],
       legend: [
         {
-          name: { en: "switch", sv: "switch" },
+          name: "switch",
           syntax: "switch (value) { ... }",
           example: "switch (statusCode) { ... }",
-          note: {
-            en: "Picks one branch based on a value.",
-            sv: "Väljer en gren baserat på ett värde.",
-          },
+          note: "Picks one branch based on a value.",
         },
         {
-          name: { en: "case", sv: "case" },
+          name: "case",
           syntax: "case constant: ... break;",
           example: 'case 200: message = "OK"; break;',
-          note: {
-            en: "Runs when the switch's value strictly equals the constant.",
-            sv: "Körs när switchens värde är strikt lika med konstanten.",
-          },
+          note: "Runs when the switch's value strictly equals the constant.",
         },
         {
-          name: { en: "default", sv: "default" },
+          name: "default",
           syntax: "default: ...",
           example: 'default: message = "Unknown";',
-          note: {
-            en: "Runs when no case matched.",
-            sv: "Körs när inget case matchade.",
-          },
+          note: "Runs when no case matched.",
         },
       ],
     },
@@ -848,10 +466,8 @@ export const conveyorLesson: Lesson = {
     // in this chapter.
     {
       kind: "exercise",
-      title: { en: "Lab: Music Player Button", sv: "Labb: Musikspelar-knapp" },
-      prompt: {
-        en:
-          "Pick the right action when a music player button is pressed.\n\n" +
+      title: "Lab: Music Player Button",
+      prompt: "Pick the right action when a music player button is pressed.\n\n" +
           "User stories (variable names are suggestions — pick your own if you like):\n" +
           "1. Declare a string variable (e.g. button) and set it to one of: \"play\", \"pause\", \"stop\", \"next\", \"prev\".\n" +
           "2. Declare a string variable (e.g. action) and set it to \"\".\n" +
@@ -865,22 +481,6 @@ export const conveyorLesson: Lesson = {
           "5. Print button.\n" +
           "6. Print action.\n\n" +
           "Don't forget break — without it, cases fall through.",
-        sv:
-          "Välj rätt åtgärd när en knapp på musikspelaren trycks.\n\n" +
-          "Användarberättelser (variabelnamnen är förslag — välj egna om du vill):\n" +
-          "1. Deklarera en strängvariabel (t.ex. button) och sätt den till en av: \"play\", \"pause\", \"stop\", \"next\", \"prev\".\n" +
-          "2. Deklarera en strängvariabel (t.ex. action) och sätt den till \"\".\n" +
-          "3. Använd en switch på button med dessa case (varje slutar med break):\n" +
-          "   - \"play\"  → action = \"Playing track\"\n" +
-          "   - \"pause\" → action = \"Paused\"\n" +
-          "   - \"stop\"  → action = \"Stopped\"\n" +
-          "   - \"next\"  → action = \"Skipped to next\"\n" +
-          "   - \"prev\"  → action = \"Back one track\"\n" +
-          "4. Lägg till en default som sätter action till \"Unknown button\".\n" +
-          "5. Skriv ut button.\n" +
-          "6. Skriv ut action.\n\n" +
-          "Glöm inte break — utan det faller case igenom.",
-      },
       starterJs:
         "// Follow the user stories shown to the left.\n\n" +
         "// 1-2. Declare your variables:\n\n\n\n" +
@@ -888,22 +488,13 @@ export const conveyorLesson: Lesson = {
         "// 5-6. Print button, then action:\n\n",
       tests: [
         {
-          label: {
-            en: "Console shows exactly two lines",
-            sv: "Konsolen visar exakt två rader",
-          },
+          label: "Console shows exactly two lines",
           assert:
             "var c = window.__console || []; return c.length === 2;",
-          hint: {
-            en: "One console.log for button, one for action.",
-            sv: "En console.log för button, en för action.",
-          },
+          hint: "One console.log for button, one for action.",
         },
         {
-          label: {
-            en: "Each variable you print is one you declared",
-            sv: "Varje variabel du skriver ut är en du deklarerat",
-          },
+          label: "Each variable you print is one you declared",
           assert:
             "var src = window.__userSrc || '';" +
             "var logs = []; var re = /console\\.log\\s*\\(\\s*([A-Za-z_$][A-Za-z0-9_$]*)\\s*\\)/g;" +
@@ -915,32 +506,18 @@ export const conveyorLesson: Lesson = {
             "  if (!d.test(src)) return false;" +
             "}" +
             "return true;",
-          hint: {
-            en:
-              "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
-            sv:
-              "Om en console.log-rad är tom eller fel, dubbelkolla variabelnamnet — det måste matcha det du deklarerade med let.",
-          },
+          hint: "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
         },
         {
-          label: {
-            en: 'Line 1 is one of "play", "pause", "stop", "next", "prev"',
-            sv: 'Rad 1 är "play", "pause", "stop", "next" eller "prev"',
-          },
+          label: 'Line 1 is one of "play", "pause", "stop", "next", "prev"',
           assert:
             "var c = window.__console || [];" +
             "if (c.length < 1) return false;" +
             "return ['play','pause','stop','next','prev'].indexOf(c[0].text) !== -1;",
-          hint: {
-            en: "Set button to one of the five lowercase strings.",
-            sv: "Sätt button till en av de fem strängarna med små bokstäver.",
-          },
+          hint: "Set button to one of the five lowercase strings.",
         },
         {
-          label: {
-            en: "Action matches the rule for the chosen button",
-            sv: "Action matchar regeln för den valda knappen",
-          },
+          label: "Action matches the rule for the chosen button",
           assert:
             "var c = window.__console || [];" +
             "if (c.length < 2) return false;" +
@@ -948,64 +525,37 @@ export const conveyorLesson: Lesson = {
             "var btn = c[0].text;" +
             "if (!(btn in map)) return false;" +
             "return c[1].text === map[btn];",
-          hint: {
-            en: "Use the exact action strings from the user stories — capitalization counts.",
-            sv: "Använd exakta action-strängar från användarberättelserna — versaler räknas.",
-          },
+          hint: "Use the exact action strings from the user stories — capitalization counts.",
         },
         {
-          label: {
-            en: "Code uses a switch statement",
-            sv: "Koden använder switch",
-          },
+          label: "Code uses a switch statement",
           assert:
             "var src = window.__userSrc || '';" +
             "return /switch\\s*\\(/.test(src);",
-          hint: {
-            en: "Start the dispatch with: switch (button) { ... }",
-            sv: "Börja med: switch (button) { ... }",
-          },
+          hint: "Start the dispatch with: switch (button) { ... }",
         },
         {
-          label: {
-            en: "Code has at least five case clauses",
-            sv: "Koden har minst fem case-klausuler",
-          },
+          label: "Code has at least five case clauses",
           assert:
             "var src = window.__userSrc || '';" +
             "var n = (src.match(/case\\s+/g) || []).length;" +
             "return n >= 5;",
-          hint: {
-            en: 'One case per button: case "play":, case "pause":, etc.',
-            sv: 'Ett case per knapp: case "play":, case "pause":, osv.',
-          },
+          hint: 'One case per button: case "play":, case "pause":, etc.',
         },
         {
-          label: {
-            en: "Code has a default case",
-            sv: "Koden har en default-klausul",
-          },
+          label: "Code has a default case",
           assert:
             "var src = window.__userSrc || '';" +
             "return /default\\s*:/.test(src);",
-          hint: {
-            en: 'Add: default: action = "Unknown button";',
-            sv: 'Lägg till: default: action = "Unknown button";',
-          },
+          hint: 'Add: default: action = "Unknown button";',
         },
         {
-          label: {
-            en: "Code uses break at least five times",
-            sv: "Koden använder break minst fem gånger",
-          },
+          label: "Code uses break at least five times",
           assert:
             "var src = window.__userSrc || '';" +
             "var n = (src.match(/\\bbreak\\b/g) || []).length;" +
             "return n >= 5;",
-          hint: {
-            en: "Each named case needs its own break to stop the fall-through.",
-            sv: "Varje namngivet case behöver sitt eget break för att stoppa fall-through.",
-          },
+          hint: "Each named case needs its own break to stop the fall-through.",
         },
       ],
     },

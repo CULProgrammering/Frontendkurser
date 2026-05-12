@@ -1,5 +1,4 @@
 import { StickFigure } from "./StickFigure";
-import { useLang } from "../../i18n/LanguageContext";
 import { t } from "../../i18n";
 import { useSlideFontSize } from "../SlideFontSize";
 
@@ -20,7 +19,6 @@ type Props = { step: number };
  * init, condition, body, update — and the running `i` and `sum` values.
  */
 export function StairsTraceScene({ step }: Props) {
-  const { lang } = useLang();
   const s = stateAtStep(step);
 
   return (
@@ -29,7 +27,7 @@ export function StairsTraceScene({ step }: Props) {
         iValue={s.iValue}
         sumValue={s.sumValue}
         highlight={s.highlight}
-        evalNote={s.evalNote ? t(s.evalNote, lang) : undefined}
+        evalNote={s.evalNote ? t(s.evalNote) : undefined}
       />
 
       <div className="relative flex-1 rounded-2xl overflow-hidden
@@ -47,7 +45,7 @@ export function StairsTraceScene({ step }: Props) {
           <div className="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-medium
                           bg-emerald-100 text-emerald-700
                           dark:bg-emerald-500/20 dark:text-emerald-200">
-            {t({ en: "Returned", sv: "Returnerade" }, lang)} {s.outcome}
+            {t("Returned")} {s.outcome}
           </div>
         )}
       </div>
@@ -66,7 +64,7 @@ type State = {
   /** How many stair-steps the figure has climbed (visual). */
   climbedTo: number;
   highlight?: LineKey;
-  evalNote?: { en: string; sv: string };
+  evalNote?: string;
   outcome?: number;
 };
 
@@ -87,7 +85,7 @@ function stateAtStep(step: number): State {
         sumValue: 0,
         climbedTo: 0,
         highlight: "cond",
-        evalNote: { en: "1 <= 3  →  true", sv: "1 <= 3  →  true" },
+        evalNote: "1 <= 3  →  true",
       };
     case 4:
       // body: sum += i → sum = 1
@@ -96,7 +94,7 @@ function stateAtStep(step: number): State {
         sumValue: 1,
         climbedTo: 1,
         highlight: "body",
-        evalNote: { en: "sum = 0 + 1  →  1", sv: "sum = 0 + 1  →  1" },
+        evalNote: "sum = 0 + 1  →  1",
       };
     case 5:
       // update: i++ → i = 2
@@ -107,7 +105,7 @@ function stateAtStep(step: number): State {
         sumValue: 1,
         climbedTo: 1,
         highlight: "cond",
-        evalNote: { en: "2 <= 3  →  true", sv: "2 <= 3  →  true" },
+        evalNote: "2 <= 3  →  true",
       };
     case 7:
       return {
@@ -115,7 +113,7 @@ function stateAtStep(step: number): State {
         sumValue: 3,
         climbedTo: 2,
         highlight: "body",
-        evalNote: { en: "sum = 1 + 2  →  3", sv: "sum = 1 + 2  →  3" },
+        evalNote: "sum = 1 + 2  →  3",
       };
     case 8:
       return { iValue: 3, sumValue: 3, climbedTo: 2, highlight: "update" };
@@ -125,7 +123,7 @@ function stateAtStep(step: number): State {
         sumValue: 3,
         climbedTo: 2,
         highlight: "cond",
-        evalNote: { en: "3 <= 3  →  true", sv: "3 <= 3  →  true" },
+        evalNote: "3 <= 3  →  true",
       };
     case 10:
       return {
@@ -133,7 +131,7 @@ function stateAtStep(step: number): State {
         sumValue: 6,
         climbedTo: 3,
         highlight: "body",
-        evalNote: { en: "sum = 3 + 3  →  6", sv: "sum = 3 + 3  →  6" },
+        evalNote: "sum = 3 + 3  →  6",
       };
     case 11:
       return { iValue: 4, sumValue: 6, climbedTo: 3, highlight: "update" };
@@ -143,7 +141,7 @@ function stateAtStep(step: number): State {
         sumValue: 6,
         climbedTo: 3,
         highlight: "cond",
-        evalNote: { en: "4 <= 3  →  false  (exit loop)", sv: "4 <= 3  →  false  (lämna loopen)" },
+        evalNote: "4 <= 3  →  false  (exit loop)",
       };
     case 13:
       return {

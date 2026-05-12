@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { AssignmentSlide, StyleCheck } from "../types";
-import { useLang } from "../i18n/LanguageContext";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
 import { sessionGet, sessionSet } from "../storage";
@@ -20,9 +19,8 @@ type Props = {
 type CheckResult = { check: StyleCheck; actual: string; pass: boolean };
 
 export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDots, onPass }: Props) {
-  const { lang } = useLang();
   const { codePx, prosePx } = useSlideFontSize();
-  const startingCss = t(slide.startingCss, lang);
+  const startingCss = t(slide.startingCss);
 
   const [css, setCss] = useState<string>(() => {
     return sessionGet(storageKey) ?? startingCss;
@@ -36,8 +34,8 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
     sessionSet(storageKey, css);
   }, [storageKey, css]);
 
-  const html = t(slide.html, lang);
-  const targetCss = slide.targetCss ? t(slide.targetCss, lang) : "";
+  const html = t(slide.html);
+  const targetCss = slide.targetCss ? t(slide.targetCss) : "";
 
   const buildDoc = (styleCss: string) =>
     `<!doctype html><html><head><meta charset="utf-8"><style>
@@ -84,14 +82,14 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
       <div className="px-4 sm:px-10 pt-4 sm:pt-8">
         <SlideTitleRow breadcrumb={breadcrumb}>
           <h2 className="text-xl sm:text-3xl font-semibold text-stone-900 dark:text-stone-100">
-            {t(slide.title, lang)}
+            {t(slide.title)}
           </h2>
           <SlideFontSizeControl />
           <ThemeToggleInline />
         </SlideTitleRow>
         <div className="flex items-end justify-between gap-4 mt-2">
           <p className="text-stone-600 dark:text-stone-400 whitespace-pre-line flex-1 min-w-0">
-            {t(slide.prompt, lang)}
+            {t(slide.prompt)}
           </p>
           {slideJumpDots}
         </div>
@@ -99,8 +97,8 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
 
       <TwoColumnLayout
         className="flex-1 px-4 sm:px-10 py-3 sm:py-6"
-        leftLabel={t(ui.tabCode, lang)}
-        rightLabel={t(ui.tabPreview, lang)}
+        leftLabel={t(ui.tabCode)}
+        rightLabel={t(ui.tabPreview)}
         left={
           <div className="flex-1 flex flex-col rounded-2xl overflow-hidden min-h-0
                         bg-white ring-1 ring-stone-200 shadow-sm
@@ -108,7 +106,7 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
           <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
                           text-amber-600 border-stone-200
                           dark:text-stone-400 dark:border-white/[0.08]">
-            {t(ui.cssLabel, lang)}
+            {t(ui.cssLabel)}
           </div>
           <textarea
             value={css}
@@ -126,7 +124,7 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
                          bg-amber-500 hover:bg-amber-600
                          dark:bg-indigo-500 dark:hover:bg-indigo-400"
             >
-              {t(ui.check, lang)}
+              {t(ui.check)}
             </button>
             <button
               onClick={reset}
@@ -134,7 +132,7 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
                          bg-stone-100 hover:bg-stone-200 text-stone-700
                          dark:bg-[#2c303a] dark:hover:bg-[#252934] dark:text-white"
             >
-              {t(ui.reset, lang)}
+              {t(ui.reset)}
             </button>
             {hasLegend && (
               <button
@@ -143,7 +141,7 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
                            bg-amber-100 hover:bg-amber-200 text-amber-800 ring-amber-300
                            dark:bg-amber-500/20 dark:hover:bg-amber-500/30 dark:text-amber-200 dark:ring-amber-400/30"
               >
-                {t(showLegend ? ui.hideHelp : ui.showHelp, lang)}
+                {t(showLegend ? ui.hideHelp : ui.showHelp)}
               </button>
             )}
           </div>
@@ -156,7 +154,7 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
             <div className="px-4 py-2 text-xs uppercase tracking-wider border-b
                             text-amber-600 border-stone-200
                             dark:text-stone-400 dark:border-white/[0.08]">
-              {t(hasTarget ? ui.yourVersion : ui.preview, lang)}
+              {t(hasTarget ? ui.yourVersion : ui.preview)}
             </div>
             <iframe
               ref={iframeRef}
@@ -170,7 +168,7 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
                 <div className="px-4 py-2 text-xs uppercase tracking-wider border-y
                                 text-emerald-700 border-stone-200
                                 dark:text-emerald-300/80 dark:border-white/[0.08]">
-                  {t(ui.goal, lang)}
+                  {t(ui.goal)}
                 </div>
                 <iframe
                   srcDoc={targetDoc}
@@ -188,13 +186,13 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
               >
                 {allPass ? (
                   <div className="text-emerald-700 dark:text-emerald-300 font-medium">
-                    {t(ui.doneCheers, lang)}
+                    {t(ui.doneCheers)}
                   </div>
                 ) : (
                   <>
                     {results.filter((r) => !r.pass).length === 0 ? null : (
                       <div className="text-stone-600 dark:text-stone-400 mb-1">
-                        {t(ui.needsAdjusting, lang)}
+                        {t(ui.needsAdjusting)}
                       </div>
                     )}
                     {results
@@ -208,14 +206,14 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
                           {r.check.hint && (
                             <span className="text-stone-500 dark:text-stone-400">
                               {" "}
-                              — {t(r.check.hint, lang)}
+                              — {t(r.check.hint)}
                             </span>
                           )}
                         </div>
                       ))}
                     {results.some((r) => r.pass) && (
                       <div className="text-emerald-700/80 dark:text-emerald-300/80 pt-1 text-xs">
-                        {results.filter((r) => r.pass).length} {t(ui.outOfRight, lang)}{" "}
+                        {results.filter((r) => r.pass).length} {t(ui.outOfRight)}{" "}
                         {results.length}
                       </div>
                     )}
@@ -233,7 +231,7 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
                         dark:bg-amber-500/10 dark:ring-amber-400/30">
           <div className="text-xs uppercase tracking-wider mb-2
                           text-amber-700 dark:text-amber-200">
-            {t(ui.legendLabel, lang)}
+            {t(ui.legendLabel)}
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {slide.legend!.map((e, i) => (
@@ -244,7 +242,7 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
                            dark:bg-[#1f232c] dark:border-white/[0.08]"
               >
                 <div className="font-semibold text-amber-800 dark:text-amber-100">
-                  {t(e.name, lang)}
+                  {t(e.name)}
                 </div>
                 <div className="font-mono text-xs text-stone-600 dark:text-stone-400">
                   {e.syntax}
@@ -254,7 +252,7 @@ export function AssignmentSlideView({ slide, storageKey, breadcrumb, slideJumpDo
                 </div>
                 {e.note && (
                   <div className="text-xs mt-1 text-stone-500 dark:text-stone-400">
-                    {t(e.note, lang)}
+                    {t(e.note)}
                   </div>
                 )}
               </div>

@@ -3,54 +3,31 @@ import { codePanelStyle, noteBoxStyle } from "./_shared";
 
 export const multiGateLesson: Lesson = {
   id: "conditionals-bouncer",
-  title: { en: "4. The Bouncer — &&, || and !", sv: "4. Dörrvakten — &&, || och !" },
-  summary: {
-    en: "Combine conditions with and, or, not.",
-    sv: "Kombinera villkor med och, eller, inte.",
-  },
+  title: "4. The Bouncer — &&, || and !",
+  summary: "Combine conditions with and, or, not.",
   slides: [
     // 1. Intro — bouncer stick-figure scene
     {
       kind: "explanation",
-      title: { en: "More than one check", sv: "Fler än en kontroll" },
-      intro: {
-        en: "Sometimes one condition isn't enough.",
-        sv: "Ibland räcker inte ett villkor.",
-      },
+      title: "More than one check",
+      intro: "Sometimes one condition isn't enough.",
       customScene: "bouncer",
       demo: [],
       steps: [
         {
-          narration: {
-            en: "You walk up to a club. The bouncer is at the door.",
-            sv: "Du går mot en klubb. Dörrvakten står vid dörren.",
-          },
+          narration: "You walk up to a club. The bouncer is at the door.",
         },
         {
-          narration: {
-            en: "Check one: are you old enough?",
-            sv: "Kontroll ett: är du gammal nog?",
-          },
+          narration: "Check one: are you old enough?",
         },
         {
-          narration: {
-            en: "Check two: do you have a ticket?",
-            sv: "Kontroll två: har du biljett?",
-          },
+          narration: "Check two: do you have a ticket?",
         },
         {
-          narration: {
-            en: "Check three: are you NOT on the ban list?",
-            sv: "Kontroll tre: står du INTE på avstängningslistan?",
-          },
+          narration: "Check three: are you NOT on the ban list?",
         },
         {
-          narration: {
-            en:
-              "All three matter at the same time.\nFor that we need ways to COMBINE conditions.",
-            sv:
-              "Alla tre spelar roll samtidigt.\nFör det behöver vi sätt att KOMBINERA villkor.",
-          },
+          narration: "All three matter at the same time.\nFor that we need ways to COMBINE conditions.",
         },
       ],
     },
@@ -58,11 +35,8 @@ export const multiGateLesson: Lesson = {
     // 2. && — and
     {
       kind: "explanation",
-      title: { en: "&&  —  and (both)", sv: "&&  —  och (båda)" },
-      intro: {
-        en: "&& means 'and'. Both sides must be true.",
-        sv: "&& betyder 'och'. Båda sidor måste vara sanna.",
-      },
+      title: "&&  —  and (both)",
+      intro: "&& means 'and'. Both sides must be true.",
       demo: [
         {
           id: "code",
@@ -79,38 +53,18 @@ export const multiGateLesson: Lesson = {
       ],
       steps: [
         {
-          narration: {
-            en:
-              "&& goes BETWEEN two conditions.\nLeft side AND right side — both must be true.",
-            sv:
-              "&& står MELLAN två villkor.\nVänster sida OCH höger sida — båda måste vara sanna.",
-          },
+          narration: "&& goes BETWEEN two conditions.\nLeft side AND right side — both must be true.",
           tokenHighlight: ["&&"],
         },
         {
-          narration: {
-            en:
-              "Picture two gates in a row.\nYou must pass BOTH to get through.\nMiss one and you're stopped.",
-            sv:
-              "Föreställ dig två grindar i rad.\nDu måste passera BÅDA för att komma fram.\nMissar du en så stoppas du.",
-          },
+          narration: "Picture two gates in a row.\nYou must pass BOTH to get through.\nMiss one and you're stopped.",
           tokenHighlight: ["age >= 18", "hasTicket"],
         },
         {
-          narration: {
-            en:
-              "The little table below shows all four cases.\nOnly the FIRST line ends in true.",
-            sv:
-              "Lilla tabellen nedanför visar alla fyra fall.\nBara FÖRSTA raden slutar i true.",
-          },
+          narration: "The little table below shows all four cases.\nOnly the FIRST line ends in true.",
         },
         {
-          narration: {
-            en:
-              "Read aloud: 'age 18 or more AND has a ticket'.\nIf either fails, the whole thing is false.",
-            sv:
-              "Läs högt: 'ålder 18 eller mer OCH har biljett'.\nFaller ett av dem så blir allt false.",
-          },
+          narration: "Read aloud: 'age 18 or more AND has a ticket'.\nIf either fails, the whole thing is false.",
           tokenHighlight: ["age >= 18 && hasTicket"],
         },
       ],
@@ -119,20 +73,12 @@ export const multiGateLesson: Lesson = {
     // 3. Practice — && — chip-style, no distractors (first chip in L4)
     {
       kind: "js-chip-assignment",
-      title: { en: "Practice: age AND ticket", sv: "Övning: ålder OCH biljett" },
-      prompt: {
-        en:
-          "Build the condition: 18 or older AND has a ticket.",
-        sv:
-          "Bygg villkoret: 18 eller äldre OCH har biljett.",
-      },
+      title: "Practice: age AND ticket",
+      prompt: "Build the condition: 18 or older AND has a ticket.",
       puzzles: [
         // p1: && operator (vs ||, !, ===)
         {
-          prompt: {
-            en: "Which operator means 'both must be true'?",
-            sv: "Vilken operator betyder 'båda måste vara sanna'?",
-          },
+          prompt: "Which operator means 'both must be true'?",
           template:
             'if (age >= 18 [[]] hasTicket) {\n  return "let in";\n} else {\n  return "stopped";\n}',
           chips: ["&&", "||", "!", "==="],
@@ -140,10 +86,7 @@ export const multiGateLesson: Lesson = {
         },
         // p2: ( ) around the condition
         {
-          prompt: {
-            en: "What wraps the combined condition?",
-            sv: "Vad omger det kombinerade villkoret?",
-          },
+          prompt: "What wraps the combined condition?",
           template:
             'if [[]]age >= 18 && hasTicket[[]] {\n  return "let in";\n} else {\n  return "stopped";\n}',
           chips: ["(", ")", "{", "}"],
@@ -151,10 +94,7 @@ export const multiGateLesson: Lesson = {
         },
         // p3: { } around the if body
         {
-          prompt: {
-            en: "What wraps the if body?",
-            sv: "Vad omger if-kroppen?",
-          },
+          prompt: "What wraps the if body?",
           template:
             'if (age >= 18 && hasTicket) [[]]\n  return "let in";\n[[]] else {\n  return "stopped";\n}',
           chips: ["{", "}", "(", ")"],
@@ -162,14 +102,8 @@ export const multiGateLesson: Lesson = {
         },
         // p4: ; after return value (fuel/hasKey scenario)
         {
-          intro: {
-            en: "Same shape — enough fuel AND has the key.",
-            sv: "Samma form — tillräckligt bränsle OCH har nyckeln.",
-          },
-          prompt: {
-            en: "What ends a return statement?",
-            sv: "Vad avslutar en return-sats?",
-          },
+          intro: "Same shape — enough fuel AND has the key.",
+          prompt: "What ends a return statement?",
           template:
             'if (fuel >= 10 && hasKey) {\n  return "drive"[[]]\n} else {\n  return "wait";\n}',
           chips: [";", ",", ".", ":"],
@@ -177,10 +111,7 @@ export const multiGateLesson: Lesson = {
         },
         // p5: synthesis — all syntax pieces together
         {
-          prompt: {
-            en: "Now place all the syntax pieces you've practised.",
-            sv: "Placera nu alla syntaxdelar du övat på.",
-          },
+          prompt: "Now place all the syntax pieces you've practised.",
           template:
             'if [[]]age >= 18 [[]] hasTicket[[]] [[]]\n  return "let in"[[]]\n[[]] else {\n  return "stopped";\n}',
           chips: ["(", "&&", ")", "{", ";", "}", "||", ","],
@@ -189,22 +120,16 @@ export const multiGateLesson: Lesson = {
       ],
       legend: [
         {
-          name: { en: "&&", sv: "&&" },
+          name: "&&",
           syntax: "a && b",
           example: "age >= 18 && hasTicket",
-          note: {
-            en: "True only when BOTH sides are true.",
-            sv: "Sant bara när BÅDA sidor är sanna.",
-          },
+          note: "True only when BOTH sides are true.",
         },
         {
-          name: { en: ">=", sv: ">=" },
+          name: ">=",
           syntax: "a >= b",
           example: "age >= 18",
-          note: {
-            en: "True when a is greater than or equal to b.",
-            sv: "Sant när a är större än eller lika med b.",
-          },
+          note: "True when a is greater than or equal to b.",
         },
       ],
     },
@@ -212,11 +137,8 @@ export const multiGateLesson: Lesson = {
     // 4. || — or
     {
       kind: "explanation",
-      title: { en: "||  —  or (one is enough)", sv: "||  —  eller (en räcker)" },
-      intro: {
-        en: "|| means 'or'. One side being true is enough.",
-        sv: "|| betyder 'eller'. En sida som är sann räcker.",
-      },
+      title: "||  —  or (one is enough)",
+      intro: "|| means 'or'. One side being true is enough.",
       demo: [
         {
           id: "code",
@@ -233,38 +155,18 @@ export const multiGateLesson: Lesson = {
       ],
       steps: [
         {
-          narration: {
-            en:
-              "|| goes BETWEEN two conditions, just like &&.\nBut the rule is the opposite:\nleft OR right — one being true is enough.",
-            sv:
-              "|| står MELLAN två villkor, precis som &&.\nMen regeln är omvänd:\nvänster ELLER höger — en sann sida räcker.",
-          },
+          narration: "|| goes BETWEEN two conditions, just like &&.\nBut the rule is the opposite:\nleft OR right — one being true is enough.",
           tokenHighlight: ["||"],
         },
         {
-          narration: {
-            en:
-              "Picture two doors into the same room.\nWalk through any one and you're inside.",
-            sv:
-              "Föreställ dig två dörrar till samma rum.\nGår du in genom någon av dem är du inne.",
-          },
+          narration: "Picture two doors into the same room.\nWalk through any one and you're inside.",
           tokenHighlight: ["isVip", "hasTicket"],
         },
         {
-          narration: {
-            en:
-              "The table shows it: only the LAST line is false.\nEverything else has at least one true side.",
-            sv:
-              "Tabellen visar det: bara SISTA raden är false.\nAlla andra har minst en sann sida.",
-          },
+          narration: "The table shows it: only the LAST line is false.\nEverything else has at least one true side.",
         },
         {
-          narration: {
-            en:
-              "Common mix-up: && and || are NOT the same.\n• && is strict — both must be true.\n• || is lenient — one is enough.",
-            sv:
-              "Vanlig sammanblandning: && och || är INTE samma.\n• && är strikt — båda måste vara sanna.\n• || är slappare — en räcker.",
-          },
+          narration: "Common mix-up: && and || are NOT the same.\n• && is strict — both must be true.\n• || is lenient — one is enough.",
           tokenHighlight: ["&&", "||"],
         },
       ],
@@ -273,20 +175,12 @@ export const multiGateLesson: Lesson = {
     // 5. Practice — || — chip-style with distractors
     {
       kind: "js-chip-assignment",
-      title: { en: "Practice: VIP or ticket", sv: "Övning: VIP eller biljett" },
-      prompt: {
-        en:
-          "VIP OR ticket gets you in. Pick the right operator.",
-        sv:
-          "VIP ELLER biljett släpper in dig. Välj rätt operator.",
-      },
+      title: "Practice: VIP or ticket",
+      prompt: "VIP OR ticket gets you in. Pick the right operator.",
       puzzles: [
         // p1: || operator (vs &&, !, ===)
         {
-          prompt: {
-            en: "Which operator means 'one side is enough'?",
-            sv: "Vilken operator betyder 'en sida räcker'?",
-          },
+          prompt: "Which operator means 'one side is enough'?",
           template:
             'if (isVip [[]] hasTicket) {\n  return "let in";\n} else {\n  return "stopped";\n}',
           chips: ["||", "&&", "!", "==="],
@@ -294,10 +188,7 @@ export const multiGateLesson: Lesson = {
         },
         // p2: ( ) around the combined condition
         {
-          prompt: {
-            en: "What wraps the combined condition?",
-            sv: "Vad omger det kombinerade villkoret?",
-          },
+          prompt: "What wraps the combined condition?",
           template:
             'if [[]]isVip || hasTicket[[]] {\n  return "let in";\n} else {\n  return "stopped";\n}',
           chips: ["(", ")", "{", "}"],
@@ -305,10 +196,7 @@ export const multiGateLesson: Lesson = {
         },
         // p3: { } around the else body
         {
-          prompt: {
-            en: "What wraps the else body?",
-            sv: "Vad omger else-kroppen?",
-          },
+          prompt: "What wraps the else body?",
           template:
             'if (isVip || hasTicket) {\n  return "let in";\n} else [[]]\n  return "stopped";\n[[]]',
           chips: ["{", "}", "(", ")"],
@@ -316,14 +204,8 @@ export const multiGateLesson: Lesson = {
         },
         // p4: || vs && (isStudent/hasCoupon scenario)
         {
-          intro: {
-            en: "Student OR holds a coupon — one is enough for a discount.",
-            sv: "Student ELLER har kupong — en räcker för rabatt.",
-          },
-          prompt: {
-            en: "Which operator means 'one side is enough'?",
-            sv: "Vilken operator betyder 'en sida räcker'?",
-          },
+          intro: "Student OR holds a coupon — one is enough for a discount.",
+          prompt: "Which operator means 'one side is enough'?",
           template:
             'if (isStudent [[]] hasCoupon) {\n  return "discount";\n} else {\n  return "full";\n}',
           chips: ["||", "&&", "!", "==="],
@@ -331,10 +213,7 @@ export const multiGateLesson: Lesson = {
         },
         // p5: synthesis — all syntax pieces together
         {
-          prompt: {
-            en: "Now place all the syntax pieces you've practised.",
-            sv: "Placera nu alla syntaxdelar du övat på.",
-          },
+          prompt: "Now place all the syntax pieces you've practised.",
           template:
             'if [[]]isVip [[]] hasTicket[[]] [[]]\n  return "let in";\n[[]] else {\n  return "stopped";\n}',
           chips: ["(", "||", ")", "{", "}", "&&", "!"],
@@ -343,13 +222,10 @@ export const multiGateLesson: Lesson = {
       ],
       legend: [
         {
-          name: { en: "||", sv: "||" },
+          name: "||",
           syntax: "a || b",
           example: "isVip || hasTicket",
-          note: {
-            en: "True as soon as ONE side is true.",
-            sv: "Sant så snart EN sida är sann.",
-          },
+          note: "True as soon as ONE side is true.",
         },
       ],
     },
@@ -357,13 +233,8 @@ export const multiGateLesson: Lesson = {
     // 6. ! — not
     {
       kind: "explanation",
-      title: { en: "!  —  not (flip it)", sv: "!  —  inte (vänd på det)" },
-      intro: {
-        en:
-          "! goes BEFORE one value and flips it:\ntrue becomes false, false becomes true.",
-        sv:
-          "! står FÖRE ett värde och vänder det:\ntrue blir false, false blir true.",
-      },
+      title: "!  —  not (flip it)",
+      intro: "! goes BEFORE one value and flips it:\ntrue becomes false, false becomes true.",
       demo: [
         {
           id: "code",
@@ -380,30 +251,15 @@ export const multiGateLesson: Lesson = {
       ],
       steps: [
         {
-          narration: {
-            en:
-              "Unlike && and ||, ! takes only ONE value\nand flips it.",
-            sv:
-              "Till skillnad från && och || tar ! bara ETT värde\noch vänder det.",
-          },
+          narration: "Unlike && and ||, ! takes only ONE value\nand flips it.",
           tokenHighlight: ["!"],
         },
         {
-          narration: {
-            en:
-              "Useful when the variable already names\nthe OPPOSITE of what you want to check.\n\nExample: a variable called `banned`.\nWe want to let people in when they're NOT banned.\nSo we use !banned.",
-            sv:
-              "Användbart när variabeln redan beskriver\nMOTSATSEN av det du vill kolla.\n\nExempel: en variabel som heter `banned`.\nVi vill släppa in folk som INTE är bannade.\nSå vi använder !banned.",
-          },
+          narration: "Useful when the variable already names\nthe OPPOSITE of what you want to check.\n\nExample: a variable called `banned`.\nWe want to let people in when they're NOT banned.\nSo we use !banned.",
           tokenHighlight: ["!banned"],
         },
         {
-          narration: {
-            en:
-              "Read aloud: '!banned' is 'not banned'.\nIt's true when banned is false.",
-            sv:
-              "Läs högt: '!banned' är 'inte bannad'.\nDet är sant när banned är false.",
-          },
+          narration: "Read aloud: '!banned' is 'not banned'.\nIt's true when banned is false.",
           tokenHighlight: ["!banned"],
         },
       ],
@@ -412,20 +268,12 @@ export const multiGateLesson: Lesson = {
     // 7. Practice — ! — chip-style with distractors
     {
       kind: "js-chip-assignment",
-      title: { en: "Practice: not banned", sv: "Övning: inte bannad" },
-      prompt: {
-        en:
-          "Use ! to flip the variable's truth value.",
-        sv:
-          "Använd ! för att vända variabelns sanningsvärde.",
-      },
+      title: "Practice: not banned",
+      prompt: "Use ! to flip the variable's truth value.",
       puzzles: [
         // p1: ! operator placed before variable (vs &&, ||, ===)
         {
-          prompt: {
-            en: "Which operator flips a boolean?",
-            sv: "Vilken operator vänder en boolean?",
-          },
+          prompt: "Which operator flips a boolean?",
           template:
             'if ([[]]banned) {\n  return "let in";\n} else {\n  return "stopped";\n}',
           chips: ["!", "&&", "||", "==="],
@@ -433,10 +281,7 @@ export const multiGateLesson: Lesson = {
         },
         // p2: ( ) around !banned condition
         {
-          prompt: {
-            en: "What wraps the condition?",
-            sv: "Vad omger villkoret?",
-          },
+          prompt: "What wraps the condition?",
           template:
             'if [[]]!banned[[]] {\n  return "let in";\n} else {\n  return "stopped";\n}',
           chips: ["(", ")", "{", "}"],
@@ -444,10 +289,7 @@ export const multiGateLesson: Lesson = {
         },
         // p3: { } around the if body
         {
-          prompt: {
-            en: "What wraps the if body?",
-            sv: "Vad omger if-kroppen?",
-          },
+          prompt: "What wraps the if body?",
           template:
             'if (!banned) [[]]\n  return "let in";\n[[]] else {\n  return "stopped";\n}',
           chips: ["{", "}", "(", ")"],
@@ -455,14 +297,8 @@ export const multiGateLesson: Lesson = {
         },
         // p4: ! operator (raining scenario)
         {
-          intro: {
-            en: "Walk when it is NOT raining.",
-            sv: "Gå när det INTE regnar.",
-          },
-          prompt: {
-            en: "Which operator flips a boolean?",
-            sv: "Vilken operator vänder en boolean?",
-          },
+          intro: "Walk when it is NOT raining.",
+          prompt: "Which operator flips a boolean?",
           template:
             'if ([[]]raining) {\n  return "walk";\n} else {\n  return "umbrella";\n}',
           chips: ["!", "&&", "||", "==="],
@@ -470,10 +306,7 @@ export const multiGateLesson: Lesson = {
         },
         // p5: synthesis — all syntax pieces together
         {
-          prompt: {
-            en: "Now place all the syntax pieces you've practised.",
-            sv: "Placera nu alla syntaxdelar du övat på.",
-          },
+          prompt: "Now place all the syntax pieces you've practised.",
           template:
             'if [[]][[]]banned[[]] [[]]\n  return "let in";\n[[]] else {\n  return "stopped";\n}',
           chips: ["(", "!", ")", "{", "}", "&&", "||"],
@@ -482,13 +315,10 @@ export const multiGateLesson: Lesson = {
       ],
       legend: [
         {
-          name: { en: "!", sv: "!" },
+          name: "!",
           syntax: "!a",
           example: "!banned",
-          note: {
-            en: "Flips true to false and false to true.",
-            sv: "Vänder true till false och false till true.",
-          },
+          note: "Flips true to false and false to true.",
         },
       ],
     },
@@ -496,13 +326,8 @@ export const multiGateLesson: Lesson = {
     // 8. Combining them — parentheses
     {
       kind: "explanation",
-      title: { en: "Combining — use parentheses", sv: "Kombinera — använd parenteser" },
-      intro: {
-        en:
-          "You can use &&, || and ! in the SAME condition.\nWhen you do, parentheses make it clear what goes with what.",
-        sv:
-          "Du kan använda &&, || och ! i SAMMA villkor.\nNär du gör det gör parenteser tydligt vad som hör ihop.",
-      },
+      title: "Combining — use parentheses",
+      intro: "You can use &&, || and ! in the SAME condition.\nWhen you do, parentheses make it clear what goes with what.",
       demo: [
         {
           id: "code",
@@ -513,49 +338,24 @@ export const multiGateLesson: Lesson = {
         {
           id: "note",
           kind: "note",
-          label: {
-            en:
-              "Read it left to right:\n• ( isVip OR hasTicket )  — at least one of these,\n• AND  !banned  — and they are not banned.\n\nWithout parentheses the rules are easy to misread.\nAlways group with ( ) when you mix && and ||.",
-            sv:
-              "Läs vänster till höger:\n• ( isVip ELLER hasTicket )  — minst en av dessa,\n• OCH  !banned  — och de är inte bannade.\n\nUtan parenteser är det lätt att läsa fel.\nGruppera alltid med ( ) när du blandar && och ||.",
-          },
+          label: "Read it left to right:\n• ( isVip OR hasTicket )  — at least one of these,\n• AND  !banned  — and they are not banned.\n\nWithout parentheses the rules are easy to misread.\nAlways group with ( ) when you mix && and ||.",
           baseStyle: { ...noteBoxStyle, marginTop: 16 },
         },
       ],
       steps: [
         {
-          narration: {
-            en:
-              "The bouncer's full rule:\nthe person needs a ticket OR be a VIP,\nAND they must not be banned.",
-            sv:
-              "Dörrvaktens fulla regel:\npersonen behöver biljett ELLER vara VIP,\nOCH de får inte vara bannade.",
-          },
+          narration: "The bouncer's full rule:\nthe person needs a ticket OR be a VIP,\nAND they must not be banned.",
         },
         {
-          narration: {
-            en:
-              "We wrap the OR in parentheses\nso it's clear which two conditions belong together.",
-            sv:
-              "Vi sluter OR-uttrycket inom parenteser\nså det är tydligt vilka villkor som hör ihop.",
-          },
+          narration: "We wrap the OR in parentheses\nso it's clear which two conditions belong together.",
           tokenHighlight: ["(isVip || hasTicket)"],
         },
         {
-          narration: {
-            en:
-              "Then we add && !banned at the end.\nNow ANY winning combination must also pass\nthe 'not banned' check.",
-            sv:
-              "Sen lägger vi till && !banned på slutet.\nNu måste VARJE vinnande kombination också klara\n'inte bannad'-kontrollen.",
-          },
+          narration: "Then we add && !banned at the end.\nNow ANY winning combination must also pass\nthe 'not banned' check.",
           tokenHighlight: ["&& !banned"],
         },
         {
-          narration: {
-            en:
-              "Tip: when you read the line aloud,\nthe parentheses tell you where to pause.\nIf you can't read it cleanly, add more parens.",
-            sv:
-              "Tips: när du läser raden högt\nvisar parenteserna var du ska pausa.\nKan du inte läsa rent — lägg till fler parenteser.",
-          },
+          narration: "Tip: when you read the line aloud,\nthe parentheses tell you where to pause.\nIf you can't read it cleanly, add more parens.",
           tokenHighlight: ["(", ")"],
         },
       ],
@@ -564,30 +364,20 @@ export const multiGateLesson: Lesson = {
     // 9. Final — combine all three (typed-input)
     {
       kind: "js-typed-assignment",
-      title: { en: "Final: the bouncer's rule", sv: "Slutövning: dörrvaktens regel" },
-      prompt: {
-        en:
-          "The person is let in if:\n• age is at least 18\n• AND they have a ticket OR are a VIP\n• AND they are NOT banned.\n\nType the full condition into the box.",
-        sv:
-          "Personen släpps in om:\n• åldern är minst 18\n• OCH de har biljett ELLER är VIP\n• OCH de är INTE bannade.\n\nSkriv hela villkoret i rutan.",
-      },
+      title: "Final: the bouncer's rule",
+      prompt: "The person is let in if:\n• age is at least 18\n• AND they have a ticket OR are a VIP\n• AND they are NOT banned.\n\nType the full condition into the box.",
       varNames: ["age", "hasTicket", "isVip", "banned"],
       template:
         '// Combine &&, || and !  —  use parentheses!\nif ([[input:cond]]) {\n  return "let in";\n} else {\n  return "stopped";\n}\n',
       tests: [
-        { label: { en: "20 + ticket", sv: "20 + biljett" }, vars: { age: 20, hasTicket: true, isVip: false, banned: false }, expected: "let in" },
-        { label: { en: "20 + VIP", sv: "20 + VIP" }, vars: { age: 20, hasTicket: false, isVip: true, banned: false }, expected: "let in" },
-        { label: { en: "20 + ticket + VIP", sv: "20 + biljett + VIP" }, vars: { age: 20, hasTicket: true, isVip: true, banned: false }, expected: "let in" },
-        { label: { en: "16 + ticket", sv: "16 + biljett" }, vars: { age: 16, hasTicket: true, isVip: false, banned: false }, expected: "stopped" },
-        { label: { en: "20, neither", sv: "20, ingetdera" }, vars: { age: 20, hasTicket: false, isVip: false, banned: false }, expected: "stopped" },
-        { label: { en: "20 + ticket + banned", sv: "20 + biljett + bannad" }, vars: { age: 20, hasTicket: true, isVip: false, banned: true }, expected: "stopped" },
+        { label: "20 + ticket", vars: { age: 20, hasTicket: true, isVip: false, banned: false }, expected: "let in" },
+        { label: "20 + VIP", vars: { age: 20, hasTicket: false, isVip: true, banned: false }, expected: "let in" },
+        { label: "20 + ticket + VIP", vars: { age: 20, hasTicket: true, isVip: true, banned: false }, expected: "let in" },
+        { label: "16 + ticket", vars: { age: 16, hasTicket: true, isVip: false, banned: false }, expected: "stopped" },
+        { label: "20, neither", vars: { age: 20, hasTicket: false, isVip: false, banned: false }, expected: "stopped" },
+        { label: "20 + ticket + banned", vars: { age: 20, hasTicket: true, isVip: false, banned: true }, expected: "stopped" },
       ],
-      goalHint: {
-        en:
-          "Try: age >= 18 && (hasTicket || isVip) && !banned. Mind the parentheses around hasTicket || isVip.",
-        sv:
-          "Försök: age >= 18 && (hasTicket || isVip) && !banned. Tänk på parenteserna runt hasTicket || isVip.",
-      },
+      goalHint: "Try: age >= 18 && (hasTicket || isVip) && !banned. Mind the parentheses around hasTicket || isVip.",
       allegory: {
         kind: "multi-gate",
         config: {
@@ -600,8 +390,8 @@ export const multiGateLesson: Lesson = {
             { not: "banned" },
           ],
           passWhen: "let in",
-          passLabel: { en: "Let in", sv: "Släpps in" },
-          failLabel: { en: "Stopped", sv: "Stoppas" },
+          passLabel: "Let in",
+          failLabel: "Stopped",
         },
       },
     },
@@ -612,219 +402,111 @@ export const multiGateLesson: Lesson = {
     // (hour/motion/manualOff/lightOn).
     {
       kind: "js-workshop",
-      title: { en: "Workshop: club door", sv: "Verkstad: klubbdörren" },
-      prompt: {
-        en:
-          "Build a single boolean expression that decides whether someone can enter.\nAdd one operator at a time.",
-        sv:
-          "Bygg ett enda booleanskt uttryck som avgör om någon får komma in.\nLägg till en operator i taget.",
-      },
+      title: "Workshop: club door",
+      prompt: "Build a single boolean expression that decides whether someone can enter.\nAdd one operator at a time.",
       designNote:
         "L4 boolean-operators workshop. Surface: isMember/hasGuest/isClosed → canEnter. Each step exercises one operator (||, then && + !). Boolean values are free; the expression's STRUCTURE (operator usage and grouping) is what's pinned.",
       steps: [
         {
           id: "club-declare-isMember",
-          instruction: {
-            en:
-              "Use `let` to declare a variable called `isMember` and assign it `true` or `false`.",
-            sv:
-              "Använd `let` för att deklarera en variabel som heter `isMember` och tilldela den `true` eller `false`.",
-          },
-          starterCode: {
-            en: "// Declare isMember below.\n",
-            sv: "// Deklarera isMember nedan.\n",
-          },
+          instruction: "Use `let` to declare a variable called `isMember` and assign it `true` or `false`.",
+          starterCode: "// Declare isMember below.\n",
           checks: [
             {
-              message: {
-                en: "Use `let` to declare a variable named `isMember`.",
-                sv: "Använd `let` för att deklarera en variabel som heter `isMember`.",
-              },
+              message: "Use `let` to declare a variable named `isMember`.",
               requirePattern: /\blet\s+isMember\b/,
             },
             {
-              message: {
-                en: "`isMember` should hold a boolean.",
-                sv: "`isMember` ska innehålla en boolean.",
-              },
+              message: "`isMember` should hold a boolean.",
               assert: "return typeof isMember === 'boolean';",
             },
           ],
-          reveal: {
-            en: "let isMember = true;\n",
-            sv: "let isMember = true;\n",
-          },
+          reveal: "let isMember = true;\n",
         },
         {
           id: "club-declare-hasGuest",
-          instruction: {
-            en:
-              "Below `isMember`, declare `hasGuest` and `isClosed` as booleans (any values you like).",
-            sv:
-              "Under `isMember`, deklarera `hasGuest` och `isClosed` som booleans (vilka värden du vill).",
-          },
-          starterCode: {
-            en:
-              "let isMember = true;\n// Declare hasGuest and isClosed below.\n",
-            sv:
-              "let isMember = true;\n// Deklarera hasGuest och isClosed nedan.\n",
-          },
+          instruction: "Below `isMember`, declare `hasGuest` and `isClosed` as booleans (any values you like).",
+          starterCode: "let isMember = true;\n// Declare hasGuest and isClosed below.\n",
           checks: [
             {
-              message: {
-                en: "Declare `hasGuest` with `let`.",
-                sv: "Deklarera `hasGuest` med `let`.",
-              },
+              message: "Declare `hasGuest` with `let`.",
               requirePattern: /\blet\s+hasGuest\b/,
             },
             {
-              message: {
-                en: "Declare `isClosed` with `let`.",
-                sv: "Deklarera `isClosed` med `let`.",
-              },
+              message: "Declare `isClosed` with `let`.",
               requirePattern: /\blet\s+isClosed\b/,
             },
             {
-              message: {
-                en: "Both `hasGuest` and `isClosed` should be booleans.",
-                sv: "Både `hasGuest` och `isClosed` ska vara booleans.",
-              },
+              message: "Both `hasGuest` and `isClosed` should be booleans.",
               assert:
                 "return typeof hasGuest === 'boolean' && typeof isClosed === 'boolean';",
             },
           ],
-          reveal: {
-            en: "let isMember = true;\nlet hasGuest = false;\nlet isClosed = false;\n",
-            sv: "let isMember = true;\nlet hasGuest = false;\nlet isClosed = false;\n",
-          },
+          reveal: "let isMember = true;\nlet hasGuest = false;\nlet isClosed = false;\n",
         },
         {
           id: "club-or",
-          instruction: {
-            en:
-              "Use `let` to declare `canEnter` and set it based on whether the person is a member OR has a guest pass. The result should be true if either is true.",
-            sv:
-              "Använd `let` för att deklarera `canEnter` och sätt den baserat på om personen är medlem ELLER har en gästpass. Resultatet ska vara true om minst en av dem är true.",
-          },
-          starterCode: {
-            en:
-              "let isMember = false;\nlet hasGuest = true;\nlet isClosed = false;\n// Declare canEnter below using ||.\n",
-            sv:
-              "let isMember = false;\nlet hasGuest = true;\nlet isClosed = false;\n// Deklarera canEnter nedan med ||.\n",
-          },
+          instruction: "Use `let` to declare `canEnter` and set it based on whether the person is a member OR has a guest pass. The result should be true if either is true.",
+          starterCode: "let isMember = false;\nlet hasGuest = true;\nlet isClosed = false;\n// Declare canEnter below using ||.\n",
           checks: [
             {
-              message: {
-                en: "Use `let` to declare a variable named `canEnter`.",
-                sv: "Använd `let` för att deklarera en variabel som heter `canEnter`.",
-              },
+              message: "Use `let` to declare a variable named `canEnter`.",
               requirePattern: /\blet\s+canEnter\b/,
             },
             {
-              message: {
-                en: "Use the `||` operator on `isMember` and `hasGuest`.",
-                sv: "Använd `||`-operatorn på `isMember` och `hasGuest`.",
-              },
+              message: "Use the `||` operator on `isMember` and `hasGuest`.",
               requirePattern: /isMember\s*\|\|\s*hasGuest|hasGuest\s*\|\|\s*isMember/,
             },
             {
-              message: {
-                en:
-                  "When isMember is false but hasGuest is true, `canEnter` should be true.",
-                sv:
-                  "När isMember är false men hasGuest är true ska `canEnter` vara true.",
-              },
+              message: "When isMember is false but hasGuest is true, `canEnter` should be true.",
               assert: "return canEnter === true;",
             },
           ],
-          reveal: {
-            en:
-              "let isMember = false;\nlet hasGuest = true;\nlet isClosed = false;\nlet canEnter = isMember || hasGuest;\n",
-            sv:
-              "let isMember = false;\nlet hasGuest = true;\nlet isClosed = false;\nlet canEnter = isMember || hasGuest;\n",
-          },
+          reveal: "let isMember = false;\nlet hasGuest = true;\nlet isClosed = false;\nlet canEnter = isMember || hasGuest;\n",
         },
         {
           id: "club-and-not",
-          instruction: {
-            en:
-              "Update `canEnter` so it's also blocked when the club is closed. Remember you can use `( )` to group conditions together.",
-            sv:
-              "Uppdatera `canEnter` så att den också blockeras när klubben är stängd. Tänk på att du kan använda `( )` för att gruppera villkor.",
-          },
-          starterCode: {
-            en:
-              "let isMember = true;\nlet hasGuest = false;\nlet isClosed = true;\nlet canEnter = isMember || hasGuest;\n// Update canEnter to also require !isClosed.\n",
-            sv:
-              "let isMember = true;\nlet hasGuest = false;\nlet isClosed = true;\nlet canEnter = isMember || hasGuest;\n// Uppdatera canEnter så !isClosed också krävs.\n",
-          },
+          instruction: "Update `canEnter` so it's also blocked when the club is closed. Remember you can use `( )` to group conditions together.",
+          starterCode: "let isMember = true;\nlet hasGuest = false;\nlet isClosed = true;\nlet canEnter = isMember || hasGuest;\n// Update canEnter to also require !isClosed.\n",
           checks: [
             {
-              message: {
-                en: "Use parentheses around `isMember || hasGuest`.",
-                sv: "Använd parenteser runt `isMember || hasGuest`.",
-              },
+              message: "Use parentheses around `isMember || hasGuest`.",
               requirePattern: /\(\s*(isMember\s*\|\|\s*hasGuest|hasGuest\s*\|\|\s*isMember)\s*\)/,
             },
             {
-              message: {
-                en: "Combine the group with `&&`.",
-                sv: "Kombinera gruppen med `&&`.",
-              },
+              message: "Combine the group with `&&`.",
               requirePattern: /&&/,
             },
             {
-              message: {
-                en: "Apply `!` (not) to `isClosed`.",
-                sv: "Använd `!` (not) på `isClosed`.",
-              },
+              message: "Apply `!` (not) to `isClosed`.",
               requirePattern: /!\s*isClosed\b/,
             },
             {
-              message: {
-                en:
-                  "When the club is closed, `canEnter` should be false even for a member.",
-                sv:
-                  "När klubben är stängd ska `canEnter` vara false även för en medlem.",
-              },
+              message: "When the club is closed, `canEnter` should be false even for a member.",
               assert: "return canEnter === false;",
             },
           ],
-          reveal: {
-            en:
-              "let isMember = true;\nlet hasGuest = false;\nlet isClosed = true;\nlet canEnter = (isMember || hasGuest) && !isClosed;\n",
-            sv:
-              "let isMember = true;\nlet hasGuest = false;\nlet isClosed = true;\nlet canEnter = (isMember || hasGuest) && !isClosed;\n",
-          },
+          reveal: "let isMember = true;\nlet hasGuest = false;\nlet isClosed = true;\nlet canEnter = (isMember || hasGuest) && !isClosed;\n",
         },
       ],
       legend: [
         {
-          name: { en: "&& (and)", sv: "&& (och)" },
+          name: "&& (and)",
           syntax: "a && b",
           example: "open && !isClosed",
-          note: {
-            en: "True only when both sides are true.",
-            sv: "True bara när båda sidor är true.",
-          },
+          note: "True only when both sides are true.",
         },
         {
-          name: { en: "|| (or)", sv: "|| (eller)" },
+          name: "|| (or)",
           syntax: "a || b",
           example: "isMember || hasGuest",
-          note: {
-            en: "True when at least one side is true.",
-            sv: "True när minst en sida är true.",
-          },
+          note: "True when at least one side is true.",
         },
         {
-          name: { en: "! (not)", sv: "! (icke)" },
+          name: "! (not)",
           syntax: "!a",
           example: "!isClosed",
-          note: {
-            en: "Flips true to false and vice versa.",
-            sv: "Vänder true till false och tvärtom.",
-          },
+          note: "Flips true to false and vice versa.",
         },
       ],
     },
@@ -833,10 +515,8 @@ export const multiGateLesson: Lesson = {
     // parentheses on a different scenario than the bouncer/door theme.
     {
       kind: "exercise",
-      title: { en: "Lab: Smart Light", sv: "Labb: Smart lampa" },
-      prompt: {
-        en:
-          "A smart light should turn on only at night when it senses motion — unless someone has switched it off manually.\n\n" +
+      title: "Lab: Smart Light",
+      prompt: "A smart light should turn on only at night when it senses motion — unless someone has switched it off manually.\n\n" +
           "User stories (variable names are suggestions — pick your own if you like):\n" +
           "1. Declare a number variable (e.g. hour) between 0 and 23.\n" +
           "2. Declare a boolean variable (e.g. motion) — true if motion is sensed.\n" +
@@ -848,20 +528,6 @@ export const multiGateLesson: Lesson = {
           "   - manualOff is NOT true\n" +
           "   Use && , || and ! together. Wrap the night check in parentheses.\n" +
           "6. Print hour, motion, manualOff and lightOn (four lines, in that order).",
-        sv:
-          "En smart lampa ska tändas endast på natten när rörelse upptäcks — om den inte är manuellt avstängd.\n\n" +
-          "Användarberättelser (variabelnamnen är förslag — välj egna om du vill):\n" +
-          "1. Deklarera en talvariabel (t.ex. hour) mellan 0 och 23.\n" +
-          "2. Deklarera en boolesk variabel (t.ex. motion) — true om rörelse upptäcks.\n" +
-          "3. Deklarera en boolesk variabel (t.ex. manualOff) — true om brytaren är manuellt av.\n" +
-          "4. Deklarera en boolesk variabel (t.ex. lightOn) och sätt den till false.\n" +
-          "5. Sätt lightOn till true när ALLA dessa stämmer:\n" +
-          "   - motion är true\n" +
-          "   - det är natt: hour < 7 ELLER hour >= 19\n" +
-          "   - manualOff är INTE true\n" +
-          "   Använd && , || och ! tillsammans. Sätt parentes runt natt-kollen.\n" +
-          "6. Skriv ut hour, motion, manualOff och lightOn (fyra rader, i den ordningen).",
-      },
       starterJs:
         "// Follow the user stories shown to the left.\n\n" +
         "// 1-4. Declare hour, motion, manualOff and lightOn:\n\n\n\n\n\n" +
@@ -870,22 +536,13 @@ export const multiGateLesson: Lesson = {
         "// 6. Print all four values in order:\n\n",
       tests: [
         {
-          label: {
-            en: "Console shows exactly four lines",
-            sv: "Konsolen visar exakt fyra rader",
-          },
+          label: "Console shows exactly four lines",
           assert:
             "var c = window.__console || []; return c.length === 4;",
-          hint: {
-            en: "Print hour, motion, manualOff, lightOn — one console.log each.",
-            sv: "Skriv ut hour, motion, manualOff, lightOn — en console.log var.",
-          },
+          hint: "Print hour, motion, manualOff, lightOn — one console.log each.",
         },
         {
-          label: {
-            en: "Each variable you print is one you declared",
-            sv: "Varje variabel du skriver ut är en du deklarerat",
-          },
+          label: "Each variable you print is one you declared",
           assert:
             "var src = window.__userSrc || '';" +
             "var logs = []; var re = /console\\.log\\s*\\(\\s*([A-Za-z_$][A-Za-z0-9_$]*)\\s*\\)/g;" +
@@ -897,48 +554,28 @@ export const multiGateLesson: Lesson = {
             "  if (!d.test(src)) return false;" +
             "}" +
             "return true;",
-          hint: {
-            en:
-              "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
-            sv:
-              "Om en console.log-rad är tom eller fel, dubbelkolla variabelnamnet — det måste matcha det du deklarerade med let.",
-          },
+          hint: "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
         },
         {
-          label: {
-            en: "Line 1 is a number between 0 and 23",
-            sv: "Rad 1 är ett tal mellan 0 och 23",
-          },
+          label: "Line 1 is a number between 0 and 23",
           assert:
             "var c = window.__console || [];" +
             "if (c.length < 1) return false;" +
             "var n = Number(c[0].text);" +
             "return Number.isFinite(n) && n >= 0 && n <= 23;",
-          hint: {
-            en: "Set hour to an integer 0-23.",
-            sv: "Sätt hour till ett heltal 0-23.",
-          },
+          hint: "Set hour to an integer 0-23.",
         },
         {
-          label: {
-            en: 'Lines 2-4 are "true" or "false"',
-            sv: 'Rad 2-4 är "true" eller "false"',
-          },
+          label: 'Lines 2-4 are "true" or "false"',
           assert:
             "var c = window.__console || [];" +
             "if (c.length < 4) return false;" +
             "var ok = function(s){ return s === 'true' || s === 'false'; };" +
             "return ok(c[1].text) && ok(c[2].text) && ok(c[3].text);",
-          hint: {
-            en: "motion, manualOff and lightOn must all be booleans (not strings).",
-            sv: "motion, manualOff och lightOn måste vara booleans (inte strängar).",
-          },
+          hint: "motion, manualOff and lightOn must all be booleans (not strings).",
         },
         {
-          label: {
-            en: "lightOn matches the rule given hour, motion and manualOff",
-            sv: "lightOn matchar regeln givet hour, motion och manualOff",
-          },
+          label: "lightOn matches the rule given hour, motion and manualOff",
           assert:
             "var c = window.__console || [];" +
             "if (c.length < 4) return false;" +
@@ -949,36 +586,21 @@ export const multiGateLesson: Lesson = {
             "var night = hour < 7 || hour >= 19;" +
             "var expected = motion && night && !manualOff;" +
             "return actual === expected;",
-          hint: {
-            en: "lightOn = motion && (hour < 7 || hour >= 19) && !manualOff",
-            sv: "lightOn = motion && (hour < 7 || hour >= 19) && !manualOff",
-          },
+          hint: "lightOn = motion && (hour < 7 || hour >= 19) && !manualOff",
         },
         {
-          label: {
-            en: "Code uses && , || and ! together",
-            sv: "Koden använder && , || och ! tillsammans",
-          },
+          label: "Code uses && , || and ! together",
           assert:
             "var src = window.__userSrc || '';" +
             "return /&&/.test(src) && /\\|\\|/.test(src) && /(^|[^!])!\\s*[A-Za-z_$]/.test(src);",
-          hint: {
-            en: "All three operators are needed: && for AND, || for OR, ! to flip a boolean.",
-            sv: "Alla tre operatorer behövs: && för OCH, || för ELLER, ! för att vända en boolean.",
-          },
+          hint: "All three operators are needed: && for AND, || for OR, ! to flip a boolean.",
         },
         {
-          label: {
-            en: "Code uses parentheses to group the night check",
-            sv: "Koden använder parenteser för att gruppera natt-kollen",
-          },
+          label: "Code uses parentheses to group the night check",
           assert:
             "var src = window.__userSrc || '';" +
             "return /\\([^()]*\\|\\|[^()]*\\)/.test(src);",
-          hint: {
-            en: "Wrap the OR in parentheses: (hour < 7 || hour >= 19).",
-            sv: "Sätt OR inom parentes: (hour < 7 || hour >= 19).",
-          },
+          hint: "Wrap the OR in parentheses: (hour < 7 || hour >= 19).",
         },
       ],
     },

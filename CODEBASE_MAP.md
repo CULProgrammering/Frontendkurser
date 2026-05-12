@@ -55,13 +55,15 @@ or change a file's responsibility, update this map.**
   any write — without it, the toggle button's own `useState` snapshot
   would be the only one that updates and the change would only land
   on the next slide remount.
-- [`components/LanguageToggle.tsx`](app/src/components/LanguageToggle.tsx)
-  — en/sv selector.
 - [`components/TwoColumnLayout.tsx`](app/src/components/TwoColumnLayout.tsx)
   — responsive code | instructions split; collapses to single column at
   `< md` with tab toggle.
-- [`components/FlexibilityHelpButton.tsx`](app/src/components/FlexibilityHelpButton.tsx)
-  — "?" popover; gated by `step.flexibility`.
+- [`components/ValuesPill.tsx`](app/src/components/ValuesPill.tsx)
+  — small pill rendered above the prompt / instruction on every
+  workshop step and every exercise lab. **EXACT VALUES** (amber) when
+  the values are pinned by checks; **ANY VALUES** (teal) when the
+  step / slide opts in with `anyValues: true`. Replaced the prior
+  `FlexibilityHelpButton`.
 
 ## Slide views (one per `slide.kind`)
 - [`components/ExplanationSlideView.tsx`](app/src/components/ExplanationSlideView.tsx)
@@ -125,7 +127,7 @@ or change a file's responsibility, update this map.**
 ## Data layer
 - [`types.ts`](app/src/types.ts) — every slide/lesson/course shape;
   `Slide` discriminated union; `WorkshopStep`, `ExerciseSlide`,
-  `JsChipPuzzle`, `FlexibilityFlags`. `Topic` carries optional
+  `JsChipPuzzle`, `anyValues` flag on workshop steps + exercises. `Topic` carries optional
   `walkthroughs?: JsWorkshopSlide[]` and `challenges?: ExerciseSlide[]`
   for topic-level long-form content (rendered on the topic view as
   separate sections below the lesson grid).
@@ -174,13 +176,17 @@ or change a file's responsibility, update this map.**
   with `display` (Fraunces), `sans` (Inter), `mono` (JetBrains Mono),
   and registers the canvas / surface / ink colour names.
 
-## i18n
-- [`i18n/index.ts`](app/src/i18n/index.ts) — `t(loc, lang)` and the
-  `Lang` type.
+## i18n (English-only)
+The project is single-language. The i18n module is kept as a no-op
+shim for back-compat with code that still passes a `lang` argument.
+- [`i18n/index.ts`](app/src/i18n/index.ts) — `Loc = string`, `Lang = "en"`,
+  and a `t(value, _lang?)` identity helper. The second argument is
+  ignored; new code can drop it.
 - [`i18n/strings.ts`](app/src/i18n/strings.ts) — the `ui` object
-  containing every interface string as a `Loc`.
+  containing every interface string as a plain `Loc` (string).
 - [`i18n/LanguageContext.tsx`](app/src/i18n/LanguageContext.tsx) —
-  `useLang` hook + provider.
+  `useLang` hook returning `{ lang: "en" }`. Pinned to English; provider
+  is a pass-through. Kept so existing `useLang()` consumers compile.
 
 ## Test harness
 - [`app/scripts/test-labs.ts`](app/scripts/test-labs.ts) — vm-based

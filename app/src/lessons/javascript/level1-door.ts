@@ -3,48 +3,28 @@ import { codePanelStyle, noteBoxStyle } from "./_shared";
 
 export const doorLesson: Lesson = {
   id: "conditionals-crosswalk",
-  title: { en: "1. Crosswalk — if and else", sv: "1. Övergångsstället — if och else" },
-  summary: {
-    en: "A condition that says walk or wait.",
-    sv: "Ett villkor som säger gå eller vänta.",
-  },
+  title: "1. Crosswalk — if and else",
+  summary: "A condition that says walk or wait.",
   slides: [
     // 1. Intro — stick-figure crosswalk scene
     {
       kind: "explanation",
-      title: { en: "A choice in code", sv: "Ett val i koden" },
-      intro: {
-        en: "Sometimes the code has to choose what happens next.",
-        sv: "Ibland måste koden välja vad som händer.",
-      },
+      title: "A choice in code",
+      intro: "Sometimes the code has to choose what happens next.",
       customScene: "crosswalk",
       demo: [],
       steps: [
         {
-          narration: {
-            en: "You stand at the edge of a crosswalk.\nThe light tells you when to go.",
-            sv: "Du står vid kanten av ett övergångsställe.\nLjuset säger när du får gå.",
-          },
+          narration: "You stand at the edge of a crosswalk.\nThe light tells you when to go.",
         },
         {
-          narration: {
-            en: "When the light is red, you wait.",
-            sv: "När ljuset är rött väntar du.",
-          },
+          narration: "When the light is red, you wait.",
         },
         {
-          narration: {
-            en: "When it turns green, you walk across.",
-            sv: "När det blir grönt går du över.",
-          },
+          narration: "When it turns green, you walk across.",
         },
         {
-          narration: {
-            en:
-              "Same person, same crosswalk —\ndifferent action depending on the light.\nThat is a conditional.",
-            sv:
-              "Samma person, samma övergångsställe —\nolika handling beroende på ljuset.\nDet är ett villkor.",
-          },
+          narration: "Same person, same crosswalk —\ndifferent action depending on the light.\nThat is a conditional.",
         },
       ],
     },
@@ -52,13 +32,8 @@ export const doorLesson: Lesson = {
     // 2. Anatomy of an if — piece by piece
     {
       kind: "explanation",
-      title: { en: "An if, piece by piece", sv: "Ett if, del för del" },
-      intro: {
-        en:
-          "Here is what an if looks like in code.\nWe'll explain every part.",
-        sv:
-          "Så här ser ett if ut i kod.\nVi förklarar varje del.",
-      },
+      title: "An if, piece by piece",
+      intro: "Here is what an if looks like in code.\nWe'll explain every part.",
       demo: [
         {
           id: "code",
@@ -68,56 +43,26 @@ export const doorLesson: Lesson = {
       ],
       steps: [
         {
-          narration: {
-            en:
-              "Look at the code below. Five parts:\nif   ( ... )   { ... }   return.",
-            sv:
-              "Titta på koden nedanför. Fem delar:\nif   ( ... )   { ... }   return.",
-          },
+          narration: "Look at the code below. Five parts:\nif   ( ... )   { ... }   return.",
         },
         {
-          narration: {
-            en:
-              "1.  if  is a special word. It means 'if'.\nIt asks: should the next code run?",
-            sv:
-              "1.  if  är ett speciellt ord. Det betyder 'om'.\nDet frågar: ska nästa kod köras?",
-          },
+          narration: "1.  if  is a special word. It means 'if'.\nIt asks: should the next code run?",
           tokenHighlight: ["if"],
         },
         {
-          narration: {
-            en:
-              "2.  ( )  parentheses come right after if.\nThe question itself goes inside them.",
-            sv:
-              "2.  ( )  parenteser kommer direkt efter if.\nFrågan står inuti.",
-          },
+          narration: "2.  ( )  parentheses come right after if.\nThe question itself goes inside them.",
           tokenHighlight: ["(", ")"],
         },
         {
-          narration: {
-            en:
-              "3.  Inside the parentheses\nis something that is true or false.\nWe'll look at this on the next slide.",
-            sv:
-              "3.  Inuti parenteserna\nstår något som är sant eller falskt.\nVi tittar närmare på det i nästa steg.",
-          },
+          narration: "3.  Inside the parentheses\nis something that is true or false.\nWe'll look at this on the next slide.",
           tokenHighlight: ['light === "green"'],
         },
         {
-          narration: {
-            en:
-              "4.  { }  curly braces.\nThe code that runs when the answer is YES (true)\ngoes inside them.",
-            sv:
-              "4.  { }  klammerparenteser.\nKoden som körs om svaret är JA (true)\nstår inuti.",
-          },
+          narration: "4.  { }  curly braces.\nThe code that runs when the answer is YES (true)\ngoes inside them.",
           tokenHighlight: ["{", "}"],
         },
         {
-          narration: {
-            en:
-              "5.  return  is another special word.\nIt sends a value back as the answer.\nWe'll see it more soon.",
-            sv:
-              "5.  return  är ett annat speciellt ord.\nDet skickar tillbaka ett värde som svar.\nVi ser det mer strax.",
-          },
+          narration: "5.  return  is another special word.\nIt sends a value back as the answer.\nWe'll see it more soon.",
           tokenHighlight: ["return"],
         },
       ],
@@ -126,50 +71,22 @@ export const doorLesson: Lesson = {
     // 3. Booleans — what goes inside ( )
     {
       kind: "explanation",
-      title: {
-        en: "true or false — booleans",
-        sv: "true eller false — booleans",
-      },
-      intro: {
-        en:
-          "What goes inside the parentheses always boils down to ONE of two values:\ntrue or false.",
-        sv:
-          "Det som står inuti parenteserna landar alltid i ETT av två värden:\ntrue eller false.",
-      },
+      title: "true or false — booleans",
+      intro: "What goes inside the parentheses always boils down to ONE of two values:\ntrue or false.",
       customScene: "comparisons-table",
       demo: [],
       steps: [
         {
-          narration: {
-            en:
-              "A boolean is just a value: true or false.\nYes or no. On or off.",
-            sv:
-              "En boolean är bara ett värde: true eller false.\nJa eller nej. På eller av.",
-          },
+          narration: "A boolean is just a value: true or false.\nYes or no. On or off.",
         },
         {
-          narration: {
-            en:
-              "Compare two things and you get a boolean.\nThe table shows the six common operators —\nthe operator, how to read it, an example, the question it asks, and the answer.",
-            sv:
-              "Jämför två saker och du får en boolean.\nTabellen visar de sex vanliga operatorerna —\noperatorn, hur den läses, ett exempel, frågan den ställer, och svaret.",
-          },
+          narration: "Compare two things and you get a boolean.\nThe table shows the six common operators —\nthe operator, how to read it, an example, the question it asks, and the answer.",
         },
         {
-          narration: {
-            en:
-              "A variable can also already BE true or false:\n\nlet doorOpen = true;\nif (doorOpen) { ... }\n\nNo comparison needed — the variable IS the answer.",
-            sv:
-              "En variabel kan också redan VARA true eller false:\n\nlet doorOpen = true;\nif (doorOpen) { ... }\n\nIngen jämförelse behövs — variabeln ÄR svaret.",
-          },
+          narration: "A variable can also already BE true or false:\n\nlet doorOpen = true;\nif (doorOpen) { ... }\n\nNo comparison needed — the variable IS the answer.",
         },
         {
-          narration: {
-            en:
-              "Any of these can go inside the if's parentheses.\nThe if cares about one thing only: true or false.",
-            sv:
-              "Vilken som helst av dessa kan stå inuti if-parenteserna.\nif bryr sig om en enda sak: true eller false.",
-          },
+          narration: "Any of these can go inside the if's parentheses.\nThe if cares about one thing only: true or false.",
         },
       ],
     },
@@ -177,7 +94,7 @@ export const doorLesson: Lesson = {
     // 4. return — sending an answer
     {
       kind: "explanation",
-      title: { en: "return — sending an answer back", sv: "return — skicka tillbaka ett svar" },
+      title: "return — sending an answer back",
       demo: [
         {
           id: "code",
@@ -188,39 +105,19 @@ export const doorLesson: Lesson = {
       ],
       steps: [
         {
-          narration: {
-            en:
-              "return is a special word.\nIt sends a value back from your code.",
-            sv:
-              "return är ett speciellt ord.\nDet skickar tillbaka ett värde från din kod.",
-          },
+          narration: "return is a special word.\nIt sends a value back from your code.",
           tokenHighlight: ["return"],
         },
         {
-          narration: {
-            en:
-              "In our example:\n• if the light is green, we return \"walk\".\n• otherwise the if is skipped — and the function ends without returning.",
-            sv:
-              "I exemplet:\n• om ljuset är grönt returnerar vi \"walk\".\n• annars hoppas if över — och funktionen tar slut utan att returnera något.",
-          },
+          narration: "In our example:\n• if the light is green, we return \"walk\".\n• otherwise the if is skipped — and the function ends without returning.",
           tokenHighlight: ['"walk"'],
         },
         {
-          narration: {
-            en:
-              "return also stops the code right there.\nNothing after a return runs.",
-            sv:
-              "return stoppar också koden direkt.\nInget efter ett return körs.",
-          },
+          narration: "return also stops the code right there.\nNothing after a return runs.",
           tokenHighlight: ["return"],
         },
         {
-          narration: {
-            en:
-              "You can return any value:\n• a string, like \"walk\"\n• a number, like 42\n• true or false",
-            sv:
-              "Du kan returnera vilket värde som helst:\n• en sträng, som \"walk\"\n• ett tal, som 42\n• true eller false",
-          },
+          narration: "You can return any value:\n• a string, like \"walk\"\n• a number, like 42\n• true or false",
           tokenHighlight: ['"walk"'],
         },
       ],
@@ -229,98 +126,40 @@ export const doorLesson: Lesson = {
     // 5. Trace walkthrough (if-only) — read the code line by line, twice
     {
       kind: "explanation",
-      title: {
-        en: "Watching the code run",
-        sv: "Vi ser koden köras",
-      },
-      intro: {
-        en:
-          "Now let's read the code line by line.\nFirst with light = 'red'. Then we change it to 'green' and read it again.",
-        sv:
-          "Nu läser vi koden rad för rad.\nFörst med light = 'red'. Sen ändrar vi den till 'green' och läser igen.",
-      },
+      title: "Watching the code run",
+      intro: "Now let's read the code line by line.\nFirst with light = 'red'. Then we change it to 'green' and read it again.",
       customScene: "crosswalk-if-trace",
       demo: [],
       steps: [
         {
-          narration: {
-            en:
-              "On the left is the code. We'll go through it together.\nClick to step forward.",
-            sv:
-              "Till vänster ser du koden. Vi går igenom den ihop.\nKlicka för att stega framåt.",
-          },
+          narration: "On the left is the code. We'll go through it together.\nClick to step forward.",
         },
         {
-          narration: {
-            en:
-              "First we make a variable called light.\nIt holds the value \"red\".",
-            sv:
-              "Först skapar vi en variabel som heter light.\nDen har värdet \"red\".",
-          },
+          narration: "First we make a variable called light.\nIt holds the value \"red\".",
         },
         {
-          narration: {
-            en:
-              "Now we reach the if.\nIt asks: is light equal to \"green\"?",
-            sv:
-              "Nu kommer vi till if.\nDen frågar: är light lika med \"green\"?",
-          },
+          narration: "Now we reach the if.\nIt asks: is light equal to \"green\"?",
         },
         {
-          narration: {
-            en:
-              "Replace light with its value:\n\"red\" === \"green\".\n\"red\" is NOT \"green\". The condition is false.",
-            sv:
-              "Byt ut light mot dess värde:\n\"red\" === \"green\".\n\"red\" är INTE \"green\". Villkoret är false.",
-          },
+          narration: "Replace light with its value:\n\"red\" === \"green\".\n\"red\" is NOT \"green\". The condition is false.",
         },
         {
-          narration: {
-            en:
-              "Because the condition was false,\nwe skip everything inside { }.\nThere's nothing else — the function just ends.\n\nThe figure does nothing.",
-            sv:
-              "Eftersom villkoret var false\nhoppar vi över allt inuti { }.\nDet finns inget mer — funktionen tar bara slut.\n\nFiguren gör ingenting.",
-          },
+          narration: "Because the condition was false,\nwe skip everything inside { }.\nThere's nothing else — the function just ends.\n\nThe figure does nothing.",
         },
         {
-          narration: {
-            en:
-              "Now we change light to \"green\"\nand run the same code again.",
-            sv:
-              "Nu ändrar vi light till \"green\"\noch kör samma kod igen.",
-          },
+          narration: "Now we change light to \"green\"\nand run the same code again.",
         },
         {
-          narration: {
-            en:
-              "We reach the if again.\nSame question: is light equal to \"green\"?",
-            sv:
-              "Vi kommer till if igen.\nSamma fråga: är light lika med \"green\"?",
-          },
+          narration: "We reach the if again.\nSame question: is light equal to \"green\"?",
         },
         {
-          narration: {
-            en:
-              "Replace light with its value:\n\"green\" === \"green\".\nYes — they match. The condition is true.",
-            sv:
-              "Byt ut light mot dess värde:\n\"green\" === \"green\".\nJa — de matchar. Villkoret är true.",
-          },
+          narration: "Replace light with its value:\n\"green\" === \"green\".\nYes — they match. The condition is true.",
         },
         {
-          narration: {
-            en:
-              "Because the condition was true,\nwe run the code inside { }: return \"walk\".\n\nThe figure walks.",
-            sv:
-              "Eftersom villkoret var true\nkör vi koden inuti { }: return \"walk\".\n\nFiguren går.",
-          },
+          narration: "Because the condition was true,\nwe run the code inside { }: return \"walk\".\n\nThe figure walks.",
         },
         {
-          narration: {
-            en:
-              "Notice: same code, but the if only runs sometimes.\nWhen it doesn't run, nothing happens at all.\nWhat if we want SOMETHING to happen on red too?",
-            sv:
-              "Lägg märke till: samma kod, men if körs bara ibland.\nNär den inte körs händer ingenting alls.\nTänk om vi vill att NÅGOT ska hända på rött också?",
-          },
+          narration: "Notice: same code, but the if only runs sometimes.\nWhen it doesn't run, nothing happens at all.\nWhat if we want SOMETHING to happen on red too?",
         },
       ],
     },
@@ -328,64 +167,41 @@ export const doorLesson: Lesson = {
     // 5b. Practice — if-only (no else) — chip-style, no distractors
     {
       kind: "js-chip-assignment",
-      title: { en: "Practice: walk if green", sv: "Övning: gå om grönt" },
-      prompt: {
-        en:
-          "Build the if-statement piece by piece.\nWalk through the four sub-puzzles.",
-        sv:
-          "Bygg if-satsen bit för bit.\nGå igenom de fyra delpusslen.",
-      },
+      title: "Practice: walk if green",
+      prompt: "Build the if-statement piece by piece.\nWalk through the four sub-puzzles.",
       puzzles: [
         // p1: keyword — if vs while/for/else
         {
-          prompt: {
-            en: "Which keyword starts a conditional?",
-            sv: "Vilket nyckelord startar ett villkor?",
-          },
+          prompt: "Which keyword starts a conditional?",
           template: '[[]] (light === "green") {\n  return "walk";\n}',
           chips: ["if", "while", "for", "else"],
           solution: ["if"],
         },
         // p2: parentheses ( ) around the condition
         {
-          prompt: {
-            en: "What wraps the condition — ( ) or { }?",
-            sv: "Vad omger villkoret — ( ) eller { }?",
-          },
+          prompt: "What wraps the condition — ( ) or { }?",
           template: 'if [[]]light === "green"[[]] {\n  return "walk";\n}',
           chips: ["(", ")", "{", "}"],
           solution: ["(", ")"],
         },
         // p3: === operator (vs == and =)
         {
-          prompt: {
-            en: "Which operator checks strict equality?",
-            sv: "Vilken operator kontrollerar strikt likhet?",
-          },
+          prompt: "Which operator checks strict equality?",
           template: 'if (light [[]] "green") {\n  return "walk";\n}',
           chips: ["===", "==", "=", "!=="],
           solution: ["==="],
         },
         // p4: curly braces { } around the body (door scenario)
         {
-          intro: {
-            en: "Same shape — a door that opens.",
-            sv: "Samma form — en dörr som öppnas.",
-          },
-          prompt: {
-            en: "What wraps the body of the if?",
-            sv: "Vad omger kroppen av if?",
-          },
+          intro: "Same shape — a door that opens.",
+          prompt: "What wraps the body of the if?",
           template: 'if (door === "open") [[]]\n  return "enter";\n[[]]',
           chips: ["{", "}", "(", ")"],
           solution: ["{", "}"],
         },
         // p5: synthesis — all four elements together
         {
-          prompt: {
-            en: "Now place all the syntax pieces you've practised.",
-            sv: "Placera nu alla syntaxdelar du övat på.",
-          },
+          prompt: "Now place all the syntax pieces you've practised.",
           template: '[[]] [[]]light [[]] "green"[[]] [[]]\n  return "walk";\n[[]]',
           chips: ["if", "(", ")", "===", "{", "}", "while", "="],
           solution: ["if", "(", ")", "===", "{", "}"],
@@ -393,22 +209,16 @@ export const doorLesson: Lesson = {
       ],
       legend: [
         {
-          name: { en: "if (no else)", sv: "if (utan else)" },
+          name: "if (no else)",
           syntax: "if (condition) { ... }",
           example: 'if (light === "green") { return "walk"; }',
-          note: {
-            en: "When the condition is false, nothing else runs and the function ends.",
-            sv: "När villkoret är false körs inget annat, och funktionen tar slut.",
-          },
+          note: "When the condition is false, nothing else runs and the function ends.",
         },
         {
-          name: { en: "===", sv: "===" },
+          name: "===",
           syntax: "a === b",
           example: 'light === "green"',
-          note: {
-            en: "True only when both sides are exactly equal.",
-            sv: "Sant bara när båda sidor är exakt lika.",
-          },
+          note: "True only when both sides are exactly equal.",
         },
       ],
     },
@@ -416,7 +226,7 @@ export const doorLesson: Lesson = {
     // 6. else
     {
       kind: "explanation",
-      title: { en: "else — otherwise", sv: "else — annars" },
+      title: "else — otherwise",
       demo: [
         {
           id: "code",
@@ -427,39 +237,19 @@ export const doorLesson: Lesson = {
       ],
       steps: [
         {
-          narration: {
-            en:
-              "else is another special word. It means 'otherwise'.\nIt comes right after the closing } of the if.",
-            sv:
-              "else är ett annat speciellt ord. Det betyder 'annars'.\nDet kommer direkt efter den stängande } i if.",
-          },
+          narration: "else is another special word. It means 'otherwise'.\nIt comes right after the closing } of the if.",
           tokenHighlight: ["else"],
         },
         {
-          narration: {
-            en:
-              "Then come its OWN curly braces { }\nwith code that runs when the if's answer was false.",
-            sv:
-              "Sen kommer dess EGNA klammerparenteser { }\nmed kod som körs när if-svaret var false.",
-          },
+          narration: "Then come its OWN curly braces { }\nwith code that runs when the if's answer was false.",
           tokenHighlight: ["{", "}"],
         },
         {
-          narration: {
-            en:
-              "Only one branch ever runs —\neither the if or the else, never both.",
-            sv:
-              "Bara en gren körs någonsin —\nantingen if eller else, aldrig båda.",
-          },
+          narration: "Only one branch ever runs —\neither the if or the else, never both.",
           tokenHighlight: ["if", "else"],
         },
         {
-          narration: {
-            en:
-              "Now BOTH cases lead to a return.\nLet's read this version line by line too.",
-            sv:
-              "Nu leder BÅDA fallen till ett return.\nVi läser den här versionen rad för rad också.",
-          },
+          narration: "Now BOTH cases lead to a return.\nLet's read this version line by line too.",
           tokenHighlight: ["return"],
         },
       ],
@@ -468,98 +258,40 @@ export const doorLesson: Lesson = {
     // 6b. Trace walkthrough (if/else) — same shape as the if-only trace, with else added
     {
       kind: "explanation",
-      title: {
-        en: "Watching if / else run",
-        sv: "Vi ser if / else köras",
-      },
-      intro: {
-        en:
-          "Same idea as before — read line by line.\nThis time we have an else, so red has somewhere to go.",
-        sv:
-          "Samma tanke som förut — läs rad för rad.\nDen här gången finns ett else, så röd har någonstans att ta vägen.",
-      },
+      title: "Watching if / else run",
+      intro: "Same idea as before — read line by line.\nThis time we have an else, so red has somewhere to go.",
       customScene: "crosswalk-if-else-trace",
       demo: [],
       steps: [
         {
-          narration: {
-            en:
-              "Same start: light is \"red\".",
-            sv:
-              "Samma start: light är \"red\".",
-          },
+          narration: "Same start: light is \"red\".",
         },
         {
-          narration: {
-            en:
-              "We make light and give it the value \"red\".",
-            sv:
-              "Vi skapar light och ger den värdet \"red\".",
-          },
+          narration: "We make light and give it the value \"red\".",
         },
         {
-          narration: {
-            en:
-              "We reach the if.\nIs light equal to \"green\"?",
-            sv:
-              "Vi kommer till if.\nÄr light lika med \"green\"?",
-          },
+          narration: "We reach the if.\nIs light equal to \"green\"?",
         },
         {
-          narration: {
-            en:
-              "\"red\" === \"green\" is false.\nThe if's body is skipped.",
-            sv:
-              "\"red\" === \"green\" är false.\nIf-kroppen hoppas över.",
-          },
+          narration: "\"red\" === \"green\" is false.\nThe if's body is skipped.",
         },
         {
-          narration: {
-            en:
-              "But this time there's an else.\nWe go INTO the else block.",
-            sv:
-              "Men nu finns ett else.\nVi går IN i else-blocket.",
-          },
+          narration: "But this time there's an else.\nWe go INTO the else block.",
         },
         {
-          narration: {
-            en:
-              "We run the else's code: return \"wait\".\n\nThe figure waits.",
-            sv:
-              "Vi kör else-koden: return \"wait\".\n\nFiguren väntar.",
-          },
+          narration: "We run the else's code: return \"wait\".\n\nThe figure waits.",
         },
         {
-          narration: {
-            en:
-              "Now change light to \"green\" and run again.",
-            sv:
-              "Nu byter vi light till \"green\" och kör igen.",
-          },
+          narration: "Now change light to \"green\" and run again.",
         },
         {
-          narration: {
-            en:
-              "We reach the if.\nIs light equal to \"green\"?",
-            sv:
-              "Vi kommer till if.\nÄr light lika med \"green\"?",
-          },
+          narration: "We reach the if.\nIs light equal to \"green\"?",
         },
         {
-          narration: {
-            en:
-              "\"green\" === \"green\" is true.\nThe else is skipped.",
-            sv:
-              "\"green\" === \"green\" är true.\nElse hoppas över.",
-          },
+          narration: "\"green\" === \"green\" is true.\nThe else is skipped.",
         },
         {
-          narration: {
-            en:
-              "We run the if's code: return \"walk\".\n\nThe figure walks.",
-            sv:
-              "Vi kör if-koden: return \"walk\".\n\nFiguren går.",
-          },
+          narration: "We run the if's code: return \"walk\".\n\nThe figure walks.",
         },
       ],
     },
@@ -567,20 +299,12 @@ export const doorLesson: Lesson = {
     // 7. Practice — if/else — chip-style with light distractors
     {
       kind: "js-chip-assignment",
-      title: { en: "Practice: walk or wait", sv: "Övning: gå eller vänta" },
-      prompt: {
-        en:
-          "Now both branches matter — walk on green, wait on anything else.",
-        sv:
-          "Nu spelar båda grenarna roll — gå på grönt, vänta på allt annat.",
-      },
+      title: "Practice: walk or wait",
+      prompt: "Now both branches matter — walk on green, wait on anything else.",
       puzzles: [
         // p1: else keyword (vs elif/otherwise/if)
         {
-          prompt: {
-            en: "Pick the keyword between the } and the {.",
-            sv: "Välj ordet mellan } och {.",
-          },
+          prompt: "Pick the keyword between the } and the {.",
           template:
             'if (light === "green") {\n  return "walk";\n} [[]] {\n  return "wait";\n}',
           chips: ["else", "elif", "otherwise", "if"],
@@ -588,10 +312,7 @@ export const doorLesson: Lesson = {
         },
         // p2: { } curly braces around the else body
         {
-          prompt: {
-            en: "What wraps the else body?",
-            sv: "Vad omger else-kroppen?",
-          },
+          prompt: "What wraps the else body?",
           template:
             'if (light === "green") {\n  return "walk";\n} else [[]]\n  return "wait";\n[[]]',
           chips: ["{", "}", "(", ")"],
@@ -599,10 +320,7 @@ export const doorLesson: Lesson = {
         },
         // p3: === vs = (assignment trap)
         {
-          prompt: {
-            en: "Which operator compares — does not assign?",
-            sv: "Vilken operator jämför — tilldelar inte?",
-          },
+          prompt: "Which operator compares — does not assign?",
           template:
             'if (light [[]] "green") {\n  return "walk";\n} else {\n  return "wait";\n}',
           chips: ["===", "=", "=="],
@@ -610,14 +328,8 @@ export const doorLesson: Lesson = {
         },
         // p4: ; semicolon after return value (mood scenario)
         {
-          intro: {
-            en: "Same shape — smile when happy, frown otherwise.",
-            sv: "Samma form — le när glad, surmula annars.",
-          },
-          prompt: {
-            en: "What ends a return statement?",
-            sv: "Vad avslutar en return-sats?",
-          },
+          intro: "Same shape — smile when happy, frown otherwise.",
+          prompt: "What ends a return statement?",
           template:
             'if (mood === "happy") {\n  return "smile"[[]]\n} else {\n  return "frown";\n}',
           chips: [";", ",", ".", ":"],
@@ -625,10 +337,7 @@ export const doorLesson: Lesson = {
         },
         // p5: synthesis — all four elements together
         {
-          prompt: {
-            en: "Now place all the syntax pieces you've practised.",
-            sv: "Placera nu alla syntaxdelar du övat på.",
-          },
+          prompt: "Now place all the syntax pieces you've practised.",
           template: 'if (light [[]] "green") {\n  return "walk"[[]];\n} [[]] [[]]\n  return "wait";\n[[]]',
           chips: ["===", ";", "else", "{", "}", "=", "elif"],
           solution: ["===", ";", "else", "{", "}"],
@@ -636,22 +345,16 @@ export const doorLesson: Lesson = {
       ],
       legend: [
         {
-          name: { en: "if / else", sv: "if / else" },
+          name: "if / else",
           syntax: "if (...) { ... } else { ... }",
           example: 'if (x === "y") return "yes"; else return "no";',
-          note: {
-            en: "One of the two branches always runs.",
-            sv: "En av grenarna körs alltid.",
-          },
+          note: "One of the two branches always runs.",
         },
         {
-          name: { en: "===", sv: "===" },
+          name: "===",
           syntax: "a === b",
           example: 'light === "green"',
-          note: {
-            en: "True only when the values are exactly equal.",
-            sv: "Sant bara om värdena är exakt lika.",
-          },
+          note: "True only when the values are exactly equal.",
         },
       ],
     },
@@ -659,11 +362,8 @@ export const doorLesson: Lesson = {
     // 8. = vs == vs ===
     {
       kind: "explanation",
-      title: { en: "=, == and ===", sv: "=, == och ===" },
-      intro: {
-        en: "Three signs that look alike but mean very different things.",
-        sv: "Tre tecken som ser lika ut men betyder helt olika saker.",
-      },
+      title: "=, == and ===",
+      intro: "Three signs that look alike but mean very different things.",
       demo: [
         {
           id: "code",
@@ -674,41 +374,21 @@ export const doorLesson: Lesson = {
         {
           id: "warning",
           kind: "note",
-          label: {
-            en:
-              "Common trap:\nif (x = 5) — sets x to 5\nand is always true.\nAlmost never what you want.",
-            sv:
-              "Vanlig fälla:\nif (x = 5) — sätter x till 5\noch är alltid sant.\nNästan aldrig vad du vill.",
-          },
+          label: "Common trap:\nif (x = 5) — sets x to 5\nand is always true.\nAlmost never what you want.",
           baseStyle: { ...noteBoxStyle, marginTop: 16 },
         },
       ],
       steps: [
         {
-          narration: {
-            en:
-              "One equals sign — = — sets a value.\nIt is not a question, it is a statement.",
-            sv:
-              "Ett likhetstecken — = — sätter ett värde.\nDet är inte en fråga, det är ett besked.",
-          },
+          narration: "One equals sign — = — sets a value.\nIt is not a question, it is a statement.",
           tokenHighlight: ["="],
         },
         {
-          narration: {
-            en:
-              "Three equals signs — === — ask if two values are equal.\nThis is what you want in a condition.",
-            sv:
-              "Tre likhetstecken — === — frågar om två värden är lika.\nDet är vad du vill ha i ett villkor.",
-          },
+          narration: "Three equals signs — === — ask if two values are equal.\nThis is what you want in a condition.",
           tokenHighlight: ["==="],
         },
         {
-          narration: {
-            en:
-              "Two equals signs — == — also ask, but loosely.\nIt says 5 and \"5\" are equal, which is rarely true.\nUse ===.",
-            sv:
-              "Två likhetstecken — == — frågar också, men slarvigt.\nDet säger att 5 och \"5\" är lika, vilket sällan stämmer.\nAnvänd ===.",
-          },
+          narration: "Two equals signs — == — also ask, but loosely.\nIt says 5 and \"5\" are equal, which is rarely true.\nUse ===.",
           tokenHighlight: ["=="],
         },
       ],
@@ -717,101 +397,43 @@ export const doorLesson: Lesson = {
     // 8b. Strict-equality trace — first =, then ===
     {
       kind: "explanation",
-      title: {
-        en: "= versus ===",
-        sv: "= mot ===",
-      },
-      intro: {
-        en:
-          "Let's see what happens with a single = first.\nThen we'll switch to === and watch the difference.",
-        sv:
-          "Vi ser först vad som händer med ett enda =.\nSen byter vi till === och tittar på skillnaden.",
-      },
+      title: "= versus ===",
+      intro: "Let's see what happens with a single = first.\nThen we'll switch to === and watch the difference.",
       customScene: "crosswalk-strict-trace",
       demo: [],
       steps: [
         // Phase A — `=` (assignment)
         {
-          narration: {
-            en:
-              "First, the wrong version: a SINGLE = inside the if.\nlight starts as \"GREEN\".",
-            sv:
-              "Först den felaktiga versionen: ett ENDA = inuti if.\nlight börjar som \"GREEN\".",
-          },
+          narration: "First, the wrong version: a SINGLE = inside the if.\nlight starts as \"GREEN\".",
         },
         {
-          narration: {
-            en:
-              "We reach the if.\nThe = is between two values — what does it do here?",
-            sv:
-              "Vi kommer till if.\n= står mellan två värden — vad gör det här?",
-          },
+          narration: "We reach the if.\nThe = is between two values — what does it do here?",
         },
         {
-          narration: {
-            en:
-              "= ASSIGNS. light is now \"green\" (the assignment changed it).\nThe expression itself evaluates to \"green\" — which is truthy.",
-            sv:
-              "= TILLDELAR. light är nu \"green\" (tilldelningen ändrade den).\nUttrycket självt blir \"green\" — vilket är truthy.",
-          },
+          narration: "= ASSIGNS. light is now \"green\" (the assignment changed it).\nThe expression itself evaluates to \"green\" — which is truthy.",
         },
         {
-          narration: {
-            en:
-              "Because the expression was truthy, the if's body runs.\nWe return \"walk\".\n\nBut this would have happened for ANY starting value of light.\nThat's the bug — we wanted to compare, not assign.",
-            sv:
-              "Eftersom uttrycket var truthy körs if-kroppen.\nVi returnerar \"walk\".\n\nMen detta hade hänt med VILKET värde light än hade.\nDet är buggen — vi ville jämföra, inte tilldela.",
-          },
+          narration: "Because the expression was truthy, the if's body runs.\nWe return \"walk\".\n\nBut this would have happened for ANY starting value of light.\nThat's the bug — we wanted to compare, not assign.",
         },
         // Phase B — `===` mismatch
         {
-          narration: {
-            en:
-              "Switch to === — three equals signs.\nReset light to \"GREEN\".\nNow the if asks a question instead of assigning.",
-            sv:
-              "Byt till === — tre likhetstecken.\nÅterställ light till \"GREEN\".\nNu ställer if en fråga istället för att tilldela.",
-          },
+          narration: "Switch to === — three equals signs.\nReset light to \"GREEN\".\nNow the if asks a question instead of assigning.",
         },
         {
-          narration: {
-            en:
-              "\"GREEN\" === \"green\" → false.\n=== is strict — capital and lowercase letters are NOT the same.",
-            sv:
-              "\"GREEN\" === \"green\" → false.\n=== är strikt — versaler och gemener är INTE samma.",
-          },
+          narration: "\"GREEN\" === \"green\" → false.\n=== is strict — capital and lowercase letters are NOT the same.",
         },
         {
-          narration: {
-            en:
-              "Body skipped. Function ends. Nothing happens.\nMuch better than before — now the value matters.",
-            sv:
-              "Kroppen hoppas över. Funktionen tar slut. Inget händer.\nMycket bättre än förut — nu spelar värdet roll.",
-          },
+          narration: "Body skipped. Function ends. Nothing happens.\nMuch better than before — now the value matters.",
         },
         // Phase C — `===` match
         {
-          narration: {
-            en:
-              "Now change light to \"green\" — all lowercase.",
-            sv:
-              "Ändra light till \"green\" — bara gemener.",
-          },
+          narration: "Now change light to \"green\" — all lowercase.",
         },
         {
-          narration: {
-            en:
-              "\"green\" === \"green\" → true.\nNow they match exactly.",
-            sv:
-              "\"green\" === \"green\" → true.\nNu matchar de exakt.",
-          },
+          narration: "\"green\" === \"green\" → true.\nNow they match exactly.",
         },
         {
-          narration: {
-            en:
-              "The if's body runs: return \"walk\".\n\nLesson: use === to ASK, not = to ASSIGN.\nAnd === wants an EXACT match — even a single capital letter is enough to fail.",
-            sv:
-              "If-kroppen körs: return \"walk\".\n\nLärdom: använd === för att FRÅGA, inte = för att TILLDELA.\nOch === vill ha EXAKT matchning — en enda versal räcker för att det ska bli false.",
-          },
+          narration: "The if's body runs: return \"walk\".\n\nLesson: use === to ASK, not = to ASSIGN.\nAnd === wants an EXACT match — even a single capital letter is enough to fail.",
         },
       ],
     },
@@ -819,20 +441,12 @@ export const doorLesson: Lesson = {
     // 9. Practice — strict equality — chip-style focused on operator choice
     {
       kind: "js-chip-assignment",
-      title: { en: "Practice: pick the right operator", sv: "Övning: välj rätt operator" },
-      prompt: {
-        en:
-          "Pick the operator that compares STRICTLY — so \"GREEN\" doesn't sneak through.",
-        sv:
-          "Välj operatorn som jämför STRIKT — så att \"GREEN\" inte smiter förbi.",
-      },
+      title: "Practice: pick the right operator",
+      prompt: "Pick the operator that compares STRICTLY — so \"GREEN\" doesn't sneak through.",
       puzzles: [
         // p1: === vs == vs = (light scenario)
         {
-          prompt: {
-            en: "Which operator asks 'are these exactly equal'?",
-            sv: "Vilken operator frågar 'är dessa exakt lika'?",
-          },
+          prompt: "Which operator asks 'are these exactly equal'?",
           template:
             'if (light [[]] "green") {\n  return "walk";\n} else {\n  return "wait";\n}',
           chips: ["===", "==", "="],
@@ -840,10 +454,7 @@ export const doorLesson: Lesson = {
         },
         // p2: ( ) around the condition
         {
-          prompt: {
-            en: "What wraps the condition — ( ) or { }?",
-            sv: "Vad omger villkoret — ( ) eller { }?",
-          },
+          prompt: "What wraps the condition — ( ) or { }?",
           template:
             'if [[]]light === "green"[[]] {\n  return "walk";\n} else {\n  return "wait";\n}',
           chips: ["(", ")", "{", "}"],
@@ -851,10 +462,7 @@ export const doorLesson: Lesson = {
         },
         // p3: } else { the joint between branches
         {
-          prompt: {
-            en: "Place the } else { between the two branches.",
-            sv: "Placera } else { mellan de två grenarna.",
-          },
+          prompt: "Place the } else { between the two branches.",
           template:
             'if (light === "green") {\n  return "walk";\n[[]] [[]] [[]]\n  return "wait";\n}',
           chips: ["}", "else", "{", "(", ")"],
@@ -862,14 +470,8 @@ export const doorLesson: Lesson = {
         },
         // p4: === vs == vs = (door scenario)
         {
-          intro: {
-            en: "Same idea with a door — strict comparison only.",
-            sv: "Samma idé med en dörr — bara strikt jämförelse.",
-          },
-          prompt: {
-            en: "Which operator asks 'are these exactly equal'?",
-            sv: "Vilken operator frågar 'är dessa exakt lika'?",
-          },
+          intro: "Same idea with a door — strict comparison only.",
+          prompt: "Which operator asks 'are these exactly equal'?",
           template:
             'if (door [[]] "open") {\n  return "enter";\n} else {\n  return "knock";\n}',
           chips: ["===", "==", "=", "!=="],
@@ -877,10 +479,7 @@ export const doorLesson: Lesson = {
         },
         // p5: synthesis — all four elements together
         {
-          prompt: {
-            en: "Now place all the syntax pieces you've practised.",
-            sv: "Placera nu alla syntaxdelar du övat på.",
-          },
+          prompt: "Now place all the syntax pieces you've practised.",
           template: 'if [[]]light [[]] "green"[[]] {\n  return "walk";\n[[]] [[]] [[]]\n  return "wait";\n}',
           chips: ["(", "===", ")", "}", "else", "{", "==", "="],
           solution: ["(", "===", ")", "}", "else", "{"],
@@ -888,13 +487,10 @@ export const doorLesson: Lesson = {
       ],
       legend: [
         {
-          name: { en: "===", sv: "===" },
+          name: "===",
           syntax: "a === b",
           example: 'light === "green"',
-          note: {
-            en: "True only when both values are EXACTLY equal — case matters.",
-            sv: "Sant bara när båda värdena är EXAKT lika — versaler räknas.",
-          },
+          note: "True only when both values are EXACTLY equal — case matters.",
         },
       ],
     },
@@ -902,34 +498,26 @@ export const doorLesson: Lesson = {
     // 10. Final — typed input
     {
       kind: "js-typed-assignment",
-      title: { en: "Final: walk or wait", sv: "Slutövning: gå eller vänta" },
-      prompt: {
-        en:
-          "The signal is now an UPPERCASE string.\nReturn 'walk' when signal is exactly 'WALK'.\nReturn 'wait' otherwise.\n\nFill in the boxes — type the missing pieces yourself.",
-        sv:
-          "Signalen är nu en sträng med VERSALER.\nReturnera 'walk' när signal är exakt 'WALK'.\nReturnera 'wait' annars.\n\nFyll i rutorna — skriv de saknade bitarna själv.",
-      },
+      title: "Final: walk or wait",
+      prompt: "The signal is now an UPPERCASE string.\nReturn 'walk' when signal is exactly 'WALK'.\nReturn 'wait' otherwise.\n\nFill in the boxes — type the missing pieces yourself.",
       varNames: ["signal"],
       template:
         'if ([[input:cond]]) {\n  return [[input:then]];\n}\nreturn [[input:else]];\n',
       tests: [
-        { label: { en: "WALK", sv: "WALK" }, vars: { signal: "WALK" }, expected: "walk" },
-        { label: { en: "STOP", sv: "STOP" }, vars: { signal: "STOP" }, expected: "wait" },
-        { label: { en: "FLASHING", sv: "BLINKAR" }, vars: { signal: "FLASHING" }, expected: "wait" },
-        { label: { en: "Walk (mixed case)", sv: "Walk (blandat)" }, vars: { signal: "Walk" }, expected: "wait" },
+        { label: "WALK", vars: { signal: "WALK" }, expected: "walk" },
+        { label: "STOP", vars: { signal: "STOP" }, expected: "wait" },
+        { label: "FLASHING", vars: { signal: "FLASHING" }, expected: "wait" },
+        { label: "Walk (mixed case)", vars: { signal: "Walk" }, expected: "wait" },
       ],
-      goalHint: {
-        en: "Return walk only when signal is exactly the uppercase string \"WALK\".",
-        sv: "Returnera walk bara när signal är exakt strängen \"WALK\".",
-      },
+      goalHint: "Return walk only when signal is exactly the uppercase string \"WALK\".",
       allegory: {
         kind: "crosswalk",
         config: {
-          conditionLabel: { en: "signal === \"WALK\"?", sv: "signal === \"WALK\"?" },
+          conditionLabel: "signal === \"WALK\"?",
           inputKey: "signal",
           walkWhen: "walk",
-          walkLabel: { en: "Walks", sv: "Går" },
-          waitLabel: { en: "Waits", sv: "Väntar" },
+          walkLabel: "Walks",
+          waitLabel: "Waits",
         },
       },
     },
@@ -940,195 +528,98 @@ export const doorLesson: Lesson = {
     // checks accept any string, leaving the student free to label creatively.
     {
       kind: "js-workshop",
-      title: { en: "Workshop: password check", sv: "Verkstad: lösenordskoll" },
-      prompt: {
-        en:
-          "Build a password-length check step by step.\nA short password is rejected, otherwise it's accepted.",
-        sv:
-          "Bygg en längdkontroll för lösenord steg för steg.\nKort lösenord avvisas, annars godkänns det.",
-      },
+      title: "Workshop: password check",
+      prompt: "Build a password-length check step by step.\nA short password is rejected, otherwise it's accepted.",
       designNote:
         "L1 if/else workshop. Surface chosen to differ from chips (signal) and exercise (fortune picker). Five steps build a 2-branch chain. String labels are free (typeof check); the lesson is the if/else shape and the .length comparison.",
       steps: [
         {
           id: "pwd-declare-password",
-          instruction: {
-            en:
-              "Use `let` to declare a variable called `password` and assign it any string.",
-            sv:
-              "Använd `let` för att deklarera en variabel som heter `password` och tilldela den en sträng.",
-          },
-          starterCode: {
-            en: "// Declare password below.\n",
-            sv: "// Deklarera password nedan.\n",
-          },
+          instruction: "Use `let` to declare a variable called `password` and assign it any string.",
+          starterCode: "// Declare password below.\n",
           checks: [
             {
-              message: {
-                en: "Use `let` to declare a variable named `password`.",
-                sv: "Använd `let` för att deklarera en variabel som heter `password`.",
-              },
+              message: "Use `let` to declare a variable named `password`.",
               requirePattern: /\blet\s+password\b/,
             },
             {
-              message: {
-                en: "`password` should hold a string.",
-                sv: "`password` ska innehålla en sträng.",
-              },
+              message: "`password` should hold a string.",
               assert: "return typeof password === 'string';",
             },
           ],
-          reveal: {
-            en: 'let password = "hunter2";\n',
-            sv: 'let password = "hunter2";\n',
-          },
+          reveal: 'let password = "hunter2";\n',
         },
         {
           id: "pwd-declare-verdict",
-          instruction: {
-            en:
-              "Below `password`, use `let` to declare `verdict` with no value yet — the if-branches will set it.",
-            sv:
-              "Under `password`, använd `let` för att deklarera `verdict` utan något värde — if-grenarna sätter värdet.",
-          },
-          starterCode: {
-            en:
-              'let password = "hunter2";\n// Declare verdict below (no value).\n',
-            sv:
-              'let password = "hunter2";\n// Deklarera verdict nedan (inget värde).\n',
-          },
+          instruction: "Below `password`, use `let` to declare `verdict` with no value yet — the if-branches will set it.",
+          starterCode: 'let password = "hunter2";\n// Declare verdict below (no value).\n',
           checks: [
             {
-              message: {
-                en: "Use `let` to declare a variable named `verdict`.",
-                sv: "Använd `let` för att deklarera en variabel som heter `verdict`.",
-              },
+              message: "Use `let` to declare a variable named `verdict`.",
               requirePattern: /\blet\s+verdict\b/,
             },
             {
-              message: {
-                en:
-                  "Don't assign `verdict` yet — the if-branches will set its value.",
-                sv:
-                  "Tilldela inte `verdict` än — if-grenarna sätter värdet.",
-              },
+              message: "Don't assign `verdict` yet — the if-branches will set its value.",
               assert: "return typeof verdict === 'undefined';",
             },
           ],
-          reveal: {
-            en: 'let password = "hunter2";\nlet verdict;\n',
-            sv: 'let password = "hunter2";\nlet verdict;\n',
-          },
+          reveal: 'let password = "hunter2";\nlet verdict;\n',
         },
         {
           id: "pwd-if-too-short",
-          instruction: {
-            en:
-              "Add an `if` that runs when the password is too short — fewer than 8 characters. Inside, set `verdict` to a string (the lesson uses `\"too short\"`).",
-            sv:
-              "Lägg till en `if` som körs när lösenordet är för kort — färre än 8 tecken. Sätt `verdict` till en sträng inne i grenen (lektionen använder `\"too short\"`).",
-          },
-          starterCode: {
-            en:
-              'let password = "abc";\nlet verdict;\n// Add an if that sets verdict to a string when password.length < 8.\n',
-            sv:
-              'let password = "abc";\nlet verdict;\n// Lägg till en if som sätter verdict till en sträng när password.length < 8.\n',
-          },
+          instruction: "Add an `if` that runs when the password is too short — fewer than 8 characters. Inside, set `verdict` to a string (the lesson uses `\"too short\"`).",
+          starterCode: 'let password = "abc";\nlet verdict;\n// Add an if that sets verdict to a string when password.length < 8.\n',
           checks: [
             {
-              message: {
-                en: "Use `if` to start the branch.",
-                sv: "Använd `if` för att börja grenen.",
-              },
+              message: "Use `if` to start the branch.",
               requirePattern: /\bif\s*\(/,
             },
             {
-              message: {
-                en: "Compare `password.length` to `8` with `<`.",
-                sv: "Jämför `password.length` med `8` med hjälp av `<`.",
-              },
+              message: "Compare `password.length` to `8` with `<`.",
               requirePattern: /password\.length\s*<\s*8\b/,
             },
             {
-              message: {
-                en: "Inside the branch, set `verdict` to a string.",
-                sv: "Inne i grenen, sätt `verdict` till en sträng.",
-              },
+              message: "Inside the branch, set `verdict` to a string.",
               assert: "return typeof verdict === 'string';",
             },
           ],
-          reveal: {
-            en:
-              'let password = "abc";\nlet verdict;\nif (password.length < 8) {\n  verdict = "too short";\n}\n',
-            sv:
-              'let password = "abc";\nlet verdict;\nif (password.length < 8) {\n  verdict = "too short";\n}\n',
-          },
+          reveal: 'let password = "abc";\nlet verdict;\nif (password.length < 8) {\n  verdict = "too short";\n}\n',
         },
         {
           id: "pwd-else-ok",
-          instruction: {
-            en:
-              "Add an `else` for the accepted case — when the password isn't too short. The else runs when the if's condition was false. The lesson uses `\"OK\"` for the accepted string.",
-            sv:
-              "Lägg till en `else` för det godkända fallet — när lösenordet inte är för kort. else körs när if-villkoret var false. Lektionen använder `\"OK\"` för den godkända strängen.",
-          },
-          starterCode: {
-            en:
-              'let password = "longenough";\nlet verdict;\nif (password.length < 8) {\n  verdict = "too short";\n}\n// Add an else (no condition) that sets verdict to a string.\n',
-            sv:
-              'let password = "longenough";\nlet verdict;\nif (password.length < 8) {\n  verdict = "too short";\n}\n// Lägg till ett else (utan villkor) som sätter verdict till en sträng.\n',
-          },
+          instruction: "Add an `else` for the accepted case — when the password isn't too short. The else runs when the if's condition was false. The lesson uses `\"OK\"` for the accepted string.",
+          starterCode: 'let password = "longenough";\nlet verdict;\nif (password.length < 8) {\n  verdict = "too short";\n}\n// Add an else (no condition) that sets verdict to a string.\n',
           checks: [
             {
-              message: {
-                en: "Add a bare `else { ... }` (no `if` after `else`).",
-                sv: "Lägg till ett rent `else { ... }` (inget `if` efter `else`).",
-              },
+              message: "Add a bare `else { ... }` (no `if` after `else`).",
               requirePattern: /\belse\s*\{/,
             },
             {
-              message: {
-                en: "Inside the else, set `verdict` to a string.",
-                sv: "Inne i else, sätt `verdict` till en sträng.",
-              },
+              message: "Inside the else, set `verdict` to a string.",
               assert: "return typeof verdict === 'string';",
             },
           ],
-          reveal: {
-            en:
-              'let password = "longenough";\nlet verdict;\nif (password.length < 8) {\n  verdict = "too short";\n} else {\n  verdict = "OK";\n}\n',
-            sv:
-              'let password = "longenough";\nlet verdict;\nif (password.length < 8) {\n  verdict = "too short";\n} else {\n  verdict = "OK";\n}\n',
-          },
+          reveal: 'let password = "longenough";\nlet verdict;\nif (password.length < 8) {\n  verdict = "too short";\n} else {\n  verdict = "OK";\n}\n',
         },
       ],
       legend: [
         {
-          name: { en: "if", sv: "if" },
+          name: "if",
           syntax: "if (condition) { ... }",
           example: "if (password.length < 8) { ... }",
-          note: {
-            en: "Runs when its condition is true.",
-            sv: "Körs när villkoret är true.",
-          },
+          note: "Runs when its condition is true.",
         },
         {
-          name: { en: "else", sv: "else" },
+          name: "else",
           syntax: "} else { ... }",
           example: '} else { verdict = "OK"; }',
-          note: {
-            en: "Runs when the if's condition was false.",
-            sv: "Körs när if-villkoret var false.",
-          },
+          note: "Runs when the if's condition was false.",
         },
         {
-          name: { en: ".length", sv: ".length" },
+          name: ".length",
           syntax: "string.length",
           example: 'password.length',
-          note: {
-            en: "How many characters are in the string.",
-            sv: "Hur många tecken strängen har.",
-          },
+          note: "How many characters are in the string.",
         },
       ],
     },
@@ -1139,10 +630,8 @@ export const doorLesson: Lesson = {
     // `if` statements (no `else if` in L1) to assign the matching value.
     {
       kind: "exercise",
-      title: { en: "Lab: Fortune Picker", sv: "Labb: Lyckokakan" },
-      prompt: {
-        en:
-          "Pick a fortune from a list of three based on a number.\n\n" +
+      title: "Lab: Fortune Picker",
+      prompt: "Pick a fortune from a list of three based on a number.\n\n" +
           "User stories (variable names are suggestions — pick your own if you like, " +
           "as long as they stay consistent through the program):\n" +
           "1. Declare three string variables (e.g. fortune1, fortune2, fortune3) — any short fortune you like.\n" +
@@ -1155,21 +644,6 @@ export const doorLesson: Lesson = {
           "8. Print selected (one more console.log line).\n\n" +
           "You don't have else if yet — write three separate if statements, " +
           "and compare the same number variable in each.",
-        sv:
-          "Välj en lyckokaka från en lista med tre baserat på ett nummer.\n\n" +
-          "Användarberättelser (variabelnamnen är förslag — välj egna om du vill, " +
-          "bara du håller dem konsekventa genom programmet):\n" +
-          "1. Deklarera tre strängvariabler (t.ex. fortune1, fortune2, fortune3) — välj fritt.\n" +
-          "2. Deklarera en talvariabel (t.ex. n) och sätt den till 1, 2 eller 3.\n" +
-          "3. Deklarera en strängvariabel (t.ex. selected) och sätt den till \"\".\n" +
-          "4. Om ditt nummer === 1, sätt selected till första lyckokakan.\n" +
-          "5. Om ditt nummer === 2, sätt selected till andra lyckokakan.\n" +
-          "6. Om ditt nummer === 3, sätt selected till tredje lyckokakan.\n" +
-          "7. Skriv ut de tre lyckokakorna i ordning (tre console.log-rader).\n" +
-          "8. Skriv ut selected (en till console.log-rad).\n\n" +
-          "Du har inte else if än — skriv tre separata if-satser, " +
-          "och jämför samma talvariabel i varje.",
-      },
       starterJs:
         "// Follow the user stories shown to the left.\n" +
         "// Reminder: declare variables with `let`, e.g.\n" +
@@ -1180,23 +654,14 @@ export const doorLesson: Lesson = {
         "// 7-8. Print the three fortunes, then selected:\n\n",
       tests: [
         {
-          label: {
-            en: "Console shows exactly four lines",
-            sv: "Konsolen visar exakt fyra rader",
-          },
+          label: "Console shows exactly four lines",
           assert:
             "var c = window.__console || [];" +
             "return c.length === 4;",
-          hint: {
-            en: "Three console.log for the fortunes plus one for selected — four in total.",
-            sv: "Tre console.log för lyckokakorna plus en för selected — fyra totalt.",
-          },
+          hint: "Three console.log for the fortunes plus one for selected — four in total.",
         },
         {
-          label: {
-            en: "Each variable you print is one you declared",
-            sv: "Varje variabel du skriver ut är en du deklarerat",
-          },
+          label: "Each variable you print is one you declared",
           assert:
             "var src = window.__userSrc || '';" +
             "var logs = []; var re = /console\\.log\\s*\\(\\s*([A-Za-z_$][A-Za-z0-9_$]*)\\s*\\)/g;" +
@@ -1208,63 +673,35 @@ export const doorLesson: Lesson = {
             "  if (!d.test(src)) return false;" +
             "}" +
             "return true;",
-          hint: {
-            en:
-              "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
-            sv:
-              "Om en console.log-rad är tom eller fel, dubbelkolla variabelnamnet — det måste matcha det du deklarerade med let.",
-          },
+          hint: "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
         },
         {
-          label: {
-            en: "All three fortunes are non-empty strings",
-            sv: "Alla tre lyckokakor är icke-tomma strängar",
-          },
+          label: "All three fortunes are non-empty strings",
           assert:
             "var c = window.__console || [];" +
             "if (c.length < 3) return false;" +
             "return c[0].text.length > 0 && c[1].text.length > 0 && c[2].text.length > 0;",
-          hint: {
-            en: 'Set fortune1, fortune2 and fortune3 to actual strings, not "".',
-            sv: 'Sätt fortune1, fortune2 och fortune3 till riktiga strängar, inte "".',
-          },
+          hint: 'Set fortune1, fortune2 and fortune3 to actual strings, not "".',
         },
         {
-          label: {
-            en: "The three fortunes are different from each other",
-            sv: "De tre lyckokakorna är olika varandra",
-          },
+          label: "The three fortunes are different from each other",
           assert:
             "var c = window.__console || [];" +
             "if (c.length < 3) return false;" +
             "return c[0].text !== c[1].text && c[1].text !== c[2].text && c[0].text !== c[2].text;",
-          hint: {
-            en: "Give each fortune a different string so the picker has real choices.",
-            sv: "Ge varje lyckokaka en egen sträng så det blir riktiga val.",
-          },
+          hint: "Give each fortune a different string so the picker has real choices.",
         },
         {
-          label: {
-            en: "selected matches one of the three fortunes",
-            sv: "selected matchar en av de tre lyckokakorna",
-          },
+          label: "selected matches one of the three fortunes",
           assert:
             "var c = window.__console || [];" +
             "if (c.length < 4) return false;" +
             "var sel = c[3].text;" +
             "return sel === c[0].text || sel === c[1].text || sel === c[2].text;",
-          hint: {
-            en: "Inside each if, assign one of fortune1, fortune2 or fortune3 to selected.",
-            sv: "Inuti varje if, tilldela en av fortune1, fortune2 eller fortune3 till selected.",
-          },
+          hint: "Inside each if, assign one of fortune1, fortune2 or fortune3 to selected.",
         },
         {
-          label: {
-            en:
-              "Code has three separate if-statements comparing the same variable to 1, 2 and 3",
-            sv:
-              "Koden har tre separata if-satser som jämför samma variabel med 1, 2 och 3",
-          },
+          label: "Code has three separate if-statements comparing the same variable to 1, 2 and 3",
           assert:
             "var src = window.__userSrc || '';" +
             "var re = /if\\s*\\(\\s*([A-Za-z_$][A-Za-z0-9_$]*)\\s*===\\s*([123])\\s*\\)/g;" +
@@ -1275,12 +712,7 @@ export const doorLesson: Lesson = {
             "if (!hits.every(function(h){ return h.name === name; })) return false;" +
             "var nums = hits.map(function(h){ return h.num; }).sort().join(',');" +
             "return nums === '1,2,3';",
-          hint: {
-            en:
-              "Write three separate if-statements that all compare the same variable to 1, 2 and 3.",
-            sv:
-              "Skriv tre separata if-satser som alla jämför samma variabel med 1, 2 och 3.",
-          },
+          hint: "Write three separate if-statements that all compare the same variable to 1, 2 and 3.",
         },
       ],
     },

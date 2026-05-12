@@ -3,48 +3,28 @@ import { codePanelStyle, noteBoxStyle } from "./_shared";
 
 export const forkLesson: Lesson = {
   id: "conditionals-wardrobe",
-  title: { en: "2. Wardrobe — else if", sv: "2. Garderoben — else if" },
-  summary: {
-    en: "Pick an outfit by the temperature.",
-    sv: "Välj en outfit beroende på temperaturen.",
-  },
+  title: "2. Wardrobe — else if",
+  summary: "Pick an outfit by the temperature.",
   slides: [
     // 1. Intro — wardrobe stick-figure scene
     {
       kind: "explanation",
-      title: { en: "More than two answers", sv: "Fler än två svar" },
-      intro: {
-        en: "Sometimes there are more than two outcomes.",
-        sv: "Ibland finns det fler än två utfall.",
-      },
+      title: "More than two answers",
+      intro: "Sometimes there are more than two outcomes.",
       customScene: "wardrobe",
       demo: [],
       steps: [
         {
-          narration: {
-            en:
-              "You stand in front of your wardrobe.\nWhat to wear depends on the temperature.",
-            sv:
-              "Du står framför garderoben.\nVad du tar på dig beror på temperaturen.",
-          },
+          narration: "You stand in front of your wardrobe.\nWhat to wear depends on the temperature.",
         },
         {
-          narration: {
-            en: "Cold? You grab the winter coat.",
-            sv: "Kallt? Då tar du vinterkappan.",
-          },
+          narration: "Cold? You grab the winter coat.",
         },
         {
-          narration: {
-            en: "Mild? A jacket is enough.",
-            sv: "Milt? En jacka räcker.",
-          },
+          narration: "Mild? A jacket is enough.",
         },
         {
-          narration: {
-            en: "Warm? Just a t-shirt.",
-            sv: "Varmt? Bara en t-shirt.",
-          },
+          narration: "Warm? Just a t-shirt.",
         },
       ],
     },
@@ -52,16 +32,8 @@ export const forkLesson: Lesson = {
     // 2. Why if/else isn't enough — motivation
     {
       kind: "explanation",
-      title: {
-        en: "Two paths aren't always enough",
-        sv: "Två vägar räcker inte alltid",
-      },
-      intro: {
-        en:
-          "if and else give you exactly two paths.\nBut sometimes you have three (or more) outcomes.",
-        sv:
-          "if och else ger dig exakt två vägar.\nMen ibland har du tre (eller fler) utfall.",
-      },
+      title: "Two paths aren't always enough",
+      intro: "if and else give you exactly two paths.\nBut sometimes you have three (or more) outcomes.",
       demo: [
         {
           id: "code",
@@ -72,21 +44,11 @@ export const forkLesson: Lesson = {
       ],
       steps: [
         {
-          narration: {
-            en:
-              "With if/else there are only two outcomes.\nWe can split cold from not-cold,\nbut we can't tell mild from warm.",
-            sv:
-              "Med if/else finns bara två utfall.\nVi kan skilja kallt från ej-kallt,\nmen vi kan inte skilja milt från varmt.",
-          },
+          narration: "With if/else there are only two outcomes.\nWe can split cold from not-cold,\nbut we can't tell mild from warm.",
           tokenHighlight: ["if", "else"],
         },
         {
-          narration: {
-            en:
-              "We need to ASK A SECOND QUESTION\nwhen the first answer was no.\nThat's what else if is for.",
-            sv:
-              "Vi behöver STÄLLA EN ANDRA FRÅGA\nnär det första svaret var nej.\nDet är vad else if används till.",
-          },
+          narration: "We need to ASK A SECOND QUESTION\nwhen the first answer was no.\nThat's what else if is for.",
         },
       ],
     },
@@ -94,7 +56,7 @@ export const forkLesson: Lesson = {
     // 3. Anatomy of the chain
     {
       kind: "explanation",
-      title: { en: "if / else if / else", sv: "if / else if / else" },
+      title: "if / else if / else",
       demo: [
         {
           id: "code",
@@ -105,47 +67,22 @@ export const forkLesson: Lesson = {
       ],
       steps: [
         {
-          narration: {
-            en:
-              "Three branches. Each one is a question OR a fallback.",
-            sv:
-              "Tre grenar. Varje gren är en fråga ELLER en reservutgång.",
-          },
+          narration: "Three branches. Each one is a question OR a fallback.",
         },
         {
-          narration: {
-            en:
-              "1.  if  is the first question.\nIf the answer is yes, that branch runs and we're done.",
-            sv:
-              "1.  if  är den första frågan.\nÄr svaret ja körs den grenen, och vi är klara.",
-          },
+          narration: "1.  if  is the first question.\nIf the answer is yes, that branch runs and we're done.",
           tokenHighlight: ["if (temp <= 0)"],
         },
         {
-          narration: {
-            en:
-              "2.  else if  means 'otherwise, if'.\nIt only asks its question when the FIRST one was false.\nYou can chain as many else if's as you like.",
-            sv:
-              "2.  else if  betyder 'annars, om'.\nDen ställer sin fråga BARA om den FÖRSTA var falsk.\nDu kan kedja hur många else if du vill.",
-          },
+          narration: "2.  else if  means 'otherwise, if'.\nIt only asks its question when the FIRST one was false.\nYou can chain as many else if's as you like.",
           tokenHighlight: ["else if"],
         },
         {
-          narration: {
-            en:
-              "3.  else  at the very end is the fallback.\nIt runs when NOTHING above matched.",
-            sv:
-              "3.  else  på slutet är reservutgången.\nDen körs när INGET ovan stämde.",
-          },
+          narration: "3.  else  at the very end is the fallback.\nIt runs when NOTHING above matched.",
           tokenHighlight: ["} else {"],
         },
         {
-          narration: {
-            en:
-              "Important rule: only ONE branch runs.\nThe first one whose question is true wins.\nThe rest are skipped — not even checked.",
-            sv:
-              "Viktig regel: bara EN gren körs.\nFörsta grenen vars fråga är true vinner.\nResten hoppas över — inte ens kollade.",
-          },
+          narration: "Important rule: only ONE branch runs.\nThe first one whose question is true wins.\nThe rest are skipped — not even checked.",
         },
       ],
     },
@@ -153,142 +90,64 @@ export const forkLesson: Lesson = {
     // 4. Trace walkthrough — step through three temperatures
     {
       kind: "explanation",
-      title: {
-        en: "Watching the chain run",
-        sv: "Vi ser kedjan köras",
-      },
-      intro: {
-        en:
-          "Same idea as last lesson — read the code line by line.\nThis time we'll do it three times: -5°, then 10°, then 25°.",
-        sv:
-          "Samma tanke som förra lektionen — läs koden rad för rad.\nDen här gången gör vi det tre gånger: -5°, sen 10°, sen 25°.",
-      },
+      title: "Watching the chain run",
+      intro: "Same idea as last lesson — read the code line by line.\nThis time we'll do it three times: -5°, then 10°, then 25°.",
       customScene: "wardrobe-trace",
       demo: [],
       steps: [
         {
-          narration: {
-            en:
-              "On the left is the code. On the right, a thermometer and a figure.\nClick to step forward.",
-            sv:
-              "Till vänster är koden. Till höger en termometer och en figur.\nKlicka för att stega framåt.",
-          },
+          narration: "On the left is the code. On the right, a thermometer and a figure.\nClick to step forward.",
         },
         {
-          narration: {
-            en: "First we set temp to -5.",
-            sv: "Först sätter vi temp till -5.",
-          },
+          narration: "First we set temp to -5.",
         },
         {
-          narration: {
-            en: "We reach the if. It asks: is temp <= 0?",
-            sv: "Vi kommer till if. Den frågar: är temp <= 0?",
-          },
+          narration: "We reach the if. It asks: is temp <= 0?",
         },
         {
-          narration: {
-            en:
-              "-5 <= 0 is true.\nThe if's branch runs.",
-            sv:
-              "-5 <= 0 är true.\nIf-grenen körs.",
-          },
+          narration: "-5 <= 0 is true.\nThe if's branch runs.",
         },
         {
-          narration: {
-            en:
-              'return "coat".\nThe rest of the chain (else if, else) is SKIPPED entirely.',
-            sv:
-              'return "coat".\nResten av kedjan (else if, else) HOPPAS ÖVER helt.',
-          },
+          narration: 'return "coat".\nThe rest of the chain (else if, else) is SKIPPED entirely.',
         },
         {
-          narration: {
-            en: "Now change temp to 10 and run the same code again.",
-            sv: "Nu ändrar vi temp till 10 och kör samma kod igen.",
-          },
+          narration: "Now change temp to 10 and run the same code again.",
         },
         {
-          narration: {
-            en: "Reach the if. Is temp <= 0?",
-            sv: "Vi kommer till if. Är temp <= 0?",
-          },
+          narration: "Reach the if. Is temp <= 0?",
         },
         {
-          narration: {
-            en:
-              "10 <= 0 is false.\nWe move on to the else if.",
-            sv:
-              "10 <= 0 är false.\nVi går vidare till else if.",
-          },
+          narration: "10 <= 0 is false.\nWe move on to the else if.",
         },
         {
-          narration: {
-            en: "The else if asks its OWN question: is temp <= 15?",
-            sv: "else if ställer sin EGEN fråga: är temp <= 15?",
-          },
+          narration: "The else if asks its OWN question: is temp <= 15?",
         },
         {
-          narration: {
-            en:
-              "10 <= 15 is true.\nThis branch runs.",
-            sv:
-              "10 <= 15 är true.\nDen här grenen körs.",
-          },
+          narration: "10 <= 15 is true.\nThis branch runs.",
         },
         {
-          narration: {
-            en: 'return "jacket". The else is skipped.',
-            sv: 'return "jacket". else hoppas över.',
-          },
+          narration: 'return "jacket". The else is skipped.',
         },
         {
-          narration: {
-            en: "Last time. Set temp to 25.",
-            sv: "Sista gången. Sätt temp till 25.",
-          },
+          narration: "Last time. Set temp to 25.",
         },
         {
-          narration: {
-            en: "Reach the if. Is temp <= 0?",
-            sv: "Vi kommer till if. Är temp <= 0?",
-          },
+          narration: "Reach the if. Is temp <= 0?",
         },
         {
-          narration: {
-            en: "25 <= 0 is false. Move on.",
-            sv: "25 <= 0 är false. Gå vidare.",
-          },
+          narration: "25 <= 0 is false. Move on.",
         },
         {
-          narration: {
-            en: "else if asks: is temp <= 15?",
-            sv: "else if frågar: är temp <= 15?",
-          },
+          narration: "else if asks: is temp <= 15?",
         },
         {
-          narration: {
-            en:
-              "25 <= 15 is also false.\nThe else if's branch is skipped too.",
-            sv:
-              "25 <= 15 är också false.\nelse if-grenen hoppas också över.",
-          },
+          narration: "25 <= 15 is also false.\nThe else if's branch is skipped too.",
         },
         {
-          narration: {
-            en:
-              "Now we hit the final else.\nThis is the fallback — it runs no matter what.",
-            sv:
-              "Nu når vi det avslutande else.\nDet är reservutgången — den körs oavsett.",
-          },
+          narration: "Now we hit the final else.\nThis is the fallback — it runs no matter what.",
         },
         {
-          narration: {
-            en:
-              'return "shirt".\n\nThree temperatures, three different outcomes — same code.',
-            sv:
-              'return "shirt".\n\nTre temperaturer, tre olika utfall — samma kod.',
-          },
+          narration: 'return "shirt".\n\nThree temperatures, three different outcomes — same code.',
         },
       ],
     },
@@ -296,20 +155,12 @@ export const forkLesson: Lesson = {
     // 5. Practice — pick an outfit — chip-style, no distractors (first chip in L2)
     {
       kind: "js-chip-assignment",
-      title: { en: "Practice: pick an outfit", sv: "Övning: välj outfit" },
-      prompt: {
-        en:
-          "Build the if / else-if / else chain piece by piece.",
-        sv:
-          "Bygg if / else-if / else-kedjan bit för bit.",
-      },
+      title: "Practice: pick an outfit",
+      prompt: "Build the if / else-if / else chain piece by piece.",
       puzzles: [
         // p1: else if keywords (both needed, vs while/or)
         {
-          prompt: {
-            en: "Which two keywords open the middle branch?",
-            sv: "Vilka två nyckelord öppnar mellangrenen?",
-          },
+          prompt: "Which two keywords open the middle branch?",
           template:
             'if (temp <= 0) {\n  return "coat";\n} [[]] [[]] (temp <= 15) {\n  return "jacket";\n} else {\n  return "shirt";\n}',
           chips: ["else", "if", "while", "or"],
@@ -317,10 +168,7 @@ export const forkLesson: Lesson = {
         },
         // p2: ( ) around the else-if condition
         {
-          prompt: {
-            en: "What wraps the else-if condition?",
-            sv: "Vad omger else-if-villkoret?",
-          },
+          prompt: "What wraps the else-if condition?",
           template:
             'if (temp <= 0) {\n  return "coat";\n} else if [[]]temp <= 15[[]] {\n  return "jacket";\n} else {\n  return "shirt";\n}',
           chips: ["(", ")", "{", "}"],
@@ -328,10 +176,7 @@ export const forkLesson: Lesson = {
         },
         // p3: <= operator in the middle condition
         {
-          prompt: {
-            en: "Which operator means 'less than or equal'?",
-            sv: "Vilken operator betyder 'mindre än eller lika med'?",
-          },
+          prompt: "Which operator means 'less than or equal'?",
           template:
             'if (temp <= 0) {\n  return "coat";\n} else if (temp [[]] 15) {\n  return "jacket";\n} else {\n  return "shirt";\n}',
           chips: ["<=", "<", ">=", "==="],
@@ -339,14 +184,8 @@ export const forkLesson: Lesson = {
         },
         // p4: { } around the else-if body (hour scenario)
         {
-          intro: {
-            en: "Same shape — morning, afternoon, or evening.",
-            sv: "Samma form — morgon, eftermiddag eller kväll.",
-          },
-          prompt: {
-            en: "What wraps the else-if body?",
-            sv: "Vad omger else-if-kroppen?",
-          },
+          intro: "Same shape — morning, afternoon, or evening.",
+          prompt: "What wraps the else-if body?",
           template:
             'if (hour <= 11) {\n  return "morning";\n} else if (hour <= 17) [[]]\n  return "afternoon";\n[[]] else {\n  return "evening";\n}',
           chips: ["{", "}", "(", ")"],
@@ -354,10 +193,7 @@ export const forkLesson: Lesson = {
         },
         // p5: synthesis — all syntax pieces together
         {
-          prompt: {
-            en: "Now place all the syntax pieces you've practised.",
-            sv: "Placera nu alla syntaxdelar du övat på.",
-          },
+          prompt: "Now place all the syntax pieces you've practised.",
           template:
             'if (temp <= 0) {\n  return "coat";\n} [[]] [[]] [[]]temp [[]] 15[[]] [[]]\n  return "jacket";\n[[]] else {\n  return "shirt";\n}',
           chips: ["else", "if", "(", "<=", ")", "{", "}", "<", "while"],
@@ -366,31 +202,22 @@ export const forkLesson: Lesson = {
       ],
       legend: [
         {
-          name: { en: "else if", sv: "else if" },
+          name: "else if",
           syntax: "} else if (condition) { ... }",
           example: "} else if (temp <= 15) { ... }",
-          note: {
-            en: "Only checked when the conditions above were false.",
-            sv: "Kollas bara om villkoren ovan var falska.",
-          },
+          note: "Only checked when the conditions above were false.",
         },
         {
-          name: { en: "else", sv: "else" },
+          name: "else",
           syntax: "} else { ... }",
           example: '} else { return "shirt"; }',
-          note: {
-            en: "The fallback. Runs when nothing above matched.",
-            sv: "Reservutgången. Körs när inget ovan stämde.",
-          },
+          note: "The fallback. Runs when nothing above matched.",
         },
         {
-          name: { en: "<=", sv: "<=" },
+          name: "<=",
           syntax: "a <= b",
           example: "temp <= 15",
-          note: {
-            en: "True when a is less than or equal to b.",
-            sv: "Sant när a är mindre än eller lika med b.",
-          },
+          note: "True when a is less than or equal to b.",
         },
       ],
     },
@@ -398,13 +225,8 @@ export const forkLesson: Lesson = {
     // 6. Order matters — the buggy chain
     {
       kind: "explanation",
-      title: { en: "Order matters", sv: "Ordningen spelar roll" },
-      intro: {
-        en:
-          "Only ONE branch runs — the first one whose question is true.\nThat means the ORDER of your conditions matters a lot.",
-        sv:
-          "Bara EN gren körs — den första vars fråga är true.\nDet betyder att ORDNINGEN på villkoren har stor betydelse.",
-      },
+      title: "Order matters",
+      intro: "Only ONE branch runs — the first one whose question is true.\nThat means the ORDER of your conditions matters a lot.",
       demo: [
         {
           id: "code",
@@ -415,48 +237,23 @@ export const forkLesson: Lesson = {
         {
           id: "warning",
           kind: "note",
-          label: {
-            en:
-              "Same conditions, wrong order:\n-5 <= 25 is true,\nso the chain stops at the FIRST branch\nand returns 'shirt' even though it's freezing.",
-            sv:
-              "Samma villkor, fel ordning:\n-5 <= 25 är true,\nså kedjan stannar vid FÖRSTA grenen\noch returnerar 'shirt' fast det är minus.",
-          },
+          label: "Same conditions, wrong order:\n-5 <= 25 is true,\nso the chain stops at the FIRST branch\nand returns 'shirt' even though it's freezing.",
           baseStyle: { ...noteBoxStyle, marginTop: 16 },
         },
       ],
       steps: [
         {
-          narration: {
-            en:
-              "Look at this chain. It LOOKS like it covers the cases —\nbut the order is wrong.",
-            sv:
-              "Titta på den här kedjan. Den SER UT att täcka fallen —\nmen ordningen är fel.",
-          },
+          narration: "Look at this chain. It LOOKS like it covers the cases —\nbut the order is wrong.",
         },
         {
-          narration: {
-            en:
-              "If temp = -5,\nthe first question is: is -5 <= 25?\nYes! So it returns 'shirt'.\nThe coat branch is never even checked.",
-            sv:
-              "Om temp = -5,\nförsta frågan är: är -5 <= 25?\nJa! Så den returnerar 'shirt'.\nCoat-grenen kollas aldrig ens.",
-          },
+          narration: "If temp = -5,\nthe first question is: is -5 <= 25?\nYes! So it returns 'shirt'.\nThe coat branch is never even checked.",
           tokenHighlight: ["temp <= 25", '"shirt"'],
         },
         {
-          narration: {
-            en:
-              "Rule of thumb: write the NARROWEST condition first.\nFreezing first, then cold, then mild.\nThe widest condition (or else) goes LAST.",
-            sv:
-              "Tumregel: skriv det SMALASTE villkoret först.\nFrys först, sen kallt, sen milt.\nBredaste villkoret (eller else) kommer SIST.",
-          },
+          narration: "Rule of thumb: write the NARROWEST condition first.\nFreezing first, then cold, then mild.\nThe widest condition (or else) goes LAST.",
         },
         {
-          narration: {
-            en:
-              "Why? Because each branch only runs\nwhen ALL the ones above were false.\nNarrow first means the others can assume 'we know it's NOT freezing'.",
-            sv:
-              "Varför? Varje gren körs bara\nnär ALLA ovanför var false.\nSmalt först betyder att de andra kan anta 'vi vet att det INTE fryser'.",
-          },
+          narration: "Why? Because each branch only runs\nwhen ALL the ones above were false.\nNarrow first means the others can assume 'we know it's NOT freezing'.",
         },
       ],
     },
@@ -464,37 +261,27 @@ export const forkLesson: Lesson = {
     // 7. Final — grade banding (typed-input)
     {
       kind: "js-typed-assignment",
-      title: { en: "Final: a grade for the score", sv: "Slutövning: betyg på poäng" },
-      prompt: {
-        en:
-          "Write a chain that returns a grade based on score (0–100):\n• \"A\" if >= 90\n• \"B\" if >= 75\n• \"C\" if >= 50\n• \"F\" otherwise.\n\nThink about the order — type each condition into its box.",
-        sv:
-          "Skriv en kedja som returnerar betyg baserat på poäng (0–100):\n• \"A\" om >= 90\n• \"B\" om >= 75\n• \"C\" om >= 50\n• \"F\" annars.\n\nTänk på ordningen — skriv varje villkor i sin ruta.",
-      },
+      title: "Final: a grade for the score",
+      prompt: "Write a chain that returns a grade based on score (0–100):\n• \"A\" if >= 90\n• \"B\" if >= 75\n• \"C\" if >= 50\n• \"F\" otherwise.\n\nThink about the order — type each condition into its box.",
       varNames: ["score"],
       template:
         'if ([[input:c1]]) {\n  return "A";\n} else if ([[input:c2]]) {\n  return "B";\n} else if ([[input:c3]]) {\n  return "C";\n} else {\n  return "F";\n}\n',
       tests: [
-        { label: { en: "100", sv: "100" }, vars: { score: 100 }, expected: "A" },
-        { label: { en: "95", sv: "95" }, vars: { score: 95 }, expected: "A" },
-        { label: { en: "90", sv: "90" }, vars: { score: 90 }, expected: "A" },
-        { label: { en: "80", sv: "80" }, vars: { score: 80 }, expected: "B" },
-        { label: { en: "75", sv: "75" }, vars: { score: 75 }, expected: "B" },
-        { label: { en: "60", sv: "60" }, vars: { score: 60 }, expected: "C" },
-        { label: { en: "50", sv: "50" }, vars: { score: 50 }, expected: "C" },
-        { label: { en: "30", sv: "30" }, vars: { score: 30 }, expected: "F" },
-        { label: { en: "0", sv: "0" }, vars: { score: 0 }, expected: "F" },
+        { label: "100", vars: { score: 100 }, expected: "A" },
+        { label: "95", vars: { score: 95 }, expected: "A" },
+        { label: "90", vars: { score: 90 }, expected: "A" },
+        { label: "80", vars: { score: 80 }, expected: "B" },
+        { label: "75", vars: { score: 75 }, expected: "B" },
+        { label: "60", vars: { score: 60 }, expected: "C" },
+        { label: "50", vars: { score: 50 }, expected: "C" },
+        { label: "30", vars: { score: 30 }, expected: "F" },
+        { label: "0", vars: { score: 0 }, expected: "F" },
       ],
-      goalHint: {
-        en:
-          "Use >= for the conditions. Put the highest threshold (90) FIRST and work down.",
-        sv:
-          "Använd >= i villkoren. Lägg den högsta gränsen (90) FÖRST och arbeta nedåt.",
-      },
+      goalHint: "Use >= for the conditions. Put the highest threshold (90) FIRST and work down.",
       allegory: {
         kind: "fork",
         config: {
-          conditionLabel: { en: "grade for score", sv: "betyg för score" },
+          conditionLabel: "grade for score",
           inputKey: "score",
           branches: [
             { key: "A", label: "A" },
@@ -506,13 +293,10 @@ export const forkLesson: Lesson = {
       },
       legend: [
         {
-          name: { en: ">=", sv: ">=" },
+          name: ">=",
           syntax: "a >= b",
           example: "score >= 90",
-          note: {
-            en: "True when a is greater than or equal to b.",
-            sv: "Sant när a är större än eller lika med b.",
-          },
+          note: "True when a is greater than or equal to b.",
         },
       ],
     },
@@ -527,284 +311,141 @@ export const forkLesson: Lesson = {
     // line — the structural code carries forward, only the test value flips.
     {
       kind: "js-workshop",
-      title: { en: "Workshop: wind to flag", sv: "Verkstad: vind till flagga" },
-      prompt: {
-        en:
-          "Build a classifier that picks a sailing flag from a wind speed.\nOne branch at a time, type each piece into the editor.",
-        sv:
-          "Bygg en klassificerare som väljer en seglingsflagga utifrån en vindstyrka.\nEn gren i taget — skriv varje del i editorn.",
-      },
+      title: "Workshop: wind to flag",
+      prompt: "Build a classifier that picks a sailing flag from a wind speed.\nOne branch at a time, type each piece into the editor.",
       designNote:
         "Pilot Workshop for L2-fork. Six steps build a 4-branch if/else-if/else chain over the wind-flag domain. Surface chosen to differ from chips (wardrobe), typed-assignment (grades), and exercise (battery). Wind init value flips per step to exercise each newly-added branch via a single-shot assert. String values inside each branch are NOT pinned — checks only require `typeof flag === 'string'`, leaving the student free to label branches creatively. Canonical labels (\"calm\", etc.) appear in subsequent steps' starterCode reveals so the student sees them organically. Threshold numbers (10, 25, 50) ARE pinned because they encode the lesson's branch ordering.",
       steps: [
         {
           id: "wind-declare-input",
-          instruction: {
-            en:
-              "Use `let` to declare a variable called `wind` and assign it any number (knots — wind speed).",
-            sv:
-              "Använd `let` för att deklarera en variabel som heter `wind` och tilldela den ett tal (knop — vindhastighet).",
-          },
-          starterCode: {
-            en: "// Declare wind below.\n",
-            sv: "// Deklarera wind nedan.\n",
-          },
+          instruction: "Use `let` to declare a variable called `wind` and assign it any number (knots — wind speed).",
+          starterCode: "// Declare wind below.\n",
           checks: [
             {
-              message: {
-                en: "Use `let` to declare a variable named `wind`.",
-                sv: "Använd `let` för att deklarera en variabel som heter `wind`.",
-              },
+              message: "Use `let` to declare a variable named `wind`.",
               requirePattern: /\blet\s+wind\b/,
             },
             {
-              message: {
-                en: "`wind` should hold a number.",
-                sv: "`wind` ska innehålla ett tal.",
-              },
+              message: "`wind` should hold a number.",
               assert: "return typeof wind === 'number';",
             },
           ],
-          reveal: {
-            en: "let wind = 30;\n",
-            sv: "let wind = 30;\n",
-          },
+          reveal: "let wind = 30;\n",
         },
         {
           id: "wind-declare-flag",
-          instruction: {
-            en:
-              "Below `wind`, use `let` to declare `flag` with no value yet — the branches you'll add next will set it.",
-            sv:
-              "Under `wind`, använd `let` för att deklarera `flag` utan något värde — grenarna du lägger till härnäst sätter värdet.",
-          },
-          starterCode: {
-            en: "let wind = 30;\n// Declare flag below (no value).\n",
-            sv: "let wind = 30;\n// Deklarera flag nedan (inget värde).\n",
-          },
+          instruction: "Below `wind`, use `let` to declare `flag` with no value yet — the branches you'll add next will set it.",
+          starterCode: "let wind = 30;\n// Declare flag below (no value).\n",
           checks: [
             {
-              message: {
-                en: "Use `let` to declare a variable named `flag`.",
-                sv: "Använd `let` för att deklarera en variabel som heter `flag`.",
-              },
+              message: "Use `let` to declare a variable named `flag`.",
               requirePattern: /\blet\s+flag\b/,
             },
             {
-              message: {
-                en:
-                  "Don't assign `flag` yet — the if-branches will set its value.",
-                sv:
-                  "Tilldela inte `flag` än — if-grenarna sätter värdet.",
-              },
+              message: "Don't assign `flag` yet — the if-branches will set its value.",
               assert: "return typeof flag === 'undefined';",
             },
           ],
-          reveal: {
-            en: "let wind = 30;\nlet flag;\n",
-            sv: "let wind = 30;\nlet flag;\n",
-          },
+          reveal: "let wind = 30;\nlet flag;\n",
         },
         {
           id: "wind-if-calm",
-          instruction: {
-            en:
-              "Add an `if` for the calmest range — wind at most 10. Inside, set `flag` to a string (the lesson uses `\"calm\"`).",
-            sv:
-              "Lägg till en `if` för det lugnaste intervallet — vind högst 10. Sätt `flag` till en sträng inne i grenen (lektionen använder `\"calm\"`).",
-          },
-          starterCode: {
-            en:
-              "let wind = 5;\nlet flag;\n// Add an if that sets flag to a string when wind <= 10.\n",
-            sv:
-              "let wind = 5;\nlet flag;\n// Lägg till en if som sätter flag till en sträng när wind <= 10.\n",
-          },
+          instruction: "Add an `if` for the calmest range — wind at most 10. Inside, set `flag` to a string (the lesson uses `\"calm\"`).",
+          starterCode: "let wind = 5;\nlet flag;\n// Add an if that sets flag to a string when wind <= 10.\n",
           checks: [
             {
-              message: {
-                en: "Use `if` to start the branch.",
-                sv: "Använd `if` för att börja grenen.",
-              },
+              message: "Use `if` to start the branch.",
               requirePattern: /\bif\s*\(/,
             },
             {
-              message: {
-                en: "Compare `wind` to `10` with `<=`.",
-                sv: "Jämför `wind` med `10` med hjälp av `<=`.",
-              },
+              message: "Compare `wind` to `10` with `<=`.",
               requirePattern: /wind\s*<=\s*10\b/,
             },
             {
-              message: {
-                en: "Inside the branch, set `flag` to a string.",
-                sv: "Inne i grenen, sätt `flag` till en sträng.",
-              },
+              message: "Inside the branch, set `flag` to a string.",
               assert: "return typeof flag === 'string';",
             },
           ],
-          reveal: {
-            en:
-              "let wind = 5;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n}\n",
-            sv:
-              "let wind = 5;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n}\n",
-          },
+          reveal: "let wind = 5;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n}\n",
         },
         {
           id: "wind-elseif-small-craft",
-          instruction: {
-            en:
-              "After the `if`, add an `else if` for the next range — wind at most 25. Inside, set `flag` to a string (the lesson uses `\"small craft\"`).",
-            sv:
-              "Efter `if`-grenen, lägg till en `else if` för nästa intervall — vind högst 25. Sätt `flag` till en sträng inne i grenen (lektionen använder `\"small craft\"`).",
-          },
-          starterCode: {
-            en:
-              "let wind = 20;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n}\n// Add an else if for wind <= 25 that sets flag to a string.\n",
-            sv:
-              "let wind = 20;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n}\n// Lägg till en else if för wind <= 25 som sätter flag till en sträng.\n",
-          },
+          instruction: "After the `if`, add an `else if` for the next range — wind at most 25. Inside, set `flag` to a string (the lesson uses `\"small craft\"`).",
+          starterCode: "let wind = 20;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n}\n// Add an else if for wind <= 25 that sets flag to a string.\n",
           checks: [
             {
-              message: {
-                en: "Use `else if` to add the next branch.",
-                sv: "Använd `else if` för att lägga till nästa gren.",
-              },
+              message: "Use `else if` to add the next branch.",
               requirePattern: /\belse\s+if\s*\(/,
             },
             {
-              message: {
-                en: "Compare `wind` to `25` with `<=`.",
-                sv: "Jämför `wind` med `25` med hjälp av `<=`.",
-              },
+              message: "Compare `wind` to `25` with `<=`.",
               requirePattern: /wind\s*<=\s*25\b/,
             },
             {
-              message: {
-                en: "Inside the new branch, set `flag` to a string.",
-                sv: "Inne i den nya grenen, sätt `flag` till en sträng.",
-              },
+              message: "Inside the new branch, set `flag` to a string.",
               assert: "return typeof flag === 'string';",
             },
           ],
-          reveal: {
-            en:
-              "let wind = 20;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n}\n",
-            sv:
-              "let wind = 20;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n}\n",
-          },
+          reveal: "let wind = 20;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n}\n",
         },
         {
           id: "wind-elseif-gale",
-          instruction: {
-            en:
-              "Add another `else if` for the next range — wind at most 50. Inside, set `flag` to a string (the lesson uses `\"gale\"`).",
-            sv:
-              "Lägg till ytterligare en `else if` för nästa intervall — vind högst 50. Sätt `flag` till en sträng inne i grenen (lektionen använder `\"gale\"`).",
-          },
-          starterCode: {
-            en:
-              "let wind = 40;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n}\n// Add an else if for wind <= 50 that sets flag to a string.\n",
-            sv:
-              "let wind = 40;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n}\n// Lägg till en else if för wind <= 50 som sätter flag till en sträng.\n",
-          },
+          instruction: "Add another `else if` for the next range — wind at most 50. Inside, set `flag` to a string (the lesson uses `\"gale\"`).",
+          starterCode: "let wind = 40;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n}\n// Add an else if for wind <= 50 that sets flag to a string.\n",
           checks: [
             {
-              message: {
-                en: "Compare `wind` to `50` with `<=`.",
-                sv: "Jämför `wind` med `50` med hjälp av `<=`.",
-              },
+              message: "Compare `wind` to `50` with `<=`.",
               requirePattern: /wind\s*<=\s*50\b/,
             },
             {
-              message: {
-                en: "Inside the new branch, set `flag` to a string.",
-                sv: "Inne i den nya grenen, sätt `flag` till en sträng.",
-              },
+              message: "Inside the new branch, set `flag` to a string.",
               assert: "return typeof flag === 'string';",
             },
           ],
-          reveal: {
-            en:
-              "let wind = 40;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n} else if (wind <= 50) {\n  flag = \"gale\";\n}\n",
-            sv:
-              "let wind = 40;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n} else if (wind <= 50) {\n  flag = \"gale\";\n}\n",
-          },
+          reveal: "let wind = 40;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n} else if (wind <= 50) {\n  flag = \"gale\";\n}\n",
         },
         {
           id: "wind-else-storm",
-          instruction: {
-            en:
-              "Finish the chain with a final `else` for everything that didn't match above. Set `flag` to a string (the lesson uses `\"storm\"`).",
-            sv:
-              "Avsluta kedjan med ett sista `else` för allt som inte stämde ovan. Sätt `flag` till en sträng (lektionen använder `\"storm\"`).",
-          },
-          starterCode: {
-            en:
-              "let wind = 70;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n} else if (wind <= 50) {\n  flag = \"gale\";\n}\n// Add a final else (no condition) that sets flag to a string.\n",
-            sv:
-              "let wind = 70;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n} else if (wind <= 50) {\n  flag = \"gale\";\n}\n// Lägg till ett sista else (utan villkor) som sätter flag till en sträng.\n",
-          },
+          instruction: "Finish the chain with a final `else` for everything that didn't match above. Set `flag` to a string (the lesson uses `\"storm\"`).",
+          starterCode: "let wind = 70;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n} else if (wind <= 50) {\n  flag = \"gale\";\n}\n// Add a final else (no condition) that sets flag to a string.\n",
           checks: [
             {
-              message: {
-                en: "Add a bare `else { ... }` at the end (no `if` after `else`).",
-                sv: "Lägg till ett rent `else { ... }` på slutet (inget `if` efter `else`).",
-              },
+              message: "Add a bare `else { ... }` at the end (no `if` after `else`).",
               // Bare else: `else` followed by `{` (not `if`). Whitespace tolerant.
               requirePattern: /\belse\s*\{/,
             },
             {
-              message: {
-                en: "Inside the else, set `flag` to a string.",
-                sv: "Inne i else, sätt `flag` till en sträng.",
-              },
+              message: "Inside the else, set `flag` to a string.",
               assert: "return typeof flag === 'string';",
             },
           ],
-          reveal: {
-            en:
-              "let wind = 70;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n} else if (wind <= 50) {\n  flag = \"gale\";\n} else {\n  flag = \"storm\";\n}\n",
-            sv:
-              "let wind = 70;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n} else if (wind <= 50) {\n  flag = \"gale\";\n} else {\n  flag = \"storm\";\n}\n",
-          },
+          reveal: "let wind = 70;\nlet flag;\nif (wind <= 10) {\n  flag = \"calm\";\n} else if (wind <= 25) {\n  flag = \"small craft\";\n} else if (wind <= 50) {\n  flag = \"gale\";\n} else {\n  flag = \"storm\";\n}\n",
         },
       ],
       legend: [
         {
-          name: { en: "if", sv: "if" },
+          name: "if",
           syntax: "if (condition) { ... }",
           example: "if (wind <= 10) { flag = \"calm\"; }",
-          note: {
-            en: "The first branch. Runs when its condition is true.",
-            sv: "Första grenen. Körs när dess villkor är true.",
-          },
+          note: "The first branch. Runs when its condition is true.",
         },
         {
-          name: { en: "else if", sv: "else if" },
+          name: "else if",
           syntax: "} else if (condition) { ... }",
           example: "} else if (wind <= 25) { flag = \"small craft\"; }",
-          note: {
-            en: "Only checked when the conditions above were false.",
-            sv: "Kollas bara om villkoren ovan var false.",
-          },
+          note: "Only checked when the conditions above were false.",
         },
         {
-          name: { en: "else", sv: "else" },
+          name: "else",
           syntax: "} else { ... }",
           example: "} else { flag = \"storm\"; }",
-          note: {
-            en: "The fallback. Runs when nothing above matched.",
-            sv: "Reservutgången. Körs när inget ovan stämde.",
-          },
+          note: "The fallback. Runs when nothing above matched.",
         },
         {
-          name: { en: "<=", sv: "<=" },
+          name: "<=",
           syntax: "a <= b",
           example: "wind <= 10",
-          note: {
-            en: "True when a is less than or equal to b.",
-            sv: "Sant när a är mindre än eller lika med b.",
-          },
+          note: "True when a is less than or equal to b.",
         },
       ],
     },
@@ -814,10 +455,8 @@ export const forkLesson: Lesson = {
     // wardrobe/grade themes used in this chapter.
     {
       kind: "exercise",
-      title: { en: "Lab: Battery Indicator", sv: "Labb: Batteriindikator" },
-      prompt: {
-        en:
-          "Show a battery's status based on its charge level.\n\n" +
+      title: "Lab: Battery Indicator",
+      prompt: "Show a battery's status based on its charge level.\n\n" +
           "User stories (variable names are suggestions — pick your own if you like):\n" +
           "1. Declare a number variable (e.g. level) between 0 and 100.\n" +
           "2. Declare a string variable (e.g. status) and set it to \"\".\n" +
@@ -828,19 +467,6 @@ export const forkLesson: Lesson = {
           "7. Print level.\n" +
           "8. Print status.\n\n" +
           "Use one if / else if / else chain — the order of the checks matters.",
-        sv:
-          "Visa ett batteris status baserat på laddningsnivå.\n\n" +
-          "Användarberättelser (variabelnamnen är förslag — välj egna om du vill):\n" +
-          "1. Deklarera en talvariabel (t.ex. level) mellan 0 och 100.\n" +
-          "2. Deklarera en strängvariabel (t.ex. status) och sätt den till \"\".\n" +
-          "3. Om level är mindre än 10, sätt status till \"Critical\".\n" +
-          "4. Annars om level är mindre än 25, sätt status till \"Low\".\n" +
-          "5. Annars om level är mindre än 75, sätt status till \"Medium\".\n" +
-          "6. Annars, sätt status till \"High\".\n" +
-          "7. Skriv ut level.\n" +
-          "8. Skriv ut status.\n\n" +
-          "Använd en if / else if / else-kedja — ordningen på kontrollerna spelar roll.",
-      },
       starterJs:
         "// Follow the user stories shown to the left.\n" +
         "// Reminder: declare with `let` (e.g. let myNumber = 5;).\n\n" +
@@ -849,22 +475,13 @@ export const forkLesson: Lesson = {
         "// 7-8. Print level, then status:\n\n",
       tests: [
         {
-          label: {
-            en: "Console shows exactly two lines",
-            sv: "Konsolen visar exakt två rader",
-          },
+          label: "Console shows exactly two lines",
           assert:
             "var c = window.__console || []; return c.length === 2;",
-          hint: {
-            en: "One console.log for the level, one for the status.",
-            sv: "En console.log för level, en för status.",
-          },
+          hint: "One console.log for the level, one for the status.",
         },
         {
-          label: {
-            en: "Each variable you print is one you declared",
-            sv: "Varje variabel du skriver ut är en du deklarerat",
-          },
+          label: "Each variable you print is one you declared",
           assert:
             "var src = window.__userSrc || '';" +
             "var logs = []; var re = /console\\.log\\s*\\(\\s*([A-Za-z_$][A-Za-z0-9_$]*)\\s*\\)/g;" +
@@ -876,75 +493,44 @@ export const forkLesson: Lesson = {
             "  if (!d.test(src)) return false;" +
             "}" +
             "return true;",
-          hint: {
-            en:
-              "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
-            sv:
-              "Om en console.log-rad är tom eller fel, dubbelkolla variabelnamnet — det måste matcha det du deklarerade med let.",
-          },
+          hint: "If a console.log line shows nothing or the wrong value, double-check the variable name — it must match what you declared with let.",
         },
         {
-          label: {
-            en: "Line 1 is a number between 0 and 100",
-            sv: "Rad 1 är ett tal mellan 0 och 100",
-          },
+          label: "Line 1 is a number between 0 and 100",
           assert:
             "var c = window.__console || [];" +
             "if (c.length < 1) return false;" +
             "var n = Number(c[0].text);" +
             "return Number.isFinite(n) && n >= 0 && n <= 100;",
-          hint: {
-            en: "Set the level variable to a number 0-100, then print it.",
-            sv: "Sätt level till ett tal 0-100 och skriv ut det.",
-          },
+          hint: "Set the level variable to a number 0-100, then print it.",
         },
         {
-          label: {
-            en: 'Line 2 is one of "Critical", "Low", "Medium", "High"',
-            sv: 'Rad 2 är "Critical", "Low", "Medium" eller "High"',
-          },
+          label: 'Line 2 is one of "Critical", "Low", "Medium", "High"',
           assert:
             "var c = window.__console || [];" +
             "if (c.length < 2) return false;" +
             "return ['Critical','Low','Medium','High'].indexOf(c[1].text) !== -1;",
-          hint: {
-            en: "Use exactly those four words (capitalized) inside your branches.",
-            sv: 'Använd exakt de fyra orden (med stor bokstav) i dina grenar.',
-          },
+          hint: "Use exactly those four words (capitalized) inside your branches.",
         },
         {
-          label: {
-            en: "Status matches the rule for the chosen level",
-            sv: "Status matchar regeln för det valda level-värdet",
-          },
+          label: "Status matches the rule for the chosen level",
           assert:
             "var c = window.__console || [];" +
             "if (c.length < 2) return false;" +
             "var n = Number(c[0].text);" +
             "var expected = n < 10 ? 'Critical' : n < 25 ? 'Low' : n < 75 ? 'Medium' : 'High';" +
             "return c[1].text === expected;",
-          hint: {
-            en: "Check the boundaries — < 10, < 25, < 75. Order them from smallest up.",
-            sv: "Kolla gränserna — < 10, < 25, < 75. Sortera från minsta uppåt.",
-          },
+          hint: "Check the boundaries — < 10, < 25, < 75. Order them from smallest up.",
         },
         {
-          label: {
-            en: "Code uses one if, two else if, and a final else",
-            sv: "Koden använder ett if, två else if och ett avslutande else",
-          },
+          label: "Code uses one if, two else if, and a final else",
           assert:
             "var src = window.__userSrc || '';" +
             "var elseIfs = (src.match(/\\belse\\s+if\\b/g) || []).length;" +
             "var allElses = (src.match(/\\belse\\b/g) || []).length;" +
             "var bareElses = allElses - elseIfs;" +
             "return elseIfs >= 2 && bareElses >= 1;",
-          hint: {
-            en:
-              "Use one if, then two else if branches for the middle ranges, then a final else for everything left over.",
-            sv:
-              "Använd ett if, sedan två else if-grenar för mellanlägena, och till sist ett else för resten.",
-          },
+          hint: "Use one if, then two else if branches for the middle ranges, then a final else for everything left over.",
         },
       ],
     },

@@ -1,4 +1,3 @@
-import { useLang } from "../../i18n/LanguageContext";
 import { t } from "../../i18n";
 import { useSlideFontSize } from "../SlideFontSize";
 
@@ -19,7 +18,6 @@ type Props = { step: number };
  * Each lap: check the condition first; if true, run body and loop.
  */
 export function CountdownTraceScene({ step }: Props) {
-  const { lang } = useLang();
   const s = stateAtStep(step);
 
   return (
@@ -27,7 +25,7 @@ export function CountdownTraceScene({ step }: Props) {
       <CodePanel
         nValue={s.nValue}
         highlight={s.highlight}
-        evalNote={s.evalNote ? t(s.evalNote, lang) : undefined}
+        evalNote={s.evalNote ? t(s.evalNote) : undefined}
       />
 
       <div className="relative flex-1 rounded-2xl overflow-hidden
@@ -39,7 +37,7 @@ export function CountdownTraceScene({ step }: Props) {
           <div className="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-medium
                           bg-emerald-100 text-emerald-700
                           dark:bg-emerald-500/20 dark:text-emerald-200">
-            {t({ en: "Returned", sv: "Returnerade" }, lang)} {s.outcome}
+            {t("Returned")} {s.outcome}
           </div>
         )}
       </div>
@@ -55,7 +53,7 @@ type LineKey = "decl" | "while" | "body" | "ret";
 type State = {
   nValue: number | null;
   highlight?: LineKey;
-  evalNote?: { en: string; sv: string };
+  evalNote?: string;
   outcome?: number;
 };
 
@@ -71,49 +69,49 @@ function stateAtStep(step: number): State {
       return {
         nValue: 3,
         highlight: "while",
-        evalNote: { en: "3 > 0  →  true  (run body)", sv: "3 > 0  →  true  (kör kropp)" },
+        evalNote: "3 > 0  →  true  (run body)",
       };
     case 3:
       // body: n becomes 2
       return {
         nValue: 2,
         highlight: "body",
-        evalNote: { en: "n = 3 - 1  →  2", sv: "n = 3 - 1  →  2" },
+        evalNote: "n = 3 - 1  →  2",
       };
     case 4:
       // condition: 2 > 0 → true
       return {
         nValue: 2,
         highlight: "while",
-        evalNote: { en: "2 > 0  →  true  (run body)", sv: "2 > 0  →  true  (kör kropp)" },
+        evalNote: "2 > 0  →  true  (run body)",
       };
     case 5:
       // body: n becomes 1
       return {
         nValue: 1,
         highlight: "body",
-        evalNote: { en: "n = 2 - 1  →  1", sv: "n = 2 - 1  →  1" },
+        evalNote: "n = 2 - 1  →  1",
       };
     case 6:
       // condition: 1 > 0 → true
       return {
         nValue: 1,
         highlight: "while",
-        evalNote: { en: "1 > 0  →  true  (run body)", sv: "1 > 0  →  true  (kör kropp)" },
+        evalNote: "1 > 0  →  true  (run body)",
       };
     case 7:
       // body: n becomes 0
       return {
         nValue: 0,
         highlight: "body",
-        evalNote: { en: "n = 1 - 1  →  0", sv: "n = 1 - 1  →  0" },
+        evalNote: "n = 1 - 1  →  0",
       };
     case 8:
       // condition: 0 > 0 → false. Exit loop.
       return {
         nValue: 0,
         highlight: "while",
-        evalNote: { en: "0 > 0  →  false  (exit loop)", sv: "0 > 0  →  false  (lämna loopen)" },
+        evalNote: "0 > 0  →  false  (exit loop)",
       };
     case 9:
       // return n → 0

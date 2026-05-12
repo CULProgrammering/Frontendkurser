@@ -6,13 +6,11 @@ import { LessonTierMenu } from "./components/LessonTierMenu";
 import { JsWorkshopSlideView } from "./components/JsWorkshopSlideView";
 import { ExerciseSlideView } from "./components/ExerciseSlideView";
 import { ThemeToggle, useTheme } from "./components/ThemeToggle";
-import { LanguageToggle } from "./components/LanguageToggle";
 import { ChapterCover } from "./components/ChapterCover";
 import { AccentProvider } from "./components/AccentContext";
 import type { Course, ExerciseSlide, JsWorkshopSlide, Lesson, Topic } from "./types";
 import { isComplete } from "./progress";
 import type { Tier } from "./tiers";
-import { useLang } from "./i18n/LanguageContext";
 import { t } from "./i18n";
 import { ui } from "./i18n/strings";
 import { tokens } from "./styles/tokens";
@@ -78,16 +76,15 @@ function pickLesson(course: Course, lesson: Lesson, topic?: Topic): View {
 function App() {
   const [view, setView] = useState<View>({ kind: "home" });
   const [, setTick] = useState(0);
-  const { lang } = useLang();
 
   if (view.kind === "lesson") {
     const lessonView = view;
     const breadcrumb: BreadcrumbSegment[] = [
-      { label: t(ui.home, lang), onNavigate: () => setView({ kind: "home" }) },
+      { label: t(ui.home), onNavigate: () => setView({ kind: "home" }) },
       ...(lessonView.topic
         ? [
             {
-              label: t(lessonView.topic.title, lang),
+              label: t(lessonView.topic.title),
               onNavigate: () =>
                 setView({
                   kind: "topic",
@@ -97,11 +94,10 @@ function App() {
             },
           ]
         : []),
-      { label: t(lessonView.lesson.title, lang) },
+      { label: t(lessonView.lesson.title) },
     ];
     return (
       <AccentProvider accent={accentFor(view.topic?.id, view.course.id)}>
-        <LanguageToggle />
         <SlideDeck
           courseId={view.course.id}
           lesson={view.lesson}
@@ -122,11 +118,11 @@ function App() {
   if (view.kind === "tier-deck") {
     const tierDeckView = view;
     const breadcrumb: BreadcrumbSegment[] = [
-      { label: t(ui.home, lang), onNavigate: () => setView({ kind: "home" }) },
+      { label: t(ui.home), onNavigate: () => setView({ kind: "home" }) },
       ...(tierDeckView.topic
         ? [
             {
-              label: t(tierDeckView.topic.title, lang),
+              label: t(tierDeckView.topic.title),
               onNavigate: () =>
                 setView({
                   kind: "topic",
@@ -137,7 +133,7 @@ function App() {
           ]
         : []),
       {
-        label: t(tierDeckView.lesson.title, lang),
+        label: t(tierDeckView.lesson.title),
         onNavigate: () =>
           setView({
             kind: "tier-menu",
@@ -146,11 +142,10 @@ function App() {
             topic: tierDeckView.topic,
           }),
       },
-      { label: t(TIER_LABEL[tierDeckView.tier], lang) },
+      { label: t(TIER_LABEL[tierDeckView.tier]) },
     ];
     return (
       <AccentProvider accent={accentFor(view.topic?.id, view.course.id)}>
-        <LanguageToggle />
         <SlideDeck
           courseId={view.course.id}
           lesson={view.lesson}
@@ -174,11 +169,11 @@ function App() {
   if (view.kind === "tier-menu") {
     const tierMenuView = view;
     const breadcrumb: BreadcrumbSegment[] = [
-      { label: t(ui.home, lang), onNavigate: () => setView({ kind: "home" }) },
+      { label: t(ui.home), onNavigate: () => setView({ kind: "home" }) },
       ...(tierMenuView.topic
         ? [
             {
-              label: t(tierMenuView.topic.title, lang),
+              label: t(tierMenuView.topic.title),
               onNavigate: () =>
                 setView({
                   kind: "topic",
@@ -188,12 +183,11 @@ function App() {
             },
           ]
         : []),
-      { label: t(tierMenuView.lesson.title, lang) },
+      { label: t(tierMenuView.lesson.title) },
     ];
     return (
       <AccentProvider accent={accentFor(view.topic?.id, view.course.id)}>
         <ThemeToggle />
-        <LanguageToggle />
         <LessonTierMenu
           courseId={view.course.id}
           lesson={view.lesson}
@@ -224,9 +218,9 @@ function App() {
   if (view.kind === "walkthrough") {
     const wView = view;
     const breadcrumb: BreadcrumbSegment[] = [
-      { label: t(ui.home, lang), onNavigate: () => setView({ kind: "home" }) },
+      { label: t(ui.home), onNavigate: () => setView({ kind: "home" }) },
       {
-        label: t(wView.topic.title, lang),
+        label: t(wView.topic.title),
         onNavigate: () =>
           setView({
             kind: "topic",
@@ -234,11 +228,10 @@ function App() {
             topic: wView.topic,
           }),
       },
-      { label: t(wView.slide.title, lang) },
+      { label: t(wView.slide.title) },
     ];
     return (
       <AccentProvider accent={accentFor(wView.topic.id, wView.course.id)}>
-        <LanguageToggle />
         <JsWorkshopSlideView
           slide={wView.slide}
           storageKey={`${wView.course.id}:${wView.topic.id}:walkthrough:${wView.idx}`}
@@ -260,9 +253,9 @@ function App() {
   if (view.kind === "challenge") {
     const cView = view;
     const breadcrumb: BreadcrumbSegment[] = [
-      { label: t(ui.home, lang), onNavigate: () => setView({ kind: "home" }) },
+      { label: t(ui.home), onNavigate: () => setView({ kind: "home" }) },
       {
-        label: t(cView.topic.title, lang),
+        label: t(cView.topic.title),
         onNavigate: () =>
           setView({
             kind: "topic",
@@ -270,11 +263,10 @@ function App() {
             topic: cView.topic,
           }),
       },
-      { label: t(cView.slide.title, lang) },
+      { label: t(cView.slide.title) },
     ];
     return (
       <AccentProvider accent={accentFor(cView.topic.id, cView.course.id)}>
-        <LanguageToggle />
         <ExerciseSlideView
           slide={cView.slide}
           storageKey={`${cView.course.id}:${cView.topic.id}:challenge:${cView.idx}`}
@@ -287,18 +279,16 @@ function App() {
 
   if (view.kind === "topic") {
     const topicBreadcrumb: BreadcrumbSegment[] = [
-      { label: t(ui.home, lang), onNavigate: () => setView({ kind: "home" }) },
-      { label: t(view.topic.title, lang) },
+      { label: t(ui.home), onNavigate: () => setView({ kind: "home" }) },
+      { label: t(view.topic.title) },
     ];
     return (
       <>
         <ThemeToggle />
-        <LanguageToggle />
         <TopicScreen
           course={view.course}
           topic={view.topic}
           breadcrumb={topicBreadcrumb}
-          lang={lang}
           onPickLesson={(lesson) =>
             setView(pickLesson(view.course, lesson, view.topic))
           }
@@ -329,9 +319,7 @@ function App() {
   return (
     <>
       <ThemeToggle />
-      <LanguageToggle />
       <HomeScreen
-        lang={lang}
         onPickTopic={(course, topic) =>
           setView({ kind: "topic", course, topic })
         }
@@ -348,11 +336,9 @@ function App() {
 /* ------------------------------------------------------------------ */
 
 function HomeScreen({
-  lang,
   onPickTopic,
   onPickLesson,
 }: {
-  lang: import("./i18n").Lang;
   onPickTopic: (course: Course, topic: Topic) => void;
   onPickLesson: (course: Course, lesson: Lesson) => void;
 }) {
@@ -386,19 +372,18 @@ function HomeScreen({
       >
         <div className="max-w-6xl mx-auto">
           <div className={`mb-3 ${tokens.text.eyebrow}`}>
-            {t(ui.heroEyebrow, lang)}
+            {t(ui.heroEyebrow)}
           </div>
 
           <div className="flex flex-col md:flex-row md:items-end gap-8">
             <div className="flex-1 max-w-xl">
               <h1 className={`${tokens.text.h1} mb-4`}>
-                {t(ui.heroTitle, lang)}
+                {t(ui.heroTitle)}
               </h1>
               <p className="text-base text-stone-700 dark:text-stone-300 max-w-md mb-6 leading-relaxed">
-                {t(ui.heroSubtitle, lang)}
+                {t(ui.heroSubtitle)}
               </p>
               <HeroCtas
-                lang={lang}
                 next={next}
                 allDone={allDone}
                 onContinue={onContinue}
@@ -407,7 +392,7 @@ function HomeScreen({
             </div>
 
             {total.total > 0 && (
-              <ProgressBeads lang={lang} total={total.total} done={total.done} />
+              <ProgressBeads total={total.total} done={total.done} />
             )}
           </div>
         </div>
@@ -421,10 +406,10 @@ function HomeScreen({
             return (
               <section key={course.id}>
                 <div className="flex items-baseline gap-3 mb-5">
-                  <h2 className={tokens.text.h2}>{t(course.title, lang)}</h2>
+                  <h2 className={tokens.text.h2}>{t(course.title)}</h2>
                   {course.summary && (
                     <span className="text-sm text-stone-500 dark:text-stone-400">
-                      {t(course.summary, lang)}
+                      {t(course.summary)}
                     </span>
                   )}
                 </div>
@@ -434,7 +419,6 @@ function HomeScreen({
                     courseId={course.id}
                     topics={course.topics}
                     onPick={(topic) => onPickTopic(course, topic)}
-                    lang={lang}
                   />
                 ) : course.lessons && course.lessons.length > 0 ? (
                   <LessonGrid
@@ -442,10 +426,9 @@ function HomeScreen({
                     lessons={course.lessons}
                     accent={courseAccent}
                     onPick={(lesson) => onPickLesson(course, lesson)}
-                    lang={lang}
                   />
                 ) : (
-                  <NoLessonsBox lang={lang} />
+                  <NoLessonsBox />
                 )}
               </section>
             );
@@ -457,13 +440,11 @@ function HomeScreen({
 }
 
 function HeroCtas({
-  lang,
   next,
   allDone,
   onContinue,
   onStartOver,
 }: {
-  lang: import("./i18n").Lang;
   next: LessonRef | null;
   allDone: boolean;
   onContinue: () => void;
@@ -473,18 +454,18 @@ function HeroCtas({
     return (
       <div className="flex flex-col gap-3">
         <div className="text-sm font-medium text-stone-700 dark:text-stone-300">
-          {t(ui.heroAllDone, lang)}
+          {t(ui.heroAllDone)}
         </div>
         <button onClick={onStartOver} className={tokens.button.secondary}>
-          {t(ui.heroStart, lang)}
+          {t(ui.heroStart)}
         </button>
       </div>
     );
   }
 
   const continueLabel = next
-    ? `${t(ui.heroContinuePrefix, lang)} — ${t(next.lesson.title, lang)}`
-    : t(ui.heroContinuePrefix, lang);
+    ? `${t(ui.heroContinuePrefix)} — ${t(next.lesson.title)}`
+    : t(ui.heroContinuePrefix);
 
   // Hide the "Start over" CTA when no progress has been made — the
   // primary "Continue" already takes you to the first lesson.
@@ -497,7 +478,7 @@ function HeroCtas({
       </button>
       {showStartOver && (
         <button onClick={onStartOver} className={tokens.button.secondary}>
-          {t(ui.heroStart, lang)}
+          {t(ui.heroStart)}
         </button>
       )}
     </div>
@@ -505,11 +486,9 @@ function HeroCtas({
 }
 
 function ProgressBeads({
-  lang,
   total,
   done,
 }: {
-  lang: import("./i18n").Lang;
   total: number;
   done: number;
 }) {
@@ -519,19 +498,19 @@ function ProgressBeads({
   const filledColor = dark ? "#F0B274" : "#C97A1F";
   const emptyColor = dark ? "#2c303a" : "#e8e2d3";
 
-  const suffix = t(ui.heroLessonsCompleteSuffix, lang).replace(
+  const suffix = t(ui.heroLessonsCompleteSuffix).replace(
     "{total}",
     String(total),
   );
 
   return (
     <div className="flex flex-col gap-3 md:w-[280px] md:pb-2">
-      <div className={tokens.text.eyebrow}>{t(ui.heroProgressLabel, lang)}</div>
+      <div className={tokens.text.eyebrow}>{t(ui.heroProgressLabel)}</div>
       <div className="flex flex-wrap gap-1.5">
         {all.map((ref, i) => (
           <span
             key={i}
-            aria-label={`${t(ref.lesson.title, lang)}${ref.complete ? " — " + t(ui.doneBadge, lang) : ""}`}
+            aria-label={`${t(ref.lesson.title)}${ref.complete ? " — " + t(ui.doneBadge) : ""}`}
             className="w-3.5 h-3.5 rounded-sm"
             style={{ background: ref.complete ? filledColor : emptyColor }}
           />
@@ -552,7 +531,6 @@ function TopicScreen({
   course,
   topic,
   breadcrumb,
-  lang,
   onPickLesson,
   onPickWalkthrough,
   onPickChallenge,
@@ -560,7 +538,6 @@ function TopicScreen({
   course: Course;
   topic: Topic;
   breadcrumb: BreadcrumbSegment[];
-  lang: import("./i18n").Lang;
   onPickLesson: (lesson: Lesson) => void;
   onPickWalkthrough: (
     idx: number,
@@ -577,7 +554,7 @@ function TopicScreen({
   const chapterIdx =
     course.topics?.findIndex((t) => t.id === topic.id) ?? -1;
   const chapterLabel =
-    chapterIdx >= 0 ? `${t(ui.chapterPrefix, lang)} ${String(chapterIdx + 1).padStart(2, "0")}` : null;
+    chapterIdx >= 0 ? `${t(ui.chapterPrefix)} ${String(chapterIdx + 1).padStart(2, "0")}` : null;
 
   return (
     <div className="min-h-full">
@@ -604,13 +581,13 @@ function TopicScreen({
                   </span>
                 )}
                 <span className={tokens.text.eyebrow}>
-                  {topicMetaLabel(topic, lang)}
+                  {topicMetaLabel(topic)}
                 </span>
               </div>
-              <h1 className={tokens.text.h1}>{t(topic.title, lang)}</h1>
+              <h1 className={tokens.text.h1}>{t(topic.title)}</h1>
               {topic.summary && (
                 <p className="text-stone-600 dark:text-stone-400 text-base mt-1.5">
-                  {t(topic.summary, lang)}
+                  {t(topic.summary)}
                 </p>
               )}
             </div>
@@ -624,9 +601,9 @@ function TopicScreen({
           {/* Lessons */}
           <section>
             <div className="flex items-baseline justify-between mb-4">
-              <h2 className={tokens.text.h2}>{t(ui.lessonsHeading, lang)}</h2>
+              <h2 className={tokens.text.h2}>{t(ui.lessonsHeading)}</h2>
               <span className={tokens.text.eyebrow}>
-                {topic.lessons.length} {t(ui.lessonsCount, lang).replace(" →", "")}
+                {topic.lessons.length} {t(ui.lessonsCount).replace(" →", "")}
               </span>
             </div>
             <TopicLessonGrid
@@ -634,7 +611,6 @@ function TopicScreen({
               lessons={topic.lessons}
               accent={accent}
               onPick={onPickLesson}
-              lang={lang}
             />
           </section>
 
@@ -646,7 +622,6 @@ function TopicScreen({
                   walkthroughs={topic.walkthroughs}
                   accent={accent}
                   onPick={onPickWalkthrough}
-                  lang={lang}
                 />
               ) : (
                 <div />
@@ -655,7 +630,6 @@ function TopicScreen({
                 <ChallengesSection
                   challenges={topic.challenges}
                   onPick={onPickChallenge}
-                  lang={lang}
                 />
               ) : (
                 <div />
@@ -668,21 +642,21 @@ function TopicScreen({
   );
 }
 
-function topicMetaLabel(topic: Topic, lang: import("./i18n").Lang): string {
+function topicMetaLabel(topic: Topic): string {
   // "4 lessons · 1 walkthrough · 1 challenge" — adapts to authored content.
   const parts: string[] = [];
-  parts.push(`${topic.lessons.length} ${t(ui.lessonsCount, lang).replace(" →", "")}`);
+  parts.push(`${topic.lessons.length} ${t(ui.lessonsCount).replace(" →", "")}`);
   if (topic.walkthroughs?.length)
     parts.push(
       topic.walkthroughs.length === 1
-        ? t(ui.walkthroughBadge, lang).toLowerCase()
-        : `${topic.walkthroughs.length} ${t(ui.walkthroughsSection, lang).toLowerCase()}`,
+        ? t(ui.walkthroughBadge).toLowerCase()
+        : `${topic.walkthroughs.length} ${t(ui.walkthroughsSection).toLowerCase()}`,
     );
   if (topic.challenges?.length)
     parts.push(
       topic.challenges.length === 1
-        ? t(ui.challengeBadge, lang).toLowerCase()
-        : `${topic.challenges.length} ${t(ui.challengesSection, lang).toLowerCase()}`,
+        ? t(ui.challengeBadge).toLowerCase()
+        : `${topic.challenges.length} ${t(ui.challengesSection).toLowerCase()}`,
     );
   return parts.join(" · ");
 }
@@ -696,15 +670,13 @@ function TopicLessonGrid({
   lessons,
   accent,
   onPick,
-  lang,
 }: {
   course: Course;
   lessons: Lesson[];
   accent: TopicAccent;
   onPick: (l: Lesson) => void;
-  lang: import("./i18n").Lang;
 }) {
-  if (lessons.length === 0) return <NoLessonsBox lang={lang} />;
+  if (lessons.length === 0) return <NoLessonsBox />;
   return (
     <div className="grid sm:grid-cols-2 gap-3">
       {lessons.map((lesson, i) => (
@@ -715,7 +687,6 @@ function TopicLessonGrid({
           accent={accent}
           index={i + 1}
           onPick={() => onPick(lesson)}
-          lang={lang}
         />
       ))}
     </div>
@@ -728,14 +699,12 @@ function TopicLessonCard({
   accent,
   index,
   onPick,
-  lang,
 }: {
   courseId: string;
   lesson: Lesson;
   accent: TopicAccent;
   index: number;
   onPick: () => void;
-  lang: import("./i18n").Lang;
 }) {
   const { theme } = useTheme();
   const fg = pickAccentHex(accent.fgHex, theme);
@@ -754,10 +723,10 @@ function TopicLessonCard({
         >
           {String(index).padStart(2, "0")}
         </span>
-        <h3 className={`${tokens.text.h3} flex-1`}>{t(lesson.title, lang)}</h3>
+        <h3 className={`${tokens.text.h3} flex-1`}>{t(lesson.title)}</h3>
       </div>
       <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed mb-4">
-        {t(lesson.summary, lang)}
+        {t(lesson.summary)}
       </p>
       <div className="flex items-center gap-3">
         <div className="flex-1 h-1 rounded-full overflow-hidden bg-[#e8e2d3] dark:bg-[#2c303a]">
@@ -784,12 +753,10 @@ function TopicGrid({
   courseId,
   topics,
   onPick,
-  lang,
 }: {
   courseId: string;
   topics: Topic[];
   onPick: (t: Topic) => void;
-  lang: import("./i18n").Lang;
 }) {
   return (
     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -799,7 +766,6 @@ function TopicGrid({
           courseId={courseId}
           topic={topic}
           onPick={() => onPick(topic)}
-          lang={lang}
         />
       ))}
     </div>
@@ -810,12 +776,10 @@ function TopicCard({
   courseId,
   topic,
   onPick,
-  lang,
 }: {
   courseId: string;
   topic: Topic;
   onPick: () => void;
-  lang: import("./i18n").Lang;
 }) {
   const { theme } = useTheme();
   const dark = theme === "dark";
@@ -824,10 +788,10 @@ function TopicCard({
   const total = topic.lessons.length;
   const lessonsLabel =
     total === 0
-      ? t(ui.comingSoon, lang)
+      ? t(ui.comingSoon)
       : total === 1
-        ? t(ui.topicSingleLesson, lang)
-        : t(ui.topicLessonsCount, lang).replace("{n}", String(total));
+        ? t(ui.topicSingleLesson)
+        : t(ui.topicLessonsCount).replace("{n}", String(total));
   const stepCount = topic.lessons.reduce((n, l) => n + l.slides.length, 0);
   // Soft topic-level progress: 12 ticks scaled to the share of complete
   // lessons. Doesn't claim per-step precision, just gives the eye a hint.
@@ -848,7 +812,7 @@ function TopicCard({
         <ChapterCover topicId={topic.id} accent={accent} />
       </div>
       <div className="flex items-center justify-between mb-1 gap-2">
-        <span className={tokens.text.h3}>{t(topic.title, lang)}</span>
+        <span className={tokens.text.h3}>{t(topic.title)}</span>
         <span
           className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded shrink-0"
           style={{
@@ -861,7 +825,7 @@ function TopicCard({
       </div>
       {topic.summary && (
         <p className="text-xs text-stone-600 dark:text-stone-400 leading-relaxed mb-3">
-          {t(topic.summary, lang)}
+          {t(topic.summary)}
         </p>
       )}
       <div className="flex items-center justify-between">
@@ -879,8 +843,8 @@ function TopicCard({
         </div>
         <span className="text-[11px] font-mono text-stone-500 dark:text-stone-400 group-hover:translate-x-0.5 transition-transform">
           {stepCount > 0
-            ? `${stepCount} ${t(ui.stepsCount, lang)}`
-            : t(ui.comingSoon, lang)}
+            ? `${stepCount} ${t(ui.stepsCount)}`
+            : t(ui.comingSoon)}
         </span>
       </div>
     </button>
@@ -892,7 +856,6 @@ function LessonGrid({
   lessons,
   accent,
   onPick,
-  lang,
 }: {
   course: Course;
   topic?: Topic;
@@ -900,10 +863,9 @@ function LessonGrid({
   /** Accent applied to the progress bar; falls back to course accent. */
   accent?: TopicAccent;
   onPick: (l: Lesson) => void;
-  lang: import("./i18n").Lang;
 }) {
   if (lessons.length === 0) {
-    return <NoLessonsBox lang={lang} />;
+    return <NoLessonsBox />;
   }
   const a = accent ?? accentFor(undefined, course.id);
   return (
@@ -915,7 +877,6 @@ function LessonGrid({
           lesson={lesson}
           accent={a}
           onPick={() => onPick(lesson)}
-          lang={lang}
         />
       ))}
     </div>
@@ -927,13 +888,11 @@ function LessonCard({
   lesson,
   accent,
   onPick,
-  lang,
 }: {
   course: Course;
   lesson: Lesson;
   accent: TopicAccent;
   onPick: () => void;
-  lang: import("./i18n").Lang;
 }) {
   const { theme } = useTheme();
   const dark = theme === "dark";
@@ -947,7 +906,7 @@ function LessonCard({
       className={`group ${tokens.card.surface} ${tokens.card.hover} text-left p-5 relative`}
     >
       <div className="flex items-start justify-between gap-3 mb-1">
-        <h3 className={tokens.text.h3}>{t(lesson.title, lang)}</h3>
+        <h3 className={tokens.text.h3}>{t(lesson.title)}</h3>
         {done && (
           <span
             className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded shrink-0"
@@ -956,16 +915,16 @@ function LessonCard({
               color: dark ? "#5FCAA8" : "#1F8A6E",
             }}
           >
-            {t(ui.doneBadge, lang)}
+            {t(ui.doneBadge)}
           </span>
         )}
       </div>
       <p className="text-sm text-stone-600 dark:text-stone-400 leading-relaxed mb-4">
-        {t(lesson.summary, lang)}
+        {t(lesson.summary)}
       </p>
       <div className="flex items-center justify-between">
         <div className="text-[11px] font-mono text-stone-500 dark:text-stone-400">
-          {total} {t(ui.stepsCount, lang)}
+          {total} {t(ui.stepsCount)}
         </div>
         <span
           className="text-xs ml-3 font-medium text-stone-500 dark:text-stone-400 group-hover:translate-x-0.5 transition-transform"
@@ -978,14 +937,14 @@ function LessonCard({
   );
 }
 
-function NoLessonsBox({ lang }: { lang: import("./i18n").Lang }) {
+function NoLessonsBox({}) {
   return (
     <div
       className="text-sm italic px-4 py-3 rounded-xl
                  bg-stone-100 text-stone-500
                  dark:bg-[#222630] dark:text-stone-400"
     >
-      {t(ui.noLessons, lang)}
+      {t(ui.noLessons)}
     </div>
   );
 }
@@ -1002,12 +961,10 @@ function WalkthroughsSection({
   walkthroughs,
   accent,
   onPick,
-  lang,
 }: {
   walkthroughs: JsWorkshopSlide[];
   accent: TopicAccent;
   onPick: (idx: number, slide: JsWorkshopSlide, startIdx: number) => void;
-  lang: import("./i18n").Lang;
 }) {
   const { theme } = useTheme();
   const dark = theme === "dark";
@@ -1017,17 +974,17 @@ function WalkthroughsSection({
     <section>
       <div className="flex items-baseline justify-between mb-3 flex-wrap gap-2">
         <div className="flex items-baseline gap-2">
-          <h2 className={tokens.text.h2}>{t(ui.walkthroughsSection, lang)}</h2>
+          <h2 className={tokens.text.h2}>{t(ui.walkthroughsSection)}</h2>
           <span
             className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded"
             style={{ background: bg, color: fg }}
           >
-            {t(ui.walkthroughsBadgeGuided, lang)}
+            {t(ui.walkthroughsBadgeGuided)}
           </span>
         </div>
       </div>
       <p className="text-xs text-stone-500 dark:text-stone-400 mb-3">
-        {t(ui.walkthroughsTagline, lang)}
+        {t(ui.walkthroughsTagline)}
       </p>
       <div className="space-y-3">
         {walkthroughs.map((wt, idx) => (
@@ -1040,10 +997,10 @@ function WalkthroughsSection({
                 onClick={() => onPick(idx, wt, 0)}
                 className={`${tokens.text.h3} text-left hover:opacity-80 transition-opacity`}
               >
-                {t(wt.title, lang)}
+                {t(wt.title)}
               </button>
               <span className="text-[10px] font-mono text-stone-500 dark:text-stone-400">
-                {wt.steps.length} {t(ui.stepsLabel, lang)}
+                {wt.steps.length} {t(ui.stepsLabel)}
               </span>
             </div>
             <WalkthroughStepGrid
@@ -1066,11 +1023,9 @@ function WalkthroughsSection({
 function ChallengesSection({
   challenges,
   onPick,
-  lang,
 }: {
   challenges: ExerciseSlide[];
   onPick: (idx: number, slide: ExerciseSlide) => void;
-  lang: import("./i18n").Lang;
 }) {
   const { theme } = useTheme();
   const dark = theme === "dark";
@@ -1082,23 +1037,23 @@ function ChallengesSection({
     <section>
       <div className="flex items-baseline justify-between mb-3 flex-wrap gap-2">
         <div className="flex items-baseline gap-2">
-          <h2 className={tokens.text.h2}>{t(ui.challengesSection, lang)}</h2>
+          <h2 className={tokens.text.h2}>{t(ui.challengesSection)}</h2>
           <span
             className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded"
             style={{ background: tagBg, color: tagFg }}
           >
-            {t(ui.challengesBadgeOpen, lang)}
+            {t(ui.challengesBadgeOpen)}
           </span>
         </div>
       </div>
       <p className="text-xs text-stone-500 dark:text-stone-400 mb-3">
-        {t(ui.challengesTagline, lang)}
+        {t(ui.challengesTagline)}
       </p>
       <div className="space-y-3">
         {challenges.map((ch, idx) => {
           const testsLabel = ch.tests.length === 1
-            ? `1 ${t(ui.singleTest, lang)}`
-            : `${ch.tests.length} ${t(ui.testsCount, lang)}`;
+            ? `1 ${t(ui.singleTest)}`
+            : `${ch.tests.length} ${t(ui.testsCount)}`;
           return (
             <button
               key={idx}
@@ -1106,7 +1061,7 @@ function ChallengesSection({
               className={`group ${tokens.card.surface} ${tokens.card.hover} w-full text-left p-4`}
             >
               <div className="flex items-baseline justify-between mb-2 gap-3 flex-wrap">
-                <h3 className={tokens.text.h3}>{t(ch.title, lang)}</h3>
+                <h3 className={tokens.text.h3}>{t(ch.title)}</h3>
                 <span className="text-[10px] font-mono text-stone-500 dark:text-stone-400">
                   {testsLabel}
                 </span>
@@ -1125,7 +1080,7 @@ function ChallengesSection({
                 ))}
               </div>
               <div className="text-[11px] font-mono text-stone-500 dark:text-stone-400 mt-3 tabular-nums">
-                0 / {ch.tests.length} {t(ui.exercisePassedCount, lang)}
+                0 / {ch.tests.length} {t(ui.exercisePassedCount)}
               </div>
             </button>
           );
