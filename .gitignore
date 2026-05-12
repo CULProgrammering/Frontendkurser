@@ -11,6 +11,9 @@ yarn-error.log*
 *.md
 research/
 course-review-*.html
+review.bat
+app/scripts/generate-review.ts
+app/scripts/strip-swedish.mjs
 
 # Claude tooling
 .claude/
