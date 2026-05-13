@@ -54,6 +54,42 @@ export function findNextLesson(): LessonRef | null {
   return null;
 }
 
+/**
+ * Curriculum-order "next lesson" — the lesson that immediately follows the
+ * given (courseId, lessonId) in walk order, regardless of completion state.
+ * Used by the end-of-lesson "Continue → {next lesson}" button. Returns
+ * `null` when this is the last lesson in the curriculum.
+ */
+export function nextLessonAfter(
+  courseId: string,
+  lessonId: string,
+): LessonRef | null {
+  const all = walkLessons();
+  const idx = all.findIndex(
+    (ref) => ref.course.id === courseId && ref.lesson.id === lessonId,
+  );
+  if (idx < 0) return null;
+  return all[idx + 1] ?? null;
+}
+
+/**
+ * Display number for a lesson within its parent grouping — the "2." in
+ * "2. Types — what kind of value". Uses position within the topic when a
+ * topic is present (Variables 1..4); otherwise position within the flat
+ * course.lessons array (VS Code 1..N). Returns `null` when neither grouping
+ * is found (defensive — shouldn't happen for a ref produced by
+ * `walkLessons`).
+ */
+export function lessonNumber(ref: LessonRef): number | null {
+  if (ref.topic) {
+    const idx = ref.topic.lessons.findIndex((l) => l.id === ref.lesson.id);
+    return idx >= 0 ? idx + 1 : null;
+  }
+  const flat = ref.course.lessons ?? [];
+  const idx = flat.findIndex((l) => l.id === ref.lesson.id);
+  return idx >= 0 ? idx + 1 : null;
+}
+
 /** Per-bead status for the home hero progress strip. */
 export type LessonStatus = LessonRef & { complete: boolean };
 

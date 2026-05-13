@@ -18,10 +18,18 @@ export const ui = {
   heroSubtitle: "Short explanations, small puzzles, and labs you can run right away. No accounts, no time limit — you just need curiosity.",
   heroEyebrow: "Frontendkurser · JavaScript & frontend",
   heroContinuePrefix: "Continue",
+  // Shown on the primary hero CTA at progress=0. "Continue" reads as "resume"
+  // and confuses a cold student who hasn't started anything; "Start" sets
+  // the right expectation. Flips back to `heroContinuePrefix` once any
+  // lesson is complete.
+  heroStartPrefix: "Start",
   heroStart: "Start from the beginning",
   heroProgressLabel: "Your progress so far",
   heroLessonsCompleteSuffix: "of {total} lessons complete",
   heroAllDone: "All lessons complete — nice work.",
+  heroResetProgress: "Reset progress",
+  heroResetConfirm:
+    "Reset all progress? Your completed lessons will be cleared. This can't be undone.",
   // Topic-card variants
   topicLessonsCount: "{n} lessons",
   topicSingleLesson: "1 lesson",
@@ -34,19 +42,23 @@ export const ui = {
   escapeHint: "Esc to go back",
 
   // LessonTierMenu
-  tierExplanation: "Explanation",
-  tierChips: "Chips",
-  tierWorkshop: "Workshop",
-  tierExercise: "Exercise",
+  tierExplanation: "1. Read the idea",
+  tierChips: "2. Place the pieces",
+  tierWorkshop: "3. Practice with hints",
+  tierExercise: "4. Try it solo",
   tierExplanationDesc: "Read through the idea, step by step.",
   tierChipsDesc: "Assemble the code from chips and slots.",
   tierWorkshopDesc: "Guided edits in a real editor.",
   tierExerciseDesc: "Solve it from scratch in the lab.",
   tierSlideCount: "slides",
   tierEmpty: "No content yet.",
+  tierOrderCaption:
+    "Work through these in order — each one builds on the last.",
 
-  // ExplanationSlideView
-  stepLabel: "Step",
+  // ExplanationSlideView. "Part" (not "Step") so it doesn't collide with
+  // the outer numbered slide-jump dots — those are slides 1..N within the
+  // tier; the inner counter is "Part X / Y" within the current slide.
+  stepLabel: "Part",
   stepBack: "← Back",
   endOfExplanation: "End of explanation.",
   clickToContinue: "Click anywhere to continue →",
@@ -100,8 +112,10 @@ export const ui = {
   tierLabelWorkshop: "Workshop",
   tierLabelLab: "Lab",
 
-  // JsWorkshopSlideView
-  workshopStepLabel: "Step",
+  // JsWorkshopSlideView. "Part" (not "Step") so it doesn't collide with the
+  // outer "Workshop X / N" tier counter — the inner one is a sub-step
+  // within the current workshop.
+  workshopStepLabel: "Part",
   workshopHintLabel: "Hint",
   workshopHintShow: "Show hint",
   workshopHintHide: "Hide hint",

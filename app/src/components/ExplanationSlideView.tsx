@@ -7,7 +7,7 @@ import { ui } from "../i18n/strings";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
 import { ThemeToggleInline } from "./ThemeToggle";
 import { TypewriterToggleInline, useTypewriter } from "./TypewriterToggle";
-import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
+import { SlideTitleRow, type BreadcrumbSegment, type EndAction } from "./SlideDeck";
 import { TwoColumnLayout } from "./TwoColumnLayout";
 import { tokens } from "../styles/tokens";
 import { CrosswalkScene } from "./scenes/CrosswalkScene";
@@ -46,6 +46,13 @@ type Props = {
    * finished printing the last step.
    */
   onExit?: () => void;
+  /**
+   * Context-aware end-of-tier action. When provided, replaces the default
+   * "← Back" button on the very last step. `primary` is rendered as the
+   * dominant action; `secondary` (when present) sits to its left as a
+   * less-weighted option. Takes precedence over `onExit`.
+   */
+  endAction?: EndAction;
 };
 
 // Narration text is hand-authored with `\n` for visual line breaks. The right
@@ -161,7 +168,7 @@ function RenderBox({
   );
 }
 
-export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextSlide, onExit }: Props) {
+export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextSlide, onExit, endAction }: Props) {
   const [step, setStep] = useState(0);
   const [helpOpen, setHelpOpen] = useState(false);
   // `typingDone` flips when the Typewriter finishes (onDone). Used to
@@ -352,6 +359,23 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
                     ? t(ui.endOfExplanation)
                     : t(ui.clickToContinue)}
                 </div>
+                {/* Non-final steps: visible Next button advances within the
+                    slide. Disabled while the typewriter is still running so
+                    the click can't outrun the text. Click-anywhere stays as
+                    a convenience for students who learn the gesture. */}
+                {!atEnd && (
+                  <button
+                    type="button"
+                    disabled={!typingDone}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setStep((s) => s + 1);
+                    }}
+                    className={`${tokens.button.primary} min-h-[44px] sm:min-h-0 disabled:opacity-40 disabled:cursor-not-allowed`}
+                  >
+                    {t(ui.nextSlide)}
+                  </button>
+                )}
                 {atEnd && onNextSlide && (
                   <button
                     type="button"
@@ -364,17 +388,34 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
                     {t(ui.nextSlide)}
                   </button>
                 )}
-                {atEnd && !onNextSlide && typingDone && onExit && (
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onExit();
-                    }}
-                    className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
-                  >
-                    {t(ui.slideBack)}
-                  </button>
+                {atEnd && !onNextSlide && typingDone && (endAction || onExit) && (
+                  <div className="flex flex-wrap items-center justify-end gap-2">
+                    {endAction?.secondary && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          endAction.secondary!.onClick();
+                        }}
+                        className={`${tokens.button.secondary} min-h-[44px] sm:min-h-0`}
+                      >
+                        {endAction.secondary.label}
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (endAction) endAction.primary.onClick();
+                        else onExit!();
+                      }}
+                      className={`${tokens.button.primary} min-h-[44px] sm:min-h-0 inline-flex items-center max-w-[20rem]`}
+                    >
+                      <span className="truncate">
+                        {endAction ? endAction.primary.label : t(ui.slideBack)}
+                      </span>
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
@@ -480,11 +521,31 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
 
             <div className="flex-1" />
             <div className="flex items-center justify-between gap-3">
-              <div className="text-sm italic text-stone-500 dark:text-stone-400">
+              <div
+                className="text-sm italic text-stone-500 dark:text-stone-400 transition-opacity"
+                style={{ opacity: typingDone ? 1 : 0.4 }}
+              >
                 {atEnd
                   ? t(ui.endOfExplanation)
                   : t(ui.clickToContinue)}
               </div>
+              {/* Non-final steps: visible Next button advances within the
+                  slide. Disabled while the typewriter is still running so
+                  the click can't outrun the text. Click-anywhere stays as
+                  a convenience for students who learn the gesture. */}
+              {!atEnd && (
+                <button
+                  type="button"
+                  disabled={!typingDone}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setStep((s) => s + 1);
+                  }}
+                  className={`${tokens.button.primary} min-h-[44px] sm:min-h-0 disabled:opacity-40 disabled:cursor-not-allowed`}
+                >
+                  {t(ui.nextSlide)}
+                </button>
+              )}
               {atEnd && onNextSlide && (
                 <button
                   type="button"
@@ -497,17 +558,34 @@ export function ExplanationSlideView({ slide, breadcrumb, slideJumpDots, onNextS
                   {t(ui.nextSlide)}
                 </button>
               )}
-              {atEnd && !onNextSlide && typingDone && onExit && (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onExit();
-                  }}
-                  className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
-                >
-                  {t(ui.slideBack)}
-                </button>
+              {atEnd && !onNextSlide && typingDone && (endAction || onExit) && (
+                <div className="flex flex-wrap items-center justify-end gap-2">
+                  {endAction?.secondary && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        endAction.secondary!.onClick();
+                      }}
+                      className={`${tokens.button.secondary} min-h-[44px] sm:min-h-0`}
+                    >
+                      {endAction.secondary.label}
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (endAction) endAction.primary.onClick();
+                      else onExit!();
+                    }}
+                    className={`${tokens.button.primary} min-h-[44px] sm:min-h-0 inline-flex items-center max-w-[20rem]`}
+                  >
+                    <span className="truncate">
+                      {endAction ? endAction.primary.label : t(ui.slideBack)}
+                    </span>
+                  </button>
+                </div>
               )}
             </div>
           </div>

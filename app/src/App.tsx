@@ -5,22 +5,25 @@ import { SlideDeck, Breadcrumb, type BreadcrumbSegment } from "./components/Slid
 import { LessonTierMenu } from "./components/LessonTierMenu";
 import { JsWorkshopSlideView } from "./components/JsWorkshopSlideView";
 import { ExerciseSlideView } from "./components/ExerciseSlideView";
-import { ThemeToggle, useTheme } from "./components/ThemeToggle";
+import { ThemeToggleInline, useTheme } from "./components/ThemeToggle";
 import { ChapterCover } from "./components/ChapterCover";
 import { AccentProvider } from "./components/AccentContext";
 import type { Course, ExerciseSlide, JsWorkshopSlide, Lesson, Topic } from "./types";
-import { isComplete } from "./progress";
-import type { Tier } from "./tiers";
+import { hasAnyProgress, isComplete, resetProgress } from "./progress";
+import { populatedTiers, type Tier } from "./tiers";
 import { t } from "./i18n";
 import { ui } from "./i18n/strings";
 import { tokens } from "./styles/tokens";
 import { accentFor, pickAccentHex, type TopicAccent } from "./topics";
 import {
   findNextLesson,
+  lessonNumber,
   lessonProgressTotal,
   lessonStatuses,
+  nextLessonAfter,
   type LessonRef,
 } from "./homeProgress";
+import type { EndAction } from "./components/SlideDeck";
 
 const TIER_LABEL: Record<Tier, typeof ui.tierExplanation> = {
   explanation: ui.tierExplanation,
@@ -73,6 +76,23 @@ function pickLesson(course: Course, lesson: Lesson, topic?: Topic): View {
     : { kind: "lesson", course, lesson, topic };
 }
 
+/**
+ * Formats the "Continue → next lesson" primary button label, e.g.
+ * "Continue → 2. Types — what kind of value". Every lesson in the
+ * curriculum already authors its number into the title ("2. ...",
+ * "1. ..."), so we don't re-prepend the index — that doubled the prefix
+ * in earlier iterations ("2. 2. Move & copy lines"). If a lesson title
+ * ever ships without the leading number, prepend the computed one from
+ * `lessonNumber` so the button still numbers itself.
+ */
+function continueToLessonLabel(ref: LessonRef): string {
+  const title = ref.lesson.title;
+  const alreadyNumbered = /^\d+\.\s/.test(title);
+  if (alreadyNumbered) return `Continue → ${title}`;
+  const n = lessonNumber(ref);
+  return n !== null ? `Continue → ${n}. ${title}` : `Continue → ${title}`;
+}
+
 function App() {
   const [view, setView] = useState<View>({ kind: "home" });
   const [, setTick] = useState(0);
@@ -96,12 +116,54 @@ function App() {
         : []),
       { label: t(lessonView.lesson.title) },
     ];
+    // Linear-lesson end action: "Continue → next lesson" when one exists
+    // (curriculum order). At the end of the very last lesson, fall back to
+    // the legacy back-to-parent so the student isn't dead-ended.
+    const lessonNextRef = nextLessonAfter(view.course.id, view.lesson.id);
+    const lessonBackToParent = view.topic
+      ? {
+          label: `← Back to ${t(view.topic.title)}`,
+          onClick: () => {
+            setView({ kind: "topic", course: view.course, topic: view.topic! });
+            setTick((tick) => tick + 1);
+          },
+        }
+      : {
+          label: `← Back to ${t(ui.home)}`,
+          onClick: () => {
+            setView({ kind: "home" });
+            setTick((tick) => tick + 1);
+          },
+        };
+    const lessonEndAction: EndAction = lessonNextRef
+      ? {
+          primary: {
+            label: continueToLessonLabel(lessonNextRef),
+            onClick: () => {
+              setView(
+                pickLesson(
+                  lessonNextRef.course,
+                  lessonNextRef.lesson,
+                  lessonNextRef.topic,
+                ),
+              );
+              setTick((tick) => tick + 1);
+            },
+          },
+        }
+      : { primary: lessonBackToParent };
     return (
       <AccentProvider accent={accentFor(view.topic?.id, view.course.id)}>
         <SlideDeck
+          // Re-key on the lesson id so SlideDeck's internal `idx` counter
+          // resets when the "Continue → next lesson" end action crosses a
+          // lesson boundary. Otherwise idx carries over and may point at
+          // a non-existent slide in the next lesson (crash).
+          key={view.lesson.id}
           courseId={view.course.id}
           lesson={view.lesson}
           breadcrumb={breadcrumb}
+          endAction={lessonEndAction}
           onExit={() => {
             if (view.topic) {
               setView({ kind: "topic", course: view.course, topic: view.topic });
@@ -134,6 +196,10 @@ function App() {
         : []),
       {
         label: t(tierDeckView.lesson.title),
+        // Back button on slide views uses the tighter word "menu" instead
+        // of the full lesson title — keeps the button compact and reads
+        // cleanly. Breadcrumb pill still shows the full lesson title.
+        shortLabel: "menu",
         onNavigate: () =>
           setView({
             kind: "tier-menu",
@@ -144,9 +210,93 @@ function App() {
       },
       { label: t(TIER_LABEL[tierDeckView.tier]) },
     ];
+    // End-of-tier action. Three contexts, three button layouts:
+    //   - Mid-lesson (next tier exists): single "Continue → next tier"
+    //   - Last tier WITH a next lesson: dual buttons —
+    //       secondary "← Back to {topic / home}" + primary "Continue → next lesson"
+    //   - Last tier AND last lesson in curriculum: single "← Back to {topic / home}"
+    // The top-row "← Back to menu" breadcrumb button still covers the
+    // "I want to re-pick a tier" escape on every tier.
+    const populated = populatedTiers(view.lesson);
+    const currentTierIdx = populated.indexOf(view.tier);
+    const nextTier =
+      currentTierIdx >= 0 && currentTierIdx < populated.length - 1
+        ? populated[currentTierIdx + 1]
+        : null;
+
+    const backToParent = view.topic
+      ? {
+          label: `← Back to ${t(view.topic.title)}`,
+          onClick: () => {
+            setView({
+              kind: "topic",
+              course: view.course,
+              topic: view.topic!,
+            });
+            setTick((tick) => tick + 1);
+          },
+        }
+      : {
+          label: `← Back to ${t(ui.home)}`,
+          onClick: () => {
+            setView({ kind: "home" });
+            setTick((tick) => tick + 1);
+          },
+        };
+
+    const nextLessonRef = nextLessonAfter(view.course.id, view.lesson.id);
+    const continueToNextLesson = nextLessonRef
+      ? {
+          label: continueToLessonLabel(nextLessonRef),
+          onClick: () => {
+            setView(
+              pickLesson(
+                nextLessonRef.course,
+                nextLessonRef.lesson,
+                nextLessonRef.topic,
+              ),
+            );
+            setTick((tick) => tick + 1);
+          },
+        }
+      : null;
+
+    const tierDeckEndAction: EndAction = nextTier
+      ? {
+          primary: {
+            label: `Continue → ${t(TIER_LABEL[nextTier])}`,
+            onClick: () => {
+              setView({
+                kind: "tier-deck",
+                course: view.course,
+                lesson: view.lesson,
+                tier: nextTier,
+                topic: view.topic,
+                startIdx: 0,
+              });
+              setTick((tick) => tick + 1);
+            },
+          },
+        }
+      : continueToNextLesson
+        ? {
+            primary: continueToNextLesson,
+            secondary: backToParent,
+          }
+        : { primary: backToParent };
+
     return (
       <AccentProvider accent={accentFor(view.topic?.id, view.course.id)}>
         <SlideDeck
+          // Re-key on the tier so SlideDeck remounts with fresh state
+          // (the internal `idx` counter especially) when the student
+          // crosses a tier boundary via the "Continue → next tier" end
+          // action. Without this, idx from the previous tier carries
+          // over and points at a non-existent slide in the new tier,
+          // crashing the renderer with "cannot read 'kind' of undefined".
+          // Within the same tier, the key stays constant so navigation
+          // between sub-slides preserves state as expected.
+          key={`${view.lesson.id}:${view.tier}`}
           courseId={view.course.id}
           lesson={view.lesson}
           tier={view.tier}
@@ -161,6 +311,7 @@ function App() {
             });
             setTick((tick) => tick + 1);
           }}
+          endAction={tierDeckEndAction}
         />
       </AccentProvider>
     );
@@ -187,7 +338,6 @@ function App() {
     ];
     return (
       <AccentProvider accent={accentFor(view.topic?.id, view.course.id)}>
-        <ThemeToggle />
         <LessonTierMenu
           courseId={view.course.id}
           lesson={view.lesson}
@@ -283,51 +433,45 @@ function App() {
       { label: t(view.topic.title) },
     ];
     return (
-      <>
-        <ThemeToggle />
-        <TopicScreen
-          course={view.course}
-          topic={view.topic}
-          breadcrumb={topicBreadcrumb}
-          onPickLesson={(lesson) =>
-            setView(pickLesson(view.course, lesson, view.topic))
-          }
-          onPickWalkthrough={(idx, slide, startIdx) =>
-            setView({
-              kind: "walkthrough",
-              course: view.course,
-              topic: view.topic,
-              idx,
-              slide,
-              startIdx,
-            })
-          }
-          onPickChallenge={(idx, slide) =>
-            setView({
-              kind: "challenge",
-              course: view.course,
-              topic: view.topic,
-              idx,
-              slide,
-            })
-          }
-        />
-      </>
+      <TopicScreen
+        course={view.course}
+        topic={view.topic}
+        breadcrumb={topicBreadcrumb}
+        onPickLesson={(lesson) =>
+          setView(pickLesson(view.course, lesson, view.topic))
+        }
+        onPickWalkthrough={(idx, slide, startIdx) =>
+          setView({
+            kind: "walkthrough",
+            course: view.course,
+            topic: view.topic,
+            idx,
+            slide,
+            startIdx,
+          })
+        }
+        onPickChallenge={(idx, slide) =>
+          setView({
+            kind: "challenge",
+            course: view.course,
+            topic: view.topic,
+            idx,
+            slide,
+          })
+        }
+      />
     );
   }
 
   return (
-    <>
-      <ThemeToggle />
-      <HomeScreen
-        onPickTopic={(course, topic) =>
-          setView({ kind: "topic", course, topic })
-        }
-        onPickLesson={(course, lesson) =>
-          setView(pickLesson(course, lesson))
-        }
-      />
-    </>
+    <HomeScreen
+      onPickTopic={(course, topic) =>
+        setView({ kind: "topic", course, topic })
+      }
+      onPickLesson={(course, lesson) =>
+        setView(pickLesson(course, lesson))
+      }
+    />
   );
 }
 
@@ -342,9 +486,20 @@ function HomeScreen({
   onPickTopic: (course: Course, topic: Topic) => void;
   onPickLesson: (course: Course, lesson: Lesson) => void;
 }) {
+  // Local tick — bumped by the "Reset progress" button so the derived
+  // values (next, total, beads) recompute from a wiped localStorage on
+  // the same render. Cheaper than a full `location.reload()` and keeps
+  // any in-memory state the parent App holds intact.
+  const [, setResetTick] = useState(0);
   const next = findNextLesson();
   const total = lessonProgressTotal();
   const allDone = total.total > 0 && total.done === total.total;
+
+  const onReset = () => {
+    if (!window.confirm(t(ui.heroResetConfirm))) return;
+    resetProgress();
+    setResetTick((n) => n + 1);
+  };
 
   function navigateTo(ref: LessonRef) {
     if (ref.topic) onPickTopic(ref.course, ref.topic);
@@ -377,14 +532,18 @@ function HomeScreen({
 
           <div className="flex flex-col md:flex-row md:items-end gap-8">
             <div className="flex-1 max-w-xl">
-              <h1 className={`${tokens.text.h1} mb-4`}>
-                {t(ui.heroTitle)}
-              </h1>
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <h1 className={`${tokens.text.h1} flex-1 min-w-0`}>
+                  {t(ui.heroTitle)}
+                </h1>
+                <ThemeToggleInline />
+              </div>
               <p className="text-base text-stone-700 dark:text-stone-300 max-w-md mb-6 leading-relaxed">
                 {t(ui.heroSubtitle)}
               </p>
               <HeroCtas
                 next={next}
+                done={total.done}
                 allDone={allDone}
                 onContinue={onContinue}
                 onStartOver={onStartOver}
@@ -392,7 +551,11 @@ function HomeScreen({
             </div>
 
             {total.total > 0 && (
-              <ProgressBeads total={total.total} done={total.done} />
+              <ProgressBeads
+                total={total.total}
+                done={total.done}
+                onReset={onReset}
+              />
             )}
           </div>
         </div>
@@ -441,11 +604,16 @@ function HomeScreen({
 
 function HeroCtas({
   next,
+  done,
   allDone,
   onContinue,
   onStartOver,
 }: {
   next: LessonRef | null;
+  /** Lessons completed so far. Drives the "Start" vs "Continue" label
+   *  so a cold student isn't told to "Continue" something they haven't
+   *  started. */
+  done: number;
   allDone: boolean;
   onContinue: () => void;
   onStartOver: () => void;
@@ -463,9 +631,13 @@ function HeroCtas({
     );
   }
 
+  // Prefix flips at progress=0 so the CTA reads honestly: nothing to
+  // continue yet → "Start — <title>". Once any lesson is complete, the
+  // button reverts to "Continue — <title>".
+  const prefix = done === 0 ? t(ui.heroStartPrefix) : t(ui.heroContinuePrefix);
   const continueLabel = next
-    ? `${t(ui.heroContinuePrefix)} — ${t(next.lesson.title)}`
-    : t(ui.heroContinuePrefix);
+    ? `${prefix} — ${t(next.lesson.title)}`
+    : prefix;
 
   // Hide the "Start over" CTA when no progress has been made — the
   // primary "Continue" already takes you to the first lesson.
@@ -488,9 +660,14 @@ function HeroCtas({
 function ProgressBeads({
   total,
   done,
+  onReset,
 }: {
   total: number;
   done: number;
+  /** Wipe all completion state and re-render the home page. Hidden when
+   *  there's nothing to reset (done === 0) to avoid offering a destructive
+   *  action a fresh student has no reason for. */
+  onReset?: () => void;
 }) {
   const { theme } = useTheme();
   const dark = theme === "dark";
@@ -516,8 +693,23 @@ function ProgressBeads({
           />
         ))}
       </div>
-      <div className="text-xs text-stone-600 dark:text-stone-400 tabular-nums">
-        {done} {suffix}
+      <div className="flex items-center justify-between gap-3">
+        <div className="text-xs text-stone-600 dark:text-stone-400 tabular-nums">
+          {done} {suffix}
+        </div>
+        {/* "Reset progress" — subtle text link, shown whenever ANY slide
+            has been marked complete (not just whole lessons), so students
+            who've poked at one tier and want a fresh slate can clear it.
+            Click prompts a window.confirm to guard accidental wipes. */}
+        {onReset && hasAnyProgress() && (
+          <button
+            type="button"
+            onClick={onReset}
+            className="text-xs text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-100 hover:underline transition-colors"
+          >
+            {t(ui.heroResetProgress)}
+          </button>
+        )}
       </div>
     </div>
   );
@@ -584,7 +776,10 @@ function TopicScreen({
                   {topicMetaLabel(topic)}
                 </span>
               </div>
-              <h1 className={tokens.text.h1}>{t(topic.title)}</h1>
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className={tokens.text.h1}>{t(topic.title)}</h1>
+                <ThemeToggleInline />
+              </div>
               {topic.summary && (
                 <p className="text-stone-600 dark:text-stone-400 text-base mt-1.5">
                   {t(topic.summary)}

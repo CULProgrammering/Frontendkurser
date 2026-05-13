@@ -6,7 +6,7 @@ import { sessionGet, sessionSet } from "../storage";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
 import { ThemeToggleInline } from "./ThemeToggle";
 import { ValuesPill } from "./ValuesPill";
-import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
+import { SlideTitleRow, type BreadcrumbSegment, type EndAction } from "./SlideDeck";
 import { CodeEditor } from "./CodeEditor";
 import { TwoColumnLayout } from "./TwoColumnLayout";
 import { tokens } from "../styles/tokens";
@@ -17,6 +17,13 @@ type Props = {
   breadcrumb?: BreadcrumbSegment[];
   slideJumpDots?: React.ReactNode;
   onPass?: () => void;
+  /**
+   * Context-aware end-of-tier action surfaced in the success banner once all
+   * tests pass. Matches the workshop / explanation pattern: `primary` is the
+   * "Continue → next tier / next lesson" CTA; `secondary` (when present) is
+   * "← Back to {topic}" for the final-tier dual-button layout.
+   */
+  endAction?: EndAction;
 };
 
 type Tab = "html" | "css" | "js";
@@ -183,7 +190,7 @@ ${html}
 </html>`;
 }
 
-export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots, onPass }: Props) {
+export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots, onPass, endAction }: Props) {
   const { codePx, prosePx } = useSlideFontSize();
 
   const startHtml = slide.starterHtml ? t(slide.starterHtml) : "";
@@ -468,8 +475,30 @@ export function ExerciseSlideView({ slide, storageKey, breadcrumb, slideJumpDots
               {t(ui.exerciseRunHint)}
             </div>
           ) : allPass ? (
-            <div className={`${tokens.feedback.success} font-medium`}>
-              {t(ui.exerciseAllPass)}
+            <div className="flex flex-col gap-3">
+              <div className={`${tokens.feedback.success} font-medium`}>
+                {t(ui.exerciseAllPass)}
+              </div>
+              {endAction && (
+                <div className="flex flex-wrap items-center justify-end gap-2">
+                  {endAction.secondary && (
+                    <button
+                      type="button"
+                      onClick={endAction.secondary.onClick}
+                      className={`${tokens.button.secondary} min-h-[44px] sm:min-h-0`}
+                    >
+                      {endAction.secondary.label}
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={endAction.primary.onClick}
+                    className={`${tokens.button.primary} min-h-[44px] sm:min-h-0 inline-flex items-center max-w-[20rem]`}
+                  >
+                    <span className="truncate">{endAction.primary.label}</span>
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <>

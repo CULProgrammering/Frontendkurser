@@ -1,12 +1,12 @@
 import type { ExerciseSlide, JsWorkshopSlide, Lesson } from "../types";
 import { TIER_ORDER, slidesForTier, type Tier } from "../tiers";
-import { isTierComplete } from "../progress";
+import { isSlideComplete, isTierComplete } from "../progress";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
 import { Breadcrumb, type BreadcrumbSegment } from "./SlideDeck";
 import { tokens } from "../styles/tokens";
 import { useAccent } from "./AccentContext";
-import { useTheme } from "./ThemeToggle";
+import { useTheme, ThemeToggleInline } from "./ThemeToggle";
 import { pickAccentHex } from "../topics";
 
 type Props = {
@@ -73,12 +73,46 @@ function exerciseRows(lesson: Lesson): { key: string; preview: string }[] {
   }));
 }
 
+/**
+ * Small padlock glyph used on locked tier cards and locked sub-rows. Inline
+ * SVG so it inherits `currentColor` and styles cleanly in both themes.
+ */
+function LockIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <rect x="4" y="11" width="16" height="10" rx="2" />
+      <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+    </svg>
+  );
+}
+
 export function LessonTierMenu({ courseId, lesson, breadcrumb, onPick, onBack }: Props) {
   const { theme } = useTheme();
   const accent = useAccent();
   const fg = pickAccentHex(accent.fgHex, theme);
   const dark = theme === "dark";
   const tagBg = dark ? accent.bgHex.dark : accent.bgHex.light;
+
+  // First incomplete populated tier in order — the recommended entry point.
+  // Drives the "current" card styling so a cold student has an obvious next
+  // step; upcoming tiers render dimmer to push them down the visual hierarchy
+  // without locking access (clarity fix, not a gate).
+  const populatedTiers = TIER_ORDER.filter(
+    (tier) => slidesForTier(lesson, tier).length > 0,
+  );
+  const currentTier =
+    populatedTiers.find((tier) => !isTierComplete(courseId, lesson, tier)) ??
+    null;
 
   return (
     <div className="min-h-full">
@@ -99,9 +133,15 @@ export function LessonTierMenu({ courseId, lesson, breadcrumb, onPick, onBack }:
               ← {t(lesson.title)}
             </button>
           )}
-          <h1 className={tokens.text.h1}>{t(lesson.title)}</h1>
+          <div className="flex items-center gap-3 flex-wrap">
+            <h1 className={tokens.text.h1}>{t(lesson.title)}</h1>
+            <ThemeToggleInline />
+          </div>
           <p className="text-stone-600 dark:text-stone-400 text-base mt-1.5">
             {t(lesson.summary)}
+          </p>
+          <p className="text-stone-500 dark:text-stone-400 text-sm italic mt-2">
+            {t(ui.tierOrderCaption)}
           </p>
         </div>
       </header>
@@ -113,7 +153,9 @@ export function LessonTierMenu({ courseId, lesson, breadcrumb, onPick, onBack }:
           <div className="grid md:grid-cols-2 gap-4">
             {TIER_ORDER.map((tier) => {
               const count = slidesForTier(lesson, tier).length;
-              const done = isTierComplete(courseId, lesson.id, tier);
+              const done = isTierComplete(courseId, lesson, tier);
+              const isCurrent = tier === currentTier;
+              const isUpcoming = !done && !isCurrent;
               const rows =
                 tier === "workshop"
                   ? workshopRows(lesson)
@@ -124,8 +166,11 @@ export function LessonTierMenu({ courseId, lesson, breadcrumb, onPick, onBack }:
               const header = (
                 <>
                   <div className="flex items-start justify-between gap-3">
-                    <h2 className={tokens.text.h3}>
-                      {t(TIER_TITLE[tier])}
+                    <h2 className={`${tokens.text.h3} inline-flex items-center gap-2`}>
+                      {isUpcoming && (
+                        <LockIcon className="w-4 h-4 text-stone-500 dark:text-stone-400 shrink-0" />
+                      )}
+                      <span>{t(TIER_TITLE[tier])}</span>
                     </h2>
                     {done && (
                       <span
@@ -148,60 +193,116 @@ export function LessonTierMenu({ courseId, lesson, breadcrumb, onPick, onBack }:
               // Row-style card (workshop, exercise): each row is its own button
               // navigating to that specific slide within the tier.
               if (rows && rows.length > 0) {
+                // Row-level locking: row N is unlocked iff every prior row in
+                // this tier is complete. Row 0 is always unlocked at the row
+                // level — the tier card itself enforces the tier-level lock
+                // (only the "current" or "done" tier exposes its rows).
+                const rowSlideComplete = rows.map((_, i) =>
+                  isSlideComplete(courseId, lesson.id, tier, i),
+                );
+                const isRowLocked = (i: number) =>
+                  rowSlideComplete.slice(0, i).some((c) => !c);
                 return (
                   <div
                     key={tier}
-                    className={`${tokens.card.surface} p-5 transition-shadow`}
+                    className={`${tokens.card.surface} p-5 transition-shadow ${
+                      isUpcoming ? "opacity-60" : ""
+                    }`}
                     style={
                       done
                         ? {
                             borderColor: fg,
                             boxShadow: `inset 3px 0 0 ${fg}`,
                           }
-                        : undefined
+                        : isCurrent
+                          ? {
+                              borderColor: fg,
+                              boxShadow: `inset 3px 0 0 ${fg}, 0 1px 2px rgba(0,0,0,0.04)`,
+                            }
+                          : undefined
                     }
                   >
                     {header}
                     <ol className="mt-4 space-y-1.5 text-sm">
-                      {rows.map((row, i) => (
-                        <li key={row.key}>
-                          <button
-                            onClick={() => onPick(tier, i)}
-                            className="w-full text-left flex items-start gap-2 rounded-lg px-2 py-1.5 transition-colors
-                                       bg-stone-50 dark:bg-[#222630] border border-stone-900/[0.05] dark:border-white/[0.05]
-                                       hover:bg-stone-100 dark:hover:bg-[#252934]"
-                          >
-                            <span
-                              className="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full text-[11px] font-mono font-medium tabular-nums"
-                              style={{ background: tagBg, color: fg }}
+                      {rows.map((row, i) => {
+                        const rowLocked = isUpcoming || isRowLocked(i);
+                        const rowDone = rowSlideComplete[i];
+                        return (
+                          <li key={row.key}>
+                            <button
+                              onClick={() => onPick(tier, i)}
+                              disabled={rowLocked}
+                              title={
+                                rowLocked
+                                  ? "Finish the previous step first"
+                                  : undefined
+                              }
+                              className={
+                                "w-full text-left flex items-start gap-2 rounded-lg px-2 py-1.5 transition-colors " +
+                                "bg-stone-50 dark:bg-[#222630] border border-stone-900/[0.05] dark:border-white/[0.05] " +
+                                (rowLocked
+                                  ? "opacity-50 cursor-not-allowed"
+                                  : "hover:bg-stone-100 dark:hover:bg-[#252934]")
+                              }
                             >
-                              {i + 1}
-                            </span>
-                            <span className="text-stone-800 dark:text-stone-100 leading-snug">
-                              {row.preview}
-                            </span>
-                          </button>
-                        </li>
-                      ))}
+                              <span
+                                className="shrink-0 inline-flex items-center justify-center w-5 h-5 rounded-full text-[11px] font-mono font-medium tabular-nums"
+                                style={{ background: tagBg, color: fg }}
+                              >
+                                {rowLocked && !rowDone ? (
+                                  <LockIcon className="w-3 h-3" />
+                                ) : (
+                                  i + 1
+                                )}
+                              </span>
+                              <span className="text-stone-800 dark:text-stone-100 leading-snug flex-1">
+                                {row.preview}
+                              </span>
+                              {rowDone && (
+                                <span
+                                  className="text-[10px] font-mono uppercase tracking-widest shrink-0"
+                                  style={{ color: dark ? "#5FCAA8" : "#1F8A6E" }}
+                                >
+                                  ✓
+                                </span>
+                              )}
+                            </button>
+                          </li>
+                        );
+                      })}
                     </ol>
                   </div>
                 );
               }
 
               // Single-button card (explanation, chips): the whole card is the
-              // tap target.
+              // tap target. Locked when `isUpcoming` — student must clear
+              // the previous tier before this one becomes interactive.
               return (
                 <button
                   key={tier}
                   onClick={() => onPick(tier)}
-                  className={`${tokens.card.surface} ${tokens.card.hover} text-left p-5`}
+                  disabled={isUpcoming}
+                  title={
+                    isUpcoming ? "Finish the previous step first" : undefined
+                  }
+                  className={`${tokens.card.surface} text-left p-5 ${
+                    isUpcoming
+                      ? "opacity-60 cursor-not-allowed"
+                      : tokens.card.hover
+                  }`}
                   style={
                     done
                       ? {
                           borderColor: fg,
                           boxShadow: `inset 3px 0 0 ${fg}`,
                         }
-                      : undefined
+                      : isCurrent
+                        ? {
+                            borderColor: fg,
+                            boxShadow: `inset 3px 0 0 ${fg}, 0 1px 2px rgba(0,0,0,0.04)`,
+                          }
+                        : undefined
                   }
                 >
                   {header}
