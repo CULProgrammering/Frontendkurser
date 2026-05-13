@@ -48,7 +48,8 @@ export const moveCopyLesson: Lesson = {
     {
       kind: "js-workshop",
       title: "Practice: move & copy lines",
-      prompt: "Use Alt+↓ and Shift+Alt+↓ to manipulate lines in the editor.",
+      prompt:
+        "Practice each shortcut from the explanation — moving up/down, duplicating up/down, and cutting whole lines.",
       steps: [
         {
           id: "move-line-down",
@@ -64,9 +65,22 @@ export const moveCopyLesson: Lesson = {
           reveal: "let a = 1;\nlet b = 2;\nlet c = 3;\n",
         },
         {
-          id: "duplicate-line",
+          id: "move-line-up",
           instruction:
-            "Place the cursor anywhere on the line.\nUse **Shift+Alt+↓** to duplicate it — there should be two identical `console.log` lines.",
+            "Now the opposite direction. The order is a, b, c — use **Alt+↑** to move `let c` up to the top so the order becomes c, a, b.",
+          starterCode: "let a = 1;\nlet b = 2;\nlet c = 3;\n",
+          checks: [
+            {
+              message: "Move `let c` to the top — order should be c, a, b.",
+              requirePattern: /let c[\s\S]*let a[\s\S]*let b/,
+            },
+          ],
+          reveal: "let c = 3;\nlet a = 1;\nlet b = 2;\n",
+        },
+        {
+          id: "duplicate-below",
+          instruction:
+            "Place the cursor anywhere on the line.\nUse **Shift+Alt+↓** to duplicate it below — there should be two identical `console.log` lines.",
           starterCode: 'console.log("one");\n',
           checks: [
             {
@@ -76,6 +90,37 @@ export const moveCopyLesson: Lesson = {
             },
           ],
           reveal: 'console.log("one");\nconsole.log("one");\n',
+        },
+        {
+          id: "duplicate-above",
+          instruction:
+            "Same idea, other direction.\nUse **Shift+Alt+↑** to duplicate the line above — the copy goes ABOVE the original this time.",
+          starterCode: 'console.log("two");\n',
+          checks: [
+            {
+              message: "Duplicate the line so it appears twice.",
+              requirePattern:
+                /console\.log\("two"\)[\s\S]*console\.log\("two"\)/,
+            },
+          ],
+          reveal: 'console.log("two");\nconsole.log("two");\n',
+        },
+        {
+          id: "cut-line",
+          instruction:
+            "Place the cursor anywhere on the comment line — don't select anything.\nUse **Ctrl+X** to cut the whole line. It should disappear from the file.",
+          starterCode: "let a = 1;\n// cut this line\nlet b = 2;\n",
+          checks: [
+            {
+              message: "`let a` and `let b` should still be there.",
+              requirePattern: /let a[\s\S]*let b/,
+            },
+            {
+              message: "The comment line should be gone.",
+              assert: 'return !__source.includes("cut this line");',
+            },
+          ],
+          reveal: "let a = 1;\nlet b = 2;\n",
         },
       ],
     },

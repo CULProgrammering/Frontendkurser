@@ -58,14 +58,14 @@ export const introLesson: Lesson = {
         {
           id: "list",
           label:
-            "2. Move & copy lines    Alt+↑/↓  Shift+Alt+↓\n3. Select quickly       Shift+End  Ctrl+Shift+→\n4. Multiple cursors     Ctrl+D  Alt+Click\n5. Editing              Ctrl+/  Ctrl+Shift+K  Tab\n6. Navigation           Ctrl+P  Ctrl+G  Ctrl+Shift+F",
+            "2. Move & copy lines    Alt+↑/↓  Shift+Alt+↓\n3. Select quickly       Shift+End  Ctrl+Shift+→\n4. Multiple cursors     Ctrl+D  Alt+Click\n5. Editing              Ctrl+*  Shift+Delete  Tab\n6. Navigation           Ctrl+P  Ctrl+G  Ctrl+Shift+F",
           baseStyle: codePanelStyle,
         },
         {
           id: "note",
           kind: "note",
           label:
-            "All shortcuts shown are the VS Code defaults\nfor Windows and Linux.\n\nOn Mac: Ctrl → ⌘, Alt → ⌥",
+            "Shortcuts use a Swedish keyboard layout\non Windows/Linux.\n\nOn Mac: Ctrl → ⌘, Alt → ⌥",
           baseStyle: { ...noteBoxStyle, marginTop: 16 },
         },
       ],

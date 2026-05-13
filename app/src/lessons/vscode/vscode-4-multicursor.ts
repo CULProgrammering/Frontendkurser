@@ -51,7 +51,8 @@ export const multicursorLesson: Lesson = {
     {
       kind: "js-workshop",
       title: "Practice: multiple cursors",
-      prompt: "Use Ctrl+D and Alt+Click to edit multiple locations at once.",
+      prompt:
+        "Practice Ctrl+D, Ctrl+Shift+L, and Alt+Click — three ways to edit multiple places at once.",
       steps: [
         {
           id: "ctrl-d-rename",
@@ -75,17 +76,39 @@ export const multicursorLesson: Lesson = {
           reveal: "let score = 0;\nscore = score + 10;\n",
         },
         {
-          id: "alt-click-edit",
+          id: "ctrl-shift-l-rename",
           instruction:
-            "Use **Alt+Click** to place extra cursors at the `0` on each of the three lines.\nThen select each `0` (double-click or Shift+End) and type `1` to change all three at once.",
-          starterCode: "let x = 0;\nlet y = 0;\nlet z = 0;\n",
+            "Same kind of rename, but in one shot.\nPlace the cursor on any `myValue`. Press **Ctrl+Shift+L** to select ALL occurrences at once, then type `total` to rename everywhere.",
+          starterCode: "let myValue = 10;\nconsole.log(myValue);\nmyValue = myValue + 5;\n",
           checks: [
             {
-              message: "`x`, `y`, and `z` should all equal `1`.",
-              assert: "return x === 1 && y === 1 && z === 1;",
+              message: "Replace every `myValue` with `total`.",
+              requirePattern: /\btotal\b/,
+            },
+            {
+              message: "`myValue` should no longer appear anywhere.",
+              assert: 'return !__source.includes("myValue");',
+            },
+            {
+              message: "`total` should be a number.",
+              assert: "return typeof total === 'number';",
             },
           ],
-          reveal: "let x = 1;\nlet y = 1;\nlet z = 1;\n",
+          reveal: "let total = 10;\nconsole.log(total);\ntotal = total + 5;\n",
+        },
+        {
+          id: "alt-click-edit",
+          instruction:
+            "Use **Alt+Click** to place a cursor right before each `\"test\"` (between the space and the opening quote).\nThen press **Shift+End** — every cursor selects to the end of its line, so all three `\"test\";` are highlighted at once. Type `\"yes\";` to replace all three.",
+          starterCode: 'let x = "test";\nlet y = "test";\nlet z = "test";\n',
+          checks: [
+            {
+              message: "`x`, `y`, and `z` should all equal `\"yes\"`.",
+              assert:
+                'return x === "yes" && y === "yes" && z === "yes";',
+            },
+          ],
+          reveal: 'let x = "yes";\nlet y = "yes";\nlet z = "yes";\n',
         },
       ],
     },

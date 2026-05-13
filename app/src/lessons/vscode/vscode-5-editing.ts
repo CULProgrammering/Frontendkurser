@@ -14,27 +14,27 @@ export const editingLesson: Lesson = {
         {
           id: "shortcuts",
           label:
-            "Ctrl + /             Toggle line comment (add or remove //)\nCtrl + Shift + K     Delete the entire current line\nTab                  Indent the line one level\nShift + Tab          Un-indent the line one level",
+            "Ctrl + *             Toggle line comment (add or remove //)\nShift + Delete       Delete the entire current line\nTab                  Indent the line one level\nShift + Tab          Un-indent the line one level",
           baseStyle: codePanelStyle,
         },
         {
           id: "note",
           kind: "note",
           label:
-            "Ctrl+/ on a selected block comments\nor uncomments every line at once.\nUseful for temporarily disabling code.",
+            "Ctrl+* on a selected block comments\nor uncomments every line at once.\nUseful for temporarily disabling code.",
           baseStyle: { ...noteBoxStyle, marginTop: 16 },
         },
       ],
       steps: [
         {
           narration:
-            "Ctrl+/ toggles a `//` comment on the current line.\nIf the line is already a comment, pressing it again removes the `//`.",
-          tokenHighlight: ["Ctrl + /"],
+            "Ctrl+* toggles a `//` comment on the current line.\nIf the line is already a comment, pressing it again removes the `//`.",
+          tokenHighlight: ["Ctrl + *"],
         },
         {
           narration:
-            "Ctrl+Shift+K deletes the entire line and closes the gap.\nNo need to select the line first — just place the cursor anywhere on it.",
-          tokenHighlight: ["Ctrl + Shift + K"],
+            "Shift+Delete deletes the entire line and closes the gap.\nNo need to select the line first — just place the cursor anywhere on it.",
+          tokenHighlight: ["Shift + Delete"],
         },
         {
           narration:
@@ -47,17 +47,17 @@ export const editingLesson: Lesson = {
     {
       kind: "js-workshop",
       title: "Practice: editing shortcuts",
-      prompt: "Use Ctrl+/, Ctrl+Shift+K, and Tab directly in the editor.",
+      prompt: "Use Ctrl+*, Shift+Delete, and Tab directly in the editor.",
       steps: [
         {
           id: "comment-line",
           instruction:
-            "Place the cursor on the `console.log` line.\nUse **Ctrl+/** to comment it out.",
+            "Place the cursor on the `console.log` line.\nUse **Ctrl+*** to comment it out.",
           starterCode: "let x = 5;\nconsole.log(x);\n",
           checks: [
             {
               message: "The `console.log` line should be commented out with `//`.",
-              requirePattern: /\/\/.*console\.log/,
+              assert: 'return /\\/\\/\\s*console\\.log/.test(__source);',
             },
           ],
           reveal: "let x = 5;\n// console.log(x);\n",
@@ -65,7 +65,7 @@ export const editingLesson: Lesson = {
         {
           id: "delete-line",
           instruction:
-            "Place the cursor on the comment line.\nUse **Ctrl+Shift+K** to delete the entire line.",
+            "Place the cursor on the comment line.\nUse **Shift+Delete** to delete the entire line.",
           starterCode: "let a = 1;\n// remove this line\nlet b = 2;\n",
           checks: [
             {
