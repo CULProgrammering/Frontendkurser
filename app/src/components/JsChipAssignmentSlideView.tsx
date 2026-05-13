@@ -4,7 +4,7 @@ import { t } from "../i18n";
 import { ui } from "../i18n/strings";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
 import { ThemeToggleInline } from "./ThemeToggle";
-import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
+import { SlideTitleRow, type BreadcrumbSegment, type EndAction } from "./SlideDeck";
 import { tokens } from "../styles/tokens";
 
 const SETTLE_MS = 400;
@@ -22,6 +22,14 @@ type Props = {
    * (`onPass`) and exiting are bundled into the same click.
    */
   onExit?: () => void;
+  /**
+   * Context-aware end-of-tier action. When provided, replaces the default
+   * "← Back" button on the last-puzzle success state. `primary` is rendered
+   * inline with the chips (where the legacy "← Back" lived); `secondary`
+   * (when present) sits to its left in the same row. Takes precedence
+   * over `onExit`.
+   */
+  endAction?: EndAction;
 };
 
 type CheckState = "pending" | "right" | "wrong";
@@ -31,7 +39,7 @@ type CheckState = "pending" | "right" | "wrong";
  * sub-puzzles in order; each is independent state-wise. We persist only
  * the highest puzzle reached, not chip positions (state resets per visit).
  */
-export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, breadcrumb, slideJumpDots, onPass, onExit }: Props) {
+export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, breadcrumb, slideJumpDots, onPass, onExit, endAction }: Props) {
   const { codePx, prosePx } = useSlideFontSize();
   const [puzzleIdx, setPuzzleIdx] = useState(0);
   const puzzle = slide.puzzles[puzzleIdx];
@@ -93,18 +101,22 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
             key={puzzleIdx}
             puzzle={puzzle}
             isLast={isLast}
+            lastButtonLabel={endAction?.primary.label ?? t(ui.slideBack)}
+            secondaryAction={endAction?.secondary}
             onAdvance={() => {
               if (isLast) {
                 // Last puzzle correct: mark the slide done, then route
-                // back to the lesson tier menu in the same click. The
-                // parent SlideDeck wires `onExit` for that. Falling back
-                // to "stay put" if onExit isn't supplied keeps the
-                // legacy behaviour for any caller that hasn't wired it.
+                // the student onward in the same click. `endAction` (when
+                // supplied by SlideDeck) takes precedence — that's the
+                // "Continue → next tier / next lesson" path. Falls back
+                // to `onExit` (tier-menu) for callers that haven't wired
+                // the contextual action.
                 if (!allDoneRef.current) {
                   allDoneRef.current = true;
                   onPass?.();
                 }
-                onExit?.();
+                if (endAction) endAction.primary.onClick();
+                else onExit?.();
               } else {
                 setPuzzleIdx((i) => i + 1);
               }
@@ -179,12 +191,20 @@ export function JsChipAssignmentSlideView({ slide, storageKey: _storageKey, brea
 function PuzzleView({
   puzzle,
   isLast,
+  lastButtonLabel,
+  secondaryAction,
   onAdvance,
   codePx,
   prosePx,
 }: {
   puzzle: JsChipPuzzle;
   isLast: boolean;
+  /** Label for the success-state advance button on the last puzzle. */
+  lastButtonLabel: string;
+  /** Optional secondary button rendered alongside the primary on the last
+   * puzzle's success state — e.g. "← Back to Variables" when the primary
+   * is "Continue → next lesson". */
+  secondaryAction?: { label: string; onClick: () => void };
   onAdvance: () => void;
   codePx: number;
   prosePx: number;
@@ -368,6 +388,18 @@ function PuzzleView({
         ))}
       </div>
 
+      {/* Affordance hint: cold students don't always read chips as buttons
+          on first glance — especially against the dark code panel above.
+          A small instruction line in the chip area names the mechanic
+          explicitly. Hidden once all slots are filled (then the verdict
+          row carries the next signal) and once the puzzle has been
+          solved. */}
+      {check === "pending" && slots.some((s) => s === null) && (
+        <div className="text-xs text-stone-500 dark:text-stone-400 italic">
+          Tap a chip to drop it into the next empty slot.
+        </div>
+      )}
+
       {/* Chips sit right under the code; verdict/advance flow inline beside
           them — no big gap, no right-alignment. Click identity stays
           original; chips render in shuffled order. */}
@@ -384,7 +416,7 @@ function PuzzleView({
                 "px-3 py-3 sm:py-2 min-h-[44px] sm:min-h-0 rounded-md font-mono border-2 transition-all " +
                 (placed
                   ? "bg-stone-100 text-stone-300 border-transparent cursor-not-allowed dark:bg-[#222630] dark:text-stone-600"
-                  : "bg-amber-50 hover:bg-amber-100 active:bg-amber-200 text-stone-800 border-transparent active:scale-95 dark:bg-stone-800 dark:hover:bg-stone-700 dark:text-stone-100")
+                  : "cursor-pointer shadow-sm hover:shadow-md hover:-translate-y-0.5 bg-amber-50 hover:bg-amber-100 active:bg-amber-200 text-stone-800 border-stone-900/[0.06] active:scale-95 dark:bg-stone-800 dark:hover:bg-stone-700 dark:text-stone-100 dark:border-white/[0.08]")
               }
               style={{ fontSize: `${codePx}px` }}
             >
@@ -403,12 +435,24 @@ function PuzzleView({
           </div>
         )}
         {check === "right" && (
-          <button
-            onClick={onAdvance}
-            className={`ml-2 ${tokens.button.primary} min-h-[44px] sm:min-h-0`}
-          >
-            {isLast ? t(ui.slideBack) : "Next puzzle ▶"}
-          </button>
+          <>
+            {isLast && secondaryAction && (
+              <button
+                onClick={secondaryAction.onClick}
+                className={`ml-2 ${tokens.button.secondary} min-h-[44px] sm:min-h-0`}
+              >
+                {secondaryAction.label}
+              </button>
+            )}
+            <button
+              onClick={onAdvance}
+              className={`ml-2 ${tokens.button.primary} min-h-[44px] sm:min-h-0 inline-flex items-center max-w-[20rem]`}
+            >
+              <span className="truncate">
+                {isLast ? lastButtonLabel : "Next puzzle ▶"}
+              </span>
+            </button>
+          </>
         )}
       </div>
 

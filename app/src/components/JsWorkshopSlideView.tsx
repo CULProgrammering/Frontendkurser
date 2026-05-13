@@ -11,11 +11,34 @@ import { sessionGet, sessionSet } from "../storage";
 import { useSlideFontSize, SlideFontSizeControl } from "./SlideFontSize";
 import { ThemeToggleInline } from "./ThemeToggle";
 import { ValuesPill } from "./ValuesPill";
-import { SlideTitleRow, type BreadcrumbSegment } from "./SlideDeck";
+import { SlideTitleRow, type BreadcrumbSegment, type EndAction } from "./SlideDeck";
 import { CodeEditor, type CodeEditorHandle } from "./CodeEditor";
 import { TwoColumnLayout } from "./TwoColumnLayout";
 import { WindowedStepCounter } from "./WindowedStepCounter";
 import { tokens } from "../styles/tokens";
+
+/**
+ * Render an authored instruction string, turning `**text**` runs into
+ * <kbd> elements so keyboard shortcuts ("Use **Alt+↓**") render as keys
+ * rather than literal asterisks. Plain text segments are unchanged, so
+ * authored newlines still work with the surrounding `whitespace-pre-line`.
+ * Used for both step.instruction and step.hint.
+ */
+function renderInstruction(text: string): React.ReactNode {
+  const parts = text.split(/\*\*([^*]+)\*\*/g);
+  return parts.map((part, i) =>
+    i % 2 === 1 ? (
+      <kbd
+        key={i}
+        className="inline-flex items-center px-1.5 py-0.5 mx-0.5 rounded font-mono text-[0.85em] bg-stone-200 dark:bg-[#2c303a] text-stone-800 dark:text-stone-100 border border-stone-900/[0.08] dark:border-white/[0.10]"
+      >
+        {part}
+      </kbd>
+    ) : (
+      <span key={i}>{part}</span>
+    ),
+  );
+}
 
 /**
  * Prepare the seed for a step: produce the editor's initial value plus a
@@ -99,6 +122,14 @@ type Props = {
    */
   onExit?: () => void;
   /**
+   * Context-aware end-of-tier action. When provided, replaces the default
+   * "← Back" button on the completed last step. `primary` is rendered as
+   * the dominant action; `secondary` (when present) sits to its left as a
+   * less-weighted option. Takes precedence over `onExit` for both the
+   * inline button and the Ctrl+Enter shortcut on a completed final step.
+   */
+  endAction?: EndAction;
+  /**
    * Starting step index. Defaults to 0. Set when the caller wants the
    * student to land on a specific step — e.g. walkthrough step grid on
    * the topic view picks step N and routes here with initialIdx=N.
@@ -119,7 +150,7 @@ type Props = {
  * always clicks Next themselves, so they can review the console output before
  * moving on.
  */
-export function JsWorkshopSlideView({ slide, storageKey, breadcrumb, slideJumpDots, onPass, onExit, initialIdx }: Props) {
+export function JsWorkshopSlideView({ slide, storageKey, breadcrumb, slideJumpDots, onPass, onExit, endAction, initialIdx }: Props) {
   const [stepIdx, setStepIdx] = useState(() =>
     typeof initialIdx === "number"
       ? Math.max(0, Math.min(initialIdx, slide.steps.length - 1))
@@ -175,6 +206,7 @@ export function JsWorkshopSlideView({ slide, storageKey, breadcrumb, slideJumpDo
           onPass={handleStepPass}
           onAdvance={advanceToNext}
           onExit={onExit}
+          endAction={endAction}
         />
       </div>
     </div>
@@ -199,6 +231,7 @@ function WorkshopStepView({
   onPass,
   onAdvance,
   onExit,
+  endAction,
 }: {
   slide: JsWorkshopSlide;
   step: WorkshopStep;
@@ -212,6 +245,7 @@ function WorkshopStepView({
   onPass: () => void;
   onAdvance: () => void;
   onExit?: () => void;
+  endAction?: EndAction;
 }) {
   // Sticky completion: once the student has passed this step in this session,
   // the Next-step button stays available even if they later edit the code in
@@ -297,12 +331,14 @@ function WorkshopStepView({
 
   // Ctrl+Enter inside the editor calls this. Once a step is completed the
   // "primary action" shifts: we don't want students re-checking the same
-  // passing code — we want them to advance (or, on the final step, exit
-  // back to the workshop selection).
+  // passing code — we want them to advance (or, on the final step, fire
+  // whatever the end action is — continue to next tier, or back to topic).
   const handleEditorSubmit = () => {
     if (isCompleted) {
       if (!isLast) {
         onAdvance();
+      } else if (endAction) {
+        endAction.primary.onClick();
       } else if (onExit) {
         onExit();
       }
@@ -439,7 +475,7 @@ function WorkshopStepView({
           className="text-stone-800 dark:text-stone-100 whitespace-pre-line max-w-[68ch]"
           style={{ fontSize: `${prosePx}px` }}
         >
-          {t(step.instruction)}
+          {renderInstruction(t(step.instruction))}
         </p>
         {step.hint && hintShown && (
           <div
@@ -451,7 +487,7 @@ function WorkshopStepView({
             <div className="text-[10px] uppercase tracking-[0.18em] font-mono font-medium text-[#C97A1F] dark:text-[#F0B274] mb-1">
               {t(ui.workshopHintLabel)}
             </div>
-            <div className="whitespace-pre-line">{t(step.hint)}</div>
+            <div className="whitespace-pre-line">{renderInstruction(t(step.hint))}</div>
           </div>
         )}
       </div>
@@ -496,17 +532,30 @@ function WorkshopStepView({
             </button>
           </div>
         )}
-        {/* On the final step, after completion, show a Back button instead.
-            Routing students directly back to the tier menu beats making them
-            re-find the lesson via breadcrumb. */}
-        {isCompleted && isLast && onExit && (
-          <div className="flex justify-end">
+        {/* On the final step, after completion, show the contextual end
+            action (Continue → next tier / next lesson, with optional
+            ← Back to topic as a secondary) when SlideDeck has supplied
+            one. Otherwise fall back to the legacy "← Back" for walkthrough
+            / linear-lesson flows that don't have an endAction wired. */}
+        {isCompleted && isLast && (endAction || onExit) && (
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            {endAction?.secondary && (
+              <button
+                type="button"
+                onClick={endAction.secondary.onClick}
+                className={`${tokens.button.secondary} min-h-[44px] sm:min-h-0`}
+              >
+                {endAction.secondary.label}
+              </button>
+            )}
             <button
               type="button"
-              onClick={onExit}
-              className={`${tokens.button.primary} min-h-[44px] sm:min-h-0`}
+              onClick={endAction ? endAction.primary.onClick : onExit!}
+              className={`${tokens.button.primary} min-h-[44px] sm:min-h-0 inline-flex items-center max-w-[20rem]`}
             >
-              {t(ui.slideBack)}
+              <span className="truncate">
+                {endAction ? endAction.primary.label : t(ui.slideBack)}
+              </span>
             </button>
           </div>
         )}

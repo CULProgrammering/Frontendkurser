@@ -7,13 +7,20 @@ import { JsChipAssignmentSlideView } from "./JsChipAssignmentSlideView";
 import { JsTypedAssignmentSlideView } from "./JsTypedAssignmentSlideView";
 import { JsWorkshopSlideView } from "./JsWorkshopSlideView";
 import { ExerciseSlideView } from "./ExerciseSlideView";
-import { markTierComplete } from "../progress";
+import { markSlideComplete } from "../progress";
 import { slidesForTier, type Tier } from "../tiers";
 import { t } from "../i18n";
 import { ui } from "../i18n/strings";
 
 export type BreadcrumbSegment = {
   label: string;
+  /**
+   * Optional shorter label used only by the "Back to X" button. Set when the
+   * segment's natural label is verbose (e.g. a full lesson title) and a
+   * tighter word reads better on the back button — e.g. `shortLabel: "menu"`
+   * on the lesson segment of a tier-deck breadcrumb. Falls back to `label`.
+   */
+  shortLabel?: string;
   onNavigate?: () => void;
 };
 
@@ -34,6 +41,28 @@ type Props = {
    */
   breadcrumb?: BreadcrumbSegment[];
   onExit: () => void;
+  /**
+   * Context-aware end-of-tier action. The slide view renders `primary`
+   * (and `secondary` when present) at the end of the tier (last slide /
+   * step / puzzle) instead of the legacy "← Back" exit. Used to surface:
+   *   - "Continue → next tier" mid-lesson (primary only)
+   *   - "Continue → next lesson" + "← Back to {topic}" on the final
+   *     tier when a next lesson exists (primary + secondary)
+   *   - "← Back to {topic / home}" on the very last lesson (primary only)
+   *
+   * When omitted, slide views fall back to the legacy "← Back" → `onExit`
+   * behaviour (used by walkthrough flows etc. that don't have a tier
+   * sequence or a curriculum-next lesson).
+   */
+  endAction?: EndAction;
+};
+
+export type EndAction = {
+  primary: { label: string; onClick: () => void };
+  /** Optional secondary button rendered alongside `primary` — used on the
+   * final tier when both "back to topic" and "continue to next lesson"
+   * make sense. */
+  secondary?: { label: string; onClick: () => void };
 };
 
 // Minimum horizontal swipe distance (px) to count as a slide change.
@@ -42,7 +71,7 @@ const SWIPE_THRESHOLD = 50;
 // gesture as a scroll, not a swipe.
 const SWIPE_VERT_TOLERANCE = 60;
 
-export function SlideDeck({ courseId, lesson, tier, initialIdx, breadcrumb, onExit }: Props) {
+export function SlideDeck({ courseId, lesson, tier, initialIdx, breadcrumb, onExit, endAction }: Props) {
   const [idx, setIdx] = useState(initialIdx ?? 0);
 
   const slides = useMemo(
@@ -106,16 +135,25 @@ export function SlideDeck({ courseId, lesson, tier, initialIdx, breadcrumb, onEx
     else if (dx >= SWIPE_THRESHOLD) prev();
   };
 
-  // Explanation tier has no per-slide pass event — mark the tier complete as
-  // soon as the student reaches the final slide.
+  // Explanation tier has no per-slide pass event from the slide view —
+  // mark each slide as "complete" the moment the student lands on it.
+  // The tier is then complete once they've reached every slide. Other
+  // tiers (chip / workshop / exercise) fire onPass themselves and write
+  // their own per-slide complete via the handler below.
   useEffect(() => {
-    if (tier === "explanation" && total > 0 && idx === total - 1) {
-      markTierComplete(courseId, lesson.id, "explanation");
+    if (tier === "explanation") {
+      markSlideComplete(courseId, lesson.id, "explanation", idx);
     }
-  }, [tier, idx, total, courseId, lesson.id]);
+  }, [tier, idx, courseId, lesson.id]);
 
-  const onTierPass = tier
-    ? () => markTierComplete(courseId, lesson.id, tier)
+  // Per-slide pass handler — wired into every slide kind that fires
+  // `onPass`. Each slide that passes records its own completion. Tier
+  // completion is then derived (`every slide in tier marked complete`)
+  // rather than written as a single flag, so students who skip ahead
+  // (or who finish only some sub-items) don't falsely mark the whole
+  // tier done.
+  const onSlidePass = tier
+    ? () => markSlideComplete(courseId, lesson.id, tier, idx)
     : undefined;
 
   // Empty tier — show breadcrumb-as-fallback on its own.
@@ -138,7 +176,43 @@ export function SlideDeck({ courseId, lesson, tier, initialIdx, breadcrumb, onEx
 
   const slide = slides[idx];
   const isLastSlide = idx === total - 1;
-  const passHandler = isLastSlide ? onTierPass : undefined;
+  // Fires on every slide pass (chip / workshop / exercise / etc.), not just
+  // the last one — that's how we get honest per-slide progress and a true
+  // "tier complete = all slides done" derivation.
+  const passHandler = onSlidePass;
+
+  /**
+   * Strip the "Workshop:" / "Lab:" prefix from a slide title so the
+   * Continue button doesn't read "Continue → 2. Workshop: Bank account".
+   * Mirrors the helper used in LessonTierMenu; kept here too to avoid an
+   * import cycle.
+   */
+  const stripTierPrefix = (title: string): string => {
+    const stripped = title.replace(/^(Workshop|Lab|Verkstad|Labb)\s*:\s*/i, "").trim();
+    if (stripped.length === 0) return title;
+    return stripped[0].toUpperCase() + stripped.slice(1);
+  };
+
+  // Effective end action for the slide view. On the last slide of the tier
+  // we forward whatever the parent supplied (Continue → next tier, or the
+  // dual-button last-tier layout). On *intermediate* slides of chip /
+  // workshop / exercise tiers we build a local "Continue → next sub-slide"
+  // so the student flows linearly through the tier — combined with row
+  // locking, this is the only viable forward path. Explanation tier
+  // already has `onNextSlide` for the same purpose.
+  const intermediateAdvance =
+    !isLastSlide &&
+    (slide.kind === "js-chip-assignment" ||
+      slide.kind === "js-workshop" ||
+      slide.kind === "exercise")
+      ? {
+          primary: {
+            label: `Continue → ${idx + 2}. ${stripTierPrefix(t(slides[idx + 1].title))}`,
+            onClick: () => setIdx(idx + 1),
+          },
+        }
+      : null;
+  const effectiveEndAction = isLastSlide ? endAction : intermediateAdvance ?? undefined;
 
   // Workshop and exercise tiers historically rendered the slide-jump dots in
   // the right-pane title row, where they looked like a per-step indicator but
@@ -179,6 +253,7 @@ export function SlideDeck({ courseId, lesson, tier, initialIdx, breadcrumb, onEx
             slideJumpDots={slideJumpDots}
             onNextSlide={isLastSlide ? undefined : () => setIdx(idx + 1)}
             onExit={onExit}
+            endAction={effectiveEndAction}
             key={`e-${idx}`}
           />
         )}
@@ -211,6 +286,7 @@ export function SlideDeck({ courseId, lesson, tier, initialIdx, breadcrumb, onEx
             key={`c-${idx}`}
             onPass={passHandler}
             onExit={onExit}
+            endAction={effectiveEndAction}
           />
         )}
         {slide.kind === "js-typed-assignment" && (
@@ -232,6 +308,7 @@ export function SlideDeck({ courseId, lesson, tier, initialIdx, breadcrumb, onEx
             key={`w-${idx}`}
             onPass={passHandler}
             onExit={onExit}
+            endAction={effectiveEndAction}
           />
         )}
         {slide.kind === "exercise" && (
@@ -242,6 +319,7 @@ export function SlideDeck({ courseId, lesson, tier, initialIdx, breadcrumb, onEx
             slideJumpDots={slideJumpDots}
             key={`x-${idx}`}
             onPass={passHandler}
+            endAction={effectiveEndAction}
           />
         )}
       </div>
@@ -258,6 +336,16 @@ export function Breadcrumb({ segments }: { segments: BreadcrumbSegment[] }) {
   const [expanded, setExpanded] = useState(false);
   const canCollapse = segments.length >= 3;
   const isMiddle = (i: number) => i !== 0 && i !== segments.length - 1;
+
+  // Parent = the segment immediately before the current page. Drives the
+  // "← Back to X" quick-exit button on the right of the row. We only render
+  // the button when that segment has an onNavigate (i.e. it's actually
+  // navigable — not the case on the home view, which has no breadcrumb at
+  // all). `shortLabel` lets the call-site override the back-button text
+  // when the natural segment label is too long for a button (lesson titles).
+  const parent =
+    segments.length >= 2 ? segments[segments.length - 2] : undefined;
+  const backLabel = parent?.shortLabel ?? parent?.label;
 
   return (
     <nav
@@ -296,17 +384,26 @@ export function Breadcrumb({ segments }: { segments: BreadcrumbSegment[] }) {
             )}
             <span className={wrapperClass}>
               {clickable ? (
+                // Clickable segments — paper-tinted pill, deeper on hover.
+                // Reinforces that each segment is a tap target so students
+                // can navigate up without hunting for a Back button.
                 <button
                   onClick={seg.onNavigate}
-                  className="truncate max-w-[8rem] sm:max-w-[14rem] hover:text-stone-800 dark:hover:text-stone-100 transition-colors"
+                  className="truncate max-w-[8rem] sm:max-w-[14rem] px-2 py-0.5 rounded-md transition-colors
+                             bg-stone-100 text-stone-600 hover:bg-stone-200 hover:text-stone-900
+                             dark:bg-[#222630] dark:text-stone-400 dark:hover:bg-[#2c303a] dark:hover:text-stone-100"
                 >
                   {seg.label}
                 </button>
               ) : (
+                // Last segment — current page. Stronger neutral pill +
+                // bold text, no hover. Tells the student "you are here".
                 <span
                   className={
-                    "truncate max-w-[10rem] sm:max-w-[18rem] " +
-                    (isLast ? "text-stone-800 dark:text-stone-100 font-medium" : "")
+                    "truncate max-w-[10rem] sm:max-w-[18rem] px-2 py-0.5 rounded-md " +
+                    (isLast
+                      ? "bg-stone-200 text-stone-900 font-medium dark:bg-[#2c303a] dark:text-stone-100"
+                      : "")
                   }
                   aria-current={isLast ? "page" : undefined}
                 >
@@ -322,6 +419,21 @@ export function Breadcrumb({ segments }: { segments: BreadcrumbSegment[] }) {
           </Fragment>
         );
       })}
+      {/* "← Back to X" — quick one-level-up exit. Right-aligned so it sits
+          opposite the breadcrumb chain, where the eye finishes scanning.
+          Bordered + slightly larger so it reads as a primary action rather
+          than chrome. Hidden when there's no navigable parent (home). */}
+      {parent?.onNavigate && backLabel && (
+        <button
+          onClick={parent.onNavigate}
+          className="ml-auto inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-sm font-medium whitespace-nowrap transition-colors
+                     bg-white text-stone-800 border border-stone-900/[0.15] hover:bg-stone-100 hover:border-stone-900/30
+                     dark:bg-[#222630] dark:text-stone-100 dark:border-white/[0.12] dark:hover:bg-[#2c303a] dark:hover:border-white/25"
+        >
+          <span aria-hidden="true">←</span>
+          <span className="truncate max-w-[12rem]">Back to {backLabel}</span>
+        </button>
+      )}
     </nav>
   );
 }
